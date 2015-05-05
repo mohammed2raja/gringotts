@@ -1,0 +1,7 @@
+.DS_Store
+.grunt/
+docs/
+node_modules/
+public/
+vendor/bower/
+
