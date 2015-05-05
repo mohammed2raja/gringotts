@@ -28,7 +28,7 @@ Most of the mixins involving collections expect the payload to be nested (**e.g.
 so views using them are intended to be paginated. The behaviors have been broken out so they can be used separately
 or together. You can also specify and override properties on collections.
 
-For more information, see the [docs](https://github.com/pages/lookout/gringotts/).
+For more information, see the [docs](http://hackers.lookout.com/gringotts/).
 
 ## Getting Started
 

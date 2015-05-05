@@ -5,7 +5,7 @@ define (require, exports) ->
   # item counts for the given state of the `collection`.
   #
   # The `collection` should have `scopeable` mixed in or an equivalent
-  # [`scopedUrl`](https://github.com/pages/lookout/gringotts/src/mixins/scopeable.html)
+  # [`scopedUrl`](http://hackers.lookout.com/gringotts/src/mixins/service-unavailable.html)
   # method with associated properties `params` and `count`.
   paginationStats = ->
     # Pull `page` and `per_page` directly off `params` on the `collection`.
