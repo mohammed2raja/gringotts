@@ -60,7 +60,7 @@ define (require) ->
           expect($ @icon.string).to.have.attr 'title', 'My Title'
 
     it 'formats date correctly', ->
-      timeStamp = Handlebars.helpers.dateFormat 2048, 'l'
+      timeStamp = Handlebars.helpers.dateFormat '1969-12-31', 'l'
       expect(timeStamp).to.equal '12/31/1969'
 
     describe 'mail helper', ->
