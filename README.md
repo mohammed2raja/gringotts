@@ -1,4 +1,4 @@
-# Gringotts
+# Gringotts [![Build Status](https://travis-ci.org/lookout/gringotts.png?branch=master)](https://travis-ci.org/lookout/gringotts)
 
 A collection of [functional mixins](http://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/)
 and utilities supporting common behaviors found in web apps built with `Chaplin` and `Handlebars`.
