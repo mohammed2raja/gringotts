@@ -5,6 +5,9 @@
     utils = require('lib/utils');
     serviceErrorCallback = function(method, collection, opts) {
       var callback;
+      if (opts == null) {
+        opts = {};
+      }
       callback = opts.error;
       return opts.error = (function(_this) {
         return function($xhr) {
@@ -30,6 +33,9 @@
     };
     serviceUnavailableCallback = function(method, collection, opts) {
       var callback, _ref;
+      if (opts == null) {
+        opts = {};
+      }
       callback = (_ref = opts.statusCode) != null ? _ref['418'] : void 0;
       opts.statusCode || (opts.statusCode = {});
       return _.extend(opts.statusCode, {

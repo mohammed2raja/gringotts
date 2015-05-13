@@ -4,6 +4,9 @@
     _ = require('underscore');
     advice = require('flight/advice');
     safeAjaxCallback = function(method, collection, opts) {
+      if (opts == null) {
+        opts = {};
+      }
       return _.each(['success', 'error', 'complete'], function(val) {
         var callback, ctx;
         callback = opts[val];
