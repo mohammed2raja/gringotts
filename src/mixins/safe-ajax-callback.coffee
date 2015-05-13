@@ -9,7 +9,7 @@ define (require, exports) ->
   _ = require 'underscore'
   advice = require 'flight/advice'
 
-  safeAjaxCallback = (method, collection, opts) ->
+  safeAjaxCallback = (method, collection, opts = {}) ->
     _.each ['success', 'error', 'complete'], (val) ->
       callback = opts[val]
       if callback

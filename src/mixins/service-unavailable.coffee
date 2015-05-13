@@ -8,7 +8,7 @@ define (require, exports) ->
   _ = require 'underscore'
   utils = require 'lib/utils'
 
-  serviceErrorCallback = (method, collection, opts) ->
+  serviceErrorCallback = (method, collection, opts = {}) ->
     callback = opts.error
     opts.error = ($xhr) =>
       {status} = $xhr
@@ -27,7 +27,7 @@ define (require, exports) ->
             classes: 'alert-danger'
 
   # `418` is specific to external services being down.
-  serviceUnavailableCallback = (method, collection, opts) ->
+  serviceUnavailableCallback = (method, collection, opts = {}) ->
     callback = opts.statusCode?['418']
     opts.statusCode ||= {}
     # Make sure we don't override existing `statusCode` callbacks.
