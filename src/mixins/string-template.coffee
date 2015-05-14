@@ -17,8 +17,8 @@ define (require, exports) ->
       if tObj
         tObj
       else
-        errString = "The template file #{templatePath}/#{template} does not exist."
-        throw new Error errString
+        errStr = "The template file #{templatePath}/#{template} doesn't exist."
+        throw new Error errStr
 
   exports = (opts={}) ->
     # Reset between multiple calls.
