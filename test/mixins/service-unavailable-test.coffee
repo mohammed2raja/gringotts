@@ -7,6 +7,7 @@ define (require) ->
     beforeEach ->
       @server = sinon.fakeServer.create()
       @model = new Chaplin.Model()
+      @model.url = 'hey'
       advice.call @model
       serviceUnavailable.call @model
       ((window.I18n = {}).t = (text) -> text) if @i18n
@@ -17,6 +18,14 @@ define (require) ->
       @server.restore()
       @model.dispose()
       delete window.I18n
+
+    it 'does not error without options', ->
+      try
+        @model.sync 'read', @model
+      catch error
+        error = yes
+
+      expect(error).not.to.exist
 
     describe 'with a fetch', ->
       beforeEach ->

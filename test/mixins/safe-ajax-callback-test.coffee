@@ -17,6 +17,14 @@ define (require) ->
       @server.restore()
       @collection.dispose()
 
+    it 'does not error without options', ->
+      try
+        @collection.sync 'read', @collection
+      catch error
+        error = yes
+
+      expect(error).not.to.exist
+
     describe 'for options callback', ->
 
       afterDispose = (status) ->
