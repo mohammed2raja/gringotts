@@ -147,7 +147,6 @@ module.exports = (grunt) ->
         files: '{src,test}/**/*.coffee'
         tasks: [
           'newer:coffee'
-          'citare-scriptum'
           'coffeelint'
           'blanket_mocha:test'
         ]
@@ -162,7 +161,7 @@ module.exports = (grunt) ->
 
   # Create aliased tasks.
   grunt.registerTask('default', ['build', 'coffeelint', 'test', 'concurrent'])
-  grunt.registerTask('docs', ['gh-pages:docs'])
+  grunt.registerTask('docs', ['citare-scriptum', 'gh-pages:docs'])
   grunt.registerTask('test', ['blanket_mocha:test'])
   grunt.registerTask('test:ci', ['compile', 'copy', 'blanket_mocha:ci'])
 
