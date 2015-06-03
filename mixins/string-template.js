@@ -3,15 +3,15 @@
     var getTemplateFunction, templatePath;
     templatePath = '';
     getTemplateFunction = function() {
-      var errString, tObj, template;
+      var errStr, tObj, template;
       template = this.template;
       if (template) {
         tObj = require(templatePath)[template];
         if (tObj) {
           return tObj;
         } else {
-          errString = "The template file " + templatePath + "/" + template + " does not exist.";
-          throw new Error(errString);
+          errStr = "The template file " + templatePath + "/" + template + " doesn't exist.";
+          throw new Error(errStr);
         }
       }
     };
