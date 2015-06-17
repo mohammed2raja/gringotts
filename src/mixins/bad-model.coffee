@@ -32,10 +32,13 @@ define (require, exports) ->
       @delegateListener 'error', 'model', (model, $xhr) ->
         {id} = model
         {status} = $xhr
-        if status in [403, 404]
+        if status in [400, 403, 404]
           message = message model if typeof message is 'function'
           message ||= "The model #{id} could not be accessed."
-          utils.redirectTo route
+          # Allow for multiple arguments to be passed in if route returns array
+          args = route?(model) or route
+          args = [args] unless _.isArray args
+          utils.redirectTo.apply utils, args
           # NOTE: This cannot be sticky because it triggers before navigation!
           @publishEvent 'notify', message, evtOpts
 

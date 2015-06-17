@@ -24,13 +24,15 @@ define (require) ->
     describe 'informs user of error', ->
       beforeEach ->
         badModel.call @view
-        # Invoke manually since it normally would be mixed in at declaration.
-        setupListeners.call this
+        @view.delegateListeners()
       afterEach ->
         expect(utils.redirectTo.lastCall).to.be.calledWith ''
         expect(@view.publishEvent.lastCall).to.be.calledWith 'notify'
         # Default message contains model ID.
         expect(@view.publishEvent.lastCall.args[1]).to.be.contain @model.id
+
+      it 'for 400s', ->
+        @model.trigger 'error', @model, status: 400
 
       it 'for 403s', ->
         @model.trigger 'error', @model, status: 403
@@ -53,6 +55,19 @@ define (require) ->
       badModel.call @view, {message}
       setupListeners.call this
       expect(message).to.be.calledWith @model
+
+    it 'invokes route as a method if appropriate', ->
+      route = sinon.spy()
+      badModel.call @view, {route}
+      setupListeners.call this
+      expect(route).to.be.calledWith @model
+
+    it 'passes route result to redirect call', ->
+      badModel.call @view, route: -> ['name', id: 1]
+      setupListeners.call this
+      args = utils.redirectTo.lastCall.args
+      expect(args[0]).to.equal 'name'
+      expect(args[1]).to.eql id: 1
 
     it 'allows notify options to be passed in', ->
       badModel.call @view, evtOpts: {'hey'}
