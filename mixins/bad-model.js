@@ -18,15 +18,19 @@
         route = opts.route || '';
         evtOpts = opts.evtOpts ? _.defaults(opts.evtOpts, DEFAULTS) : DEFAULTS;
         return this.delegateListener('error', 'model', function(model, $xhr) {
-          var id, status;
+          var args, id, status;
           id = model.id;
           status = $xhr.status;
-          if (status === 403 || status === 404) {
+          if (status === 400 || status === 403 || status === 404) {
             if (typeof message === 'function') {
               message = message(model);
             }
             message || (message = "The model " + id + " could not be accessed.");
-            utils.redirectTo(route);
+            args = (typeof route === "function" ? route(model) : void 0) || route;
+            if (!_.isArray(args)) {
+              args = [args];
+            }
+            utils.redirectTo.apply(utils, args);
             return this.publishEvent('notify', message, evtOpts);
           }
         });
