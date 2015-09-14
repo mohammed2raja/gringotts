@@ -90,7 +90,7 @@
         evt.preventDefault();
         _.defaults(opts, DEFAULTS);
         opts.$field = this.$(field);
-        opts.model = this.model;
+        opts.model || (opts.model = this.model);
         return this.makeEditable(opts);
       });
     };
