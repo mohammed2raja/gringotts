@@ -14,17 +14,19 @@ define (require) ->
       @view = new FakeView {@model}
       @success = sinon.spy()
       @error = sinon.spy()
-      @view.setupEditable '.edit-name', '.name-field', {
+      @opts ||= {
         @success
         @error
         @errorClass
       }
+      @view.setupEditable '.edit-name', '.name-field', @opts
       @enter = $.Event 'keydown', keyCode: 13
 
     afterEach ->
       delete @enter
       @view.dispose()
       @model.dispose()
+      delete @opts
       document.execCommand.restore()
 
     it 'attaches a click handler', ->
@@ -32,6 +34,24 @@ define (require) ->
       $field = @view.$field()
       expect($field).to.have.attr 'contenteditable'
       expect(document.execCommand).to.have.been.called
+
+    describe 'optional model defined', ->
+      before ->
+        @otherModel = new FakeModel {test:'test'}
+        sinon.spy @otherModel, 'validate'
+        @opts =
+          model: @otherModel
+          success: sinon.spy()
+          error: sinon.spy()
+      beforeEach setupEditable.before
+      afterEach setupEditable.after
+
+      after ->
+        @otherModel.dispose()
+        delete @otherModel
+
+      it 'makes editable', ->
+        expect(@otherModel.validate).to.have.been.called
 
     describe 'editing the name field', ->
       beforeEach ->

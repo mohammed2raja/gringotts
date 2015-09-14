@@ -121,7 +121,7 @@ define (require, exports) ->
       evt.preventDefault()
       _.defaults opts, DEFAULTS
       opts.$field = @$(field)
-      opts.model = @model
+      opts.model ||= @model
       @makeEditable opts
 
   exports = ->
