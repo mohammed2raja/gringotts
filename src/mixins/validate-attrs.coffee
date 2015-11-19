@@ -4,14 +4,14 @@
 #
 # The specified function should return a truthy value only
 # if there is a problem (per Backbone conventions).
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
 
   # Default validation criterion
   blank = (text) ->
     text.length is 0
 
-  exports = (opts) ->
+  (opts) ->
     # Map of attributes to validation method.
     {methods} = opts
     # Inlined to bind methods to the host object.

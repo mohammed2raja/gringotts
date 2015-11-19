@@ -5,7 +5,7 @@
 # server methods (such as `fetch` and `save`) use. This makes it
 # incompatible with the related promise callbacks (`done`, `fail`, `always`)
 # which don't provide as nice of a hook with AOP.
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
   advice = require 'flight/advice'
 
@@ -19,6 +19,6 @@ define (require, exports) ->
           callback.apply ctx, arguments unless @disposed
     , this
 
-  exports = ->
+  ->
     @before 'sync', safeAjaxCallback
     this

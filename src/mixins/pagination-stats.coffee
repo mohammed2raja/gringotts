@@ -1,4 +1,4 @@
-define (require, exports) ->
+define (require) ->
   advice = require 'flight/advice'
 
   # This method returns an object with properties about the page and
@@ -45,7 +45,7 @@ define (require, exports) ->
   pageString = (stats) ->
     "#{stats.start}-#{stats.end} of #{stats.total}"
 
-  exports = ->
+  ->
     @before 'initialize', ->
       @on 'remove', ->
         # Keep pagination views in sync on archive/delete.

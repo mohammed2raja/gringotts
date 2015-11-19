@@ -3,9 +3,9 @@
 # and `fallbackSelector` that `Chaplin.CollectionView` provides.
 #
 # Works with the event emitted by the `service-unavailable` mixin.
-define (require, exports) ->
+define (require) ->
 
-  exports = ->
+  ->
     # 'Extend' the `listen` hash, even if it's not present, without
     # having this handler overridden if the hash is declared later.
     @before 'delegateListeners', ->

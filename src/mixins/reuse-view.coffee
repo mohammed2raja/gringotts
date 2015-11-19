@@ -1,4 +1,4 @@
-define (require, exports) ->
+define (require) ->
   # For use on paginated collection views so we don't
   # have to recreate a new view for each page.
   # You can specify an optional `viewName` on the collection
@@ -14,6 +14,6 @@ define (require, exports) ->
     opts.collection = collection
     @reuse name, View, opts
 
-  exports = ->
+  ->
     @reuseView = reuseView
     this

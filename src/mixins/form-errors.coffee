@@ -12,7 +12,7 @@
 # specified via the `opts` hash with `inputAttr`.
 #
 # `id` and `class` attributes will use the appropriate selectors.
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
 
   # Map of the different methods for each attribute type.
@@ -60,7 +60,7 @@ define (require, exports) ->
       , this
 
   # For the time being, the mixin supports only a single form per (sub)?view.
-  exports = (opts = {}) ->
+  (opts = {}) ->
     # Message to display for general/parse errors.
     genericErrMsg =
       opts.genericErrMsg or 'There was a problem. Please try again.'

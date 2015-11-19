@@ -1,4 +1,4 @@
-define (require, exports) ->
+define (require) ->
   successHandler = (opts) ->
     @publishEvent 'notify', opts.saveMessage,
       model: opts.model
@@ -12,6 +12,6 @@ define (require, exports) ->
         opts.$field.attr 'href', opts.href if opts.href
         @makeEditable opts
 
-  exports = ->
+  ->
     @delayedSave = successHandler
     this

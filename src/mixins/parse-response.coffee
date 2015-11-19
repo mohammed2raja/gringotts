@@ -4,7 +4,7 @@
 # The collection will pull and store `count` from the response onto
 # the collection. It will return the models namespaced under
 # the collection's `syncKey` property.
-define (require, exports) ->
+define (require) ->
   # Handle API that returns payload in nested array with count.
   # **e.g.** `{"#{COUNT_PROP}": 1, "#{ROUTE_PROP}": [{...}]}`
   parse = (resp) ->
@@ -15,6 +15,6 @@ define (require, exports) ->
     else
       resp
 
-  exports = (opts={}) ->
+  (opts={}) ->
     @parse = parse
     this

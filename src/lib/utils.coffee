@@ -4,7 +4,7 @@
 
 # See [Chaplin utils](https://github.com/chaplinjs/chaplin-boilerplate/blob/master/coffee/lib/utils.coffee)
 # for an example.
-define (require, exports) ->
+define (require) ->
   Backbone = require 'backbone'
   Chaplin = require 'chaplin'
 
@@ -45,4 +45,4 @@ define (require, exports) ->
 
     result
 
-  exports = utils
+  utils
