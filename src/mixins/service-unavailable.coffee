@@ -4,7 +4,7 @@
 # as well.
 #
 # The `I18n` library is invoked if it exists, otherwise it uses a default.
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
   utils = require 'lib/utils'
 
@@ -43,7 +43,7 @@ define (require, exports) ->
           classes: 'alert-danger'
           reqTimeout: 10000
 
-  exports = ->
+  ->
     @before 'sync', serviceErrorCallback
     @before 'sync', serviceUnavailableCallback
 

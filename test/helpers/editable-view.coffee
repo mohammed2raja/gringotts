@@ -1,9 +1,9 @@
-define (require, exports) ->
+define (require) ->
   Chaplin = require 'chaplin'
   editable = require 'mixins/editable'
   delayedSave = require 'mixins/delayed-save'
 
-  exports = class FakeView extends Chaplin.View
+  class FakeView extends Chaplin.View
     mixin.call @prototype for mixin in [editable, delayedSave]
     autoRender: yes
     getTemplateFunction: ->

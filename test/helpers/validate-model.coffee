@@ -1,7 +1,7 @@
-define (require, exports) ->
+define (require) ->
   Chaplin = require 'chaplin'
 
-  exports = class FakeModel extends Chaplin.Model
+  class FakeModel extends Chaplin.Model
     # Default validation criterion for editable field.
     validate: (attrs, opts) ->
       for attr, val of attrs

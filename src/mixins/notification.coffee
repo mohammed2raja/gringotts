@@ -29,7 +29,7 @@
 # Fade speed, timeout length, undo selector, stickiness, whether navigate
 # dismisses, link, click handler, and classes can be configured via the `opts`
 # hash this mixin is called with.
-define (require, exports) ->
+define (require) ->
   advice = require 'flight/advice'
 
   # Configurables
@@ -119,7 +119,7 @@ define (require, exports) ->
     classes = opts.classes or 'alert-success'
     @$el.addClass classes
 
-  exports = (opts={}) ->
+  (opts={}) ->
     # Retrieve options.
     undoSelector = opts.undoSelector or '.undo'
     fadeSpeed =

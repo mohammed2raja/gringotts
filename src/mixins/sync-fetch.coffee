@@ -3,7 +3,7 @@
 #
 # It uses `flight/advice` for AOP to start the machine
 # before `fetch()`.
-define (require, exports) ->
+define (require) ->
   advice = require 'flight/advice'
 
   syncFetch = ->
@@ -12,6 +12,6 @@ define (require, exports) ->
       @beginSync()
       @on 'sync', @finishSync, this
 
-  exports = ->
+  ->
     @before 'fetch', syncFetch
     this

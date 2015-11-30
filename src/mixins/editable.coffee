@@ -1,4 +1,4 @@
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
 
   DEFAULTS =
@@ -124,7 +124,7 @@ define (require, exports) ->
       opts.model ||= @model
       @makeEditable opts
 
-  exports = ->
+  ->
     @setupEditable = setupEditable
     @makeEditable = makeEditable
     this

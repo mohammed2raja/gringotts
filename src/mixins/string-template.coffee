@@ -6,7 +6,7 @@
 #
 # You can override the template path by passing in `templatePath`
 # in the options.
-define (require, exports) ->
+define (require) ->
   templatePath = ''
 
   # Precompiled templates function initializer.
@@ -20,7 +20,7 @@ define (require, exports) ->
         errStr = "The template file #{templatePath}/#{template} doesn't exist."
         throw new Error errStr
 
-  exports = (opts={}) ->
+  (opts={}) ->
     # Reset between multiple calls.
     templatePath = opts.templatePath or 'views/templates'
 

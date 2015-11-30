@@ -12,7 +12,7 @@
 #
 # Private methods need to use `call` so that the instance is used over the
 # constructor or global object.
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
   advice = require 'flight/advice'
   utils = require '../lib/utils'
@@ -62,7 +62,7 @@ define (require, exports) ->
     else
       utils.reverse @syncKey, null, params
 
-  exports = ->
+  ->
     @before 'sync', (method, collection, opts) ->
       if method is 'read'
         # Add `params` to the collection.

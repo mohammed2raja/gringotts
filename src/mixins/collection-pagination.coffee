@@ -3,12 +3,12 @@
 #
 # It requires the view collection to have `paginationStats`
 # mixed in.
-define (require, exports) ->
+define (require) ->
   getTemplateData = ->
     @stats.num_items = @collection.pageString @stats
     @stats
 
-  exports = ->
+  ->
     @tagName = 'span'
     @className = "collection-pagination #{@className or ''}"
 

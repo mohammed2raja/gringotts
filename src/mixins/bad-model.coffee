@@ -6,7 +6,7 @@
 # Specify a `route` key in `opts` to declare the route to redirect to
 # and specify a `message` to be passed with the event. If it's a function,
 # the first argument will be the model.
-define (require, exports) ->
+define (require) ->
   _ = require 'underscore'
   utils = require '../lib/utils'
   advice = require 'flight/advice'
@@ -15,7 +15,7 @@ define (require, exports) ->
     classes: 'alert-danger'
     reqTimeout: 10000
 
-  exports = (opts={}) ->
+  (opts={}) ->
     # 'Extend' the `listen` hash, even if it's not present, without
     # having this handler overridden if the hash is declared later.
     @before 'delegateListeners', ->
