@@ -1,11 +1,11 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var getTemplateData;
     getTemplateData = function() {
       this.stats.num_items = this.collection.pageString(this.stats);
       return this.stats;
     };
-    return exports = function() {
+    return function() {
       this.tagName = 'span';
       this.className = "collection-pagination " + (this.className || '');
       this.before('delegateListeners', function() {

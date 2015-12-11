@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var serviceErrorCallback, serviceUnavailableCallback, utils, _;
     _ = require('underscore');
     utils = require('lib/utils');
@@ -55,7 +55,7 @@
         })(this)
       });
     };
-    return exports = function() {
+    return function() {
       this.before('sync', serviceErrorCallback);
       this.before('sync', serviceUnavailableCallback);
       return this;

@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var getTemplateFunction, templatePath;
     templatePath = '';
     getTemplateFunction = function() {
@@ -15,7 +15,7 @@
         }
       }
     };
-    return exports = function(opts) {
+    return function(opts) {
       if (opts == null) {
         opts = {};
       }

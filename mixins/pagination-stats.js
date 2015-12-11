@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var advice, pageString, paginationStats;
     advice = require('flight/advice');
     paginationStats = function() {
@@ -39,7 +39,7 @@
     pageString = function(stats) {
       return "" + stats.start + "-" + stats.end + " of " + stats.total;
     };
-    return exports = function() {
+    return function() {
       this.before('initialize', function() {
         return this.on('remove', function() {
           return this.count = Math.max(0, this.count - 1);

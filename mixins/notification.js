@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var advice, afterRender, delegateHandlers, dismiss, fadeSpeed, getUndoElement, navigateDismiss, notificationTimeout, reqTimeout, undoSelector;
     advice = require('flight/advice');
     fadeSpeed = 0;
@@ -93,7 +93,7 @@
       classes = opts.classes || 'alert-success';
       return this.$el.addClass(classes);
     };
-    return exports = function(opts) {
+    return function(opts) {
       if (opts == null) {
         opts = {};
       }

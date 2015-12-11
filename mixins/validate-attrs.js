@@ -1,11 +1,11 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var blank, _;
     _ = require('underscore');
     blank = function(text) {
       return text.length === 0;
     };
-    return exports = function(opts) {
+    return function(opts) {
       var methods;
       methods = opts.methods;
       this.validate = function(attrs, options) {

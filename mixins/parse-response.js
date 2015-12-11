@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var parse;
     parse = function(resp) {
       if (this.syncKey) {
@@ -9,7 +9,7 @@
         return resp;
       }
     };
-    return exports = function(opts) {
+    return function(opts) {
       if (opts == null) {
         opts = {};
       }

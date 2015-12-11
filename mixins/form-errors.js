@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var errorBlock, genericErrMsg, genericError, parseErrors, selectedAttr, selector, selectorFns, specificError, specificErrors, _;
     _ = require('underscore');
     selectorFns = {
@@ -45,7 +45,7 @@
         }, this);
       }
     };
-    return exports = function(opts) {
+    return function(opts) {
       if (opts == null) {
         opts = {};
       }

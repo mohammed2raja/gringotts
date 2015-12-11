@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var advice, scopedUrl, utils, _, _collectParams, _removeDefaults;
     _ = require('underscore');
     advice = require('flight/advice');
@@ -43,7 +43,7 @@
         return utils.reverse(this.syncKey, null, params);
       }
     };
-    return exports = function() {
+    return function() {
       this.before('sync', function(method, collection, opts) {
         var cleanParams;
         if (method === 'read') {

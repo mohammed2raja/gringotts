@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var DEFAULTS, advice, utils, _;
     _ = require('underscore');
     utils = require('../lib/utils');
@@ -8,7 +8,7 @@
       classes: 'alert-danger',
       reqTimeout: 10000
     };
-    return exports = function(opts) {
+    return function(opts) {
       if (opts == null) {
         opts = {};
       }

@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var advice, safeAjaxCallback, _;
     _ = require('underscore');
     advice = require('flight/advice');
@@ -22,7 +22,7 @@
         }
       }, this);
     };
-    return exports = function() {
+    return function() {
       this.before('sync', safeAjaxCallback);
       return this;
     };

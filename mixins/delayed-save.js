@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var successHandler;
     successHandler = function(opts) {
       return this.publishEvent('notify', opts.saveMessage, {
@@ -21,7 +21,7 @@
         })(this)
       });
     };
-    return exports = function() {
+    return function() {
       this.delayedSave = successHandler;
       return this;
     };

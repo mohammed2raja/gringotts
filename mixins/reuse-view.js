@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var reuseView;
     reuseView = function(params, models, View) {
       var collection, name, opts, query;
@@ -17,7 +17,7 @@
       opts.collection = collection;
       return this.reuse(name, View, opts);
     };
-    return exports = function() {
+    return function() {
       this.reuseView = reuseView;
       return this;
     };

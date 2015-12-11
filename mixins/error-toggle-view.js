@@ -1,6 +1,6 @@
 (function() {
-  define(function(require, exports) {
-    return exports = function() {
+  define(function(require) {
+    return function() {
       this.before('delegateListeners', function() {
         var selector;
         selector = this.errorSelector || '.service-error';

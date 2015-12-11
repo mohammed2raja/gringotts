@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var DEFAULTS, checkInput, cleanEl, convertNumber, makeEditable, setupEditable, updateLink, _;
     _ = require('underscore');
     DEFAULTS = {
@@ -94,7 +94,7 @@
         return this.makeEditable(opts);
       });
     };
-    return exports = function() {
+    return function() {
       this.setupEditable = setupEditable;
       this.makeEditable = makeEditable;
       return this;

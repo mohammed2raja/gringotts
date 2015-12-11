@@ -1,5 +1,5 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var advice, syncFetch;
     advice = require('flight/advice');
     syncFetch = function() {
@@ -8,7 +8,7 @@
         return this.on('sync', this.finishSync, this);
       }
     };
-    return exports = function() {
+    return function() {
       this.before('fetch', syncFetch);
       return this;
     };

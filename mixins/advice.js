@@ -1,8 +1,8 @@
 (function() {
-  define(function(require, exports) {
+  define(function(require) {
     var advice;
     advice = require('flight/advice');
-    return exports = function() {
+    return function() {
       if (!this.before) {
         advice.withAdvice.call(this);
       }

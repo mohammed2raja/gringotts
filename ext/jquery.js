@@ -1,8 +1,8 @@
 (function() {
   define(function(require) {
-    var exports, utils;
+    var utils;
     utils = require('lib/utils');
-    return exports = {
+    return {
       setupError: function(context) {
         return $(document).ajaxError(function(event, jqXHR, options, error) {
           var session, status;
