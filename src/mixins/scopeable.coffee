@@ -12,7 +12,9 @@
 #
 # Private methods need to use `call` so that the instance is used over the
 # constructor or global object.
+#coffeelint: disable=cyclomatic_complexity
 define (require) ->
+#coffeelint: enable=cyclomatic_complexity
   _ = require 'underscore'
   advice = require 'flight/advice'
   utils = require '../lib/utils'

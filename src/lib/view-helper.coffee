@@ -10,10 +10,18 @@ define (require) ->
   # Get Chaplin-declared named routes.
   #
   # **e.g.** `{{#url "like" "105"}}{{/url}}`
-  Handlebars.registerHelper 'url', (routeName, params, third) ->
+  Handlebars.registerHelper 'url', (opts...) ->
     # Account for the Handlebars context argument that gets append to every call
-    query = third if arguments.length is 4
-    utils.reverse routeName, [params], query
+    options = _.initial(opts)
+    criteria = options[0]
+    params =
+      switch
+        when _.isObject options[1] then options[1]
+        when _.isArray options[1] then options[1]
+        when options[1] then [options[1]]
+        else null
+    query = options[2]
+    utils.reverse criteria, params, query
 
   # Output element for use with font icon classes.
   # We use generic class name with a specific one for cleaner stylesheets.

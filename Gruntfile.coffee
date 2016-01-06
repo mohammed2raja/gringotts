@@ -97,14 +97,7 @@ module.exports = (grunt) ->
     coffeelint:
       source: ['{src,test}/**/*.coffee', 'Gruntfile.coffee']
       options:
-        arrow_spacing: level: 'warn'
-        cyclomatic_complexity: level: 'warn'
-        max_line_length:
-          level: 'warn'
-          limitComments: no
-        no_backticks: level: 'warn'
-        no_empty_param_list: level: 'warn'
-        no_stand_alone_at: level: 'warn'
+        configFile: 'coffeelint.json'
 
     shell:
       options:
