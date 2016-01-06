@@ -7,7 +7,7 @@ require {baseUrl: '../src'}, ['config'], ->
       backbone: '../vendor/bower/backbone/backbone'
       chaplin: '../vendor/bower/chaplin/chaplin'
       jquery: '../vendor/bower/jquery/dist/jquery'
-      underscore: '../vendor/bower/lodash/dist/lodash'
+      underscore: '../vendor/bower/lodash/lodash'
       # Test dependencies
       chai: '../vendor/bower/chai/chai'
       'chai-jquery': '../vendor/bower/chai-jquery/chai-jquery'

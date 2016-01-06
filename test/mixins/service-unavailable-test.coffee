@@ -31,7 +31,7 @@ define (require) ->
       beforeEach ->
         @opts ||= {}
         if @syncMachine
-          _(@model).extend Chaplin.SyncMachine
+          _.extend @model, Chaplin.SyncMachine
           sinon.spy @model, 'abortSync'
 
         @model.fetch _.extend url: 'none', @opts

@@ -7,7 +7,7 @@ define (require) ->
     beforeEach ->
       @xhr = sinon.useFakeXMLHttpRequest()
       @collection = new Chaplin.Collection()
-      _(@collection).extend Chaplin.SyncMachine
+      _.extend @collection, Chaplin.SyncMachine
       @collection.url = 'foo'
       advice.call @collection
       syncFetch.call @collection

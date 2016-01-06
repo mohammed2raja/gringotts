@@ -14,7 +14,7 @@ define (require) ->
       -> 'foo'
 
   class FakeCollection extends Chaplin.Collection
-    _(@prototype).extend Chaplin.SyncMachine
+    _.extend @prototype, Chaplin.SyncMachine
     _.each [advice, paginationStats, scopeable], (mixin) ->
       mixin.call @prototype
     , this
