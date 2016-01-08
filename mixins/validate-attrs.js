@@ -1,6 +1,6 @@
 (function() {
   define(function(require) {
-    var blank, _;
+    var _, blank;
     _ = require('underscore');
     blank = function(text) {
       return text.length === 0;

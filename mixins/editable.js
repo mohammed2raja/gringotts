@@ -1,6 +1,6 @@
 (function() {
   define(function(require) {
-    var DEFAULTS, checkInput, cleanEl, convertNumber, makeEditable, setupEditable, updateLink, _;
+    var DEFAULTS, _, checkInput, cleanEl, convertNumber, makeEditable, setupEditable, updateLink;
     _ = require('underscore');
     DEFAULTS = {
       errorClass: 'error-input'

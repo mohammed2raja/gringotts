@@ -37,7 +37,7 @@
       };
     };
     pageString = function(stats) {
-      return "" + stats.start + "-" + stats.end + " of " + stats.total;
+      return stats.start + "-" + stats.end + " of " + stats.total;
     };
     return function() {
       this.before('initialize', function() {

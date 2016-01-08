@@ -1,6 +1,6 @@
 (function() {
   define(function(require) {
-    var errorBlock, genericErrMsg, genericError, parseErrors, selectedAttr, selector, selectorFns, specificError, specificErrors, _;
+    var _, errorBlock, genericErrMsg, genericError, parseErrors, selectedAttr, selector, selectorFns, specificError, specificErrors;
     _ = require('underscore');
     selectorFns = {
       id: function(field) {
@@ -24,7 +24,7 @@
       return this.$('form:first').prepend(errorBlock(error));
     };
     specificError = function(query, error) {
-      return this.$("" + query + ":first").after(errorBlock(error));
+      return this.$(query + ":first").after(errorBlock(error));
     };
     parseErrors = function(errors) {
       var errorStrings;

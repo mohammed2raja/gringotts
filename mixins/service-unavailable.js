@@ -1,6 +1,6 @@
 (function() {
   define(function(require) {
-    var serviceErrorCallback, serviceUnavailableCallback, utils, _;
+    var _, serviceErrorCallback, serviceUnavailableCallback, utils;
     _ = require('underscore');
     utils = require('lib/utils');
     serviceErrorCallback = function(method, collection, opts) {
@@ -32,11 +32,11 @@
       })(this);
     };
     serviceUnavailableCallback = function(method, collection, opts) {
-      var callback, _ref;
+      var callback, ref;
       if (opts == null) {
         opts = {};
       }
-      callback = (_ref = opts.statusCode) != null ? _ref['418'] : void 0;
+      callback = (ref = opts.statusCode) != null ? ref['418'] : void 0;
       opts.statusCode || (opts.statusCode = {});
       return _.extend(opts.statusCode, {
         418: (function(_this) {

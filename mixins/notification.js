@@ -10,7 +10,7 @@
       return "<a class='undo' href='javascript:;'> Undo </a>";
     };
     afterRender = function() {
-      var opts, timeout, _ref;
+      var opts, ref, timeout;
       opts = this.model.get('opts') || {};
       if (opts.undo) {
         $(undoSelector).remove();
@@ -19,8 +19,8 @@
       if (opts.link) {
         this.$el.append(opts.link);
       }
-      if ((_ref = opts.deferred) != null) {
-        _ref.done((function(_this) {
+      if ((ref = opts.deferred) != null) {
+        ref.done((function(_this) {
           return function() {
             return _this.dismiss();
           };
@@ -39,8 +39,8 @@
       }
     };
     dismiss = function() {
-      var _ref;
-      return (_ref = this.$el) != null ? _ref.animate({
+      var ref;
+      return (ref = this.$el) != null ? ref.animate({
         opacity: 0
       }, fadeSpeed, (function(_this) {
         return function() {

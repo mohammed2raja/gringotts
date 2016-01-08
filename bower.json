@@ -2,7 +2,7 @@
   "name": "Gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "main": "config.js",
-  "version": "0.16.4",
+  "version": "0.16.5",
   "licenses": [
     {
       "type": "MIT",
@@ -11,13 +11,13 @@
   ],
   "ignore": [],
   "dependencies": {
-    "backbone": "1.1.1",
-    "chaplin": "1.0.0",
+    "backbone": "1.2.3",
+    "chaplin": "1.1.0",
     "flight": "1.1.4",
     "handlebars": "4.0.5",
     "jquery": "2.1.0",
-    "lodash": "2.4.1",
-    "moment": "2.10.3",
+    "lodash": "3.10.1",
+    "moment": "2.10.6",
     "requirejs": "2.1.10"
   },
   "devDependencies": {

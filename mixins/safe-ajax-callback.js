@@ -1,6 +1,6 @@
 (function() {
   define(function(require) {
-    var advice, safeAjaxCallback, _;
+    var _, advice, safeAjaxCallback;
     _ = require('underscore');
     advice = require('flight/advice');
     safeAjaxCallback = function(method, collection, opts) {
