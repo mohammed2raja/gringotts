@@ -27,7 +27,7 @@ define (require) ->
 
       it 'passes the query along', ->
         Handlebars.helpers.url 'starbuck', null, 'rank=lt', {}
-        expect(utils.reverse).to.be.calledWith 'starbuck', [null], 'rank=lt'
+        expect(utils.reverse).to.be.calledWith 'starbuck', null, 'rank=lt'
 
     describe 'icon helper', ->
       beforeEach ->

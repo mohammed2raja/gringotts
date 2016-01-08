@@ -1,4 +1,6 @@
+#coffeelint: disable=cyclomatic_complexity
 define (require) ->
+#coffeelint: enable=cyclomatic_complexity
   _ = require 'underscore'
 
   DEFAULTS =
@@ -55,7 +57,9 @@ define (require) ->
       .on('blur.gringottsEditable', =>
         checkInput.call this, opts
       )
+      #coffeelint: disable=max_line_length
       # Taken from `http://stackoverflow.com/questions/12027137/javascript-trick-for-paste-as-plain-text-in-execcommand`
+      #coffeelint: enable=max_line_length
       .on 'paste.gringottsEditable', (evt) ->
         # Cancel paste
         evt.preventDefault()

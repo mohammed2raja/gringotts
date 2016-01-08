@@ -29,7 +29,9 @@
 # Fade speed, timeout length, undo selector, stickiness, whether navigate
 # dismisses, link, click handler, and classes can be configured via the `opts`
 # hash this mixin is called with.
+#coffeelint: disable=cyclomatic_complexity
 define (require) ->
+#coffeelint: enable=cyclomatic_complexity
   advice = require 'flight/advice'
 
   # Configurables

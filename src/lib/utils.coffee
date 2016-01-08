@@ -1,9 +1,11 @@
+#coffeelint: disable=max_line_length
 # Typically, a project will create their own `utils` file/object to beget
 # `Chaplin.utils` and add their own methods. Feel free to map this file to
 # a more suitable path in `require.config`.
 
 # See [Chaplin utils](https://github.com/chaplinjs/chaplin-boilerplate/blob/master/coffee/lib/utils.coffee)
 # for an example.
+#coffeelint: enable=max_line_length
 define (require) ->
   Backbone = require 'backbone'
   Chaplin = require 'chaplin'

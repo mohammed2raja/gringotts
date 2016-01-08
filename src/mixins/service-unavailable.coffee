@@ -1,7 +1,7 @@
 # This mixin alerts the user when APIs are down via a `notify` event through
 # `publishEvent`. A more specific message is shown for errors with a `418`
-# status code. A `service-unavailable` event is triggered on the model/collection
-# as well.
+# status code. A `service-unavailable` event is triggered on
+# the model/collection as well.
 #
 # The `I18n` library is invoked if it exists, otherwise it uses a default.
 define (require) ->

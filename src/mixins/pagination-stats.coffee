@@ -1,12 +1,14 @@
 define (require) ->
   advice = require 'flight/advice'
 
+  #coffeelint: disable=max_line_length
   # This method returns an object with properties about the page and
   # item counts for the given state of the `collection`.
   #
   # The `collection` should have `scopeable` mixed in or an equivalent
   # [`scopedUrl`](http://hackers.lookout.com/gringotts/src/mixins/service-unavailable.html)
   # method with associated properties `params` and `count`.
+  #coffeelint: enable=max_line_length
   paginationStats = ->
     # Pull `page` and `per_page` directly off `params` on the `collection`.
     page = @params.page
