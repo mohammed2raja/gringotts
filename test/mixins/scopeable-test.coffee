@@ -103,7 +103,7 @@ define (require) ->
         elements = ['earth', 'water', 'fire']
         url = @collection.scopedUrl {level: 1, elements}
         expect(url).to.not.contain 'level=1'
-         .and.to.not.contain 'elements'
+          .and.to.not.contain 'elements'
 
       it 'includes parameters from an array', ->
         url = @collection.scopedUrl elements: ['earth', 'water']

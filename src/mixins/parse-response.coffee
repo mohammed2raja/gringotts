@@ -10,7 +10,7 @@ define (require) ->
   parse = (resp) ->
     # Need instance property for sub-collection to use.
     if @syncKey
-      @count = resp.count
+      @count = parseInt resp.count
       resp[@syncKey]
     else
       resp

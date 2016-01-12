@@ -4,7 +4,7 @@ define (require) ->
 
   describe 'Parse response mixin', ->
     beforeEach ->
-      @opts = {terror: [{}], count: 3}
+      @opts = {terror: [{}], count: "3"}
       @collection = new Chaplin.Collection()
       @collection.syncKey = 'terror'
       parseResponse.call @collection
