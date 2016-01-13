@@ -2,7 +2,7 @@
   "author": "Alan Wong <alan@lookout.com>",
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
-  "version": "0.16.5",
+  "version": "0.16.6",
   "homepage": "https://github.com/lookout/gringotts",
   "repository": "https://github.com/lookout/gringotts.git",
   "bugs": {
