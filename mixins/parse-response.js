@@ -3,7 +3,7 @@
     var parse;
     parse = function(resp) {
       if (this.syncKey) {
-        this.count = resp.count;
+        this.count = parseInt(resp.count);
         return resp[this.syncKey];
       } else {
         return resp;
