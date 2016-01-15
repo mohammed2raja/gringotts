@@ -41,5 +41,6 @@ define (require) ->
           utils.redirectTo.apply utils, args
           # NOTE: This cannot be sticky because it triggers before navigation!
           @publishEvent 'notify', message, evtOpts
+          $xhr.handled = true
 
     this

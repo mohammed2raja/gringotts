@@ -6,7 +6,7 @@ define (require) ->
   # item counts for the given state of the `collection`.
   #
   # The `collection` should have `scopeable` mixed in or an equivalent
-  # [`scopedUrl`](http://hackers.lookout.com/gringotts/src/mixins/service-unavailable.html)
+  # [`scopedUrl`](http://hackers.lookout.com/gringotts/src/mixins/scopeable.html)
   # method with associated properties `params` and `count`.
   #coffeelint: enable=max_line_length
   paginationStats = ->

@@ -21,60 +21,94 @@ define (require) ->
       @view.dispose()
       @model.dispose()
 
-    describe 'informs user of error', ->
+    context 'informs user of error', ->
       beforeEach ->
         badModel.call @view
         @view.delegateListeners()
-      afterEach ->
+
+      defaultExpects = ->
         expect(utils.redirectTo.lastCall).to.be.calledWith ''
         expect(@view.publishEvent.lastCall).to.be.calledWith 'notify'
         # Default message contains model ID.
         expect(@view.publishEvent.lastCall.args[1]).to.be.contain @model.id
 
-      it 'for 400s', ->
-        @model.trigger 'error', @model, status: 400
+      context 'for 400s', ->
+        beforeEach ->
+          @xhr = status: 400
+          @model.trigger 'error', @model, @xhr
+        afterEach ->
+          delete @xhr
 
-      it 'for 403s', ->
-        @model.trigger 'error', @model, status: 403
+        it 'should redirect and publish event', ->
+          defaultExpects.call this
 
-      it 'for 404s', ->
-        setupListeners.call this
+        it 'should mark xhr as handled', ->
+          expect(@xhr).to.have.property('handled').
+            and.equal true
 
-    it 'redirects to the specified route', ->
+      context 'for 403s', ->
+        beforeEach ->
+          @xhr = status: 403
+          @model.trigger 'error', @model, @xhr
+        afterEach ->
+          delete @xhr
+
+        it 'should redirect and publish event', ->
+          defaultExpects.call this
+
+        it 'should mark xhr as handled', ->
+          expect(@xhr).to.have.property('handled').
+            and.equal true
+
+      context 'for 404s', ->
+        beforeEach ->
+          @xhr = status: 404
+          @model.trigger 'error', @model, @xhr
+        afterEach ->
+          delete @xhr
+
+        it 'should redirect and publish event', ->
+          defaultExpects.call this
+
+        it 'should mark xhr as handled', ->
+          expect(@xhr).to.have.property('handled').
+            and.equal true
+
+    it 'should redirect to the specified route', ->
       badModel.call @view, route: '66'
       setupListeners.call this
       expect(utils.redirectTo).to.be.calledWith '66'
 
-    it 'displays specified message', ->
+    it 'should display specified message', ->
       badModel.call @view, message: 'oops'
       setupListeners.call this
       expect(@view.publishEvent.lastCall.args[1]).to.be.equal 'oops'
 
-    it 'invokes message as a method if appropriate', ->
+    it 'should invoke message as a method if appropriate', ->
       message = sinon.spy()
       badModel.call @view, {message}
       setupListeners.call this
       expect(message).to.be.calledWith @model
 
-    it 'invokes route as a method if appropriate', ->
+    it 'should invoke route as a method if appropriate', ->
       route = sinon.spy()
       badModel.call @view, {route}
       setupListeners.call this
       expect(route).to.be.calledWith @model
 
-    it 'passes route result to redirect call', ->
+    it 'should pass route result to redirect call', ->
       badModel.call @view, route: -> ['name', id: 1]
       setupListeners.call this
       args = utils.redirectTo.lastCall.args
       expect(args[0]).to.equal 'name'
       expect(args[1]).to.eql id: 1
 
-    it 'allows notify options to be passed in', ->
+    it 'should allow notify options to be passed in', ->
       badModel.call @view, evtOpts: {'hey'}
       setupListeners.call this
       expect(@view.publishEvent.lastCall.args[2].hey).to.equal 'hey'
 
-    it 'uses default options for notify', ->
+    it 'should use default options for notify', ->
       badModel.call @view
       # Invoke manually since it normally would be mixed in at declaration.
       setupListeners.call this
