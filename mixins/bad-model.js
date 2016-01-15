@@ -31,7 +31,8 @@
               args = [args];
             }
             utils.redirectTo.apply(utils, args);
-            return this.publishEvent('notify', message, evtOpts);
+            this.publishEvent('notify', message, evtOpts);
+            return $xhr.handled = true;
           }
         });
       });

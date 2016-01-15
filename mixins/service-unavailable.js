@@ -1,6 +1,6 @@
 (function() {
   define(function(require) {
-    var _, serviceErrorCallback, serviceUnavailableCallback, utils;
+    var _, serviceErrorCallback, utils;
     _ = require('underscore');
     utils = require('lib/utils');
     serviceErrorCallback = function(method, collection, opts) {
@@ -11,7 +11,7 @@
       callback = opts.error;
       return opts.error = (function(_this) {
         return function($xhr) {
-          var error, status;
+          var status;
           status = $xhr.status;
           if (status !== 0) {
             if (callback != null) {
@@ -20,44 +20,13 @@
             if (typeof _this.abortSync === "function") {
               _this.abortSync();
             }
-            _this.trigger('service-unavailable');
-            if (status !== 418) {
-              error = (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.notification') : void 0) || "There was a problem communicating with the server.";
-              return _this.publishEvent('notify', error, {
-                classes: 'alert-danger'
-              });
-            }
+            return _this.trigger('service-unavailable');
           }
         };
       })(this);
     };
-    serviceUnavailableCallback = function(method, collection, opts) {
-      var callback, ref;
-      if (opts == null) {
-        opts = {};
-      }
-      callback = (ref = opts.statusCode) != null ? ref['418'] : void 0;
-      opts.statusCode || (opts.statusCode = {});
-      return _.extend(opts.statusCode, {
-        418: (function(_this) {
-          return function($xhr) {
-            var errorState, message;
-            if (callback != null) {
-              callback.apply(opts.context || opts, arguments);
-            }
-            errorState = utils.parseJSON($xhr.responseText);
-            message = errorState.message || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.service') : void 0) || "There was an error communicating with the server.";
-            return _this.publishEvent('notify', message, {
-              classes: 'alert-danger',
-              reqTimeout: 10000
-            });
-          };
-        })(this)
-      });
-    };
     return function() {
       this.before('sync', serviceErrorCallback);
-      this.before('sync', serviceUnavailableCallback);
       return this;
     };
   });

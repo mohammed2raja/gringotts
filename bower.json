@@ -2,7 +2,7 @@
   "name": "Gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "main": "config.js",
-  "version": "0.16.6",
+  "version": "0.16.7",
   "licenses": [
     {
       "type": "MIT",
