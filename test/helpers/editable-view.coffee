@@ -1,10 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
   editable = require 'mixins/editable'
-  delayedSave = require 'mixins/delayed-save'
+  genericSave = require 'mixins/generic-save'
 
   class FakeView extends Chaplin.View
-    mixin.call @prototype for mixin in [editable, delayedSave]
+    mixin.call @prototype for mixin in [editable, genericSave]
     autoRender: yes
     getTemplateFunction: ->
       (data) -> """

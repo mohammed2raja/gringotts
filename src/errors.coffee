@@ -39,7 +39,7 @@ define (require) ->
     utils.redirectTo {}
     message = _resolveMessage(response) or
       I18n?.t('error.no_access') or
-      "Sorry, you don't have access to that section of the MTP console."
+      "Sorry, you don't have access to that section of the application."
     (context or Chaplin.EventBroker).publishEvent 'notify', message, DEFAULTS
     $xhr.handled = true
 
