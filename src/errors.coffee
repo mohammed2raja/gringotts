@@ -60,4 +60,4 @@ define (require) ->
       if status is 401 then _handle401 context, $xhr
       else if status is 403 and not handled then _handle403 context, $xhr
       # Don't trigger for canceled requests.
-      else if status isnt 0 and not handled then _handle context, $xhr
+      else if status not in [0, 201] and not handled then _handle context, $xhr
