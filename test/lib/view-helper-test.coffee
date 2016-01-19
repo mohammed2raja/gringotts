@@ -41,6 +41,10 @@ define (require) ->
         Handlebars.helpers.url 'starbuck', null, 'rank=lt', {}
         expect(utils.reverse).to.be.calledWith 'starbuck', null, 'rank=lt'
 
+      it 'should pass the handlebars hash into query', ->
+        Handlebars.helpers.url 'route', 5, null, hash: p1: 1
+        expect(utils.reverse).to.be.calledWith 'route', [5], p1: 1
+
     context 'icon helper', ->
       beforeEach ->
         @icon = Handlebars.helpers.icon 'uber', @second

@@ -12,7 +12,8 @@ define (require) ->
   # **e.g.** `{{#url "like" "105"}}{{/url}}`
   Handlebars.registerHelper 'url', (opts...) ->
     # Account for the Handlebars context argument that gets append to every call
-    options = _.initial(opts)
+    options = _.initial opts
+    hbsOpts = _.last opts
     criteria = options[0]
     params =
       if _.isObject options[1] then options[1]
@@ -20,7 +21,7 @@ define (require) ->
       else if options[1] then [options[1]]
       else null
     query = options[2]
-    utils.reverse criteria, params, query
+    utils.reverse criteria, params, query or hbsOpts.hash
 
   # Output element for use with font icon classes.
   # We use generic class name with a specific one for cleaner stylesheets.
