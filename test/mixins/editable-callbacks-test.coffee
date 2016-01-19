@@ -18,7 +18,8 @@ define (require) ->
       @view.setupEditable '.edit-name', '.name-field', {
         @patch
         saveMessage: 'Model updated'
-        success: @view.delayedSave
+        success: @view.genericSave
+        delayedSave: true
         error: (error, opts) ->
           @errorCallback error, opts
         clean: (opts) ->
@@ -26,13 +27,16 @@ define (require) ->
       }
       @view.setupEditable '.edit-email', '.email-field',
         saveMessage: 'Model updated'
-        success: @view.delayedSave
+        success: @view.genericSave
+        delayedSave: true
       @enter = $.Event 'keydown', keyCode: 13
 
     afterEach ->
       delete @enter
       @view.dispose()
       @model.dispose()
+      delete @model
+      delete @view
       document.execCommand.restore()
 
     describe 'editing a field', ->

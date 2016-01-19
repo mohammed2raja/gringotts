@@ -15,11 +15,10 @@ define (require) ->
     options = _.initial(opts)
     criteria = options[0]
     params =
-      switch
-        when _.isObject options[1] then options[1]
-        when _.isArray options[1] then options[1]
-        when options[1] then [options[1]]
-        else null
+      if _.isObject options[1] then options[1]
+      else if _.isArray options[1] then options[1]
+      else if options[1] then [options[1]]
+      else null
     query = options[2]
     utils.reverse criteria, params, query
 
