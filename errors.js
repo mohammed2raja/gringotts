@@ -29,7 +29,7 @@
       var message, response;
       response = _parseResponse($xhr);
       utils.redirectTo({});
-      message = _resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.no_access') : void 0) || "Sorry, you don't have access to that section of the MTP console.";
+      message = _resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.no_access') : void 0) || "Sorry, you don't have access to that section of the application.";
       (context || Chaplin.EventBroker).publishEvent('notify', message, DEFAULTS);
       return $xhr.handled = true;
     };
@@ -49,7 +49,7 @@
             return _handle401(context, $xhr);
           } else if (status === 403 && !handled) {
             return _handle403(context, $xhr);
-          } else if (status !== 0 && !handled) {
+          } else if ((status !== 0 && status !== 201) && !handled) {
             return _handle(context, $xhr);
           }
         });
