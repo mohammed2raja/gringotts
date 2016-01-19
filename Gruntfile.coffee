@@ -77,10 +77,11 @@ module.exports = (grunt) ->
           branch: 'release'
           message: 'Release v<%= pkg.version %>'
           tag: 'v<%= pkg.version %>'
+        # TODO: To simplify src paths to use all sources but test/
         src: [
-          'ext/**'
           'lib/**'
           'mixins/**'
+          'models/**'
           'test/helpers/shared/**'
           '*.js*'
         ]
