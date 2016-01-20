@@ -41,7 +41,7 @@ define (require) ->
       I18n?.t('error.no_access') or
       "Sorry, you don't have access to that section of the application."
     (context or Chaplin.EventBroker).publishEvent 'notify', message, DEFAULTS
-    $xhr.handled = true
+    $xhr.errorHandled = true
 
   ##
   # Generic error handler
@@ -52,12 +52,13 @@ define (require) ->
       I18n?.t('error.notification') or
       'There was a problem communicating with the server.'
     (context or Chaplin.EventBroker).publishEvent 'notify', message, DEFAULTS
-    $xhr.handled = true
+    $xhr.errorHandled = true
 
   setupErrorHandling: (context) ->
     $(document).ajaxError (event, $xhr) ->
-      {status, handled} = $xhr
+      {status, errorHandled} = $xhr
       if status is 401 then _handle401 context, $xhr
-      else if status is 403 and not handled then _handle403 context, $xhr
+      else if status is 403 and not errorHandled then _handle403 context, $xhr
       # Don't trigger for canceled requests.
-      else if status not in [0, 201] and not handled then _handle context, $xhr
+      else if status not in [0, 201] and not errorHandled
+        _handle context, $xhr

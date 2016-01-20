@@ -42,8 +42,8 @@ define (require) ->
         it 'should redirect and publish event', ->
           defaultExpects.call this
 
-        it 'should mark xhr as handled', ->
-          expect(@xhr).to.have.property('handled').
+        it 'should mark xhr as errorHandled', ->
+          expect(@xhr).to.have.property('errorHandled').
             and.equal true
 
       context 'for 403s', ->
@@ -56,8 +56,8 @@ define (require) ->
         it 'should redirect and publish event', ->
           defaultExpects.call this
 
-        it 'should mark xhr as handled', ->
-          expect(@xhr).to.have.property('handled').
+        it 'should mark xhr as errorHandled', ->
+          expect(@xhr).to.have.property('errorHandled').
             and.equal true
 
       context 'for 404s', ->
@@ -70,8 +70,8 @@ define (require) ->
         it 'should redirect and publish event', ->
           defaultExpects.call this
 
-        it 'should mark xhr as handled', ->
-          expect(@xhr).to.have.property('handled').
+        it 'should mark xhr as errorHandled', ->
+          expect(@xhr).to.have.property('errorHandled').
             and.equal true
 
     it 'should redirect to the specified route', ->

@@ -32,7 +32,7 @@ define (require) ->
           $(document).trigger 'ajaxError', @xhr
 
         afterEach ->
-          delete @xhr.handled
+          delete @xhr.errorHandled
 
         context 'with 401 (session expired)', ->
           before ->
@@ -58,7 +58,7 @@ define (require) ->
             expect(@publishEvent).to.have.been.calledWith 'notify'
 
           it 'should handle response', ->
-            expect(@xhr).to.have.property('handled').and.equal true
+            expect(@xhr).to.have.property('errorHandled').and.equal true
 
           context 'and response JSON', ->
             before ->
@@ -92,7 +92,7 @@ define (require) ->
             expect(@publishEvent).to.have.been.calledWith 'notify'
 
           it 'should handle response', ->
-            expect(@xhr).to.have.property('handled').and.equal true
+            expect(@xhr).to.have.property('errorHandled').and.equal true
 
           context 'and response JSON', ->
             before ->
