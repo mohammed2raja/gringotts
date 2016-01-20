@@ -31,25 +31,25 @@
       utils.redirectTo({});
       message = _resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.no_access') : void 0) || "Sorry, you don't have access to that section of the application.";
       (context || Chaplin.EventBroker).publishEvent('notify', message, DEFAULTS);
-      return $xhr.handled = true;
+      return $xhr.errorHandled = true;
     };
     _handle = function(context, $xhr) {
       var message, response;
       response = _parseResponse($xhr);
       message = _resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.notification') : void 0) || 'There was a problem communicating with the server.';
       (context || Chaplin.EventBroker).publishEvent('notify', message, DEFAULTS);
-      return $xhr.handled = true;
+      return $xhr.errorHandled = true;
     };
     return {
       setupErrorHandling: function(context) {
         return $(document).ajaxError(function(event, $xhr) {
-          var handled, status;
-          status = $xhr.status, handled = $xhr.handled;
+          var errorHandled, status;
+          status = $xhr.status, errorHandled = $xhr.errorHandled;
           if (status === 401) {
             return _handle401(context, $xhr);
-          } else if (status === 403 && !handled) {
+          } else if (status === 403 && !errorHandled) {
             return _handle403(context, $xhr);
-          } else if ((status !== 0 && status !== 201) && !handled) {
+          } else if ((status !== 0 && status !== 201) && !errorHandled) {
             return _handle(context, $xhr);
           }
         });

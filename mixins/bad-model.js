@@ -32,7 +32,7 @@
             }
             utils.redirectTo.apply(utils, args);
             this.publishEvent('notify', message, evtOpts);
-            return $xhr.handled = true;
+            return $xhr.errorHandled = true;
           }
         });
       });
