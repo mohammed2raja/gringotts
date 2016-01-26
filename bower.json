@@ -11,7 +11,10 @@
   ],
   "ignore": [],
   "dependencies": {
+    "almond": "0.2.9",
     "backbone": "1.2.3",
+    "bootstrap": "3.3.6",
+    "bootstrap-select": "1.9.3",
     "chaplin": "1.1.0",
     "flight": "1.1.4",
     "handlebars": "4.0.5",

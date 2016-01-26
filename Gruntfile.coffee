@@ -26,6 +26,39 @@ module.exports = (grunt) ->
         dest: 'public/src/test'
         ext: '.js'
 
+
+    handlebars:
+      compile_test:
+        options:
+          amd: yes
+          namespace: 'Handlebars'
+          processName: (file) ->
+            file.replace('.hbs', '')
+                .replace('test/templates/', '')
+        files:
+          'public/src/test/templates.js': [
+            'test/templates/**/*.hbs'
+          ]
+      compile:
+        options:
+          amd: yes
+          namespace: 'Handlebars'
+          processName: (file) ->
+            file.replace('src/templates/', '')
+                .replace('.hbs', '')
+        files:
+          'public/src/templates.js': [
+            'src/templates/**/*.hbs'
+          ]
+
+    requirejs:
+      compile:
+        options:
+          baseUrl: 'public/src'
+          mainConfigFile: 'public/src/config.js'
+          findNestedDependencies: yes
+          name: "almond"
+
     copy:
       test:
         src: [
@@ -107,13 +140,17 @@ module.exports = (grunt) ->
       # Keep copy task clean.
       release:
         command: 'cp bower.json public/src/'
+      localBuild:
+        command: ->
+          buildPath = grunt.option 'target'
+          "rm -r #{buildPath};" +
+          "cp -R -v public/src #{buildPath};"
 
     concurrent:
       pipe:
         tasks: ['server', 'watch']
         options:
           logConcurrentOutput: yes
-
 
     server:
       options:
@@ -134,9 +171,10 @@ module.exports = (grunt) ->
           grunt.log
             .writeln("Compiled in #{time}ms @ #{(new Date).toString()} 💪\n")
 
-      coffee:
-        files: '{src,test}/**/*.coffee'
+      coffee_hbs:
+        files: ['{src,test}/**/*.coffee', 'src/templates/**/*.hbs']
         tasks: [
+          'newer:handlebars'
           'newer:coffee'
           'coffeelint'
           'blanket_mocha:test'
@@ -149,6 +187,16 @@ module.exports = (grunt) ->
       test:
         files: 'test/index.html'
         tasks: 'copy:test'
+
+      localBuild:
+        files: ['{src,test}/**/*.coffee', 'src/templates/**/*.hbs']
+        tasks: [
+          'newer:handlebars'
+          'newer:coffee'
+          'coffeelint'
+          'blanket_mocha:test'
+          'shell:localBuild'
+        ]
 
   # Create aliased tasks.
   grunt.registerTask('default', ['build', 'coffeelint', 'test', 'concurrent'])
@@ -166,6 +214,7 @@ module.exports = (grunt) ->
     ]
 
   grunt.registerTask 'compile', [
+    'handlebars'
     'coffee'
     'shell:specs'
   ]
@@ -176,3 +225,21 @@ module.exports = (grunt) ->
     'compile'
     'copy'
   ]
+
+  ###*
+   * Useful to locally test changes you make to Gringotts within the app.
+   * Recursively overwrites anything in the passed in path.
+   * @param  {string} path - Relative pathname of where Gringotts fits
+   *                         within your app
+  ###
+  grunt.registerTask 'release-local',
+    'Release a local build of Gringotts to a given path',
+    (path) ->
+      buildPath = grunt.option 'target'
+      if buildPath
+        grunt.log.writeln "Building gringotts into #{buildPath}..."
+        grunt.task.run(['build', 'shell:localBuild', 'watch:localBuild'])
+      else
+        grunt.log.writeln(
+          'Target parameter (i.e. --target="...") is required'
+        )

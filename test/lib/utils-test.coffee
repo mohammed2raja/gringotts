@@ -1,30 +1,34 @@
 define (require) ->
+  Chaplin = require 'chaplin'
   utils = require 'lib/utils'
+
+  class MockCollection extends Chaplin.Collection
+    _.extend @prototype, Chaplin.SyncMachine
 
   describe 'Utils lib', ->
 
-    describe 'tagBuilder', ->
+    context 'tagBuilder', ->
       beforeEach ->
         @$el = $ utils.tagBuilder 'a', 'Everything is awesome!', href: '#'
 
-      it 'creates the correct tag', ->
+      it 'should create the correct tag', ->
         expect(@$el).to.be 'a'
 
-      it 'contains the correct content', ->
+      it 'should contain the correct content', ->
         expect(@$el).to.contain 'Everything is awesome!'
 
-      it 'has the correct attributes', ->
+      it 'should have the correct attributes', ->
         expect(@$el).to.have.attr 'href', '#'
 
-      it 'inserts HTML', ->
+      it 'should insert HTML', ->
         $myEl = $ utils.tagBuilder 'p', '<strong>Live!</strong>', null, no
         expect($myEl).to.have 'strong'
 
-    it 'checks if objects are enumerable', ->
+    it 'should check if objects are enumerable', ->
       obj = prop: 1
       expect(utils.isEnumerable obj, 'prop').to.be.true
 
-    describe 'parseJSON', ->
+    context 'parseJSON', ->
       beforeEach ->
         window.Raven =
           captureException: sinon.spy()
@@ -41,7 +45,7 @@ define (require) ->
         after ->
           delete @value
 
-        it 'returns the json', ->
+        it 'should return the json', ->
           expect(@result).to.not.be.false
           expect(@result).to.have.property 'key', 'Brand New'
 
@@ -52,11 +56,11 @@ define (require) ->
         after ->
           delete @value
 
-        it 'logs an exception to Raven', ->
+        it 'should log an exception to Raven', ->
           expect(@result).to.be.false
           expect(Raven.captureException).to.have.been.called
 
-        it 'passes the string that failed to parse', ->
+        it 'should pass the string that failed to parse', ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'invalid'
 
@@ -67,7 +71,7 @@ define (require) ->
         after ->
           delete @value
 
-        it 'passes the string that failed to parse', ->
+        it 'should pass the string that failed to parse', ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'Empty string'
 
@@ -78,6 +82,32 @@ define (require) ->
         after ->
           delete @value
 
-        it 'passes the string that failed to parse', ->
+        it 'should pass the string that failed to parse', ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'undefined'
+
+    describe 'initSyncMachine', ->
+      collection = null
+
+      beforeEach ->
+        collection = new MockCollection()
+        utils.initSyncMachine collection
+        sinon.stub collection, 'beginSync'
+        sinon.stub collection, 'finishSync'
+        sinon.stub collection, 'unsync'
+        collection.trigger 'request', collection
+
+      it 'should start the sync', ->
+        expect(collection.beginSync).to.be.calledOnce
+
+      context 'on response', ->
+        beforeEach -> collection.trigger 'sync', collection
+
+        it 'should complete the sync with finishSync', ->
+          expect(collection.finishSync).to.be.calledOnce
+
+      context 'on error', ->
+        beforeEach -> collection.trigger 'error', collection
+
+        it 'should complete the sync with unsync', ->
+          expect(collection.unsync).to.be.calledOnce

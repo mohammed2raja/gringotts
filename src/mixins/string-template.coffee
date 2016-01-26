@@ -7,10 +7,9 @@
 # You can override the template path by passing in `templatePath`
 # in the options.
 define (require) ->
-  templatePath = ''
 
   # Precompiled templates function initializer.
-  getTemplateFunction = ->
+  getTemplateFunction = (templatePath='') ->
     template = @template
     if template
       tObj = require(templatePath)[template]
@@ -21,8 +20,7 @@ define (require) ->
         throw new Error errStr
 
   (opts={}) ->
-    # Reset between multiple calls.
-    templatePath = opts.templatePath or 'views/templates'
+    @getTemplateFunction = ->
+      getTemplateFunction.call this, opts.templatePath or 'templates'
 
-    @getTemplateFunction = getTemplateFunction
     this

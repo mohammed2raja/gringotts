@@ -1,0 +1,13 @@
+<div class="pagination-controls {{viewId}}">
+  {{#if count}}{{#if routeName}}
+    <a href="{{url routeName routeParams prevState}}"
+       class="prev-page {{#unless multiPaged}}hidden{{else}}{{#unless prev}}disabled-arrow{{/unless}}{{/unless}}">
+      {{icon 'thin-arrow' 'rotate-left'}}
+    </a>
+    <strong>{{range}} of {{count}}</strong>
+    <a href="{{url routeName routeParams nextState}}"
+       class="next-page {{#unless multiPaged}}hidden{{else}}{{#unless next}}disabled-arrow{{/unless}}{{/unless}}">
+      {{icon 'thin-arrow' 'rotate-right'}}
+    </a>
+  {{/if}}{{/if}}
+</div>

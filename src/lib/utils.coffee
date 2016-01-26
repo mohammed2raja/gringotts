@@ -32,6 +32,20 @@ define (require) ->
   utils.isEnumerable = (obj, property) ->
     Object.keys(obj).indexOf(property) > -1
 
+  ###*
+   * Generates a convenient css class name for QE purposes.
+   * Assumingly it's being used for every view in the application.
+   * @param  {String} className Existing view's class name.
+   * @param  {String} template  View's template path.
+   * @return {String}           A newly generated class name using template.
+  ###
+  utils.convenienceClass = (className, template) ->
+    if template
+      convenient = template.replace /\//g, '-'
+      original = if className then " #{className}" else ''
+      className = "#{convenient}#{original}"
+    className
+
   utils.parseJSON = (str) ->
     result = false
 
@@ -46,5 +60,16 @@ define (require) ->
       Raven?.captureException error, tags: {str}
 
     result
+
+  ###*
+   * Initialize SyncMachine on an object
+   * @param  {Backbone.Events} obj an instinace of Model or Collection
+   * @param  {Bool} listenAll to listen events from nested models
+  ###
+  utils.initSyncMachine = (obj, listenAll=false) ->
+    throw new Error('obj must be Backbone.Events') unless obj.on
+    obj.on 'request', (model) -> obj.beginSync() if obj is model or listenAll
+    obj.on 'sync', (model) -> obj.finishSync() if obj is model or listenAll
+    obj.on 'error', (model) -> obj.unsync() if obj is model or listenAll
 
   utils
