@@ -1,9 +1,11 @@
 (function() {
   define(function(require) {
-    var getTemplateFunction, templatePath;
-    templatePath = '';
-    getTemplateFunction = function() {
+    var getTemplateFunction;
+    getTemplateFunction = function(templatePath) {
       var errStr, tObj, template;
+      if (templatePath == null) {
+        templatePath = '';
+      }
       template = this.template;
       if (template) {
         tObj = require(templatePath)[template];
@@ -19,8 +21,9 @@
       if (opts == null) {
         opts = {};
       }
-      templatePath = opts.templatePath || 'views/templates';
-      this.getTemplateFunction = getTemplateFunction;
+      this.getTemplateFunction = function() {
+        return getTemplateFunction.call(this, opts.templatePath || 'templates');
+      };
       return this;
     };
   });
