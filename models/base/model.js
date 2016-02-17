@@ -3,12 +3,11 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, Model, advice, safeAjaxCallback, serviceUnavailable, syncFetch;
+    var Chaplin, Model, advice, safeAjaxCallback, utils;
     Chaplin = require('chaplin');
     advice = require('../../mixins/advice');
     safeAjaxCallback = require('../../mixins/safe-ajax-callback');
-    serviceUnavailable = require('../../mixins/service-unavailable');
-    syncFetch = require('../../mixins/sync-fetch');
+    utils = require('lib/utils');
     return Model = (function(superClass) {
       extend(Model, superClass);
 
@@ -18,9 +17,14 @@
 
       _.extend(Model.prototype, Chaplin.SyncMachine);
 
-      _.each([advice, safeAjaxCallback, serviceUnavailable, syncFetch], function(mixin) {
+      _.each([advice, safeAjaxCallback], function(mixin) {
         return mixin.call(this.prototype);
       }, Model);
+
+      Model.prototype.initialize = function() {
+        Model.__super__.initialize.apply(this, arguments);
+        return utils.initSyncMachine(this);
+      };
 
       return Model;
 
