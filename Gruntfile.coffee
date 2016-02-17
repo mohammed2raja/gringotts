@@ -135,6 +135,7 @@ module.exports = (grunt) ->
       localBuild:
         command: ->
           buildPath = grunt.option 'target'
+          return '' unless buildPath
           "rm -r #{buildPath};" +
           "cp -R -v public/src #{buildPath};"
 
@@ -170,6 +171,7 @@ module.exports = (grunt) ->
           'newer:coffee'
           'coffeelint'
           'blanket_mocha:test'
+          'shell:localBuild'
         ]
 
       lint:
@@ -179,16 +181,6 @@ module.exports = (grunt) ->
       test:
         files: 'test/index.html'
         tasks: 'copy:test'
-
-      localBuild:
-        files: ['{src,test}/**/*.coffee', 'src/templates/**/*.hbs']
-        tasks: [
-          'newer:handlebars'
-          'newer:coffee'
-          'coffeelint'
-          'blanket_mocha:test'
-          'shell:localBuild'
-        ]
 
   # Create aliased tasks.
   grunt.registerTask('default', ['build', 'coffeelint', 'test', 'concurrent'])
@@ -230,7 +222,7 @@ module.exports = (grunt) ->
       buildPath = grunt.option 'target'
       if buildPath
         grunt.log.writeln "Building gringotts into #{buildPath}..."
-        grunt.task.run(['build', 'shell:localBuild', 'watch:localBuild'])
+        grunt.task.run(['build', 'shell:localBuild', 'watch'])
       else
         grunt.log.writeln(
           'Target parameter (i.e. --target="...") is required'
