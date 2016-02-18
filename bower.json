@@ -1,0 +1,41 @@
+{
+  "name": "Gringotts",
+  "description": "A vault of reusable components for Chaplin.",
+  "main": "config.js",
+  "version": "0.17.1",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/lookout/gringotts/blob/master/LICENSE"
+    }
+  ],
+  "ignore": [],
+  "dependencies": {
+    "almond": "0.2.9",
+    "backbone": "1.2.3",
+    "bootstrap": "3.3.6",
+    "bootstrap-select": "1.9.3",
+    "chaplin": "1.1.0",
+    "flight": "1.1.4",
+    "handlebars": "4.0.5",
+    "jquery": "2.1.0",
+    "lodash": "3.10.1",
+    "moment": "2.10.6",
+    "requirejs": "2.1.10"
+  },
+  "devDependencies": {
+    "blanket": "1.1.5",
+    "chai": "1.9.0",
+    "chai-jquery": "1.2.1",
+    "mocha": "1.17.1",
+    "sinon": "http://sinonjs.org/releases/sinon-1.8.1.js",
+    "sinon-chai": "2.5.0"
+  },
+  "keywords": [
+    "javascript",
+    "mixins",
+    "chaplin",
+    "browser",
+    "client"
+  ]
+}

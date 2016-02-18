@@ -1,7 +1,7 @@
 (function() {
   require.config({
+    baseUrl: '../src',
     paths: {
-      almond: '../vendor/bower/almond/almond',
       backbone: '../vendor/bower/backbone/backbone',
       chaplin: '../vendor/bower/chaplin/chaplin',
       flight: '../vendor/bower/flight/lib',
