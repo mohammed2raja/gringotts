@@ -1,9 +1,8 @@
 # The dependencies for Gringotts.
 
 require.config
+  baseUrl: '../src'
   paths:
-    # Map remaining vendor dependencies.
-    almond: '../vendor/bower/almond/almond'
     backbone: '../vendor/bower/backbone/backbone'
     chaplin: '../vendor/bower/chaplin/chaplin'
 

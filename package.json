@@ -1,5 +1,4 @@
 {
-  "author": "Alan Wong <alan@lookout.com>",
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "version": "0.17.0",
@@ -11,8 +10,10 @@
   },
   "contributors": [
     "Alan Wong <alan@lookout.com> (http://github.com/naganowl)",
+    "Benjamin Zalasky <benjamin.zalasky@lookout.com> (http://github.com/bzalasky)",
     "Dan Evans <dan.evans@lookout.com> (http://github.com/danevans)",
-    "Benjamin Zalasky <benjamin.zalasky@lookout.com> (http://github.com/bzalasky)"
+    "Eugene Tiutiunnyk (http://github.com/eugenet8k)",
+    "John Sphar (http://github.com/obimod)"
   ],
   "licenses": [
     {
@@ -39,7 +40,7 @@
   "devDependencies": {
     "grunt-bbb-server": "0.1.0-alpha.13",
     "grunt-bump": "0.0.13",
-    "grunt-blanket-mocha": "0.4.1",
+    "grunt-blanket-mocha": "0.5.0",
     "grunt-citare-scriptum": "0.0.1",
     "grunt-concurrent": "0.5.0",
     "grunt-coffeelint": "0.0.13",

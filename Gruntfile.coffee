@@ -51,14 +51,6 @@ module.exports = (grunt) ->
             'src/templates/**/*.hbs'
           ]
 
-    requirejs:
-      compile:
-        options:
-          baseUrl: 'public/src'
-          mainConfigFile: 'public/src/config.js'
-          findNestedDependencies: yes
-          name: "almond"
-
     copy:
       test:
         src: [

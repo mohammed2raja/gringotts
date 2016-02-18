@@ -2,17 +2,11 @@
 require {baseUrl: '../src'}, ['config'], ->
   require [
     'jquery'
-    'dependencies'
+    'test/dependencies'
     'test/templates'
   ], ->
     require.config
-      baseUrl: '../src'
       paths:
-        backbone: '../vendor/bower/backbone/backbone'
-        chaplin: '../vendor/bower/chaplin/chaplin'
-        jquery: '../vendor/bower/jquery/dist/jquery'
-        underscore: '../vendor/bower/lodash/lodash'
-        # Test dependencies
         chai: '../vendor/bower/chai/chai'
         'chai-jquery': '../vendor/bower/chai-jquery/chai-jquery'
         sinon: '../vendor/bower/sinon/index'
@@ -22,13 +16,9 @@ require {baseUrl: '../src'}, ['config'], ->
         'sinon-chai': ['sinon', 'chai']
 
     require [
-      # Used for setup.
       'chai'
       'sinon-chai'
       'chai-jquery'
-      'jquery'
-
-      # Vendor
       'sinon'
     ], (chai, sinonChai, chaiJquery) ->
       # Create `window.describe` etc. for our BDD-like tests.
@@ -59,10 +49,7 @@ require {baseUrl: '../src'}, ['config'], ->
         specList = data.split '\n'
         # Remove blank line from end.
         specList.pop()
-
         specs = $.map specList, (spec) -> spec.replace '.coffee', ''
-
-        # Load all of our specs.
         require specs, ->
           mocha.run()
       )
