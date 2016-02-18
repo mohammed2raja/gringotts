@@ -36,6 +36,7 @@ define (require) ->
         collection = new MockCollection()
         server = sinon.fakeServer.create()
         currentXHR = collection.fetch()
+        server.respond()
 
       afterEach ->
         collection.dispose()
@@ -48,6 +49,7 @@ define (require) ->
         beforeEach ->
           collection.currentXHR = {abort: sinon.spy()}
           collection.fetch()
+          server.respond()
 
         it 'should abort the initial request', ->
           expect(collection.currentXHR.abort).to.have.beenCalled
@@ -68,13 +70,16 @@ define (require) ->
       context 'setting the state by force setting', ->
         beforeEach ->
           collection.setState {}
+          server.respond()
 
         it 'should fetch from the server', ->
           expecting = ['/test','?','sort_by=attrA','order=desc']
           testRequest expecting, server.requests[0]
 
       context 'setting the state by changing state', ->
-        beforeEach -> collection.setState {sort_by: 'attrB'}
+        beforeEach ->
+          collection.setState {sort_by: 'attrB'}
+          server.respond()
 
         it 'should fetch from the server', ->
           expecting = ['/test','?','sort_by=attrB','order=desc']
@@ -84,18 +89,19 @@ define (require) ->
         beforeEach ->
           sinon.stub collection, 'fetch'
           collection.setState {}
+          server.respond()
         afterEach ->
           collection.fetch.restore()
 
         it 'should not fetch from the server', ->
           expect(collection.fetch).to.have.not.beenCalled
 
-
       context.skip 'on multiple state sets', ->
         beforeEach ->
           sinon.stub collection, 'fetch'
           collection.setState {}
           collection.setState {}
+          server.respond()
         afterEach ->
           collection.fetch.restore()
 

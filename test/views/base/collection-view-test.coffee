@@ -45,6 +45,7 @@ define (require) ->
         {collection: collection, routeName: 'test'}, viewConfig
       collection.setState {}
       collection.trigger 'sync', collection
+      server.respond()
 
     afterEach ->
       server.restore()
@@ -88,6 +89,7 @@ define (require) ->
       beforeEach ->
         collection.setState {order: 'asc'}
         collection.trigger 'sync', collection
+        server.respond()
 
       it 'should correctly determine the sortInfo', ->
         expect(view._getSortInfo()).to.eql {
@@ -113,6 +115,7 @@ define (require) ->
       beforeEach ->
         collection.setState {sort_by: 'attrB'}
         collection.trigger 'sync', collection
+        server.respond()
 
       it 'should correctly determine the sortInfo', ->
         expect(view._getSortInfo()).to.eql {
@@ -139,6 +142,7 @@ define (require) ->
     context 'url overriding', ->
       beforeEach ->
         collection.setState {sort_by:'swag'}
+        server.respond()
 
       it 'should override url with custom rootUrl', ->
         resultUrl = collection.url 'sneaky/url'

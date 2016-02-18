@@ -24,12 +24,12 @@
     "requirejs": "2.1.10"
   },
   "devDependencies": {
-    "blanket": "1.1.5",
-    "chai": "1.9.0",
-    "chai-jquery": "1.2.1",
-    "mocha": "1.17.1",
-    "sinon": "http://sinonjs.org/releases/sinon-1.8.1.js",
-    "sinon-chai": "2.5.0"
+    "blanket": "1.1.7",
+    "chai": "3.4.2",
+    "chai-jquery": "2.0.1",
+    "mocha": "2.3.4",
+    "sinon": "http://sinonjs.org/releases/sinon-1.17.2.js",
+    "sinon-chai": "2.8.0"
   },
   "keywords": [
     "javascript",

@@ -15,6 +15,7 @@ define (require) ->
       server = sinon.fakeServer.create()
       collection = new MockPaginatedCollection()
       collection.fetch()
+      server.respond()
 
     afterEach ->
       server.restore()
@@ -34,6 +35,7 @@ define (require) ->
     context 'collection state', ->
       beforeEach ->
         collection.setState state or {}
+        server.respond()
 
       it 'should return an empty state when no defaults are desired', ->
         expect(collection.getState()).to.eql {}
@@ -80,6 +82,7 @@ define (require) ->
         context 'then resetting to defaults', ->
           beforeEach ->
             collection.setState {}
+            server.respond()
 
           it 'should set the state to the default empty object', ->
             expect(collection.state).to.eql {}

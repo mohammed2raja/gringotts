@@ -46,46 +46,48 @@ define (require) ->
         expect(utils.reverse).to.be.calledWith 'route', [5], p1: 1
 
     context 'icon helper', ->
+      icon = null
+      second = null
+
       beforeEach ->
-        @icon = Handlebars.helpers.icon 'uber', @second
+        icon = Handlebars.helpers.icon 'uber', second
 
       afterEach ->
-        delete @icon
+        icon = null
 
       it 'should create HTML element', ->
-        expect($ @icon.string).to.have.class 'uber-font'
+        expect($ icon.string).to.have.class 'uber-font'
 
       context 'with a string', ->
-        before ->
-          @second = 'always'
-
-        after ->
-          delete @second
+        before -> second = 'always'
+        after -> second = null
 
         it 'should add classes', ->
-          expect($ @icon.string).to.have.class 'always'
+          expect($ icon.string).to.have.class 'always'
 
       context 'with an object', ->
         before ->
-          @second = title: 'My Title'
+          second = title: 'My Title'
 
         after ->
-          delete @second
+          second = null
 
         it 'should add attributes', ->
-          expect($ @icon.string).to.have.attr 'title', 'My Title'
+          expect($ icon.string).to.have.attr 'title', 'My Title'
 
     it 'should format date correctly', ->
       timeStamp = Handlebars.helpers.dateFormat '1969-12-31', 'l'
       expect(timeStamp).to.equal '12/31/1969'
 
     context 'mail helper', ->
+      $el = null
+
       beforeEach ->
-        @$el = $ Handlebars.helpers.mailTo('<hax>').string
+        $el = $ Handlebars.helpers.mailTo('<hax>').string
 
       it 'should escape the email', ->
-        expect(@$el).to.contain '&lt;hax&gt;'
+        expect($el).to.contain '&lt;hax&gt;'
 
       it 'should create the HTML element', ->
-        expect(@$el).to.be 'a'
-        expect(@$el.attr 'href').to.contain 'mailto'
+        expect($el).to.match 'a'
+        expect($el.attr 'href').to.contain 'mailto'

@@ -4,9 +4,10 @@ define (require) ->
   describe 'View', ->
     view = null
     template = null
+    viewConfig = null
 
     beforeEach ->
-      view = new View @viewConfig or {}
+      view = new View viewConfig or {}
 
     afterEach ->
       view.dispose()

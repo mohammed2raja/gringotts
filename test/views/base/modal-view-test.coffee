@@ -2,24 +2,27 @@ define (require) ->
   ModalView = require 'views/base/modal-view'
 
   describe 'ModalView', ->
+    view = null
+    template = null
+
     beforeEach ->
       sinon.stub $.fn, 'modal'
       sinon.stub ModalView::, 'render'
-      @view = new ModalView {@template}
+      view = new ModalView {template}
 
     afterEach ->
-      @view.dispose() unless @view.disposed
+      view.dispose() unless view.disposed
       ModalView::render.restore()
       $.fn.modal.restore()
 
     context 'showing modal', ->
-      beforeEach -> @view.$el.trigger 'shown.bs.modal'
+      beforeEach -> view.$el.trigger 'shown.bs.modal'
 
       it 'should add scroll classes', ->
         expect($ 'body').to.have.class 'no-scroll'
 
       context 'and then hiding modal', ->
-        beforeEach -> @view.$el.trigger 'hidden.bs.modal'
+        beforeEach -> view.$el.trigger 'hidden.bs.modal'
 
         it 'should remove scroll classes', ->
           expect($ 'body').not.to.have.class 'no-scroll'
@@ -28,20 +31,22 @@ define (require) ->
           expect($.fn.modal).to.have.been.calledWith 'hide'
 
     context 'on disposing', ->
-      beforeEach -> @view.dispose()
+      beforeEach -> view.dispose()
 
       it 'should hide modal after disposed', ->
         expect($.fn.modal).to.have.been.calledWith 'hide'
 
     context 'when forcing one instance', ->
+      anotherView = null
+
       beforeEach ->
-        @template = 'foo-template'
-        $('body').append $('<div></div>').addClass(@template)
-        @anotherView = new ModalView {@template, forceOneInstance: true}
+        template = 'foo-template'
+        $('body').append $('<div></div>').addClass(template)
+        anotherView = new ModalView {template, forceOneInstance: true}
       afterEach ->
-        $("div.#{@template}").remove()
-        delete @template
-        delete @anotherView
+        $("div.#{template}").remove()
+        template = null
+        anotherView = null
 
       it 'should not create modal dialog', ->
-        expect(@anotherView.disposed).to.be.true
+        expect(anotherView.disposed).to.be.true

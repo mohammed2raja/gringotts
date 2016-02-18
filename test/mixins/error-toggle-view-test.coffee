@@ -20,35 +20,39 @@ define (require) ->
       '''
 
   describe 'Error toggle view mixin', ->
+    view = null
+    collection = null
+    syncMachine = null
+
     serviceAssertions = (selector = '.service-error') ->
       describe 'when service is unavailable', ->
         beforeEach ->
-          @collection.trigger 'service-unavailable'
+          collection.trigger 'service-unavailable'
 
         it 'shows the error element', ->
-          expect(@view.$ selector).not.to.have.css 'display', 'none'
+          expect(view.$ selector).not.to.have.css 'display', 'none'
 
       describe 'when the sync state changes', ->
         before ->
-          @syncMachine = yes
+          syncMachine = yes
         beforeEach ->
-          @collection.trigger 'syncStateChange'
+          collection.trigger 'syncStateChange'
 
         after ->
-          delete @syncMachine
+          syncMachine = null
 
         it 'hides the error element', ->
-          expect(@view.$ selector).to.have.css 'display', 'none'
+          expect(view.$ selector).to.have.css 'display', 'none'
 
     beforeEach ->
-      @collection = new Chaplin.Collection {}
-      if @syncMachine
-        _.extend @collection.prototype, Chaplin.SyncMachine
-      @view = new CollectionViewTest {@collection}
+      collection = new Chaplin.Collection {}
+      if syncMachine
+        _.extend collection.prototype, Chaplin.SyncMachine
+      view = new CollectionViewTest {collection}
 
     afterEach ->
-      @view.dispose()
-      @collection.dispose()
+      view.dispose()
+      collection.dispose()
 
     serviceAssertions()
 

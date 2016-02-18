@@ -105,7 +105,6 @@ module.exports = (grunt) ->
         src: [
           '**/*.js*'
           '!test/**'
-          'test/helpers/shared/**/*.js*'
         ]
 
     bump:
