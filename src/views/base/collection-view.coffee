@@ -36,7 +36,7 @@ define (require) ->
       @$("#{@listSelector} #{@itemView::tagName} td")
         .removeClass 'highlighted'
         .filter ":nth-child(#{idx + 1})"
-        .not "[colspan]" # remove indicator rows which take up the entire width
+        .not '[colspan]' # remove indicator rows which take up the entire width
         .addClass 'highlighted'
 
     _getSortInfo: ->

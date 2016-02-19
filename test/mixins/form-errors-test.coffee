@@ -33,7 +33,7 @@ define (require) ->
         .and.to.contain 'BOO!'
 
     it 'uses the name attribute for specific errors by default', ->
-      view.parseErrors "goblin-ghost": "GOTYA!"
+      view.parseErrors 'goblin-ghost': 'GOTYA!'
       expect(view.$ '[name=goblin-ghost] + .help-block').to.exist
         .and.to.contain 'GOTYA!'
 
@@ -81,7 +81,7 @@ define (require) ->
       selector = null
 
       afterEach ->
-        view.parseErrors "goblin-ghost": "GONNA GET YOU!"
+        view.parseErrors 'goblin-ghost': 'GONNA GET YOU!'
         expect(view.$ "#{selector} + .help-block").to.exist
           .and.to.contain 'GONNA GET YOU!'
 

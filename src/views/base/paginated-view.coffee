@@ -17,7 +17,7 @@ define (require) ->
       # Added requirement here to make the loading indicator
       # functionality more flexible.
       unless itemClassName
-        throw new Error "Please define a className for your itemViews."
+        throw new Error 'Please define a className for your itemViews.'
 
       visible = @collection.isSyncing()
       @$(".#{itemClassName.split(/\s+|\s+/).join('.')}").toggle !visible

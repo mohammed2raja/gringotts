@@ -73,7 +73,7 @@ define (require) ->
           server.respond()
 
         it 'should fetch from the server', ->
-          expecting = ['/test','?','sort_by=attrA','order=desc']
+          expecting = ['/test', '?', 'sort_by=attrA', 'order=desc']
           testRequest expecting, server.requests[0]
 
       context 'setting the state by changing state', ->
@@ -82,7 +82,7 @@ define (require) ->
           server.respond()
 
         it 'should fetch from the server', ->
-          expecting = ['/test','?','sort_by=attrB','order=desc']
+          expecting = ['/test', '?', 'sort_by=attrB', 'order=desc']
           testRequest expecting, server.requests[0]
 
       context 'setting the state without a state change', ->

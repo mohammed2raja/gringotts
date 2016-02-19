@@ -54,24 +54,24 @@ define (require) ->
       view.dispose()
 
     it 'should render the correct baseUrl', ->
-      expect(utils.reverse).to.be.calledWith 'test', null, {order: "asc"}
+      expect(utils.reverse).to.be.calledWith 'test', null, {order: 'asc'}
 
     it 'should get sortInfo', ->
       expect(view._getSortInfo()).to.eql {
         attrA:
           attr: 'attrA'
           viewId: view.cid
-          text: "Attribute A"
-          order: "desc"
-          nextState: order: "asc"
+          text: 'Attribute A'
+          order: 'desc'
+          nextState: order: 'asc'
           routeName: 'test'
           routeParams: undefined
         attrB:
           attr: 'attrB'
           viewId: view.cid
-          text: "Attribute B"
-          order: ""
-          nextState: sort_by: "attrB"
+          text: 'Attribute B'
+          order: ''
+          nextState: sort_by: 'attrB'
           routeName: 'test'
           routeParams: undefined
       }
@@ -96,17 +96,17 @@ define (require) ->
           attrA:
             attr: 'attrA'
             viewId: view.cid
-            text: "Attribute A"
-            order: "asc"
+            text: 'Attribute A'
+            order: 'asc'
             nextState: {}
             routeName: 'test'
             routeParams: undefined
           attrB:
             attr: 'attrB'
             viewId: view.cid
-            text: "Attribute B"
-            order: ""
-            nextState: sort_by: "attrB"
+            text: 'Attribute B'
+            order: ''
+            nextState: sort_by: 'attrB'
             routeName: 'test'
             routeParams: undefined
         }
@@ -122,16 +122,16 @@ define (require) ->
           attrA:
             attr: 'attrA'
             viewId: view.cid
-            text: "Attribute A"
-            order: ""
+            text: 'Attribute A'
+            order: ''
             nextState: {} # empty since default is desc and attrA
             routeName: 'test'
             routeParams: undefined
           attrB:
             attr: 'attrB'
             viewId: view.cid
-            text: "Attribute B"
-            order: "desc"
+            text: 'Attribute B'
+            order: 'desc'
             routeName: 'test'
             routeParams: undefined
             nextState:

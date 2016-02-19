@@ -71,7 +71,7 @@ define (require) ->
         pages: Math.ceil(101 / 10)
         prev: false
         next: 2
-        range: "1-10"
+        range: '1-10'
         routeName: 'test'
         routeParams: undefined
         multiPaged: true
@@ -119,7 +119,7 @@ define (require) ->
           pages: Math.ceil(101 / 10)
           prev: 2
           next: 4
-          range: "21-30"
+          range: '21-30'
           routeName: 'test'
           multiPaged: true
           routeParams: undefined

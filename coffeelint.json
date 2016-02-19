@@ -1,21 +1,42 @@
 {
   "arrow_spacing": {
-    "level": "warn"
+    "level": "error"
   },
   "braces_spacing": {
-    "level": "warn",
+    "level": "error",
     "spaces": 0
   },
   "cyclomatic_complexity": {
-    "level": "warn"
+    "level": "error"
+  },
+  "eol_last": {
+    "level": "error"
   },
   "no_backticks": {
-    "level": "warn"
+    "level": "error"
   },
   "no_empty_param_list": {
-    "level": "warn"
+    "level": "error"
+  },
+  "no_interpolation_in_single_quotes": {
+    "level": "error"
+  },
+  "no_nested_string_interpolation": {
+    "level": "error"
+  },
+  "no_private_function_fat_arrows": {
+    "level": "error"
   },
   "no_stand_alone_at": {
-    "level": "warn"
+    "level": "error"
+  },
+  "no_this": {
+    "level": "error"
+  },
+  "no_unnecessary_double_quotes": {
+    "level": "error"
+  },
+  "spacing_after_comma": {
+    "level": "error"
   }
 }

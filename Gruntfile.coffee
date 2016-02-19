@@ -76,7 +76,7 @@ module.exports = (grunt) ->
         log : yes
         logErrors: yes
         moduleThreshold : 60
-        modulePattern : "./src/(.*?)/"
+        modulePattern : './src/(.*?)/'
       ci:
         src: 'public/test/index.html'
         dest: 'test-results.xml'
@@ -182,10 +182,15 @@ module.exports = (grunt) ->
         tasks: 'copy:test'
 
   # Create aliased tasks.
-  grunt.registerTask('default', ['build', 'coffeelint', 'test', 'concurrent'])
-  grunt.registerTask('docs', ['citare-scriptum', 'gh-pages:docs'])
-  grunt.registerTask('test', ['blanket_mocha:test'])
-  grunt.registerTask('test:ci', ['compile', 'copy', 'blanket_mocha:ci'])
+  grunt.registerTask 'default', ['build', 'coffeelint', 'test', 'concurrent']
+  grunt.registerTask 'docs', ['citare-scriptum', 'gh-pages:docs']
+  grunt.registerTask 'test', ['blanket_mocha:test']
+  grunt.registerTask 'test:ci', [
+    'compile'
+    'copy'
+    'coffeelint'
+    'blanket_mocha:ci'
+  ]
 
   grunt.registerTask 'release', 'Create release branch', (version='') ->
     version = ":#{version}" if version
@@ -193,7 +198,7 @@ module.exports = (grunt) ->
       "bump-only#{version}"
       'shell:release'
       'gh-pages:release'
-      "bump-commit"
+      'bump-commit'
     ]
 
   grunt.registerTask 'compile', [

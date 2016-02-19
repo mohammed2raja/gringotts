@@ -56,7 +56,7 @@ define (require) ->
         collection.fetch opts
         status ||= 200
         collection.dispose() if dispose
-        server.respondWith [status, {},'{"count": 150, "pokemon": []}']
+        server.respondWith [status, {}, '{"count": 150, "pokemon": []}']
         server.respond()
 
       afterEach ->

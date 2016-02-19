@@ -27,8 +27,8 @@ require {baseUrl: '../src'}, ['config'], ->
       chai.use chaiJquery
 
       if window.PHANTOMJS
-        blanket.options "reporter",
-          "../node_modules/grunt-blanket-mocha/support/grunt-reporter.js"
+        blanket.options 'reporter',
+          '../node_modules/grunt-blanket-mocha/support/grunt-reporter.js'
 
       if window.location.search.indexOf('cov=true') >= 0
         $('#change-coverage').on 'change', ->
