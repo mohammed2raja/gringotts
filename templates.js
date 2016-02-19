@@ -1,5 +1,7 @@
 define(['handlebars'], function(Handlebars) {
 
+this["Handlebars"] = this["Handlebars"] || {};
+
 Handlebars.registerPartial("pagination", Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -78,6 +80,14 @@ Handlebars.registerPartial("sortTableHeader", Handlebars.template({"1":function(
   return ((stack1 = helpers["with"].call(alias1,helpers.lookup.call(alias1,(depth0 != null ? depth0.sortInfo : depth0),(depth0 != null ? depth0.attr : depth0),{"name":"lookup","hash":{},"data":data}),{"name":"with","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"useData":true}));
 
-return ;
+this["Handlebars"]["notification"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var helper;
+
+  return "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n"
+    + container.escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"message","hash":{},"data":data}) : helper)))
+    + "\n";
+},"useData":true});
+
+return this["Handlebars"];
 
 });
