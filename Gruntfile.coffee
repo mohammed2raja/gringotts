@@ -121,6 +121,12 @@ module.exports = (grunt) ->
       options:
         configFile: 'coffeelint.json'
 
+    htmlhint:
+      options:
+        htmlhintrc: '.htmlhintrc'
+      html:
+        src: ['src/templates/**/*.hbs', 'test/templates/**/*.hbs']
+
     shell:
       options:
         failOnError: yes
@@ -182,13 +188,13 @@ module.exports = (grunt) ->
         tasks: 'copy:test'
 
   # Create aliased tasks.
-  grunt.registerTask 'default', ['build', 'coffeelint', 'test', 'concurrent']
+  grunt.registerTask 'default', ['build', 'lint', 'test', 'concurrent']
   grunt.registerTask 'docs', ['citare-scriptum', 'gh-pages:docs']
   grunt.registerTask 'test', ['blanket_mocha:test']
   grunt.registerTask 'test:ci', [
     'compile'
     'copy'
-    'coffeelint'
+    'lint'
     'blanket_mocha:ci'
   ]
 
@@ -205,6 +211,11 @@ module.exports = (grunt) ->
     'handlebars'
     'coffee'
     'shell:specs'
+  ]
+
+  grunt.registerTask 'lint', [
+    'coffeelint'
+    'htmlhint'
   ]
 
   grunt.registerTask 'build', [
