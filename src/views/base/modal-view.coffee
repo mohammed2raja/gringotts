@@ -6,11 +6,12 @@ define (require) ->
    * @constructor
   ###
   class ModalView extends View
-    optionNames: ModalView::optionNames.concat ['forceOneInstance']
+    optionNames: View::optionNames.concat ['forceOneInstance']
 
     className: 'modal'
     attributes:
       tabindex: -1
+      role: 'dialog'
 
     attach: (opts) ->
       super
