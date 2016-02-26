@@ -119,3 +119,19 @@ define (require) ->
 
       it 'should remove a model upon disposal', ->
         expect(collection.remove).to.have.beenCalled
+
+    context 'changing', ->
+      spy = null
+
+      beforeEach ->
+        collection = new MockCollection()
+        spy = sinon.spy()
+        collection.on 'stateChange', spy
+        collection.setState {a:'b'}
+        server.respond()
+
+      afterEach ->
+        collection.dispose()
+
+      it 'should raise stateChange event', ->
+        expect(spy).to.have.been.calledWith collection, {a:'b'}

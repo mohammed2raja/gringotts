@@ -16,7 +16,7 @@ define (require) ->
         $el = $(e.currentTarget)
         @buttons.forEach (b) =>
           if b.click and $el.hasClass b.className
-            b.click.apply this, e
+            b.click.call this, e
 
     getTemplateData: ->
       _.extend super, {@title, @text, @buttons}
