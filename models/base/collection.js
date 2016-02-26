@@ -138,6 +138,7 @@
           state = {};
         }
         this.state = this._stripState(state);
+        this.trigger('stateChange', this, this.state);
         return this.fetch({
           reset: true
         });

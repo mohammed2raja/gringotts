@@ -26,7 +26,7 @@
         var itemClassName, visible;
         itemClassName = utils.convenienceClass(this.itemView.prototype.className, this.itemView.prototype.template);
         if (!itemClassName) {
-          throw new Error("Please define a className for your itemViews.");
+          throw new Error('Please define a className for your itemViews.');
         }
         visible = this.collection.isSyncing();
         this.$("." + (itemClassName.split(/\s+|\s+/).join('.'))).toggle(!visible);

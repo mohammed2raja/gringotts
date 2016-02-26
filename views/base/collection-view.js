@@ -54,7 +54,7 @@
         var idx, state;
         state = this.collection.getState({}, true);
         idx = this.$("th[data-sort=" + state.sort_by + "]").index();
-        return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not("[colspan]").addClass('highlighted');
+        return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not('[colspan]').addClass('highlighted');
       };
 
       CollectionView.prototype._getSortInfo = function() {
