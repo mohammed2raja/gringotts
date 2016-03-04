@@ -68,8 +68,24 @@ define (require) ->
   ###
   utils.initSyncMachine = (obj, listenAll=false) ->
     throw new Error('obj must be Backbone.Events') unless obj.on
-    obj.on 'request', (model) -> obj.beginSync() if obj is model or listenAll
-    obj.on 'sync', (model) -> obj.finishSync() if obj is model or listenAll
-    obj.on 'error', (model) -> obj.unsync() if obj is model or listenAll
+    listen = (event, action) ->
+      obj.on event, (model) -> obj[action]() if obj is model or listenAll
+    listen 'request', 'beginSync'
+    listen 'sync', 'finishSync'
+    listen 'error', 'unsync'
+
+  ###*
+   * Processes hbs helper arguments and extracts funcs and vars
+   * @param  {Object} opts Handlebars helper arguments
+   * @return {Object}      a hash with fn, inverse and args
+  ###
+  utils.getHandlebarsFuncs = (opts) ->
+    lastArg = _(opts).last()
+    args = if lastArg.fn then _.initial(opts) else opts
+    {
+      fn: lastArg.fn
+      inverse: lastArg.inverse
+      args
+    }
 
   utils

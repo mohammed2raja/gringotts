@@ -3,7 +3,19 @@ define (require) ->
   utils = require 'lib/utils'
   viewHelper = require 'lib/view-helper'
 
-  describe 'View helper lib', ->
+  describe 'ViewHelper', ->
+    hbsOptions = null
+
+    beforeEach ->
+      hbsOptions = {
+        fn: ->
+        inverse: ->
+      }
+      sinon.stub hbsOptions, 'fn'
+      sinon.stub hbsOptions, 'inverse'
+
+    afterEach ->
+      hbsOptions = null
 
     # Handlebars always passes a final argument to helpers, that's why we pass
     # an empty object in the tests.
@@ -91,3 +103,32 @@ define (require) ->
       it 'should create the HTML element', ->
         expect($el).to.match 'a'
         expect($el.attr 'href').to.contain 'mailto'
+
+    context 'and operator', ->
+      context 'with fn and inverse blocks', ->
+        it 'should call inverse when containing a falsy value', ->
+          Handlebars.helpers.and true, false, true, hbsOptions
+          expect(hbsOptions.inverse).to.be.calledOnce
+
+        it 'should call fn when containing no falsy values', ->
+          Handlebars.helpers.and true, true, 1, 'yes', hbsOptions
+          expect(hbsOptions.fn).to.be.calledOnce
+
+      context 'without fn and inverse blocks', ->
+        it 'should return false when containing a falsy value', ->
+          expect(Handlebars.helpers.and true, true, false).to.eql false
+
+        it 'should return true when containing all truthy values', ->
+          expect(Handlebars.helpers.and true, 'yes', 1).to.eql.true
+
+    context 'concat strings', ->
+      result = null
+
+      beforeEach ->
+        result = Handlebars.helpers.concat 'str1', 'str2', 'str3', hbsOptions
+
+      afterEach ->
+        result = null
+
+      it 'should concat strings', ->
+        expect(result).to.eql 'str1str2str3'

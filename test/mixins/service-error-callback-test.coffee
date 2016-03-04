@@ -1,28 +1,35 @@
 define (require) ->
   Chaplin = require 'chaplin'
   advice = require 'mixins/advice'
-  serviceUnavailable = require 'mixins/service-unavailable'
+  serviceErrorCallback = require 'mixins/service-error-callback'
 
-  describe 'Service unavailable mixin', ->
+  class MockCollection extends Chaplin.Collection
+    _.extend @prototype, Chaplin.SyncMachine
+    _.extend @prototype, serviceErrorCallback
+
+    sync: ->
+      @serviceErrorCallback.apply this, arguments
+      super
+
+  describe 'serviceErrorCallback', ->
     server = null
-    model = null
+    collection = null
 
     beforeEach ->
       server = sinon.fakeServer.create()
-      model = new Chaplin.Model()
-      model.url = 'hey'
-      advice.call model
-      serviceUnavailable.call model
-      sinon.stub model, 'publishEvent'
-      sinon.stub model, 'trigger'
+      collection = new MockCollection()
+      collection.url = 'hey'
+      sinon.stub collection, 'publishEvent'
+      sinon.stub collection, 'trigger'
+      sinon.spy collection, 'abortSync'
 
     afterEach ->
       server.restore()
-      model.dispose()
+      collection.dispose()
 
     it 'should do not error without options', ->
       try
-        model.sync 'read', model
+        collection.sync 'read', collection
       catch error
         error = yes
 
@@ -30,17 +37,12 @@ define (require) ->
 
     context 'with a fetch', ->
       opts = null
-      syncMachine = null
       dispose = null
 
       beforeEach (done) ->
         opts ||= {}
-        if syncMachine
-          _.extend model, Chaplin.SyncMachine
-          sinon.spy model, 'abortSync'
-
-        model.fetch _.extend url: 'none', opts
-        model.dispose() if dispose
+        collection.fetch _.extend url: 'none', opts
+        collection.dispose() if dispose
         done()
 
       context 'after responding', ->
@@ -65,7 +67,7 @@ define (require) ->
 
           it 'should invoke the callback', ->
             expect(callbackSpy).to.be.calledOnce
-            expect(model.trigger).to.be.calledWith 'service-unavailable'
+            expect(collection.trigger).to.be.calledWith 'service-unavailable'
 
         context 'with a canceled request', ->
           before ->
@@ -74,8 +76,9 @@ define (require) ->
             statusCode = null
 
           it 'should do nothing', ->
-            expect(model.trigger).not.to.be.calledWith 'service-unavailable'
-            expect(model.publishEvent).not.to.be.called
+            expect(collection.trigger).not.to.
+              be.calledWith 'service-unavailable'
+            expect(collection.publishEvent).not.to.be.called
 
         context 'with a different status callback', ->
           before ->
@@ -102,13 +105,7 @@ define (require) ->
 
           it 'should invoke the callback', ->
             expect(callbackSpy).to.be.calledOnce
-            expect(model.trigger).to.be.calledWith 'service-unavailable'
+            expect(collection.trigger).to.be.calledWith 'service-unavailable'
 
-          context 'and SyncMachine', ->
-            before ->
-              syncMachine = yes
-            after ->
-              syncMachine = null
-
-            it 'should abort the sync', ->
-              expect(model.abortSync).to.be.calledOnce
+          it 'should abort the sync', ->
+            expect(collection.abortSync).to.be.calledOnce

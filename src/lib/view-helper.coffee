@@ -49,3 +49,34 @@ define (require) ->
     email = Handlebars.Utils.escapeExpression email
     html = utils.tagBuilder 'a', email, href: "mailto:#{email}"
     new Handlebars.SafeString html
+
+  ###*
+   * A simple helper to concat strings.
+   * @param {array} opts A list of string to be combined.
+  ###
+  Handlebars.registerHelper 'concat', (opts...) ->
+    result = _(opts).initial().reduce (result, part) ->
+      result + part
+    , ''
+
+  ###*
+   * Helper which accepts two or more booleans and returns
+   * template block executions.
+  ###
+  Handlebars.registerHelper 'or', (opts...) ->
+    {fn, inverse, args} = utils.getHandlebarsFuncs opts
+    if _.isEmpty _.compact(args)
+      if inverse then inverse this else false
+    else if fn then fn this else true
+
+  Handlebars.registerHelper 'and', (opts...) ->
+    {fn, inverse, args} = utils.getHandlebarsFuncs opts
+    if _.every args
+      if fn then fn this else true
+    else if inverse then inverse this else false
+
+  Handlebars.registerHelper 'not', (opts...) ->
+    {fn, inverse, args} = utils.getHandlebarsFuncs opts
+    if _.isEmpty _.compact(args)
+      if fn then fn this else true
+    else if inverse then inverse this else false

@@ -11,7 +11,7 @@ define (require) ->
         collection:
           getState: -> _.extend {sort_by:'swag'}, state
           url: (url, state) -> "#{url}?#{utils.querystring.stringify(state)}"
-      exportLink.call obj
+      _.extend obj, exportLink
 
     it 'should generate export link', ->
       expect(obj.exportLink 'nasty/url').to.equal 'nasty/url?sort_by=swag'

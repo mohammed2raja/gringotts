@@ -1,24 +1,19 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  advice = require '../../mixins/advice'
-  Model = require './model'
-  safeAjaxCallback = require '../../mixins/safe-ajax-callback'
-  serviceUnavailable = require '../../mixins/service-unavailable'
   utils = require '../../lib/utils'
+  advice = require '../../mixins/advice'
+  safeSyncCallback = require '../../mixins/safe-sync-callback'
+  serviceErrorCallback = require '../../mixins/service-error-callback'
+  Model = require './model'
 
   ###*
    * @prop {string} [comparator] - Effective switch to local sorting.
   ###
   class Collection extends Chaplin.Collection
     _.extend @prototype, Chaplin.SyncMachine
-
-    _.each [
-      advice # needs to come first
-      safeAjaxCallback
-      serviceUnavailable
-    ], (mixin) ->
-      mixin.call @prototype
-    , this
+    _.extend @prototype, safeSyncCallback
+    _.extend @prototype, serviceErrorCallback
+    advice.call @prototype # needs to come first
 
     model: Model
 
@@ -111,6 +106,11 @@ define (require) ->
 
       # if it's a remote sort, always fetch
       @fetch {reset: true}
+
+    sync: ->
+      @serviceErrorCallback.apply this, arguments
+      @safeSyncCallback.apply this, arguments # should be after service-error
+      super
 
     ###*
      * Abort the fetch request if one is already being made.

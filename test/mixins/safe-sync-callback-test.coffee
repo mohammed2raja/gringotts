@@ -1,25 +1,31 @@
 define (require) ->
   Chaplin = require 'chaplin'
   advice = require 'mixins/advice'
-  safeAjaxCallback = require 'mixins/safe-ajax-callback'
+  safeSyncCallback = require 'mixins/safe-sync-callback'
 
-  describe 'Safe AJAX callback mixin', ->
+  class MockCollection extends Chaplin.Collection
+    _.extend @prototype, Chaplin.SyncMachine
+    _.extend @prototype, safeSyncCallback
+
+    sync: ->
+      @safeSyncCallback.apply this, arguments
+      super
+
+  describe 'safeSyncCallback', ->
     server = null
     collection = null
 
     beforeEach ->
       server = sinon.fakeServer.create()
-      collection = new Chaplin.Collection()
-      collection.url = 'red'
+      collection = new MockCollection()
+      collection.url = 'abc'
       collection.syncKey = 'pokemon'
-      advice.call collection
-      safeAjaxCallback.call collection
 
     afterEach ->
       server.restore()
       collection.dispose()
 
-    it 'does not error without options', ->
+    it 'should not error without options', ->
       try
         collection.sync 'read', collection
       catch error
@@ -43,11 +49,11 @@ define (require) ->
           after ->
             dispose = null
 
-          it "does not invoke the #{status} method", ->
+          it "should not invoke the #{status} method", ->
             expect(spyCallback).not.to.be.called
 
       invokesCallback = (status) ->
-        it "invokes the #{status} method if the collection", ->
+        it "should invoke the #{status} method if the collection", ->
           expect(spyCallback).to.be.calledOnce
 
       beforeEach ->
@@ -86,7 +92,8 @@ define (require) ->
         invokesCallback 'complete'
         afterDispose 'complete'
 
-        # Backbone `error` and `success` handlers don't use `context` properly.
+        # Backbone `error` and `success` handlers
+        # don't use `context` properly.
         describe 'with context', ->
           ctxCallback = null
 
@@ -100,5 +107,5 @@ define (require) ->
             spyCallback = null
             ctxCallback = null
 
-          it 'invokes the callback with the correct context', ->
+          it 'should invoke the callback with the correct context', ->
             expect(ctxCallback).to.be.called

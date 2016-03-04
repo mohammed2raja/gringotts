@@ -6,9 +6,8 @@ define (require) ->
    * @param  {String} baseUrl - to build export url
    * @return {String}
   ###
-  ->
-    @exportLink = (baseUrl) ->
-      state = _.clone @collection.getState {}, true
-      delete state.page
-      delete state.per_page
-      @collection.url baseUrl, state
+  exportLink: (baseUrl) ->
+    state = _.clone @collection.getState {}, true
+    delete state.page
+    delete state.per_page
+    @collection.url baseUrl, state
