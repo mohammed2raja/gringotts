@@ -28,32 +28,6 @@ define (require) ->
     afterEach ->
       server.restore()
 
-    context 'fetching', ->
-      server = null
-      currentXHR = null
-
-      beforeEach ->
-        collection = new MockCollection()
-        server = sinon.fakeServer.create()
-        currentXHR = collection.fetch()
-        server.respond()
-
-      afterEach ->
-        collection.dispose()
-        server.restore()
-
-      it 'should set the currentXHR property', ->
-        expect(collection.currentXHR).to.eql currentXHR
-
-      context 'twice', ->
-        beforeEach ->
-          collection.currentXHR = {abort: sinon.spy()}
-          collection.fetch()
-          server.respond()
-
-        it 'should abort the initial request', ->
-          expect(collection.currentXHR.abort).to.have.beenCalled
-
     context 'sorting remotely', ->
       beforeEach ->
         collection = new MockCollection data

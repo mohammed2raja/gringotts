@@ -2,6 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require '../../lib/utils'
   advice = require '../../mixins/advice'
+  overrideXHR = require '../../mixins/override-xhr'
   safeSyncCallback = require '../../mixins/safe-sync-callback'
   serviceErrorCallback = require '../../mixins/service-error-callback'
   Model = require './model'
@@ -13,6 +14,8 @@ define (require) ->
     _.extend @prototype, Chaplin.SyncMachine
     _.extend @prototype, safeSyncCallback
     _.extend @prototype, serviceErrorCallback
+    _.extend @prototype, overrideXHR
+
     advice.call @prototype # needs to come first
 
     model: Model
@@ -112,12 +115,8 @@ define (require) ->
       @safeSyncCallback.apply this, arguments # should be after service-error
       super
 
-    ###*
-     * Abort the fetch request if one is already being made.
-    ###
     fetch: ->
-      @currentXHR.abort() if @currentXHR and @isSyncing()
-      @currentXHR = super
+      @overrideXHR super
 
     ###*
      * Incorporate the collection state.
