@@ -3,11 +3,12 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, Model, advice, safeAjaxCallback, utils;
+    var Chaplin, Model, activeSyncMachine, advice, overrideXHR, safeSyncCallback;
     Chaplin = require('chaplin');
     advice = require('../../mixins/advice');
-    safeAjaxCallback = require('../../mixins/safe-ajax-callback');
-    utils = require('lib/utils');
+    activeSyncMachine = require('../../mixins/active-sync-machine');
+    overrideXHR = require('../../mixins/override-xhr');
+    safeSyncCallback = require('../../mixins/safe-sync-callback');
     return Model = (function(superClass) {
       extend(Model, superClass);
 
@@ -17,13 +18,26 @@
 
       _.extend(Model.prototype, Chaplin.SyncMachine);
 
-      _.each([advice, safeAjaxCallback], function(mixin) {
-        return mixin.call(this.prototype);
-      }, Model);
+      _.extend(Model.prototype, activeSyncMachine);
+
+      _.extend(Model.prototype, safeSyncCallback);
+
+      _.extend(Model.prototype, overrideXHR);
+
+      advice.call(Model.prototype);
 
       Model.prototype.initialize = function() {
         Model.__super__.initialize.apply(this, arguments);
-        return utils.initSyncMachine(this);
+        return this.activateSyncMachine();
+      };
+
+      Model.prototype.sync = function() {
+        this.safeSyncCallback.apply(this, arguments);
+        return Model.__super__.sync.apply(this, arguments);
+      };
+
+      Model.prototype.fetch = function() {
+        return this.overrideXHR(Model.__super__.fetch.apply(this, arguments));
       };
 
       return Model;

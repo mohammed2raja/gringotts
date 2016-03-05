@@ -3,17 +3,15 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, Collection, Model, advice, safeAjaxCallback, serviceUnavailable, utils;
+    var Chaplin, Collection, Model, activeSyncMachine, advice, overrideXHR, safeSyncCallback, serviceErrorCallback, utils;
     Chaplin = require('chaplin');
-    advice = require('../../mixins/advice');
-    Model = require('./model');
-    safeAjaxCallback = require('../../mixins/safe-ajax-callback');
-    serviceUnavailable = require('../../mixins/service-unavailable');
     utils = require('../../lib/utils');
-
-    /**
-     * @prop {string} [comparator] - Effective switch to local sorting.
-     */
+    advice = require('../../mixins/advice');
+    activeSyncMachine = require('../../mixins/active-sync-machine');
+    overrideXHR = require('../../mixins/override-xhr');
+    safeSyncCallback = require('../../mixins/safe-sync-callback');
+    serviceErrorCallback = require('../../mixins/service-error-callback');
+    Model = require('./model');
     return Collection = (function(superClass) {
       extend(Collection, superClass);
 
@@ -23,9 +21,15 @@
 
       _.extend(Collection.prototype, Chaplin.SyncMachine);
 
-      _.each([advice, safeAjaxCallback, serviceUnavailable], function(mixin) {
-        return mixin.call(this.prototype);
-      }, Collection);
+      _.extend(Collection.prototype, activeSyncMachine);
+
+      _.extend(Collection.prototype, safeSyncCallback);
+
+      _.extend(Collection.prototype, serviceErrorCallback);
+
+      _.extend(Collection.prototype, overrideXHR);
+
+      advice.call(Collection.prototype);
 
       Collection.prototype.model = Model;
 
@@ -35,7 +39,7 @@
         if (typeof this.url !== 'function') {
           throw new Error('Please use urlRoot instead of url as a collection property');
         }
-        utils.initSyncMachine(this);
+        this.activateSyncMachine();
         this.on('dispose', function(model) {
           if (model instanceof Chaplin.Model && !this.disposed) {
             return this.remove(model);
@@ -144,16 +148,14 @@
         });
       };
 
-
-      /**
-       * Abort the fetch request if one is already being made.
-       */
+      Collection.prototype.sync = function() {
+        this.serviceErrorCallback.apply(this, arguments);
+        this.safeSyncCallback.apply(this, arguments);
+        return Collection.__super__.sync.apply(this, arguments);
+      };
 
       Collection.prototype.fetch = function() {
-        if (this.currentXHR && this.isSyncing()) {
-          this.currentXHR.abort();
-        }
-        return this.currentXHR = Collection.__super__.fetch.apply(this, arguments);
+        return this.overrideXHR(Collection.__super__.fetch.apply(this, arguments));
       };
 
 
