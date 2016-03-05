@@ -1,6 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
+  activeSyncMachine = require 'mixins/active-sync-machine'
   stringTemplate = require 'mixins/string-template'
   PaginatedCollection = require 'models/base/paginated-collection'
   PaginatedView = require 'views/base/paginated-view'
@@ -13,6 +14,7 @@ define (require) ->
 
   class MockPaginatedCollection extends PaginatedCollection
     _.extend @prototype, Chaplin.SyncMachine
+    _.extend @prototype, activeSyncMachine
 
     urlRoot: '/test'
     DEFAULTS: _.extend {}, PaginatedCollection::DEFAULTS,
@@ -20,7 +22,7 @@ define (require) ->
 
     initialize: ->
       super
-      utils.initSyncMachine this
+      @activateSyncMachine()
 
   class MockPaginatedView extends PaginatedView
     stringTemplate.call @prototype, {templatePath: 'test/templates'}

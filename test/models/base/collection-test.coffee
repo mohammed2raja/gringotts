@@ -1,6 +1,10 @@
 define (require) ->
+  Chaplin = require 'chaplin'
+  activeSyncMachine = require 'mixins/active-sync-machine'
+  overrideXHR = require 'mixins/override-xhr'
+  safeSyncCallback = require 'mixins/safe-sync-callback'
+  serviceErrorCallback = require 'mixins/service-error-callback'
   Collection = require 'models/base/collection'
-  PaginatedCollection = require 'models/base/paginated-collection'
 
   class MockCollection extends Collection
     DEFAULTS: _.extend {}, Collection::DEFAULTS, {sort_by: 'attrA'}
@@ -11,7 +15,7 @@ define (require) ->
     _.each expecting, (expecting) ->
       expect(request.url).to.contain expecting
 
-  describe 'Base collection', ->
+  describe 'Base Collection', ->
     server = null
     collection = null
     collectionClass = null
@@ -27,6 +31,51 @@ define (require) ->
 
     afterEach ->
       server.restore()
+
+    context 'initialization', ->
+      beforeEach ->
+        sinon.spy Collection::, 'activateSyncMachine'
+        collection = new MockCollection()
+
+      afterEach ->
+        sinon.restore Collection::, 'activateSyncMachine'
+        collection.dispose()
+
+      it 'should have proper mixins applied', ->
+        funcs = _.functions collection
+        expect(funcs).to.include.members _.functions Chaplin.SyncMachine
+        expect(funcs).to.include.members _.functions activeSyncMachine
+        expect(funcs).to.include.members _.functions safeSyncCallback
+        expect(funcs).to.include.members _.functions serviceErrorCallback
+        expect(funcs).to.include.members _.functions overrideXHR
+
+      it 'should activate SyncMachine', ->
+        expect(Collection::activateSyncMachine).to.have.been.calledOnce
+
+      context 'sync callbacks', ->
+        beforeEach ->
+          sinon.spy collection, 'serviceErrorCallback'
+          sinon.spy collection, 'safeSyncCallback'
+          collection.sync 'read', collection, {}
+          server.respond()
+
+        it 'should call serviceErrorCallback on sync', ->
+          expect(collection.serviceErrorCallback).to.have.been.
+            calledWith('read', collection, sinon.match.object).calledOnce
+
+        it 'should call safeSyncCallback on sync', ->
+          expect(collection.safeSyncCallback).to.have.been.
+            calledWith('read', collection, sinon.match.object).calledOnce
+
+      context 'overrideXHR', ->
+        beforeEach ->
+          sinon.spy collection, 'overrideXHR'
+          collection.fetch()
+          server.respond()
+
+        it 'should overrideXHR on fetch', ->
+          expect(collection.overrideXHR).to.have.been.
+            calledWith(sinon.match.object).calledOnce
 
     context 'sorting remotely', ->
       beforeEach ->

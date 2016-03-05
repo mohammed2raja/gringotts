@@ -1,6 +1,5 @@
 define (require) ->
   Collection = require './collection'
-  utils = require '../../lib/utils'
 
   ###*
   # The Collection from which to extend for pagination needs.

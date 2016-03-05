@@ -2,9 +2,6 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
 
-  class MockCollection extends Chaplin.Collection
-    _.extend @prototype, Chaplin.SyncMachine
-
   describe 'Utils lib', ->
     $el = null
 
@@ -76,29 +73,3 @@ define (require) ->
         it 'should pass the string that failed to parse', ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'undefined'
-
-    describe 'initSyncMachine', ->
-      collection = null
-
-      beforeEach ->
-        collection = new MockCollection()
-        utils.initSyncMachine collection
-        sinon.stub collection, 'beginSync'
-        sinon.stub collection, 'finishSync'
-        sinon.stub collection, 'unsync'
-        collection.trigger 'request', collection
-
-      it 'should start the sync', ->
-        expect(collection.beginSync).to.be.calledOnce
-
-      context 'on response', ->
-        beforeEach -> collection.trigger 'sync', collection
-
-        it 'should complete the sync with finishSync', ->
-          expect(collection.finishSync).to.be.calledOnce
-
-      context 'on error', ->
-        beforeEach -> collection.trigger 'error', collection
-
-        it 'should complete the sync with unsync', ->
-          expect(collection.unsync).to.be.calledOnce

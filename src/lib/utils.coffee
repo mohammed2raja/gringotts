@@ -62,19 +62,6 @@ define (require) ->
     result
 
   ###*
-   * Initialize SyncMachine on an object
-   * @param  {Backbone.Events} obj an instinace of Model or Collection
-   * @param  {Bool} listenAll to listen events from nested models
-  ###
-  utils.initSyncMachine = (obj, listenAll=false) ->
-    throw new Error('obj must be Backbone.Events') unless obj.on
-    listen = (event, action) ->
-      obj.on event, (model) -> obj[action]() if obj is model or listenAll
-    listen 'request', 'beginSync'
-    listen 'sync', 'finishSync'
-    listen 'error', 'unsync'
-
-  ###*
    * Processes hbs helper arguments and extracts funcs and vars
    * @param  {Object} opts Handlebars helper arguments
    * @return {Object}      a hash with fn, inverse and args
