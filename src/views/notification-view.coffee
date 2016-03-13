@@ -30,6 +30,7 @@
 # dismisses, link, click handler, and classes can be configured via
 # overrriding of public properties.
 define (require) ->
+  templates = require('templates')
   View = require './base/view'
 
   # Local reference for the timeout.
@@ -54,16 +55,16 @@ define (require) ->
 
     # Override to customize the undo element.
     getUndoElement: ->
-      undoLabel = I18n?.t('notifications.undo') or 'Undo'
-      "<a class='undo' href='javascript:;'>#{undoLabel}</a>"
+      templates['notification-undo'] {
+        label: I18n?.t('notifications.undo') or 'Undo'
+      }
 
     # if `opts` has `navigateDismiss` then upon navigation the notification is
     # dismissed
     navigateDismiss: ->
       opts = @model.get('opts') or {}
       if opts.navigateDismiss
-        @subscribeEvent 'dispatcher:dispatch', ->
-          @dismiss()
+        @subscribeEvent 'dispatcher:dispatch', -> @dismiss()
 
     # Discard model when the view is removed.
     # `success` callback will execute when view is faded in `fadespeed` ms.
