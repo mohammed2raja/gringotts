@@ -16,8 +16,6 @@
         return Model.__super__.constructor.apply(this, arguments);
       }
 
-      _.extend(Model.prototype, Chaplin.SyncMachine);
-
       _.extend(Model.prototype, activeSyncMachine);
 
       _.extend(Model.prototype, safeSyncCallback);
@@ -33,7 +31,7 @@
 
       Model.prototype.sync = function() {
         this.safeSyncCallback.apply(this, arguments);
-        return Model.__super__.sync.apply(this, arguments);
+        return this.safeDeferred(Model.__super__.sync.apply(this, arguments));
       };
 
       Model.prototype.fetch = function() {

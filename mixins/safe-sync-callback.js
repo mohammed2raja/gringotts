@@ -19,6 +19,24 @@
             })(this);
           }
         }, this);
+      },
+      safeDeferred: function($xhr) {
+        var deferred, filter;
+        filter = (function(_this) {
+          return function() {
+            if (_this.disposed) {
+              $xhr.errorHandled = true;
+              return $.Deferred();
+            } else {
+              return $xhr;
+            }
+          };
+        })(this);
+        deferred = $xhr.then(filter, filter, filter).promise();
+        deferred.abort = function() {
+          return $xhr.abort();
+        };
+        return deferred;
       }
     };
   });

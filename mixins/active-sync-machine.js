@@ -1,6 +1,8 @@
 (function() {
   define(function(require) {
-    return {
+    var Chaplin;
+    Chaplin = require('chaplin');
+    return _.extend({}, Chaplin.SyncMachine, {
 
       /**
        * Activates Chaplin.SyncMachine on an object
@@ -33,7 +35,7 @@
           });
         }, this);
       }
-    };
+    });
   });
 
 }).call(this);

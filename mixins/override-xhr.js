@@ -5,11 +5,11 @@
       /**
        * Aborts the existing request if a new one is being requested.
        */
-      overrideXHR: function(promise) {
+      overrideXHR: function($xhr) {
         if (this.currentXHR && this.isSyncing()) {
           this.currentXHR.abort();
         }
-        return this.currentXHR = promise;
+        return this.currentXHR = $xhr;
       }
     };
   });

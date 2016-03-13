@@ -3,7 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var NotificationView, View, notificationTimeout;
+    var NotificationView, View, notificationTimeout, templates;
+    templates = require('templates');
     View = require('./base/view');
     notificationTimeout = null;
     return NotificationView = (function(superClass) {
@@ -33,9 +34,9 @@
       };
 
       NotificationView.prototype.getUndoElement = function() {
-        var undoLabel;
-        undoLabel = (typeof I18n !== "undefined" && I18n !== null ? I18n.t('notifications.undo') : void 0) || 'Undo';
-        return "<a class='undo' href='javascript:;'>" + undoLabel + "</a>";
+        return templates['notification-undo']({
+          label: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('notifications.undo') : void 0) || 'Undo'
+        });
       };
 
       NotificationView.prototype.navigateDismiss = function() {

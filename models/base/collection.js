@@ -19,8 +19,6 @@
         return Collection.__super__.constructor.apply(this, arguments);
       }
 
-      _.extend(Collection.prototype, Chaplin.SyncMachine);
-
       _.extend(Collection.prototype, activeSyncMachine);
 
       _.extend(Collection.prototype, safeSyncCallback);
@@ -151,7 +149,7 @@
       Collection.prototype.sync = function() {
         this.serviceErrorCallback.apply(this, arguments);
         this.safeSyncCallback.apply(this, arguments);
-        return Collection.__super__.sync.apply(this, arguments);
+        return this.safeDeferred(Collection.__super__.sync.apply(this, arguments));
       };
 
       Collection.prototype.fetch = function() {

@@ -106,6 +106,14 @@ this["Handlebars"]["dialog"] = Handlebars.template({"1":function(container,depth
     + "    </div>\n  </div>\n</div>\n";
 },"useData":true});
 
+this["Handlebars"]["notification-undo"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var helper;
+
+  return "&nbsp;&nbsp;<a class=\"undo\" href=\"javascript:;\">"
+    + container.escapeExpression(((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"label","hash":{},"data":data}) : helper)))
+    + "</a>\n";
+},"useData":true});
+
 this["Handlebars"]["notification"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper;
 
