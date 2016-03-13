@@ -80,3 +80,15 @@ define (require) ->
     if _.isEmpty _.compact(args)
       if fn then fn this else true
     else if inverse then inverse this else false
+
+  ###*
+   * Compares two values and renders matching template like #if
+  ###
+  Handlebars.registerHelper 'ifequal', (lvalue, rvalue, options) ->
+    if arguments.length < 3
+      throw new Error('Handlebars Helper equal needs 2 parameters')
+
+    if lvalue == rvalue
+      return options.fn(this)
+    else
+      return options.inverse(this)

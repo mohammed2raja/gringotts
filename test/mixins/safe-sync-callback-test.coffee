@@ -2,14 +2,15 @@ define (require) ->
   Chaplin = require 'chaplin'
   advice = require 'mixins/advice'
   safeSyncCallback = require 'mixins/safe-sync-callback'
+  activeSyncMachine = require 'mixins/active-sync-machine'
 
   class MockCollection extends Chaplin.Collection
-    _.extend @prototype, Chaplin.SyncMachine
+    _.extend @prototype, activeSyncMachine
     _.extend @prototype, safeSyncCallback
 
     sync: ->
       @safeSyncCallback.apply this, arguments
-      super
+      @safeDeferred super
 
   describe 'safeSyncCallback', ->
     server = null
@@ -34,12 +35,23 @@ define (require) ->
       expect(error).not.to.exist
 
     describe 'for options callback', ->
-      dispose = null
-      callback = null
-      spyCallback = null
-      opts = null
       collection = null
       status = null
+      dispose = null
+      opts = null
+      callback = null
+      spyCallback = null
+      spyDone = null
+      spyFail = null
+      spyAlways = null
+
+      promiseSpy = (status) ->
+        if status is 'success'
+          spyDone
+        else if status is 'error'
+          spyFail
+        else if status is 'complete'
+          spyAlways
 
       afterDispose = (status) ->
         describe 'after dispose', ->
@@ -52,14 +64,23 @@ define (require) ->
           it "should not invoke the #{status} method", ->
             expect(spyCallback).not.to.be.called
 
+          it "should not invoke the #{status} promise handler", ->
+            expect(promiseSpy status).not.to.be.called
+
       invokesCallback = (status) ->
-        it "should invoke the #{status} method if the collection", ->
+        it "should invoke the #{status} method", ->
           expect(spyCallback).to.be.calledOnce
+
+        it "should invoke the #{status} promise handler", ->
+          expect(promiseSpy status).to.be.calledOnce
 
       beforeEach ->
         spyCallback ||= sinon.spy()
         (opts ||= {})[callback] = spyCallback
-        collection.fetch opts
+        spyDone = sinon.spy()
+        spyFail = sinon.spy()
+        spyAlways = sinon.spy()
+        collection.fetch(opts).done(spyDone).fail(spyFail).always(spyAlways)
         status ||= 200
         collection.dispose() if dispose
         server.respondWith [status, {}, '{"count": 150, "pokemon": []}']
@@ -67,15 +88,18 @@ define (require) ->
 
       afterEach ->
         spyCallback = null
+        spyDone = null
+        spyFail = null
+        spyAlways = null
 
-      describe 'success', ->
+      context 'success', ->
         before ->
           callback = 'success'
 
         invokesCallback 'success'
         afterDispose 'success'
 
-      describe 'error', ->
+      context 'error', ->
         before ->
           callback = 'error'
           status = 404
@@ -85,7 +109,7 @@ define (require) ->
         invokesCallback 'error'
         afterDispose 'error'
 
-      describe 'complete', ->
+      context 'complete', ->
         before ->
           callback = 'complete'
 
@@ -94,7 +118,7 @@ define (require) ->
 
         # Backbone `error` and `success` handlers
         # don't use `context` properly.
-        describe 'with context', ->
+        context 'with context', ->
           ctxCallback = null
 
           before ->

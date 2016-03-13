@@ -1,10 +1,11 @@
 define (require) ->
   Chaplin = require 'chaplin'
   advice = require 'mixins/advice'
+  activeSyncMachine = require 'mixins/active-sync-machine'
   serviceErrorCallback = require 'mixins/service-error-callback'
 
   class MockCollection extends Chaplin.Collection
-    _.extend @prototype, Chaplin.SyncMachine
+    _.extend @prototype, activeSyncMachine
     _.extend @prototype, serviceErrorCallback
 
     sync: ->

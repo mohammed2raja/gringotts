@@ -1,10 +1,11 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  overrideXHR = require 'mixins/override-xhr'
   utils = require '../../lib/utils'
+  overrideXHR = require 'mixins/override-xhr'
+  activeSyncMachine = require 'mixins/active-sync-machine'
 
   class MockModel extends Chaplin.Model
-    _.extend @prototype, Chaplin.SyncMachine
+    _.extend @prototype, activeSyncMachine
     _.extend @prototype, overrideXHR
 
     fetch: ->
@@ -36,4 +37,4 @@ define (require) ->
         server.respond()
 
       it 'should abort the initial request', ->
-        expect(model.currentXHR.abort).to.have.beenCalled
+        expect(model.currentXHR.abort).to.have.been.calledOne

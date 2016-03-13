@@ -1,6 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   advice = require 'mixins/advice'
+  activeSyncMachine = require 'mixins/active-sync-machine'
   errorToggleView = require 'mixins/error-toggle-view'
 
   class ItemViewTest extends Chaplin.View
@@ -47,7 +48,7 @@ define (require) ->
     beforeEach ->
       collection = new Chaplin.Collection {}
       if syncMachine
-        _.extend collection.prototype, Chaplin.SyncMachine
+        _.extend collection.prototype, activeSyncMachine
       view = new CollectionViewTest {collection}
 
     afterEach ->

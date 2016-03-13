@@ -7,7 +7,6 @@ define (require) ->
 
   # Generic base class for models. Includes useful mixins by default.
   class Model extends Chaplin.Model
-    _.extend @prototype, Chaplin.SyncMachine
     _.extend @prototype, activeSyncMachine
     _.extend @prototype, safeSyncCallback
     _.extend @prototype, overrideXHR
@@ -20,7 +19,7 @@ define (require) ->
 
     sync: ->
       @safeSyncCallback.apply this, arguments
-      super
+      @safeDeferred super
 
     fetch: ->
       @overrideXHR super

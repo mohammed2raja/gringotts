@@ -3,7 +3,6 @@ define (require) ->
   activeSyncMachine = require 'mixins/active-sync-machine'
 
   class MockCollection extends Chaplin.Collection
-    _.extend @prototype, Chaplin.SyncMachine
     _.extend @prototype, activeSyncMachine
 
     initialize: ->

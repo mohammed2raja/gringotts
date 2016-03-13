@@ -43,7 +43,6 @@ define (require) ->
 
       it 'should have proper mixins applied', ->
         funcs = _.functions collection
-        expect(funcs).to.include.members _.functions Chaplin.SyncMachine
         expect(funcs).to.include.members _.functions activeSyncMachine
         expect(funcs).to.include.members _.functions safeSyncCallback
         expect(funcs).to.include.members _.functions serviceErrorCallback
@@ -56,6 +55,7 @@ define (require) ->
         beforeEach ->
           sinon.spy collection, 'serviceErrorCallback'
           sinon.spy collection, 'safeSyncCallback'
+          sinon.spy collection, 'safeDeferred'
           collection.sync 'read', collection, {}
           server.respond()
 
@@ -66,6 +66,10 @@ define (require) ->
         it 'should call safeSyncCallback on sync', ->
           expect(collection.safeSyncCallback).to.have.been.
             calledWith('read', collection, sinon.match.object).calledOnce
+
+        it 'should call safeDeferred on sync', ->
+          expect(collection.safeDeferred).to.have.been.
+            calledWith(sinon.match.object).calledOnce
 
       context 'overrideXHR', ->
         beforeEach ->

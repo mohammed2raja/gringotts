@@ -132,3 +132,12 @@ define (require) ->
 
       it 'should concat strings', ->
         expect(result).to.eql 'str1str2str3'
+
+    context 'ifequal helper', ->
+      it 'should be true for equal values', ->
+        Handlebars.helpers.ifequal 100, 100, hbsOptions
+        expect(hbsOptions.fn).to.be.calledOnce
+
+      it 'should be false for non-equal values', ->
+        Handlebars.helpers.ifequal 100, 200, hbsOptions
+        expect(hbsOptions.inverse).to.be.calledOnce

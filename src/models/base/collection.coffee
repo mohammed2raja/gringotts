@@ -10,7 +10,6 @@ define (require) ->
 
   # Generic base class for collections. Includes useful mixins by default.
   class Collection extends Chaplin.Collection
-    _.extend @prototype, Chaplin.SyncMachine
     _.extend @prototype, activeSyncMachine
     _.extend @prototype, safeSyncCallback
     _.extend @prototype, serviceErrorCallback
@@ -112,7 +111,7 @@ define (require) ->
     sync: ->
       @serviceErrorCallback.apply this, arguments
       @safeSyncCallback.apply this, arguments # should be after service-error
-      super
+      @safeDeferred super
 
     fetch: ->
       @overrideXHR super

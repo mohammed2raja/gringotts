@@ -13,7 +13,6 @@ define (require) ->
     getTemplateFunction: -> -> '<td><td><td>'
 
   class MockPaginatedCollection extends PaginatedCollection
-    _.extend @prototype, Chaplin.SyncMachine
     _.extend @prototype, activeSyncMachine
 
     urlRoot: '/test'

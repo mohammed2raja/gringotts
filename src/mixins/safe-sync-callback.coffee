@@ -1,11 +1,9 @@
 # This mixin prevent errors when sync/fetch callback executes after
-# route change. It should be called in sync method.
-#
-# It mainly piggies back off the AJAX option hash which the Backbone
-# server methods (such as `fetch` and `save`) use. This makes it
-# incompatible with the related promise callbacks (`done`, `fail`, `always`).
+# route change when model is disposed. It should be called in sync method.
 define (require) ->
-  safeSyncCallback:  (method, model, options) ->
+  # Piggies back off the AJAX option hash which the Backbone
+  # server methods (such as `fetch` and `save`) use.
+  safeSyncCallback: (method, model, options) ->
     return unless options
     _.each ['success', 'error', 'complete'], (cb) ->
       callback = options[cb]
@@ -15,3 +13,15 @@ define (require) ->
           # Check disposal at time of use.
           callback.apply ctx, arguments unless @disposed
     , this
+
+  # Filters deferred calbacks and cancels chain if model is disposed
+  safeDeferred: ($xhr) ->
+    filter = =>
+      if @disposed
+        $xhr.errorHandled = true # suppress all error notifications
+        $.Deferred()
+      else $xhr
+    # doneFilter, failFilter, progressFilter
+    deferred = $xhr.then(filter, filter, filter).promise()
+    deferred.abort = -> $xhr.abort() # compatibility with ajax deferred
+    deferred
