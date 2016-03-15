@@ -66,24 +66,26 @@
         if (!state.sort_by) {
           throw new Error('Please define a sort_by attribute within DEFAULTS');
         }
-        return _.transform(this.sortableTableHeaders, function(result, v, k) {
-          var nextOrder, order;
-          order = k === state.sort_by ? state.order : '';
-          nextOrder = order === 'desc' ? 'asc' : order === 'asc' ? 'desc' : this.collection.DEFAULTS.order;
-          result[k] = {
-            viewId: this.cid,
-            attr: k,
-            text: v,
-            order: order,
-            routeName: this.routeName,
-            routeParams: this.routeParams,
-            nextState: this.collection.getState({
-              order: nextOrder,
-              sort_by: k
-            })
+        return _.transform(this.sortableTableHeaders, (function(_this) {
+          return function(result, title, column) {
+            var nextOrder, order;
+            order = column === state.sort_by ? state.order : '';
+            nextOrder = order === 'asc' ? 'desc' : 'asc';
+            result[column] = {
+              viewId: _this.cid,
+              attr: column,
+              text: title,
+              order: order,
+              routeName: _this.routeName,
+              routeParams: _this.routeParams,
+              nextState: _this.collection.getState({
+                order: nextOrder,
+                sort_by: column
+              })
+            };
+            return result;
           };
-          return result;
-        }, {}, this);
+        })(this), {});
       };
 
       CollectionView.prototype.getTemplateData = function() {

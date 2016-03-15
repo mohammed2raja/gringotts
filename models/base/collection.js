@@ -19,13 +19,7 @@
         return Collection.__super__.constructor.apply(this, arguments);
       }
 
-      _.extend(Collection.prototype, activeSyncMachine);
-
-      _.extend(Collection.prototype, safeSyncCallback);
-
-      _.extend(Collection.prototype, serviceErrorCallback);
-
-      _.extend(Collection.prototype, overrideXHR);
+      _.extend(Collection.prototype, activeSyncMachine, safeSyncCallback, serviceErrorCallback, overrideXHR);
 
       advice.call(Collection.prototype);
 
@@ -58,9 +52,9 @@
 
 
       /**
-        * Default queryparam object for this collection.
-        * Must contain all possible querynewState.
-        * Override when necessary.
+       * Default queryparam object for this collection.
+       * Must contain all possible querynewState.
+       * Override when necessary.
        */
 
       Collection.prototype.DEFAULTS = {
@@ -80,25 +74,20 @@
 
 
       /**
-       * Return whether or not the prop/val is a default one.
-       * @param  {string}  prop - local formatted prop name
-       * @param  val  - Value of the property
-       * @return {Boolean}
+       * Strips the state from all undefined or default values
+       * @param  {Object} state
+       * @param  {Boolean} withDefaults=false whether defaults should be removed
        */
-
-      Collection.prototype._isDefault = function(key, val) {
-        var serverKey;
-        serverKey = _.invert(this.DEFAULTS_SERVER_MAP)[key] || key;
-        return _.isEqual(this.DEFAULTS[serverKey], val);
-      };
 
       Collection.prototype._stripState = function(state, withDefaults) {
         if (withDefaults == null) {
           withDefaults = false;
         }
-        return _.omit(state, function(v, k) {
-          return v === void 0 || (this._isDefault(k, v) && !withDefaults);
-        }, this);
+        return _.omit(state, (function(_this) {
+          return function(value, key) {
+            return value === void 0 || _.isEqual(_this.DEFAULTS[key], value) && !withDefaults;
+          };
+        })(this));
       };
 
 
@@ -113,17 +102,14 @@
        */
 
       Collection.prototype.getState = function(overrides, withDefaults) {
-        var defaults, state;
+        var state;
         if (overrides == null) {
           overrides = {};
         }
         if (withDefaults == null) {
           withDefaults = false;
         }
-        defaults = _.mapKeys(this.DEFAULTS, function(value, key) {
-          return this.DEFAULTS_SERVER_MAP[key] || key;
-        }, this);
-        state = _.extend({}, defaults, this.state, overrides);
+        state = _.extend({}, this.DEFAULTS, this.state, overrides);
         if (!_.isEmpty(_.intersection(_.keys(state), _.keys(this.DEFAULTS_SERVER_MAP)))) {
           throw new Error('Pass in only local state properties.');
         }
@@ -175,9 +161,11 @@
         if (!urlRoot) {
           throw new Error('Please define a urlRoot when implementing a collection');
         }
-        queryState = _.mapKeys(state, function(value, key) {
-          return _.invert(this.DEFAULTS_SERVER_MAP)[key] || key;
-        }, this);
+        queryState = _.mapKeys(state, (function(_this) {
+          return function(value, key) {
+            return _.invert(_this.DEFAULTS_SERVER_MAP)[key] || key;
+          };
+        })(this));
         query = utils.querystring.stringify(queryState);
         base = _.isFunction(urlRoot) ? urlRoot.apply(this) : urlRoot;
         if (query) {

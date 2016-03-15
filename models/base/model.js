@@ -16,11 +16,7 @@
         return Model.__super__.constructor.apply(this, arguments);
       }
 
-      _.extend(Model.prototype, activeSyncMachine);
-
-      _.extend(Model.prototype, safeSyncCallback);
-
-      _.extend(Model.prototype, overrideXHR);
+      _.extend(Model.prototype, activeSyncMachine, safeSyncCallback, overrideXHR);
 
       advice.call(Model.prototype);
 
