@@ -71,15 +71,16 @@ define (require) ->
           viewId: view.cid
           text: 'Attribute B'
           order: ''
-          nextState: sort_by: 'attrB'
+          nextState: order: 'asc', sort_by: 'attrB'
           routeName: 'test'
           routeParams: undefined
       }
 
     it 'should render headers correctly', ->
-      expect(view.$('th[data-sort=attrA]').attr('class')).to.
-        equal "sorting-control #{view.cid} desc"
-      expect(view.$('th[data-sort=attrA] span').text()).to.equal 'Attribute A'
+      expect(view.$ 'th[data-sort=attrA]').to.have.class('sorting-control')
+        .and.to.have.class "#{view.cid}"
+      expect(view.$ 'th[data-sort=attrA] a').to.have.class 'desc'
+      expect(view.$ 'th[data-sort=attrA] span').to.have.text 'Attribute A'
 
     it 'should highlight the appropriate table data elements', ->
       expect(view.$ 'td:nth-child(1)').to.have.class 'highlighted'
@@ -106,7 +107,7 @@ define (require) ->
             viewId: view.cid
             text: 'Attribute B'
             order: ''
-            nextState: sort_by: 'attrB'
+            nextState: order: 'asc', sort_by: 'attrB'
             routeName: 'test'
             routeParams: undefined
         }
@@ -124,7 +125,7 @@ define (require) ->
             viewId: view.cid
             text: 'Attribute A'
             order: ''
-            nextState: {} # empty since default is desc and attrA
+            nextState: order: 'asc'
             routeName: 'test'
             routeParams: undefined
           attrB:

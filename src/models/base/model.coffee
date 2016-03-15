@@ -7,11 +7,8 @@ define (require) ->
 
   # Generic base class for models. Includes useful mixins by default.
   class Model extends Chaplin.Model
-    _.extend @prototype, activeSyncMachine
-    _.extend @prototype, safeSyncCallback
-    _.extend @prototype, overrideXHR
-
-    advice.call @prototype # needs to come first
+    _.extend @prototype, activeSyncMachine, safeSyncCallback, overrideXHR
+    advice.call @prototype
 
     initialize: ->
       super

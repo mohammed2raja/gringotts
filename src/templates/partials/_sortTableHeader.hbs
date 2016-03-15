@@ -1,7 +1,7 @@
 {{#with (lookup sortInfo attr)}}
-  <th data-sort="{{attr}}" class="sorting-control {{viewId}} {{order}}">
+  <th data-sort="{{attr}}" class="sorting-control {{viewId}}">
     {{#if routeName}}
-      <a href="{{url routeName routeParams nextState}}">
+      <a href="{{url routeName routeParams nextState}}" class="{{order}}">
         <span>{{text}}</span><span class="indicator"></span>
       </a>
     {{else}}

@@ -10,12 +10,9 @@ define (require) ->
 
   # Generic base class for collections. Includes useful mixins by default.
   class Collection extends Chaplin.Collection
-    _.extend @prototype, activeSyncMachine
-    _.extend @prototype, safeSyncCallback
-    _.extend @prototype, serviceErrorCallback
-    _.extend @prototype, overrideXHR
-
-    advice.call @prototype # needs to come first
+    _.extend @prototype, activeSyncMachine, safeSyncCallback,
+      serviceErrorCallback, overrideXHR
+    advice.call @prototype
 
     model: Model
 
@@ -43,9 +40,9 @@ define (require) ->
     state: null
 
     ###*
-     # Default queryparam object for this collection.
-     # Must contain all possible querynewState.
-     # Override when necessary.
+     * Default queryparam object for this collection.
+     * Must contain all possible querynewState.
+     * Override when necessary.
     ###
     DEFAULTS:
       order: 'desc'
@@ -60,19 +57,14 @@ define (require) ->
     DEFAULTS_SERVER_MAP: {}
 
     ###*
-     * Return whether or not the prop/val is a default one.
-     * @param  {string}  prop - local formatted prop name
-     * @param  val  - Value of the property
-     * @return {Boolean}
+     * Strips the state from all undefined or default values
+     * @param  {Object} state
+     * @param  {Boolean} withDefaults=false whether defaults should be removed
     ###
-    _isDefault: (key, val) ->
-      serverKey = _.invert(@DEFAULTS_SERVER_MAP)[key] or key
-      _.isEqual @DEFAULTS[serverKey], val
-
     _stripState: (state, withDefaults=false) ->
-      _.omit state, (v, k) ->
-        v is undefined or (@_isDefault(k, v) and !withDefaults)
-      , this
+      _.omit state, (value, key) =>
+        value is undefined or
+          _.isEqual(@DEFAULTS[key], value) and !withDefaults
 
     ###*
      # Generate a state from the given and current states.
@@ -84,11 +76,7 @@ define (require) ->
      # @returns {object} state
     ###
     getState: (overrides={}, withDefaults=false) ->
-      defaults = _.mapKeys @DEFAULTS, (value, key) ->
-        @DEFAULTS_SERVER_MAP[key] or key
-      , this
-
-      state = _.extend {}, defaults, @state, overrides
+      state = _.extend {}, @DEFAULTS, @state, overrides
 
       # make sure only local properties are being passed in
       unless _.isEmpty _.intersection(
@@ -128,9 +116,8 @@ define (require) ->
       ) unless urlRoot
 
       # convert from local state keys to server state keys
-      queryState = _.mapKeys state, (value, key) ->
+      queryState = _.mapKeys state, (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
-      , this
 
       # format the url for the ajax call
       query = utils.querystring.stringify queryState

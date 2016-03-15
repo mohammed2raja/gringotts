@@ -46,21 +46,19 @@ define (require) ->
       if !state.sort_by
         throw new Error 'Please define a sort_by attribute within DEFAULTS'
 
-      _.transform @sortableTableHeaders, (result, v, k) ->
-        order = if k is state.sort_by then state.order else ''
-        nextOrder = if order is 'desc' then 'asc'
-        else if order is 'asc' then 'desc'
-        else @collection.DEFAULTS.order
-        result[k] =
+      _.transform @sortableTableHeaders, (result, title, column) =>
+        order = if column is state.sort_by then state.order else ''
+        nextOrder = if order is 'asc' then 'desc' else 'asc'
+        result[column] =
           viewId: @cid
-          attr: k
-          text: v
+          attr: column
+          text: title
           order: order
           routeName: @routeName
           routeParams: @routeParams
-          nextState: @collection.getState {order: nextOrder, sort_by: k}
+          nextState: @collection.getState order: nextOrder, sort_by: column
         result
-      , {}, this
+      , {}
 
     getTemplateData: ->
       sortInfo = @_getSortInfo()
