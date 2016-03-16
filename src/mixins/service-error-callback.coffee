@@ -6,7 +6,8 @@ define (require) ->
     return unless options
     callback = options.error
     options.error = ($xhr) =>
-      if $xhr.status isnt 0 # Don't trigger for canceled requests.
+      # Don't trigger for canceled requests.
+      if $xhr.status isnt 0 or $xhr.statusText is 'error'
         ctx = options.context or this
         callback?.apply ctx, arguments
         @abortSync?() # Removes loading indicators present.
