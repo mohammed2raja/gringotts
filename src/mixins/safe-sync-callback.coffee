@@ -16,6 +16,7 @@ define (require) ->
 
   # Filters deferred calbacks and cancels chain if model is disposed
   safeDeferred: ($xhr) ->
+    return unless $xhr
     filter = =>
       if @disposed
         $xhr.errorHandled = true # suppress all error notifications
