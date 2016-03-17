@@ -23,6 +23,15 @@ define (require) ->
       @$(".#{itemClassName.split(/\s+|\s+/).join('.')}").toggle !visible
       @$loading.toggle visible
 
+    # Generate the range string for pagination controls
+    _getPaginationString: (min, max, info) ->
+      strPath = if @infinitePagination then 'infinite' else 'total'
+      out = "#{[min, max].join '-'}"
+      out += " of #{info.count}" unless @infinitePagination
+      if I18n? then out = I18n.t "items.#{strPath}",
+        {start: min, end: max, total: info.count}
+      out
+
     _getPageInfo: ->
       state = @collection.getState {}, true
 
@@ -38,17 +47,26 @@ define (require) ->
         prev: false
         next: false
 
+      if @infinitePagination
+        if @collection.count is state.per_page
+          info.pages = state.page + 1
+          info.multiPaged = true
+        else
+          info.pages = state.page
+          info.multiPaged = false
+      else
+        info.multiPaged = info.count > info.perPage
+
       maxItems = info.pages * info.perPage
       max = Math.min @collection.count, info.page * info.perPage
       max = @collection.count if @collection.count is maxItems
       min = (info.page - 1) * info.perPage + 1
       min = Math.min min, max
-      info.range = [min, max].join '-'
       info.prev = state.page - 1 if state.page > 1
       info.next = state.page + 1 if state.page < info.pages
       info.routeName = @routeName
       info.routeParams = @routeParams
-      info.multiPaged = info.count > info.perPage
+      info.range = @_getPaginationString min, max, info
 
       info.nextState = if info.next
         @collection.getState page: info.next

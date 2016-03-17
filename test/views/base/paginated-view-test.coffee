@@ -29,6 +29,13 @@ define (require) ->
     listSelector: 'tbody'
     template: 'paginated-table-test'
 
+  class MockInfinitePaginatedView extends PaginatedView
+    stringTemplate.call @prorotype, {templatePath: 'test/templates'}
+    itemView: MockItemView
+    listSelector: 'tbody'
+    template: 'paginated-table-test'
+    infinitePagination: true
+
   describe 'Paginated View', ->
     collection = null
     view = null
@@ -63,24 +70,96 @@ define (require) ->
     it 'should render the next page link correctly', ->
       expect(utils.reverse).to.have.been.calledWith 'test', null, {page: 2}
 
-    it 'should correctly returns _getPageInfo', ->
-      expecting =
-        viewId: view.cid
-        count: 101
-        page: 1
-        perPage: 10
-        pages: Math.ceil(101 / 10)
-        prev: false
-        next: 2
-        range: '1-10'
-        routeName: 'test'
-        routeParams: undefined
-        multiPaged: true
-        nextState:
-          page: 2
-        prevState: {}
+    context 'pageInfo', ->
+      I18n = null
+      expecting = null
 
-      expect(view._getPageInfo()).to.eql expecting
+      beforeEach ->
+        I18n = t: (address, context) ->
+          i18ns = items:
+            infinite: "#{context.min}-#{context.max}"
+            total: "#{context.min}-#{context.max} of #{context.count}"
+          _.result i18ns, address
+
+        expecting =
+          viewId: view.cid
+          count: 101
+          page: 1
+          perPage: 10
+          pages: Math.ceil(101 / 10)
+          prev: false
+          next: 2
+          range: '1-10 of 101'
+          routeName: 'test'
+          routeParams: undefined
+          multiPaged: true
+          nextState:
+            page: 2
+          prevState: {}
+
+      afterEach ->
+        expecting = null
+        I18n = null
+
+      context 'with normal pagination', ->
+        it 'should correctly returns _getPageInfo', ->
+          expect(view._getPageInfo()).to.eql expecting
+
+        it 'should show the correct string', ->
+          expecting = '1-10 of 101'
+          expect(view.$('.pagination-controls strong').text()).to.eql expecting
+
+      context 'with infinite pagination', ->
+        beforeEach ->
+          collection.count = 10
+          expecting.count = 10
+          expecting.range = '1-10'
+          expecting.pages = 2
+          view.infinitePagination = true
+          view.renderControls()
+
+        afterEach ->
+          expecting.pages = 11
+          collection.count = 101
+          expecting.count = 101
+          expecting.range = '1-10 of 101'
+          view.infinitePagination = false
+
+        it 'should correctly return _getPageInfo', ->
+          expect(view._getPageInfo()).to.eql expecting
+
+        it 'should show the correct string', ->
+          expecting = '1-10'
+          expect(view.$('.pagination-controls strong').text()).to.eql expecting
+
+      context 'without I18n', ->
+        oldI18n = null
+        beforeEach ->
+          oldI18n = I18n
+          I18n = null
+        afterEach ->
+          I18n = oldI18n
+          oldI18n = null
+
+        context 'with normal pagination', ->
+          it 'should correctly return page info', ->
+            expect(view._getPageInfo()).to.eql expecting
+
+        context 'with infinite pagination', ->
+          beforeEach ->
+            view.infinitePagination = true
+            collection.count = 10
+            expecting.pages = 2
+            expecting.count = 10
+            expecting.range = '1-10'
+          afterEach ->
+            view.infinitePagination = false
+            expecting.pages = 11
+            expecting.range = '1-10 of 101'
+            expecting.count = 101
+            collection.count = 101
+          it 'should correctly return _getPageInfo', ->
+            expect(view._getPageInfo()).to.eql expecting
 
     it 'should set the convenience className', ->
       expect(view.className).to.equal 'paginated-table-test'
@@ -120,7 +199,7 @@ define (require) ->
           pages: Math.ceil(101 / 10)
           prev: 2
           next: 4
-          range: '21-30'
+          range: '21-30 of 101'
           routeName: 'test'
           multiPaged: true
           routeParams: undefined
