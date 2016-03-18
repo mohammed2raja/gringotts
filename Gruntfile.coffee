@@ -146,19 +146,16 @@ module.exports = (grunt) ->
 
     concurrent:
       pipe:
-        tasks: ['server', 'watch']
+        tasks: ['connect', 'watch']
         options:
           logConcurrentOutput: yes
 
-    server:
-      options:
-        host: '127.0.0.1'
-        index: 'test/index.html'
-        port: 8000
-
-      release:
+    connect:
+      server:
         options:
-          prefix: 'public/'
+          base: ['public', 'test']
+          port: 8000
+          keepalive: true
 
     # Only run tasks on modified files.
     watch:
