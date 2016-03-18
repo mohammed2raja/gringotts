@@ -7,7 +7,7 @@ Handlebars.registerPartial("pagination", Handlebars.template({"1":function(conta
 
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.routeName : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"2":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3=container.escapeExpression, alias4="function";
+    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3=container.escapeExpression;
 
   return "\n    <a href=\""
     + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.prevState : depth0),{"name":"url","hash":{},"data":data}))
@@ -16,9 +16,7 @@ Handlebars.registerPartial("pagination", Handlebars.template({"1":function(conta
     + "\">\n      "
     + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"thin-arrow","rotate-left",{"name":"icon","hash":{},"data":data}))
     + "\n    </a>\n    <strong>"
-    + alias3(((helper = (helper = helpers.range || (depth0 != null ? depth0.range : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"range","hash":{},"data":data}) : helper)))
-    + " of "
-    + alias3(((helper = (helper = helpers.count || (depth0 != null ? depth0.count : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"count","hash":{},"data":data}) : helper)))
+    + alias3(((helper = (helper = helpers.range || (depth0 != null ? depth0.range : depth0)) != null ? helper : alias2),(typeof helper === "function" ? helper.call(alias1,{"name":"range","hash":{},"data":data}) : helper)))
     + "</strong>\n    <a href=\""
     + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextState : depth0),{"name":"url","hash":{},"data":data}))
     + "\"\n       class=\"next-page "

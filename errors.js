@@ -9,9 +9,10 @@
       reqTimeout: 10000
     };
     _parseResponse = function($xhr) {
+      var error;
       try {
         return utils.parseJSON($xhr.responseText);
-      } catch (_error) {
+      } catch (error) {
         return null;
       }
     };

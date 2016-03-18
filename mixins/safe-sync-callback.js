@@ -22,6 +22,9 @@
       },
       safeDeferred: function($xhr) {
         var deferred, filter;
+        if (!$xhr) {
+          return;
+        }
         filter = (function(_this) {
           return function() {
             if (_this.disposed) {

@@ -10,7 +10,7 @@
         return options.error = (function(_this) {
           return function($xhr) {
             var ctx;
-            if ($xhr.status !== 0) {
+            if ($xhr.status !== 0 || $xhr.statusText === 'error') {
               ctx = options.context || _this;
               if (callback != null) {
                 callback.apply(ctx, arguments);

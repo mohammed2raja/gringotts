@@ -33,6 +33,23 @@
         return this.$loading.toggle(visible);
       };
 
+      PaginatedView.prototype._getPaginationString = function(min, max, info) {
+        var out, strPath;
+        strPath = this.infinitePagination ? 'infinite' : 'total';
+        out = "" + ([min, max].join('-'));
+        if (!this.infinitePagination) {
+          out += " of " + info.count;
+        }
+        if (typeof I18n !== "undefined" && I18n !== null) {
+          out = I18n.t("items." + strPath, {
+            start: min,
+            end: max,
+            total: info.count
+          });
+        }
+        return out;
+      };
+
       PaginatedView.prototype._getPageInfo = function() {
         var info, max, maxItems, min, state;
         state = this.collection.getState({}, true);
@@ -48,6 +65,17 @@
           prev: false,
           next: false
         };
+        if (this.infinitePagination) {
+          if (this.collection.count === state.per_page) {
+            info.pages = state.page + 1;
+            info.multiPaged = true;
+          } else {
+            info.pages = state.page;
+            info.multiPaged = false;
+          }
+        } else {
+          info.multiPaged = info.count > info.perPage;
+        }
         maxItems = info.pages * info.perPage;
         max = Math.min(this.collection.count, info.page * info.perPage);
         if (this.collection.count === maxItems) {
@@ -55,7 +83,6 @@
         }
         min = (info.page - 1) * info.perPage + 1;
         min = Math.min(min, max);
-        info.range = [min, max].join('-');
         if (state.page > 1) {
           info.prev = state.page - 1;
         }
@@ -64,7 +91,7 @@
         }
         info.routeName = this.routeName;
         info.routeParams = this.routeParams;
-        info.multiPaged = info.count > info.perPage;
+        info.range = this._getPaginationString(min, max, info);
         info.nextState = info.next ? this.collection.getState({
           page: info.next
         }) : this.collection.getState();
