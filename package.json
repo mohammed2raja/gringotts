@@ -6,13 +6,13 @@
   "repository": "https://github.com/lookout/gringotts.git",
   "bugs": {
       "url": "https://github.com/lookout/gringotts/issues",
-      "email": "Alan Wong <alan@lookout.com> (http://github.com/naganowl)"
+      "email": "Eugene Tiutiunnyk <eugene.tiutiunnyk@lookout.com> (http://github.com/eugenet8k)"
   },
   "contributors": [
     "Alan Wong <alan@lookout.com> (http://github.com/naganowl)",
     "Benjamin Zalasky <benjamin.zalasky@lookout.com> (http://github.com/bzalasky)",
     "Dan Evans <dan.evans@lookout.com> (http://github.com/danevans)",
-    "Eugene Tiutiunnyk (http://github.com/eugenet8k)",
+    "Eugene Tiutiunnyk <eugene.tiutiunnyk@lookout.com> (http://github.com/eugenet8k)",
     "John Sphar (http://github.com/obimod)"
   ],
   "licenses": [
@@ -22,7 +22,7 @@
     }
   ],
   "engines": {
-    "node": "~0.6.10 || 0.8 || 0.9"
+    "node": ">=5.0"
   },
   "scripts": {
     "test": "grunt test:ci"
