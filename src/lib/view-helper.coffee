@@ -39,10 +39,13 @@ define (require) ->
     new Handlebars.SafeString icon[0].outerHTML
 
   # Format time by passing in the format string.
+  # The default input parsing format is ISO.
   #
   # **e.g.** `ll, h:mm:ss a`
-  Handlebars.registerHelper 'dateFormat', (time, format) ->
-    moment(time).format(format)
+  Handlebars.registerHelper 'dateFormat', (opts...) ->
+    [time, format, inputFormat] = _.initial opts
+    hbsOpts = _.last opts
+    moment(time, inputFormat or moment.ISO_8601).format(format)
 
   # Output a link to an email address with the address as the text
   Handlebars.registerHelper 'mailTo', (email) ->

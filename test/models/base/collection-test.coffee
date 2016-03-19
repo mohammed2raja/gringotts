@@ -123,18 +123,6 @@ define (require) ->
         it 'should not fetch from the server', ->
           expect(collection.fetch).to.have.not.beenCalled
 
-      context.skip 'on multiple state sets', ->
-        beforeEach ->
-          sinon.stub collection, 'fetch'
-          collection.setState {}
-          collection.setState {}
-          server.respond()
-        afterEach ->
-          collection.fetch.restore()
-
-        it 'should not fetch after being synced', ->
-          expect(collection.fetch).to.have.not.been.called
-
     context 'upon disposal', ->
       beforeEach ->
         collection = new MockCollection data

@@ -87,9 +87,14 @@ define (require) ->
         it 'should add attributes', ->
           expect($ icon.string).to.have.attr 'title', 'My Title'
 
-    it 'should format date correctly', ->
-      timeStamp = Handlebars.helpers.dateFormat '1969-12-31', 'l'
+    it 'should format date correctly with default input format', ->
+      timeStamp = Handlebars.helpers.dateFormat '1969-12-31', 'l', {}
       expect(timeStamp).to.equal '12/31/1969'
+
+    it 'should format date correctly with custom input format', ->
+      timeStamp = Handlebars.helpers.dateFormat '26/11/1982', 'l',
+        'DD/MM/YYYY', {}
+      expect(timeStamp).to.equal '11/26/1982'
 
     context 'mail helper', ->
       $el = null
