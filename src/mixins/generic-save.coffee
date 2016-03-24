@@ -12,11 +12,10 @@ define (require) ->
     @makeEditable? opts unless $xhr
 
     if $xhr?.status is 406
-      response = utils.parseJSON $xhr.responseText
-      message = response?.errors[opts.attribute]
-      if message
-        $xhr.errorHandled = true
-        @publishEvent 'notify', message, classes: 'alert-danger'
+      if response = utils.parseJSON $xhr.responseText
+        if message = response.errors[opts.attribute]
+          @publishEvent 'notify', message, classes: 'alert-danger'
+          $xhr.errorHandled = true
 
   genericSave: (opts) ->
     # The model should already have been validated

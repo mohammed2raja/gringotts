@@ -87,7 +87,7 @@ define (require) ->
       it 'should not handle error', ->
         expect(xhr.errorHandled).to.be.undefined
 
-      context 'if it is validation', ->
+      context 'with a correct validation info', ->
         before ->
           status = 406
           responseText = JSON.stringify errors: name: 'Invalid Value'
@@ -101,6 +101,17 @@ define (require) ->
 
         it 'should handle error', ->
           expect(xhr.errorHandled).to.be.true
+
+      context 'with an incomplete validation info', ->
+        before ->
+          status = 406
+          responseText = ''
+        after ->
+          status = undefined
+          responseText = undefined
+
+        it 'should not handle error', ->
+          expect(xhr.errorHandled).to.be.undefined
 
     context 'with delayed save', ->
       before -> customOpts = delayedSave: yes
