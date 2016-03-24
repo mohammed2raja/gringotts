@@ -13,8 +13,6 @@
 #
 # `id` and `class` attributes will use the appropriate selectors.
 define (require) ->
-  _ = require 'underscore'
-
   # Map of the different methods for each attribute type.
   selectorFns =
     id: (field) -> "##{field}"

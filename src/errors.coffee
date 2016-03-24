@@ -2,7 +2,6 @@
 # application.coffee where invoking it in an init block will attach itself once
 # globally.
 define (require) ->
-  _ = require 'underscore'
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
 

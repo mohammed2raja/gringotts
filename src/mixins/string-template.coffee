@@ -9,18 +9,14 @@
 define (require) ->
 
   # Precompiled templates function initializer.
-  getTemplateFunction = (templatePath='') ->
-    template = @template
-    if template
-      tObj = require(templatePath)[template]
+  getTemplateFunction: ->
+    if @template
+      tObj = require(@templatePath)[@template]
       if tObj
         tObj
       else
-        errStr = "The template file #{templatePath}/#{template} doesn't exist."
+        errStr = "The template file #{@templatePath}/#{@template}
+          doesn't exist."
         throw new Error errStr
 
-  (opts={}) ->
-    @getTemplateFunction = ->
-      getTemplateFunction.call this, opts.templatePath or 'templates'
-
-    this
+  templatePath: 'templates'

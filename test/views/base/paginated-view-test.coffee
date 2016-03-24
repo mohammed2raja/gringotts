@@ -24,16 +24,20 @@ define (require) ->
       @activateSyncMachine()
 
   class MockPaginatedView extends PaginatedView
-    stringTemplate.call @prototype, {templatePath: 'test/templates'}
+    _.extend @prototype, stringTemplate
+
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'
+    templatePath: 'test/templates'
 
   class MockInfinitePaginatedView extends PaginatedView
-    stringTemplate.call @prorotype, {templatePath: 'test/templates'}
+    _.extend @prototype, stringTemplate
+
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'
+    templatePath: 'test/templates'
     infinitePagination: true
 
   describe 'Paginated View', ->

@@ -18,7 +18,7 @@ define (require) ->
         $xhr.errorHandled = true
         @publishEvent 'notify', message, classes: 'alert-danger'
 
-  genericSave = (opts) ->
+  genericSave: (opts) ->
     # The model should already have been validated
     # by the editable mixin.
     opts = _.extend {}, _.omit(opts, ['success']),
@@ -35,5 +35,3 @@ define (require) ->
       opts.model.save opts.attribute, opts.value, opts
       .done => @publishEvent 'notify', opts.saveMessage
       .fail ($xhr) => _revertChanges.call this, opts, $xhr
-
-  {genericSave}

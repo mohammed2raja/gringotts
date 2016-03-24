@@ -3,8 +3,10 @@ define (require) ->
   View = require 'views/base/view'
 
   class MockView extends View
-    stringTemplate.call @prototype, {templatePath: 'backbone'}
+    _.extend @prototype, stringTemplate
+
     template: 'VERSION'
+    templatePath: 'backbone'
 
   describe 'String template mixin', ->
     view = null

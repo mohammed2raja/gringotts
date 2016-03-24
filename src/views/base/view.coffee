@@ -5,8 +5,8 @@ define (require) ->
   stringTemplate = require '../../mixins/string-template'
 
   class View extends Chaplin.View
+    _.extend @prototype, stringTemplate
     advice.call @prototype
-    stringTemplate.call @prototype
     convenienceClass.call @prototype
 
     autoRender: yes

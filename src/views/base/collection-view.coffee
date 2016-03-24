@@ -11,8 +11,8 @@ define (require) ->
    * @param {string} template
   ###
   class CollectionView extends Chaplin.CollectionView
+    _.extend @prototype, stringTemplate
     advice.call @prototype
-    stringTemplate.call @prototype
     convenienceClass.call @prototype
     errorToggleView.call @prototype
 

@@ -7,7 +7,6 @@
 # and specify a `message` to be passed with the event. If it's a function,
 # the first argument will be the model.
 define (require) ->
-  _ = require 'underscore'
   utils = require '../lib/utils'
   advice = require 'flight/advice'
 

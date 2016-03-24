@@ -17,9 +17,11 @@ define (require) ->
       sort_by: 'attrA'
 
   class MockCollectionView extends CollectionView
-    stringTemplate.call @prototype, {templatePath: 'test/templates'}
+    _.extend @prototype, stringTemplate
+
     itemView: MockItemView
     template: 'table-test'
+    templatePath: 'test/templates'
     listSelector: 'tbody'
     sortableTableHeaders:
       attrA: 'Attribute A'
