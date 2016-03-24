@@ -5,11 +5,10 @@
 # The specified function should return a truthy value only
 # if there is a problem (per Backbone conventions).
 define (require) ->
-  _ = require 'underscore'
-
   # Default validation criterion
   blank = (text) ->
-    text.length is 0
+    message = I18n?.t('error.validation.value_required') or 'Value Required'
+    message if text.length is 0
 
   (opts) ->
     # Map of attributes to validation method.
@@ -20,7 +19,7 @@ define (require) ->
       errors = _.reduce methods, (memo, name, attr) ->
         method = @[name] or blank
         # Only validate attributes passed in (including ones with falsy values)
-        modelErr = method.call(this, attrs[attr]) if attrs.hasOwnProperty attr
+        modelErr = method.call this, attrs[attr] if attrs.hasOwnProperty attr
         if modelErr
           foundError = yes
           memo[attr] = modelErr

@@ -4,33 +4,36 @@
 # Pass delayedSave true in options to turn on couple of secs delay before
 # saving update value on server. The notification with Undo will be shown.
 define (require) ->
-  _revertChanges = (opts) ->
+  utils = require 'lib/utils'
+
+  _revertChanges = (opts, $xhr) ->
     opts.$field?.text opts.original
     opts.$field?.attr 'href', opts.href if opts.href
-    @makeEditable? opts
+    @makeEditable? opts unless $xhr
+
+    if $xhr?.status is 406
+      response = utils.parseJSON $xhr.responseText
+      message = response?.errors[opts.attribute]
+      if message
+        $xhr.errorHandled = true
+        @publishEvent 'notify', message, classes: 'alert-danger'
 
   genericSave = (opts) ->
     # The model should already have been validated
     # by the editable mixin.
-    opts = _.extend {}, opts, validate: no
+    opts = _.extend {}, _.omit(opts, ['success']),
+      wait: yes, validate: no
     if opts.delayedSave
       @publishEvent 'notify', opts.saveMessage,
         _.extend {}, opts,
           success: ->
-            opts.model.save opts.attribute, opts.value,
-              _.extend {}, opts,
-                error: =>
-                  _revertChanges.call this, opts
+            opts.model.save opts.attribute, opts.value, opts
+            .fail ($xhr) => _revertChanges.call this, opts, $xhr
           undo: =>
             _revertChanges.call this, opts
     else
-      opts.model.save opts.attribute, opts.value,
-        _.extend {}, opts,
-          success: =>
-            @publishEvent 'notify', opts.saveMessage
-          error: =>
-            _revertChanges.call this, opts
+      opts.model.save opts.attribute, opts.value, opts
+      .done => @publishEvent 'notify', opts.saveMessage
+      .fail ($xhr) => _revertChanges.call this, opts, $xhr
 
-  ->
-    @genericSave = genericSave
-    this
+  {genericSave}

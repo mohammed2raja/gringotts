@@ -1,10 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  editable = require 'mixins/editable'
   FakeModel = require 'test/helpers/validate-model'
   FakeView = require 'test/helpers/editable-view'
 
   describe 'Editable callbacks', ->
+    server = null
     model = null
     view = null
     patch = null
@@ -32,6 +32,7 @@ define (require) ->
       field = null
 
     beforeEach ->
+      server = sinon.fakeServer.create()
       sinon.stub document, 'execCommand'
       model = new FakeModel
         name: 'Olivia Dunham'
@@ -57,6 +58,7 @@ define (require) ->
       enter = $.Event 'keydown', keyCode: 13
 
     afterEach ->
+      server.restore()
       document.execCommand.restore()
       enter = null
       view.dispose()
@@ -68,8 +70,6 @@ define (require) ->
       beforeEach ->
         sinon.spy view, 'publishEvent'
         sinon.spy model, 'save'
-        # prevent save from trying to hit a server
-        sinon.stub model, 'sync'
 
       beforeEach setupEditableBefore
       afterEach setupEditableAfter
@@ -81,6 +81,8 @@ define (require) ->
         describe 'success callback', ->
           beforeEach ->
             view.publishEvent.lastCall.args[2].success()
+            server.respondWith JSON.stringify domain_name: 'Peter Bishop'
+            server.respond()
 
           it 'saves the model', ->
             expect(model.save).to.have.been.calledWith 'name', value
@@ -113,6 +115,7 @@ define (require) ->
             describe 'after success', ->
               beforeEach ->
                 view.publishEvent.lastCall.args[2].success()
+                server.respond()
 
               it 'has saved both times', ->
                 expect(model.save).to.have.been.calledTwice

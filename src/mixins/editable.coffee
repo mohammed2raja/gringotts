@@ -1,8 +1,6 @@
 #coffeelint: disable=cyclomatic_complexity
 define (require) ->
 #coffeelint: enable=cyclomatic_complexity
-  _ = require 'underscore'
-
   DEFAULTS =
     errorClass: 'error-input'
 
@@ -18,6 +16,10 @@ define (require) ->
     opts.$field.removeClass opts.errorClass
       .removeAttr 'contenteditable'
       .off '.gringottsEditable'
+      .removeAttr 'data-toggle'
+      .removeAttr 'title'
+      .removeAttr 'data-original-title'
+      .tooltip 'destroy'
     opts.clean.call this, opts if opts.clean
     opts.$field
 
@@ -34,8 +36,11 @@ define (require) ->
       opts.$field.attr 'href', "//#{opts.value}"
 
   makeEditable = (opts) ->
+    # cancel if there are other active editable (due to validation errors)
+    return if $('[data-edit][contenteditable]').length
+
     opts.attribute = opts.$field.data 'edit'
-    opts.original = opts.model.get opts.attribute
+    opts.original = opts.model.get(opts.attribute) or ''
 
     # Setup event handlers for editable.
     opts.$field.attr 'contenteditable', yes
@@ -78,7 +83,12 @@ define (require) ->
     # We only want to validate specific attributes.
     errorExists = opts.model.validationError = opts.model.validate attrs
     if errorExists
-      opts.$field.text(opts.original).focus().addClass opts.errorClass
+      opts.$field.focus().addClass opts.errorClass
+      if _.isString errorExists[opts.attribute]
+        opts.$field.attr 'data-toggle', 'tooltip'
+          .attr 'title', errorExists[opts.attribute]
+        opts.$field.tooltip('show').data('bs.tooltip')
+        .tip().addClass 'error-tooltip'
       document.execCommand 'selectAll', no, null
       opts.error.call this, errorExists, opts if opts.error
     else
@@ -128,7 +138,5 @@ define (require) ->
       opts.model ||= @model
       @makeEditable opts
 
-  ->
-    @setupEditable = setupEditable
-    @makeEditable = makeEditable
-    this
+
+  {setupEditable, makeEditable}

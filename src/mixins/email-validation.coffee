@@ -11,8 +11,8 @@ define (require) ->
 
   ->
     @validateEmail = (email) ->
-      # False for valid emails to work with validate-attrs mixin.
-      !regex.test email
+      message = I18n?.t('error.validation.invalid_email') or 'Invalid Email'
+      message if !regex.test email
     @getEmailRegex = ->
       regex
 

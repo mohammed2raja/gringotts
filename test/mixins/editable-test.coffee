@@ -60,12 +60,12 @@ define (require) ->
       opts = null
       document.execCommand.restore()
 
-    it 'attaches a click handler', ->
+    it 'should attache a click handler', ->
       view.$('.edit-name').click()
       expect(view.$field()).to.have.attr 'contenteditable'
       expect(document.execCommand).to.have.been.called
 
-    describe 'optional model defined', ->
+    context 'optional model defined', ->
       otherModel = null
 
       before ->
@@ -81,54 +81,54 @@ define (require) ->
         otherModel.dispose()
         otherModel = null
 
-      it 'makes editable', ->
+      it 'should make editable', ->
         expect(otherModel.validate).to.have.been.called
 
-    describe 'editing the name field', ->
+    context 'editing the name field', ->
       beforeEach ->
         sinon.spy model, 'validate'
 
       beforeEach setupEditableBefore
       afterEach setupEditableAfter
 
-      describe 'then pressing enter', ->
-        it 'persists the data', ->
+      context 'then pressing enter', ->
+        it 'should persist the data', ->
           expect(view.$field()).to.contain 'Peter Bishop'
           expect(success).to.have.been.called
           expect(view.$field()).to.not.have.attr 'contenteditable'
 
-        it 'validates using the model', ->
+        it 'should validate using the model', ->
           expect(model.validate).to.have.been.called
 
-      describe 'then pressing escape', ->
+      context 'then pressing escape', ->
         before ->
           event = $.Event 'keydown', keyCode: 27
 
         after ->
           event = null
 
-        it 'reverts the data', ->
+        it 'should revert the data', ->
           expect(view.$field()).to.contain 'Olivia Dunham'
           expect(success).not.to.have.been.called
           expect(view.$field()).to.not.have.attr 'contenteditable'
           expect(model.validationError).to.be.null
 
-      describe 'then causing blur', ->
+      context 'then causing blur', ->
         before ->
           event = $.Event 'blur'
 
         after ->
           event = null
 
-        it 'persists the data', ->
+        it 'should persist the data', ->
           expect(view.$field()).to.contain 'Peter Bishop'
           expect(success).to.have.been.called
           expect(view.$field()).to.not.have.attr 'contenteditable'
 
-        it 'does not have an href', ->
+        it 'should not have an href', ->
           expect(view.$field()).not.to.have.attr 'href'
 
-      describe 'with a paste', ->
+      context 'with a paste', ->
         before ->
           event = $.Event 'paste'
           event.originalEvent = clipboardData: {getData: -> 'sesame'}
@@ -136,98 +136,100 @@ define (require) ->
         after ->
           event = null
 
-        it 'inserts the copied text', ->
+        it 'should insert the copied text', ->
           expect(document.execCommand).to.have.been.calledWith(
             'insertHTML', no, 'sesame'
           )
 
-      describe 'with an invalid value', ->
-        expectRevertData = ->
+      context 'with an invalid value', ->
+        expectNotRevertData = ->
           expect(success).not.to.have.been.called
           expect(error).to.have.been.called
-          expect(view.$field()).to.contain 'Olivia Dunham'
+          expect(view.$field()).to.have.text ''
           expect(view.$field()).to.have.class 'error-input'
-          expect(view.$field()).to.have.attr 'contenteditable'
+          expect(view.$field()).to.have.attr 'contenteditable', 'true'
+          expect(view.$field()).to.have.attr 'data-toggle', 'tooltip'
+          expect(view.$field()).to.have.attr 'data-original-title',
+            'attribute is empty'
         before ->
           value = ''
 
         after ->
           value = null
 
-        describe 'then pressing enter', ->
+        context 'then pressing enter', ->
           expectNoError = ->
             expect(view.$field()).to.not.have.class 'error-input'
             expect(view.$field()).to.not.have.attr 'contenteditable'
+            expect(view.$field()).to.not.have.attr 'data-toggle'
+            expect(view.$field()).to.not.have.attr 'data-original-title'
             expect(model.validationError).to.not.exist
 
-          it 'reverts the data', ->
-            expectRevertData.call this
+          it 'should not revert the data', ->
+            expectNotRevertData.call this
 
-          describe 'then fixing the error', ->
+          context 'then fixing the error', ->
             beforeEach ->
               view.$field().text('Walter Bishop').trigger enter
 
-            it 'removes the error class and saves', ->
+            it 'should remove the error class and saves', ->
               expect(success).to.have.been.called
               expect(error).to.have.been.calledOnce
               expectNoError.call this
 
-          describe 'then canceling edit', ->
+          context 'then canceling edit', ->
             beforeEach ->
               escape = $.Event 'keydown', keyCode: 27
               view.$field().trigger escape
 
-            it 'removes the error class and reverts', ->
+            it 'should remove the error class and reverts', ->
               expect(view.$field()).to.contain 'Olivia Dunham'
               expect(success).to.not.have.been.called
               expectNoError.call this
 
-        describe 'then causing blur', ->
+        context 'then causing blur', ->
           before ->
             event = $.Event 'blur'
 
           after ->
             event = null
 
-          it 'reverts the data', ->
-            expectRevertData.call this
+          it 'should revert the data', ->
+            expectNotRevertData.call this
 
-        describe 'and a custom error class', ->
+        context 'and a custom error class', ->
           before ->
             errorClass = 'my-error'
 
           after ->
-            errorClass = null
+            errorClass = undefined
 
-          describe 'then pressing enter', ->
-            it 'attaches the custom class', ->
+          context 'then pressing enter', ->
+            it 'should attache the custom class', ->
               expect(view.$field()).to.have.class 'my-error'
 
-        describe 'and multiple editable views', ->
+        context 'and multiple editable views', ->
           model2 = null
           view2 = null
 
-          before ->
-            # These objects will be created before model and view
+          beforeEach ->
             model2 = new FakeModel name: 'Phillip Broyles'
             view2 = new FakeView model: model2
             view2.setupEditable '.edit-name', '.name-field'
-
-          after ->
-            view2 = null
-            model2 = null
-
-          beforeEach ->
             view2.$('.edit-name').click()
             # Non-DOM fragments don't propagate a blur event on click.
             view.$('.name-field').blur()
 
+          afterEach ->
+            view2 = null
+            model2 = null
+
           # Focus from makeEditable click triggers another blur.
-          it 'restores the original and focuses the second one', ->
-            # Original is untouched.
-            expect(view.$field()).not.to.have.attr 'contenteditable'
-            expect(view.$field()).not.to.have.class 'error-input'
-            expect(view.$field()).to.contain 'Olivia Dunham'
+          it 'should keep the original and does not focus the second one', ->
+            # Original is with updated value.
+            expect(view.$field()).to.have.attr 'contenteditable'
+            expect(view.$field()).to.have.class 'error-input'
+            expect(view.$field()).to.have.text ''
             # Second view is being edited.
             expect(view2.$field()).to.have.attr 'contenteditable'
             expect(view2.$field()).to.not.have.class 'error-input'
@@ -240,38 +242,38 @@ define (require) ->
         after ->
           value = null
 
-        describe 'then pressing enter', ->
-          it 'does nothing', ->
+        context 'then pressing enter', ->
+          it 'should do nothing', ->
             expect(view.$field()).to.contain 'Olivia Dunham'
             expect(success).not.to.have.been.called
             expect(view.$field()).to.not.have.attr 'contenteditable'
 
-      describe 'with a numeric value', ->
+      context 'with a numeric value', ->
         before ->
           value = '1001'
 
         after ->
           value = null
 
-        describe 'then pressing enter', ->
-          it 'converts it to a number', ->
+        context 'then pressing enter', ->
+          it 'should convert it to a number', ->
             expect(view.$field()).to.contain '1001'
             expect(success).to.have.been.called
             args = success.lastCall.args[0]
             expect(args).to.have.property 'value', 1001
 
-    describe 'editing an email field', ->
+    context 'editing an email field', ->
       beforeEach ->
         view.setupEditable '.edit-email', '.email-field'
         view.$('.edit-email').click()
         view.$('.email-field').text 'olivia.dunham@effbeeeye.com'
         view.$('.email-field').trigger enter
 
-      it 'updates the href', ->
+      it 'should update the href', ->
         expect(view.$ '.email-field').to.have.attr('href')
           .and.to.equal 'mailto:olivia.dunham@effbeeeye.com'
 
-    describe 'editing a URL field', ->
+    context 'editing a URL field', ->
       url = null
 
       beforeEach ->
@@ -280,17 +282,17 @@ define (require) ->
         view.$('.url-field').text(url or 'http://olivia.com')
         view.$('.url-field').trigger enter
 
-      it 'updates the href', ->
+      it 'should update the href', ->
         expect(view.$ '.url-field').to.have.attr('href')
           .and.to.equal 'http://olivia.com'
 
-      describe 'without a protocol', ->
+      context 'without a protocol', ->
         before ->
           url = 'olivia.com'
 
         after ->
           url = null
 
-        it 'makes the href protocol relative', ->
+        it 'should make the href protocol relative', ->
           expect(view.$ '.url-field').to.have.attr('href')
             .and.to.equal '//olivia.com'

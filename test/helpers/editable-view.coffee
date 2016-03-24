@@ -4,7 +4,7 @@ define (require) ->
   genericSave = require 'mixins/generic-save'
 
   class FakeView extends Chaplin.View
-    mixin.call @prototype for mixin in [editable, genericSave]
+    _.extend @prototype, editable, genericSave
     autoRender: yes
     getTemplateFunction: ->
       (data) -> """

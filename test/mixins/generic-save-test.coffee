@@ -7,13 +7,15 @@ define (require) ->
     model = null
     opts = null
     customOpts = null
+    saveDeferred = null
 
-    beforeEach ->
+    beforeEach (done) ->
       view = new Chaplin.View()
       sinon.stub view, 'publishEvent'
       model = new Chaplin.Model()
-      sinon.stub model, 'save'
-      genericSave.call view
+      saveDeferred = $.Deferred()
+      sinon.stub model, 'save', -> saveDeferred
+      _.extend view, genericSave
       opts = _.extend {}, customOpts, {
         model
         saveMessage: 'Model saved'
@@ -26,6 +28,7 @@ define (require) ->
           attr: sinon.spy()
       }
       view.genericSave opts
+      done()
 
     afterEach ->
       model.save.restore()
@@ -62,20 +65,42 @@ define (require) ->
 
     context 'on save success', ->
       beforeEach ->
-        callOpts = model.save.getCall(0).args[2]
-        callOpts.success()
+        saveDeferred.resolve()
 
       it 'should send notification', ->
         expect(view.publishEvent).to.have.been
           .calledWith 'notify', opts.saveMessage
 
     context 'on save error', ->
+      xhr = null
+      status = undefined
+      responseText = undefined
+
       beforeEach ->
-        callOpts = model.save.getCall(0).args[2]
-        callOpts.error()
+        xhr = {status, responseText}
+        saveDeferred.reject xhr
+        return {} # avoid passing error promise to mocha
 
       it 'should revert changes', ->
-        expectRevertChanges.call this
+        expectRevertChanges()
+
+      it 'should not handle error', ->
+        expect(xhr.errorHandled).to.be.undefined
+
+      context 'if it is validation', ->
+        before ->
+          status = 406
+          responseText = JSON.stringify errors: name: 'Invalid Value'
+        after ->
+          status = undefined
+          responseText = undefined
+
+        it 'should send error notification', ->
+          expect(view.publishEvent).to.have.been.calledWith 'notify',
+            'Invalid Value', sinon.match.has 'classes', 'alert-danger'
+
+        it 'should handle error', ->
+          expect(xhr.errorHandled).to.be.true
 
     context 'with delayed save', ->
       before -> customOpts = delayedSave: yes
@@ -89,9 +114,10 @@ define (require) ->
           opts.saveMessage, sinon.match.has 'model', opts.model
 
       context 'on notification success', ->
-        beforeEach ->
+        beforeEach (done) ->
           callOpts = view.publishEvent.getCall(0).args[2]
           callOpts.success()
+          done()
 
         it 'should call save', ->
           expect(model.save).to.have.been
@@ -99,11 +125,11 @@ define (require) ->
 
         context 'on save error', ->
           beforeEach ->
-            callOpts = model.save.getCall(0).args[2]
-            callOpts.error()
+            saveDeferred.reject()
+            return {} # avoid passing error promise to mocha
 
           it 'should revert changes', ->
-            expectRevertChanges.call this
+            expectRevertChanges()
 
         context 'with custom options and validation', ->
           before ->
@@ -125,4 +151,4 @@ define (require) ->
           callOpts.undo()
 
         it 'should revert changes', ->
-          expectRevertChanges.call this
+          expectRevertChanges()
