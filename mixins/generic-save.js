@@ -18,13 +18,13 @@
         }
       }
       if (($xhr != null ? $xhr.status : void 0) === 406) {
-        response = utils.parseJSON($xhr.responseText);
-        message = response != null ? response.errors[opts.attribute] : void 0;
-        if (message) {
-          $xhr.errorHandled = true;
-          return this.publishEvent('notify', message, {
-            classes: 'alert-danger'
-          });
+        if (response = utils.parseJSON($xhr.responseText)) {
+          if (message = response.errors[opts.attribute]) {
+            this.publishEvent('notify', message, {
+              classes: 'alert-danger'
+            });
+            return $xhr.errorHandled = true;
+          }
         }
       }
     };
