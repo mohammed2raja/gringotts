@@ -1,7 +1,6 @@
 (function() {
   define(function(require) {
-    var _, errorBlock, genericErrMsg, genericError, parseErrors, selectedAttr, selector, selectorFns, specificError, specificErrors;
-    _ = require('underscore');
+    var errorBlock, genericErrMsg, genericError, parseErrors, selectedAttr, selector, selectorFns, specificError, specificErrors;
     selectorFns = {
       id: function(field) {
         return "#" + field;

@@ -1,7 +1,6 @@
 (function() {
   define(function(require) {
-    var Chaplin, DEFAULTS, _, _handle, _handle401, _handle403, _parseResponse, _resolveMessage, utils;
-    _ = require('underscore');
+    var Chaplin, DEFAULTS, _handle, _handle401, _handle403, _parseResponse, _resolveMessage, utils;
     Chaplin = require('chaplin');
     utils = require('lib/utils');
     DEFAULTS = {

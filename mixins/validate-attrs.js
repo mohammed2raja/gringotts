@@ -1,9 +1,12 @@
 (function() {
   define(function(require) {
-    var _, blank;
-    _ = require('underscore');
+    var blank;
     blank = function(text) {
-      return text.length === 0;
+      var message;
+      message = (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.validation.value_required') : void 0) || 'Value Required';
+      if (text.length === 0) {
+        return message;
+      }
     };
     return function(opts) {
       var methods;

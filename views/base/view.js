@@ -15,9 +15,9 @@
         return View.__super__.constructor.apply(this, arguments);
       }
 
-      advice.call(View.prototype);
+      _.extend(View.prototype, stringTemplate);
 
-      stringTemplate.call(View.prototype);
+      advice.call(View.prototype);
 
       convenienceClass.call(View.prototype);
 

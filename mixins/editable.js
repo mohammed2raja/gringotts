@@ -1,7 +1,6 @@
 (function() {
   define(function(require) {
-    var DEFAULTS, _, checkInput, cleanEl, convertNumber, makeEditable, setupEditable, updateLink;
-    _ = require('underscore');
+    var DEFAULTS, checkInput, cleanEl, convertNumber, makeEditable, setupEditable, updateLink;
     DEFAULTS = {
       errorClass: 'error-input'
     };
@@ -15,7 +14,7 @@
       }
     };
     cleanEl = function(opts) {
-      opts.$field.removeClass(opts.errorClass).removeAttr('contenteditable').off('.gringottsEditable');
+      opts.$field.removeClass(opts.errorClass).removeAttr('contenteditable').off('.gringottsEditable').removeAttr('data-toggle').removeAttr('title').removeAttr('data-original-title').tooltip('destroy');
       if (opts.clean) {
         opts.clean.call(this, opts);
       }
@@ -31,8 +30,11 @@
       }
     };
     makeEditable = function(opts) {
+      if ($('[data-edit][contenteditable]').length) {
+        return;
+      }
       opts.attribute = opts.$field.data('edit');
-      opts.original = opts.model.get(opts.attribute);
+      opts.original = opts.model.get(opts.attribute) || '';
       opts.$field.attr('contenteditable', true).focus().on('keydown.gringottsEditable', (function(_this) {
         return function(evt) {
           var keyCode;
@@ -63,7 +65,11 @@
       (attrs = {})[opts.attribute] = opts.value;
       errorExists = opts.model.validationError = opts.model.validate(attrs);
       if (errorExists) {
-        opts.$field.text(opts.original).focus().addClass(opts.errorClass);
+        opts.$field.focus().addClass(opts.errorClass);
+        if (_.isString(errorExists[opts.attribute])) {
+          opts.$field.attr('data-toggle', 'tooltip').attr('title', errorExists[opts.attribute]);
+          opts.$field.tooltip('show').data('bs.tooltip').tip().addClass('error-tooltip');
+        }
         document.execCommand('selectAll', false, null);
         if (opts.error) {
           return opts.error.call(this, errorExists, opts);
@@ -94,10 +100,9 @@
         return this.makeEditable(opts);
       });
     };
-    return function() {
-      this.setupEditable = setupEditable;
-      this.makeEditable = makeEditable;
-      return this;
+    return {
+      setupEditable: setupEditable,
+      makeEditable: makeEditable
     };
   });
 

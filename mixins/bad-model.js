@@ -1,7 +1,6 @@
 (function() {
   define(function(require) {
-    var DEFAULTS, _, advice, utils;
-    _ = require('underscore');
+    var DEFAULTS, advice, utils;
     utils = require('../lib/utils');
     advice = require('flight/advice');
     DEFAULTS = {

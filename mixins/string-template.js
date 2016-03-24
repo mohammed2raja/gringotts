@@ -1,30 +1,19 @@
 (function() {
   define(function(require) {
-    var getTemplateFunction;
-    getTemplateFunction = function(templatePath) {
-      var errStr, tObj, template;
-      if (templatePath == null) {
-        templatePath = '';
-      }
-      template = this.template;
-      if (template) {
-        tObj = require(templatePath)[template];
-        if (tObj) {
-          return tObj;
-        } else {
-          errStr = "The template file " + templatePath + "/" + template + " doesn't exist.";
-          throw new Error(errStr);
+    return {
+      getTemplateFunction: function() {
+        var errStr, tObj;
+        if (this.template) {
+          tObj = require(this.templatePath)[this.template];
+          if (tObj) {
+            return tObj;
+          } else {
+            errStr = "The template file " + this.templatePath + "/" + this.template + " doesn't exist.";
+            throw new Error(errStr);
+          }
         }
-      }
-    };
-    return function(opts) {
-      if (opts == null) {
-        opts = {};
-      }
-      this.getTemplateFunction = function() {
-        return getTemplateFunction.call(this, opts.templatePath || 'templates');
-      };
-      return this;
+      },
+      templatePath: 'templates'
     };
   });
 

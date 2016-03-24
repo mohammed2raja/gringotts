@@ -22,9 +22,9 @@
         return CollectionView.__super__.constructor.apply(this, arguments);
       }
 
-      advice.call(CollectionView.prototype);
+      _.extend(CollectionView.prototype, stringTemplate);
 
-      stringTemplate.call(CollectionView.prototype);
+      advice.call(CollectionView.prototype);
 
       convenienceClass.call(CollectionView.prototype);
 
