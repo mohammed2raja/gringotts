@@ -93,15 +93,12 @@ define (require) ->
       opts.error.call this, errorExists, opts if opts.error
     else
       cleanEl.call this, opts
-
+      # Type cast value as necessary.
+      opts.value = convertNumber opts.value
       unless opts.original is opts.value
         # For update/undo the link.
         opts.href = opts.$field.attr('href') or ''
-        # Type cast value as necessary.
-        opts.value = convertNumber opts.value
-
         opts.success.call this, opts if opts.success
-
         # Mirror content change to href attribute.
         updateLink opts if opts.href
 
