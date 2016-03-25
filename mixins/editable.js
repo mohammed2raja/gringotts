@@ -76,9 +76,9 @@
         }
       } else {
         cleanEl.call(this, opts);
+        opts.value = convertNumber(opts.value);
         if (opts.original !== opts.value) {
           opts.href = opts.$field.attr('href') || '';
-          opts.value = convertNumber(opts.value);
           if (opts.success) {
             opts.success.call(this, opts);
           }
