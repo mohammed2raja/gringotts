@@ -53,3 +53,57 @@ define (require) ->
       it 'should overrideXHR on fetch', ->
         expect(model.overrideXHR).to.have.been.
           calledWith(sinon.match.object).calledOnce
+
+    context 'safe save', ->
+      deferred = null
+      failSpy = null
+      validationError = null
+
+      beforeEach ->
+        sinon.stub model, 'publishEvent'
+        model.validate = -> validationError or 'Epic Fail!'
+        failSpy = sinon.spy()
+        deferred = model.save 'name', 'Eugene'
+        deferred.fail failSpy
+        return {} # to not pass failed deferred to mocha
+
+      afterEach ->
+        model.publishEvent.restore()
+
+      it 'should return deferred for save', ->
+        expect(deferred).to.be.not.false
+
+      it 'should trigger fail promise', ->
+        expect(failSpy).to.have.been.calledWith error: 'Epic Fail!'
+
+      it 'should notify validation error', ->
+        expect(model.publishEvent).to.have.been.calledWith 'notify',
+          'Epic Fail!'
+
+      context 'with complex validation error for current attr', ->
+        before ->
+          validationError = name: 'Epic Fail!'
+
+        after ->
+          validationError = null
+
+        it 'should trigger fail promise', ->
+          expect(failSpy).to.have.been.calledWith error: name: 'Epic Fail!'
+
+        it 'should notify validation error', ->
+          expect(model.publishEvent).to.have.been.calledWith 'notify',
+            'Epic Fail!'
+
+      context 'with complex validation error for random attr', ->
+        before ->
+          validationError = code: 'Crazy mistake', email: 'Epic Fail!'
+
+        after ->
+          validationError = null
+
+        it 'should trigger fail promise', ->
+          expect(failSpy).to.have.been.calledWith error: validationError
+
+        it 'should notify validation error', ->
+          expect(model.publishEvent).to.have.been.calledWith 'notify',
+            'Crazy mistake'

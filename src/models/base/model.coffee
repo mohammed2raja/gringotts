@@ -14,6 +14,19 @@ define (require) ->
       super
       @activateSyncMachine()
 
+    save: (key, val, options) ->
+      super or $.Deferred() # handling validation false result
+        .reject error: @validationError
+        .always =>
+          return unless @validationError
+          @publishEvent 'notify',
+            @validationError[key] or
+              if _.isObject @validationError
+              then _.first _.values @validationError
+              else @validationError,
+            classes: 'alert-danger'
+        .promise()
+
     sync: ->
       @safeSyncCallback.apply this, arguments
       @safeDeferred super

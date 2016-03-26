@@ -16,7 +16,7 @@ define (require) ->
     # Inlined to bind methods to the host object.
     @validate = (attrs, options) ->
       foundError = no
-      errors = _.reduce methods, (memo, name, attr) ->
+      errors = _.reduce methods, (memo, name, attr) =>
         method = @[name] or blank
         # Only validate attributes passed in (including ones with falsy values)
         modelErr = method.call this, attrs[attr] if attrs.hasOwnProperty attr
@@ -24,7 +24,7 @@ define (require) ->
           foundError = yes
           memo[attr] = modelErr
         memo
-      , {}, this
+      , {}
       # Return falsy value if there are no errors.
       errors if foundError
 
