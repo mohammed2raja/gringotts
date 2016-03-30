@@ -14,18 +14,20 @@
       this.validate = function(attrs, options) {
         var errors, foundError;
         foundError = false;
-        errors = _.reduce(methods, function(memo, name, attr) {
-          var method, modelErr;
-          method = this[name] || blank;
-          if (attrs.hasOwnProperty(attr)) {
-            modelErr = method.call(this, attrs[attr]);
-          }
-          if (modelErr) {
-            foundError = true;
-            memo[attr] = modelErr;
-          }
-          return memo;
-        }, {}, this);
+        errors = _.reduce(methods, (function(_this) {
+          return function(memo, name, attr) {
+            var method, modelErr;
+            method = _this[name] || blank;
+            if (attrs.hasOwnProperty(attr)) {
+              modelErr = method.call(_this, attrs[attr]);
+            }
+            if (modelErr) {
+              foundError = true;
+              memo[attr] = modelErr;
+            }
+            return memo;
+          };
+        })(this), {});
         if (foundError) {
           return errors;
         }

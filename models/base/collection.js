@@ -129,7 +129,11 @@
         this.trigger('stateChange', this, this.state);
         return this.fetch({
           reset: true
-        });
+        }).fail((function(_this) {
+          return function() {
+            return _this.reset();
+          };
+        })(this));
       };
 
       Collection.prototype.sync = function() {

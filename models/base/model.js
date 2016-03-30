@@ -25,6 +25,21 @@
         return this.activateSyncMachine();
       };
 
+      Model.prototype.save = function(key, val, options) {
+        return Model.__super__.save.apply(this, arguments) || $.Deferred().reject({
+          error: this.validationError
+        }).always((function(_this) {
+          return function() {
+            if (!_this.validationError) {
+              return;
+            }
+            return _this.publishEvent('notify', _this.validationError[key] || (_.isObject(_this.validationError) ? _.first(_.values(_this.validationError)) : _this.validationError), {
+              classes: 'alert-danger'
+            });
+          };
+        })(this)).promise();
+      };
+
       Model.prototype.sync = function() {
         this.safeSyncCallback.apply(this, arguments);
         return this.safeDeferred(Model.__super__.sync.apply(this, arguments));

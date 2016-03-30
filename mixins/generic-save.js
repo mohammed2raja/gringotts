@@ -3,7 +3,7 @@
     var _revertChanges, utils;
     utils = require('lib/utils');
     _revertChanges = function(opts, $xhr) {
-      var message, ref, ref1, response;
+      var message, ref, ref1, ref2, ref3, response;
       if ((ref = opts.$field) != null) {
         ref.text(opts.original);
       }
@@ -17,9 +17,9 @@
           this.makeEditable(opts);
         }
       }
-      if (($xhr != null ? $xhr.status : void 0) === 406) {
+      if ((ref2 = $xhr != null ? $xhr.status : void 0) === 400 || ref2 === 406) {
         if (response = utils.parseJSON($xhr.responseText)) {
-          if (message = response.errors[opts.attribute]) {
+          if (message = response.error || ((ref3 = response.errors) != null ? ref3[opts.attribute] : void 0)) {
             this.publishEvent('notify', message, {
               classes: 'alert-danger'
             });
