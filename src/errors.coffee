@@ -5,10 +5,6 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
 
-  DEFAULTS =
-    classes: 'alert-danger'
-    reqTimeout: 10000
-
   _parseResponse = ($xhr) ->
     try
       return utils.parseJSON $xhr.responseText
@@ -22,13 +18,11 @@ define (require) ->
   # Session Expired handler
   ##
   _handle401 = (context, $xhr) ->
-    response = _parseResponse $xhr
-    if response.CODE is 'SESSION_EXPIRED'
-      # Since the session is now expired reloading a page will trigger an
-      # auth check and bounce the user to the login page. Because of that
-      # after they successfully log back in they should be redirected back
-      # here.
-      (context or window).location.reload()
+    # Since the session is now expired reloading a page will trigger an
+    # auth check and bounce the user to the login page. Because of that
+    # after they successfully log back in they should be redirected back
+    # here.
+    (context or window).location.reload()
 
   ##
   # Access Denied handler
@@ -39,7 +33,8 @@ define (require) ->
     message = _resolveMessage(response) or
       I18n?.t('error.no_access') or
       "Sorry, you don't have access to that section of the application."
-    (context or Chaplin.EventBroker).publishEvent 'notify', message, DEFAULTS
+    (context or Chaplin.EventBroker).publishEvent 'notify',
+      message, classes: 'alert-danger'
     $xhr.errorHandled = true
 
   ##
@@ -50,7 +45,8 @@ define (require) ->
     message = _resolveMessage(response) or
       I18n?.t('error.notification') or
       'There was a problem communicating with the server.'
-    (context or Chaplin.EventBroker).publishEvent 'notify', message, DEFAULTS
+    (context or Chaplin.EventBroker).publishEvent 'notify', message,
+      classes: 'alert-danger'
     $xhr.errorHandled = true
 
   setupErrorHandling: (context) ->

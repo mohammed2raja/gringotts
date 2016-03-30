@@ -45,7 +45,6 @@ define (require) ->
       collection = new MockCollection data
       view = new MockCollectionView _.extend {},
         {collection: collection, routeName: 'test'}, viewConfig
-      collection.setState {}
       collection.trigger 'sync', collection
       server.respond()
 

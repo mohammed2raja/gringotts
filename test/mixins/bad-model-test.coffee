@@ -1,21 +1,24 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
-  advice = require 'mixins/advice'
   badModel = require 'mixins/bad-model'
+
+  class MockView extends Chaplin.View
+    _.extend @prototype, badModel
+
+    listen:
+      'error model': 'badModelHandler'
 
   describe 'Bad model mixin', ->
     view = null
     model = null
 
-    setupListeners = ->
-      view.delegateListeners()
-      model.trigger 'error', model, status: 404
+    triggerError = (xhr=status: 404) ->
+      model.trigger 'error', model, xhr
 
     beforeEach ->
       model = new Chaplin.Model {id: 56}
-      view = new Chaplin.View {model}
-      advice.call view
+      view = new MockView {model}
       sinon.stub utils, 'redirectTo'
       sinon.stub view, 'publishEvent'
 
@@ -25,43 +28,24 @@ define (require) ->
       model.dispose()
 
     context 'informs user of error', ->
-      beforeEach ->
-        badModel.call view
-        view.delegateListeners()
-
       defaultExpects = ->
         expect(utils.redirectTo.lastCall).to.be.calledWith ''
         expect(view.publishEvent.lastCall).to.be.calledWith 'notify'
         # Default message contains model ID.
         expect(view.publishEvent.lastCall.args[1]).to.be.contain model.id
 
-      context 'for 400s', ->
-        xhr = null
-
-        beforeEach ->
-          xhr = status: 400
-          model.trigger 'error', model, xhr
-        afterEach ->
-          xhr = null
-
-        it 'should redirect and publish event', ->
-          defaultExpects.call this
-
-        it 'should mark xhr as errorHandled', ->
-          expect(xhr).to.have.property('errorHandled').
-            and.equal true
-
       context 'for 403s', ->
         xhr = null
 
         beforeEach ->
           xhr = status: 403
-          model.trigger 'error', model, xhr
+          triggerError xhr
+
         afterEach ->
           xhr = null
 
         it 'should redirect and publish event', ->
-          defaultExpects.call this
+          defaultExpects()
 
         it 'should mark xhr as errorHandled', ->
           expect(xhr).to.have.property('errorHandled').
@@ -77,50 +61,42 @@ define (require) ->
           xhr = null
 
         it 'should redirect and publish event', ->
-          defaultExpects.call this
+          defaultExpects()
 
         it 'should mark xhr as errorHandled', ->
           expect(xhr).to.have.property('errorHandled').
             and.equal true
 
     it 'should redirect to the specified route', ->
-      badModel.call view, route: '66'
-      setupListeners.call this
+      view.badModelOpts = route: '66'
+      triggerError()
       expect(utils.redirectTo).to.be.calledWith '66'
 
     it 'should display specified message', ->
-      badModel.call view, message: 'oops'
-      setupListeners.call this
+      view.badModelOpts = message: 'oops'
+      triggerError()
       expect(view.publishEvent.lastCall.args[1]).to.be.equal 'oops'
 
     it 'should invoke message as a method if appropriate', ->
       message = sinon.spy()
-      badModel.call view, {message}
-      setupListeners.call this
+      view.badModelOpts = {message}
+      triggerError()
       expect(message).to.be.calledWith model
 
     it 'should invoke route as a method if appropriate', ->
       route = sinon.spy()
-      badModel.call view, {route}
-      setupListeners.call this
+      view.badModelOpts = {route}
+      triggerError()
       expect(route).to.be.calledWith model
 
     it 'should pass route result to redirect call', ->
-      badModel.call view, route: -> ['name', id: 1]
-      setupListeners.call this
+      view.badModelOpts = route: -> ['name', id: 1]
+      triggerError()
       args = utils.redirectTo.lastCall.args
       expect(args[0]).to.equal 'name'
       expect(args[1]).to.eql id: 1
 
-    it 'should allow notify options to be passed in', ->
-      badModel.call view, evtOpts: {'hey'}
-      setupListeners.call this
-      expect(view.publishEvent.lastCall.args[2].hey).to.equal 'hey'
-
     it 'should use default options for notify', ->
-      badModel.call view
-      # Invoke manually since it normally would be mixed in at declaration.
-      setupListeners.call this
+      triggerError()
       defaults = view.publishEvent.lastCall.args[2]
       expect(defaults.classes).to.exist
-      expect(defaults.reqTimeout).to.exist

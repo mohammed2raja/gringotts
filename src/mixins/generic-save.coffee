@@ -11,9 +11,9 @@ define (require) ->
     opts.$field?.attr 'href', opts.href if opts.href
     @makeEditable? opts unless $xhr
 
-    if $xhr?.status is 406
+    if $xhr?.status in [400, 406]
       if response = utils.parseJSON $xhr.responseText
-        if message = response.errors[opts.attribute]
+        if message = response.error or response.errors?[opts.attribute]
           @publishEvent 'notify', message, classes: 'alert-danger'
           $xhr.errorHandled = true
 

@@ -92,9 +92,8 @@ define (require) ->
     setState: (state={}) ->
       @state = @_stripState state
       @trigger 'stateChange', this, @state
-
-      # if it's a remote sort, always fetch
-      @fetch {reset: true}
+      @fetch reset: true
+      .fail => @reset()
 
     sync: ->
       @serviceErrorCallback.apply this, arguments

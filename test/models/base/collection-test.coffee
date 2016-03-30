@@ -112,17 +112,6 @@ define (require) ->
           expecting = ['/test', '?', 'sort_by=attrB', 'order=desc']
           testRequest expecting, server.requests[0]
 
-      context 'setting the state without a state change', ->
-        beforeEach ->
-          sinon.stub collection, 'fetch'
-          collection.setState {}
-          server.respond()
-        afterEach ->
-          collection.fetch.restore()
-
-        it 'should not fetch from the server', ->
-          expect(collection.fetch).to.have.not.beenCalled
-
     context 'upon disposal', ->
       beforeEach ->
         collection = new MockCollection data
