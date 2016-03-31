@@ -122,18 +122,19 @@
        */
 
       Collection.prototype.setState = function(state) {
+        var ref;
         if (state == null) {
           state = {};
         }
         this.state = this._stripState(state);
         this.trigger('stateChange', this, this.state);
-        return this.fetch({
+        return (ref = this.fetch({
           reset: true
-        }).fail((function(_this) {
+        })) != null ? ref.fail((function(_this) {
           return function() {
             return _this.reset();
           };
-        })(this));
+        })(this)) : void 0;
       };
 
       Collection.prototype.sync = function() {
