@@ -92,8 +92,7 @@ define (require) ->
     setState: (state={}) ->
       @state = @_stripState state
       @trigger 'stateChange', this, @state
-      @fetch reset: true
-      .fail => @reset()
+      @fetch(reset: true)?.fail => @reset()
 
     sync: ->
       @serviceErrorCallback.apply this, arguments

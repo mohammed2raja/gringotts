@@ -139,3 +139,16 @@ define (require) ->
 
       it 'should raise stateChange event', ->
         expect(spy).to.have.been.calledWith collection, {a:'b'}
+
+    context 'on fetch fail', ->
+      beforeEach ->
+        collection = new MockCollection data
+        collection.setState {}
+        server.respondWith [500, {}, '{}']
+        server.respond()
+
+      afterEach ->
+        collection.dispose()
+
+      it 'should reset all existing items', ->
+        expect(collection.length).to.equal 0
