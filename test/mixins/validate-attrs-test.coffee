@@ -78,3 +78,9 @@ define (require) ->
       model.validateName = ->
         'name too long' if @get('name').length > 5
       expect(model.isValid()).to.be.false
+
+    it 'returns proper validate error for blank check', ->
+      model.set {'test': null}
+      validateAttrs.call model, methods: test: 'missingMethod'
+      expect(model.isValid()).to.be.false
+      expect(model.validationError).to.eql test: 'Value Required'

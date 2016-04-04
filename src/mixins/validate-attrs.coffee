@@ -8,7 +8,7 @@ define (require) ->
   # Default validation criterion
   blank = (text) ->
     message = I18n?.t('error.validation.value_required') or 'Value Required'
-    message if text.length is 0
+    message if not text or text.length is 0
 
   (opts) ->
     # Map of attributes to validation method.
