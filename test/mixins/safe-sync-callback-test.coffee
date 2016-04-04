@@ -1,18 +1,13 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  advice = require 'mixins/advice'
-  safeSyncCallback = require 'mixins/safe-sync-callback'
-  activeSyncMachine = require 'mixins/active-sync-machine'
+  utils = require '../../lib/utils'
+  SafeSyncCallback = require 'mixins/safe-sync-callback'
+  ActiveSyncMachine = require 'mixins/active-sync-machine'
 
-  class MockCollection extends Chaplin.Collection
-    _.extend @prototype, activeSyncMachine
-    _.extend @prototype, safeSyncCallback
+  class MockCollection extends utils.mix Chaplin.Collection
+      .with ActiveSyncMachine, SafeSyncCallback
 
-    sync: ->
-      @safeSyncCallback.apply this, arguments
-      @safeDeferred super
-
-  describe 'safeSyncCallback', ->
+  describe 'SafeSyncCallback', ->
     server = null
     collection = null
 

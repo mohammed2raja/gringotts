@@ -1,18 +1,16 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require '../../lib/utils'
-  advice = require '../../mixins/advice'
-  activeSyncMachine = require '../../mixins/active-sync-machine'
-  overrideXHR = require '../../mixins/override-xhr'
-  safeSyncCallback = require '../../mixins/safe-sync-callback'
-  serviceErrorCallback = require '../../mixins/service-error-callback'
+  ActiveSyncMachine = require '../../mixins/active-sync-machine'
+  OverrideXHR = require '../../mixins/override-xhr'
+  SafeSyncCallback = require '../../mixins/safe-sync-callback'
+  ServiceErrorCallback = require '../../mixins/service-error-callback'
   Model = require './model'
 
-  # Generic base class for collections. Includes useful mixins by default.
-  class Collection extends Chaplin.Collection
-    _.extend @prototype, activeSyncMachine, safeSyncCallback,
-      serviceErrorCallback, overrideXHR
-    advice.call @prototype
+  # Abstract class for collections. Includes useful mixins by default.
+  class Collection extends utils.mix Chaplin.Collection
+      .with ActiveSyncMachine, OverrideXHR
+        , SafeSyncCallback, ServiceErrorCallback
 
     model: Model
 
@@ -23,8 +21,6 @@ define (require) ->
       throw new Error(
         'Please use urlRoot instead of url as a collection property'
       ) unless typeof @url is 'function'
-
-      @activateSyncMachine()
 
       # Without this collections keep growing and it causes problems with new
       # notifications being inserted after old ones are disposed.
@@ -93,14 +89,6 @@ define (require) ->
       @state = @_stripState state
       @trigger 'stateChange', this, @state
       @fetch(reset: true)?.fail => @reset()
-
-    sync: ->
-      @serviceErrorCallback.apply this, arguments
-      @safeSyncCallback.apply this, arguments # should be after service-error
-      @safeDeferred super
-
-    fetch: ->
-      @overrideXHR super
 
     ###*
      * Incorporate the collection state.

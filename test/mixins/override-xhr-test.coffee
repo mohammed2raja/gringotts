@@ -1,17 +1,12 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require '../../lib/utils'
-  overrideXHR = require 'mixins/override-xhr'
-  activeSyncMachine = require 'mixins/active-sync-machine'
+  OverrideXHR = require 'mixins/override-xhr'
+  ActiveSyncMachine = require 'mixins/active-sync-machine'
 
-  class MockModel extends Chaplin.Model
-    _.extend @prototype, activeSyncMachine
-    _.extend @prototype, overrideXHR
+  class MockModel extends OverrideXHR ActiveSyncMachine Chaplin.Model
 
-    fetch: ->
-      @overrideXHR super
-
-  describe 'overrideXHR', ->
+  describe 'OverrideXHR', ->
     server = null
     model = null
     currentXHR = null

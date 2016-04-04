@@ -1,8 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  genericSave = require 'mixins/generic-save'
+  GenericSave = require 'mixins/generic-save'
 
-  describe 'Generic save mixin', ->
+  class MockView extends GenericSave Chaplin.View
+
+  describe 'GenericSave', ->
     view = null
     model = null
     opts = null
@@ -10,12 +12,11 @@ define (require) ->
     saveDeferred = null
 
     beforeEach (done) ->
-      view = new Chaplin.View()
+      view = new MockView()
       sinon.stub view, 'publishEvent'
       model = new Chaplin.Model()
       saveDeferred = $.Deferred()
       sinon.stub model, 'save', -> saveDeferred
-      _.extend view, genericSave
       opts = _.extend {}, customOpts, {
         model
         saveMessage: 'Model saved'

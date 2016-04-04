@@ -17,20 +17,21 @@ define (require) ->
           @publishEvent 'notify', message, classes: 'alert-danger'
           $xhr.errorHandled = true
 
-  genericSave: (opts) ->
-    # The model should already have been validated
-    # by the editable mixin.
-    opts = _.extend {}, _.omit(opts, ['success']),
-      wait: yes, validate: no
-    if opts.delayedSave
-      @publishEvent 'notify', opts.saveMessage,
-        _.extend {}, opts,
-          success: ->
-            opts.model.save opts.attribute, opts.value, opts
-            .fail ($xhr) => _revertChanges.call this, opts, $xhr
-          undo: =>
-            _revertChanges.call this, opts
-    else
-      opts.model.save opts.attribute, opts.value, opts
-      .done => @publishEvent 'notify', opts.saveMessage
-      .fail ($xhr) => _revertChanges.call this, opts, $xhr
+  (superclass) -> class GenericSave extends superclass
+    genericSave: (opts) ->
+      # The model should already have been validated
+      # by the editable mixin.
+      opts = _.extend {}, _.omit(opts, ['success']),
+        wait: yes, validate: no
+      if opts.delayedSave
+        @publishEvent 'notify', opts.saveMessage,
+          _.extend {}, opts,
+            success: ->
+              opts.model.save opts.attribute, opts.value, opts
+              .fail ($xhr) => _revertChanges.call this, opts, $xhr
+            undo: =>
+              _revertChanges.call this, opts
+      else
+        opts.model.save opts.attribute, opts.value, opts
+        .done => @publishEvent 'notify', opts.saveMessage
+        .fail ($xhr) => _revertChanges.call this, opts, $xhr

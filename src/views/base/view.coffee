@@ -1,13 +1,8 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  advice = require '../../mixins/advice'
-  convenienceClass = require '../../mixins/convenience-class'
-  stringTemplate = require '../../mixins/string-template'
+  ConvenienceClass = require '../../mixins/convenience-class'
+  StringTemplate = require '../../mixins/string-template'
 
-  class View extends Chaplin.View
-    _.extend @prototype, stringTemplate
-    advice.call @prototype
-    convenienceClass.call @prototype
-
+  class View extends ConvenienceClass StringTemplate Chaplin.View
     autoRender: yes
-    optionNames: Chaplin.View::optionNames.concat ['template']
+    optionNames: @::optionNames.concat ['template']

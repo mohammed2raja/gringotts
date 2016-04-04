@@ -1,17 +1,14 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  advice = require 'mixins/advice'
-  activeSyncMachine = require 'mixins/active-sync-machine'
-  errorToggleView = require 'mixins/error-toggle-view'
+  ActiveSyncMachine = require 'mixins/active-sync-machine'
+  ErrorToggleView = require 'mixins/error-toggle-view'
 
   class ItemViewTest extends Chaplin.View
     autoRender: yes
     getTemplateFunction: ->
       -> '<span>1</span>'
 
-  class CollectionViewTest extends Chaplin.CollectionView
-    advice.call @prototype
-    errorToggleView.call @prototype
+  class CollectionViewTest extends ErrorToggleView Chaplin.CollectionView
     autoRender: yes
     itemView: ItemViewTest
     getTemplateFunction: ->
@@ -20,7 +17,9 @@ define (require) ->
         <div class="error" style="display: none;"></div>
       '''
 
-  describe 'Error toggle view mixin', ->
+  class ActiveSyncCollection extends ActiveSyncMachine Chaplin.Collection
+
+  describe 'ErrorToggleView', ->
     view = null
     collection = null
     syncMachine = null
@@ -46,9 +45,10 @@ define (require) ->
           expect(view.$ selector).to.have.css 'display', 'none'
 
     beforeEach ->
-      collection = new Chaplin.Collection {}
       if syncMachine
-        _.extend collection.prototype, activeSyncMachine
+        collection = new ActiveSyncCollection {}
+      else
+        collection = new Chaplin.Collection {}
       view = new CollectionViewTest {collection}
 
     afterEach ->

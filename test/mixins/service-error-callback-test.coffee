@@ -1,18 +1,13 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  advice = require 'mixins/advice'
-  activeSyncMachine = require 'mixins/active-sync-machine'
-  serviceErrorCallback = require 'mixins/service-error-callback'
+  utils = require '../../lib/utils'
+  ActiveSyncMachine = require 'mixins/active-sync-machine'
+  ServiceErrorCallback = require 'mixins/service-error-callback'
 
-  class MockCollection extends Chaplin.Collection
-    _.extend @prototype, activeSyncMachine
-    _.extend @prototype, serviceErrorCallback
+  class MockCollection extends utils.mix Chaplin.Collection
+      .with ActiveSyncMachine, ServiceErrorCallback
 
-    sync: ->
-      @serviceErrorCallback.apply this, arguments
-      super
-
-  describe 'serviceErrorCallback', ->
+  describe 'ServiceErrorCallback', ->
     server = null
     collection = null
 

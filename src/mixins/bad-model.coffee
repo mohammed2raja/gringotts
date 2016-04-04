@@ -8,15 +8,20 @@
 define (require) ->
   utils = require '../lib/utils'
 
-  badModelOpts: {}
-  badModelHandler: (model, $xhr) ->
-    {message, route} = @badModelOpts
-    if $xhr.status in [403, 404]
-      message = message?(model) or message or
-        "The model #{model.id} could not be accessed."
-      # Allow for multiple arguments to be passed in if route returns array
-      args = route?(model) or route or ''
-      args = [args] unless _.isArray args
-      utils.redirectTo.apply utils, args
-      @publishEvent 'notify', message, classes: 'alert-danger'
-      $xhr.errorHandled = true
+  (superclass) -> class BadModel extends superclass
+    badModelOpts: {}
+
+    listen:
+      'error model': 'onError'
+
+    onError: (model, $xhr) ->
+      {message, route} = @badModelOpts
+      if $xhr.status in [403, 404]
+        message = message?(model) or message or
+          "The model #{model.id} could not be accessed."
+        # Allow for multiple arguments to be passed in if route returns array
+        args = route?(model) or route or ''
+        args = [args] unless _.isArray args
+        utils.redirectTo.apply utils, args
+        @publishEvent 'notify', message, classes: 'alert-danger'
+        $xhr.errorHandled = true

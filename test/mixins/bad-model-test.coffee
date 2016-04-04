@@ -1,15 +1,11 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
-  badModel = require 'mixins/bad-model'
+  BadModel = require 'mixins/bad-model'
 
-  class MockView extends Chaplin.View
-    _.extend @prototype, badModel
+  class MockView extends BadModel Chaplin.View
 
-    listen:
-      'error model': 'badModelHandler'
-
-  describe 'Bad model mixin', ->
+  describe 'BadModel', ->
     view = null
     model = null
 

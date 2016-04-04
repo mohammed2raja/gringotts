@@ -22,10 +22,6 @@ define (require) ->
         $myEl = $ utils.tagBuilder 'p', '<strong>Live!</strong>', null, no
         expect($myEl).to.have.html '<strong>Live!</strong>'
 
-    it 'should check if objects are enumerable', ->
-      obj = prop: 1
-      expect(utils.isEnumerable obj, 'prop').to.be.true
-
     context 'parseJSON', ->
       result = null
       value = null
@@ -38,7 +34,7 @@ define (require) ->
       afterEach ->
         delete window.Raven
 
-      describe 'with valid JSON', ->
+      context 'with valid JSON', ->
         before -> value = '{"key": "Brand New"}'
         after -> value = null
 
@@ -46,7 +42,7 @@ define (require) ->
           expect(result).to.not.be.false
           expect(result).to.have.property 'key', 'Brand New'
 
-      describe 'with invalid JSON', ->
+      context 'with invalid JSON', ->
         before -> value = 'invalid'
         after -> value = null
 
@@ -58,7 +54,7 @@ define (require) ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'invalid'
 
-      describe 'with empty string', ->
+      context 'with empty string', ->
         before -> value = ''
         after -> value = null
 
@@ -66,10 +62,48 @@ define (require) ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'Empty string'
 
-      describe 'with undefined', ->
+      context 'with undefined', ->
         before -> value = undefined
         after -> value = null
 
         it 'should pass the string that failed to parse', ->
           secondArg = Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'undefined'
+
+    context 'mix', ->
+      target = null
+
+      class S
+        s: true
+        id: -> 's'
+
+      MixinA = (superclass) -> class A extends superclass
+        a: true
+        id: ->
+          super + 'a'
+
+      MixinB = (superclass) -> class B extends superclass
+        b: true
+        id: ->
+          super + 'b'
+
+      MixinC = (superclass) -> class C extends superclass
+        c: true
+        id: ->
+          super + 'c'
+
+      class T extends utils.mix(S).with MixinA, MixinB, MixinC
+        t: true
+
+      beforeEach ->
+        target = new T()
+
+      it 'should apply all mixin properties', ->
+        expect(target.s).to.be.true
+        expect(target.t).to.be.true
+        expect(target.a).to.be.true
+        expect(target.b).to.be.true
+        expect(target.c).to.be.true
+
+      it 'should override methods with mixins ones', ->
+        expect(target.id()).to.be.equal 'sabc'

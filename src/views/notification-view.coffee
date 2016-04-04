@@ -40,11 +40,9 @@ define (require) ->
     template: 'notification'
     tagName: 'li'
     className: 'alert alert-success alert-dismissable'
-
-    optionNames: View::optionNames.concat [
+    optionNames: @::optionNames.concat [
       'undoSelector', 'fadeSpeed', 'reqTimeout'
     ]
-
     undoSelector: '.undo'
     fadeSpeed: 500
     reqTimeout: 4000

@@ -13,6 +13,25 @@ define (require) ->
   # Alias to DOM library provided.
   $ = Backbone.$
 
+  ###*
+   * A helper class that gets a list of mixins and creates
+   * a chain of inheritance.
+  ###
+  class MixinBuilder
+    ###*
+     * @param  {Type} superclass A target class to mixin into.
+    ###
+    constructor: (@superclass) ->
+
+    ###*
+     * @param  {Array} ...  A collection of mixins.
+     * @return {Type}       A result class with all mixins applied.
+    ###
+    'with': ->
+      _.reduce arguments,
+        (c, mixin) -> mixin c
+        @superclass
+
   # Delegate to the `Chaplin.utils` module
   utils = Chaplin.utils.beget Chaplin.utils
 
@@ -27,10 +46,6 @@ define (require) ->
       tag.html content
     tag.attr(attrs) if attrs
     tag[0].outerHTML
-
-  # Used in flight/compose in flight/advice.
-  utils.isEnumerable = (obj, property) ->
-    Object.keys(obj).indexOf(property) > -1
 
   ###*
    * Generates a convenient css class name for QE purposes.
@@ -62,9 +77,9 @@ define (require) ->
     result
 
   ###*
-   * Processes hbs helper arguments and extracts funcs and vars
-   * @param  {Object} opts Handlebars helper arguments
-   * @return {Object}      a hash with fn, inverse and args
+   * Processes hbs helper arguments and extracts funcs and vars.
+   * @param  {Object} opts Handlebars helper arguments.
+   * @return {Object}      A hash with fn, inverse and args.
   ###
   utils.getHandlebarsFuncs = (opts) ->
     lastArg = _(opts).last()
@@ -74,5 +89,12 @@ define (require) ->
       inverse: lastArg.inverse
       args
     }
+
+  ###*
+   * An alias method to MixinBuilder.
+   * @param  {Type} superclass A target type to mixin into.
+   * @return {Type}            A result type with all mixins applied.
+  ###
+  utils.mix = (superclass) -> new MixinBuilder(superclass)
 
   utils

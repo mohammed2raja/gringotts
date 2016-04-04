@@ -3,7 +3,7 @@ define (require) ->
   FakeModel = require 'test/helpers/validate-model'
   FakeView = require 'test/helpers/editable-view'
 
-  describe 'Editable mixin', ->
+  describe 'Editable', ->
     model = null
     view = null
     success = null

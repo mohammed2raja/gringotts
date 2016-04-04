@@ -1,31 +1,25 @@
 define (require) ->
   Chaplin = require 'chaplin'
   Handlebars = require 'handlebars'
-  advice = require '../../mixins/advice'
-  stringTemplate = require '../../mixins/string-template'
-  convenienceClass = require '../../mixins/convenience-class'
-  errorToggleView = require '../../mixins/error-toggle-view'
+  utils = require '../../lib/utils'
+  StringTemplate = require '../../mixins/string-template'
+  ConvenienceClass = require '../../mixins/convenience-class'
+  ErrorToggleView = require '../../mixins/error-toggle-view'
 
   ###*
    * @param {object} sortableTableHeaders - Headers for the table.
-   * @param {string} template
   ###
-  class CollectionView extends Chaplin.CollectionView
-    _.extend @prototype, stringTemplate
-    advice.call @prototype
-    convenienceClass.call @prototype
-    errorToggleView.call @prototype
+  class CollectionView extends utils.mix Chaplin.CollectionView
+      .with StringTemplate, ConvenienceClass, ErrorToggleView
 
     listen:
       # Re-render all partials with *-Infos
       'request collection': -> @renderControls()
       'sync collection': -> @renderControls()
       'sort collection': -> @renderControls()
-
-    optionNames: Chaplin.CollectionView::optionNames.concat [
+    optionNames: @::optionNames.concat [
       'template', 'sortableTableHeaders', 'routeName', 'routeParams'
     ]
-
     loadingSelector: '.loading'
     fallbackSelector: '.empty'
     sortingPartial: 'sortTableHeader'

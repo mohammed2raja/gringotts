@@ -1,22 +1,23 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  formErrors = require 'mixins/form-errors'
+  FormErrors = require 'mixins/form-errors'
 
-  describe 'Form error mixin', ->
+  class MockView extends FormErrors Chaplin.View
+    getTemplateFunction: ->
+      -> '''
+        <form>
+          <input type="text" id="goblin-ghost">
+          <input type="text" class="goblin-ghost">
+          <input type="text" name="goblin-ghost">
+          <input type="text" data-attr="goblin-ghost">
+        </form>
+      '''
+
+  describe 'FormErrors', ->
     view = null
 
     beforeEach ->
-      view = new Chaplin.View()
-      view.getTemplateFunction = ->
-        -> '''
-          <form>
-            <input type="text" id="goblin-ghost">
-            <input type="text" class="goblin-ghost">
-            <input type="text" name="goblin-ghost">
-            <input type="text" data-attr="goblin-ghost">
-          </form>
-        '''
-      formErrors.call view
+      view = new MockView()
       view.render()
 
     afterEach ->
@@ -38,7 +39,7 @@ define (require) ->
         .and.to.contain 'GOTYA!'
 
     it 'fires an event before processing specific errors', ->
-      formErrors.call view, specificErrors: yes
+      view.specificErrors = yes
       errors = sinon.spy()
       sinon.spy view, 'trigger'
       sinon.stub view, 'specificError'
@@ -57,6 +58,7 @@ define (require) ->
 
       beforeEach ->
         sinon.stub(view, 'genericError').returns 'AHH!'
+
       afterEach ->
         expect(retVal).to.equal 'AHH!'
 
@@ -71,11 +73,9 @@ define (require) ->
           .to.be.calledWith 'There was a problem. Please try again.'
 
       it 'that is customizable', ->
-        formErrors.call view, genericErrMsg: 'HAHA!'
-        sinon.stub(view, 'genericError').returns 'AHH!'
+        view.genericErrMsg = 'HAHA!'
         retVal = view.parseErrors()
-        expect(view.genericError)
-          .to.be.calledWith 'HAHA!'
+        expect(view.genericError).to.be.calledWith 'HAHA!'
 
     describe 'displays specific error message', ->
       selector = null
@@ -86,13 +86,13 @@ define (require) ->
           .and.to.contain 'GONNA GET YOU!'
 
       it 'near the ID when specified', ->
-        formErrors.call view, inputAttr: 'id'
+        view.inputAttr = 'id'
         selector = '#goblin-ghost'
 
       it 'near the class when specified', ->
-        formErrors.call view, inputAttr: 'class'
+        view.inputAttr = 'class'
         selector = '.goblin-ghost'
 
       it 'near the custom attribute specified', ->
-        formErrors.call view, inputAttr: 'data-attr'
+        view.inputAttr = 'data-attr'
         selector = '[data-attr=goblin-ghost]'

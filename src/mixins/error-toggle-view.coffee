@@ -4,17 +4,13 @@
 #
 # Works with the event emitted by the `service-unavailable` mixin.
 define (require) ->
+  (superclass) -> class ErrorToggleView extends superclass
 
-  ->
-    # 'Extend' the `listen` hash, even if it's not present, without
-    # having this handler overridden if the hash is declared later.
-    @before 'delegateListeners', ->
-      selector = @errorSelector or '.service-error'
+    listen:
       # Triggers as a result of a request.
-      @delegateListener 'service-unavailable', 'collection', ->
-        @$(selector).show()
-      # Reset error messages on subsequent requests.
-      @delegateListener 'syncStateChange', 'collection', ->
-        @$(selector).hide()
+      'service-unavailable collection': -> @$(@_errorSelector()).show()
 
-    this
+      # Reset error messages on subsequent requests.
+      'syncStateChange collection': -> @$(@_errorSelector()).hide()
+
+    _errorSelector: -> @errorSelector or '.service-error'

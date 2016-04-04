@@ -1,14 +1,12 @@
 define (require) ->
-  stringTemplate = require 'mixins/string-template'
+  StringTemplate = require 'mixins/string-template'
   View = require 'views/base/view'
 
-  class MockView extends View
-    _.extend @prototype, stringTemplate
-
+  class MockView extends StringTemplate View
     template: 'VERSION'
     templatePath: 'backbone'
 
-  describe 'String template mixin', ->
+  describe 'StringTemplate', ->
     view = null
     template = null
 

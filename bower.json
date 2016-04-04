@@ -16,7 +16,6 @@
     "bootstrap": "3.3.6",
     "bootstrap-select": "1.9.3",
     "chaplin": "1.1.0",
-    "flight": "1.1.4",
     "handlebars": "4.0.5",
     "jquery": "2.1.0",
     "lodash": "3.10.1",

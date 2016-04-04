@@ -1,32 +1,18 @@
 # Gringotts [![Build Status](https://travis-ci.org/lookout/gringotts.png?branch=master)](https://travis-ci.org/lookout/gringotts)
 
-A collection of [functional mixins](http://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/)
+A collection of [real mixins](http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/)
 and utilities supporting common behaviors found in web apps built with `Chaplin` and `Handlebars`.
 
-Several behaviors take advantage of [aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) (AOP)
-with [Flight's advice component](https://github.com/flightjs/flight/blob/master/doc/advice_api.md).
-
-Some behaviors add properties onto the mixed in object to support
-default or common properties/behaviors placed on the object's parent prototypes.
+Some behaviors add properties onto the mixed in class to support
+default or common properties/behaviors placed on the class's parent prototypes.
 
 Here's an example of how to use a mixin:
 
 ```
-mixin = require 'mixin'
-chaplinObj = {}
-mixin.call chaplinObj, {key1: 'stuff', key2: 'moreStuff'}
+Mixin = require 'mixin'
+class someModel extends Mixin Chaplin.Model
+  mixinOptions: {key1: 'stuff', key2: 'moreStuff'}
 ```
-
-The first argument is the object the behavior is being added to. The second argument is an optional configuration object.
-
-When used within a view or collection definition `chaplinObj` above will generally be `@prototype`.
-
-The mixins can be used classically (via `_.extend`) by invoking them as a constructor
-(with `new`).
-
-Most of the mixins involving collections expect the payload to be nested (**e.g.** `{"count": 100, "items": [{...}]}`)
-so views using them are intended to be paginated. The behaviors have been broken out so they can be used separately
-or together. You can also specify and override properties on collections.
 
 For more information, see the [docs](http://hackers.lookout.com/gringotts/).
 

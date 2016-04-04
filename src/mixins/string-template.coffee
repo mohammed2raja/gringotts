@@ -7,16 +7,16 @@
 # You can override the template path by passing in `templatePath`
 # in the options.
 define (require) ->
+  (superclass) -> class StringTemplate extends superclass
+    # Precompiled templates function initializer.
+    getTemplateFunction: ->
+      if @template
+        tObj = require(@templatePath)[@template]
+        if tObj
+          tObj
+        else
+          errStr = "The template file #{@templatePath}/#{@template}
+            doesn't exist."
+          throw new Error errStr
 
-  # Precompiled templates function initializer.
-  getTemplateFunction: ->
-    if @template
-      tObj = require(@templatePath)[@template]
-      if tObj
-        tObj
-      else
-        errStr = "The template file #{@templatePath}/#{@template}
-          doesn't exist."
-        throw new Error errStr
-
-  templatePath: 'templates'
+    templatePath: 'templates'

@@ -5,8 +5,7 @@ define (require) ->
    * View for bootstrap modals
   ###
   class ModalView extends View
-    optionNames: View::optionNames.concat ['forceOneInstance']
-
+    optionNames: @::optionNames.concat ['forceOneInstance']
     className: 'modal'
     attributes:
       tabindex: -1

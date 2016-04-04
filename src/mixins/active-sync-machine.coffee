@@ -1,7 +1,13 @@
 define (require) ->
   Chaplin = require 'chaplin'
 
-  _.extend {}, Chaplin.SyncMachine,
+  (superclass) -> class ActiveSyncMachine extends superclass
+    _.extend @prototype, Chaplin.SyncMachine
+
+    initialize: ->
+      super
+      @activateSyncMachine()
+
     ###*
      * Activates Chaplin.SyncMachine on an object
      * @param  {Backbone.Events} obj an instinace of Model or Collection

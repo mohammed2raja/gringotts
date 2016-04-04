@@ -1,15 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  activeSyncMachine = require 'mixins/active-sync-machine'
+  ActiveSyncMachine = require 'mixins/active-sync-machine'
 
-  class MockCollection extends Chaplin.Collection
-    _.extend @prototype, activeSyncMachine
+  class MockCollection extends ActiveSyncMachine Chaplin.Collection
 
-    initialize: ->
-      super
-      @activateSyncMachine()
-
-  describe 'activeSyncMachine', ->
+  describe 'ActiveSyncMachine', ->
     collection = null
 
     beforeEach ->

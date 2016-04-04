@@ -9,11 +9,10 @@ define (require) ->
     (([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))
     $ ///
 
-  ->
-    @validateEmail = (email) ->
+  (superclass) -> class EmailValidation extends superclass
+    validateEmail: (email) ->
       message = I18n?.t('error.validation.invalid_email') or 'Invalid Email'
       message if !regex.test email
-    @getEmailRegex = ->
-      regex
 
-    this
+    getEmailRegex: ->
+      regex

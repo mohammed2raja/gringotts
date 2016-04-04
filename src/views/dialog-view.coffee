@@ -6,11 +6,9 @@ define (require) ->
     title: null
     text: null
     buttons: [{text:'OK', className: 'btn-action'}]
-
-    optionNames: ModalView::optionNames.concat [
+    optionNames: @::optionNames.concat [
       'title', 'text', 'buttons'
     ]
-
     events:
       'click button': (e) ->
         $el = $(e.currentTarget)
