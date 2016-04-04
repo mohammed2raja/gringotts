@@ -3,27 +3,18 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, Model, activeSyncMachine, advice, overrideXHR, safeSyncCallback;
+    var ActiveSyncMachine, Chaplin, Model, OverrideXHR, SafeSyncCallback, utils;
     Chaplin = require('chaplin');
-    advice = require('../../mixins/advice');
-    activeSyncMachine = require('../../mixins/active-sync-machine');
-    overrideXHR = require('../../mixins/override-xhr');
-    safeSyncCallback = require('../../mixins/safe-sync-callback');
+    utils = require('../../lib/utils');
+    ActiveSyncMachine = require('../../mixins/active-sync-machine');
+    OverrideXHR = require('../../mixins/override-xhr');
+    SafeSyncCallback = require('../../mixins/safe-sync-callback');
     return Model = (function(superClass) {
       extend(Model, superClass);
 
       function Model() {
         return Model.__super__.constructor.apply(this, arguments);
       }
-
-      _.extend(Model.prototype, activeSyncMachine, safeSyncCallback, overrideXHR);
-
-      advice.call(Model.prototype);
-
-      Model.prototype.initialize = function() {
-        Model.__super__.initialize.apply(this, arguments);
-        return this.activateSyncMachine();
-      };
 
       Model.prototype.save = function(key, val, options) {
         return Model.__super__.save.apply(this, arguments) || $.Deferred().reject({
@@ -40,18 +31,9 @@
         })(this)).promise();
       };
 
-      Model.prototype.sync = function() {
-        this.safeSyncCallback.apply(this, arguments);
-        return this.safeDeferred(Model.__super__.sync.apply(this, arguments));
-      };
-
-      Model.prototype.fetch = function() {
-        return this.overrideXHR(Model.__super__.fetch.apply(this, arguments));
-      };
-
       return Model;
 
-    })(Chaplin.Model);
+    })(utils.mix(Chaplin.Model)["with"](ActiveSyncMachine, OverrideXHR, SafeSyncCallback));
   });
 
 }).call(this);

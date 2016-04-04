@@ -3,17 +3,16 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, Handlebars, advice, convenienceClass, errorToggleView, stringTemplate;
+    var Chaplin, CollectionView, ConvenienceClass, ErrorToggleView, Handlebars, StringTemplate, utils;
     Chaplin = require('chaplin');
     Handlebars = require('handlebars');
-    advice = require('../../mixins/advice');
-    stringTemplate = require('../../mixins/string-template');
-    convenienceClass = require('../../mixins/convenience-class');
-    errorToggleView = require('../../mixins/error-toggle-view');
+    utils = require('../../lib/utils');
+    StringTemplate = require('../../mixins/string-template');
+    ConvenienceClass = require('../../mixins/convenience-class');
+    ErrorToggleView = require('../../mixins/error-toggle-view');
 
     /**
      * @param {object} sortableTableHeaders - Headers for the table.
-     * @param {string} template
      */
     return CollectionView = (function(superClass) {
       extend(CollectionView, superClass);
@@ -21,14 +20,6 @@
       function CollectionView() {
         return CollectionView.__super__.constructor.apply(this, arguments);
       }
-
-      _.extend(CollectionView.prototype, stringTemplate);
-
-      advice.call(CollectionView.prototype);
-
-      convenienceClass.call(CollectionView.prototype);
-
-      errorToggleView.call(CollectionView.prototype);
 
       CollectionView.prototype.listen = {
         'request collection': function() {
@@ -42,7 +33,7 @@
         }
       };
 
-      CollectionView.prototype.optionNames = Chaplin.CollectionView.prototype.optionNames.concat(['template', 'sortableTableHeaders', 'routeName', 'routeParams']);
+      CollectionView.prototype.optionNames = CollectionView.prototype.optionNames.concat(['template', 'sortableTableHeaders', 'routeName', 'routeParams']);
 
       CollectionView.prototype.loadingSelector = '.loading';
 
@@ -127,7 +118,7 @@
 
       return CollectionView;
 
-    })(Chaplin.CollectionView);
+    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplate, ConvenienceClass, ErrorToggleView));
   });
 
 }).call(this);

@@ -3,11 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, View, advice, convenienceClass, stringTemplate;
+    var Chaplin, ConvenienceClass, StringTemplate, View;
     Chaplin = require('chaplin');
-    advice = require('../../mixins/advice');
-    convenienceClass = require('../../mixins/convenience-class');
-    stringTemplate = require('../../mixins/string-template');
+    ConvenienceClass = require('../../mixins/convenience-class');
+    StringTemplate = require('../../mixins/string-template');
     return View = (function(superClass) {
       extend(View, superClass);
 
@@ -15,19 +14,13 @@
         return View.__super__.constructor.apply(this, arguments);
       }
 
-      _.extend(View.prototype, stringTemplate);
-
-      advice.call(View.prototype);
-
-      convenienceClass.call(View.prototype);
-
       View.prototype.autoRender = true;
 
-      View.prototype.optionNames = Chaplin.View.prototype.optionNames.concat(['template']);
+      View.prototype.optionNames = View.prototype.optionNames.concat(['template']);
 
       return View;
 
-    })(Chaplin.View);
+    })(ConvenienceClass(StringTemplate(Chaplin.View)));
   });
 
 }).call(this);

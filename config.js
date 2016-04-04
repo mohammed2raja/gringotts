@@ -4,7 +4,6 @@
     paths: {
       backbone: '../vendor/bower/backbone/backbone',
       chaplin: '../vendor/bower/chaplin/chaplin',
-      flight: '../vendor/bower/flight/lib',
       handlebars: '../vendor/bower/handlebars/handlebars.runtime',
       moment: '../vendor/bower/moment/moment',
       underscore: '../vendor/bower/lodash/lodash',
@@ -48,12 +47,6 @@
       },
       'ext/bootstrap-select': {
         deps: ['bootstrap_select']
-      }
-    },
-    map: {
-      '*': {
-        'flight/debug': 'lib/utils',
-        'flight/utils': 'lib/utils'
       }
     }
   });

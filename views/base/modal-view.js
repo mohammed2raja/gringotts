@@ -16,7 +16,7 @@
         return ModalView.__super__.constructor.apply(this, arguments);
       }
 
-      ModalView.prototype.optionNames = View.prototype.optionNames.concat(['forceOneInstance']);
+      ModalView.prototype.optionNames = ModalView.prototype.optionNames.concat(['forceOneInstance']);
 
       ModalView.prototype.className = 'modal';
 

@@ -1,28 +1,48 @@
 (function() {
+  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty;
+
   define(function(require) {
-    return {
-      serviceErrorCallback: function(method, model, options) {
-        var callback;
-        if (!options) {
-          return;
+    return function(superclass) {
+      var ServiceErrorCallback;
+      return ServiceErrorCallback = (function(superClass) {
+        extend(ServiceErrorCallback, superClass);
+
+        function ServiceErrorCallback() {
+          return ServiceErrorCallback.__super__.constructor.apply(this, arguments);
         }
-        callback = options.error;
-        return options.error = (function(_this) {
-          return function($xhr) {
-            var ctx;
-            if ($xhr.status !== 0 || $xhr.statusText === 'error') {
-              ctx = options.context || _this;
-              if (callback != null) {
-                callback.apply(ctx, arguments);
+
+        ServiceErrorCallback.prototype.sync = function() {
+          this.serviceErrorCallback.apply(this, arguments);
+          return ServiceErrorCallback.__super__.sync.apply(this, arguments);
+        };
+
+        ServiceErrorCallback.prototype.serviceErrorCallback = function(method, model, options) {
+          var callback;
+          if (!options) {
+            return;
+          }
+          callback = options.error;
+          return options.error = (function(_this) {
+            return function($xhr) {
+              var ctx;
+              if ($xhr.status !== 0 || $xhr.statusText === 'error') {
+                ctx = options.context || _this;
+                if (callback != null) {
+                  callback.apply(ctx, arguments);
+                }
+                if (typeof _this.abortSync === "function") {
+                  _this.abortSync();
+                }
+                return _this.trigger('service-unavailable');
               }
-              if (typeof _this.abortSync === "function") {
-                _this.abortSync();
-              }
-              return _this.trigger('service-unavailable');
-            }
-          };
-        })(this);
-      }
+            };
+          })(this);
+        };
+
+        return ServiceErrorCallback;
+
+      })(superclass);
     };
   });
 

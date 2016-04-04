@@ -3,14 +3,13 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, Collection, Model, activeSyncMachine, advice, overrideXHR, safeSyncCallback, serviceErrorCallback, utils;
+    var ActiveSyncMachine, Chaplin, Collection, Model, OverrideXHR, SafeSyncCallback, ServiceErrorCallback, utils;
     Chaplin = require('chaplin');
     utils = require('../../lib/utils');
-    advice = require('../../mixins/advice');
-    activeSyncMachine = require('../../mixins/active-sync-machine');
-    overrideXHR = require('../../mixins/override-xhr');
-    safeSyncCallback = require('../../mixins/safe-sync-callback');
-    serviceErrorCallback = require('../../mixins/service-error-callback');
+    ActiveSyncMachine = require('../../mixins/active-sync-machine');
+    OverrideXHR = require('../../mixins/override-xhr');
+    SafeSyncCallback = require('../../mixins/safe-sync-callback');
+    ServiceErrorCallback = require('../../mixins/service-error-callback');
     Model = require('./model');
     return Collection = (function(superClass) {
       extend(Collection, superClass);
@@ -18,10 +17,6 @@
       function Collection() {
         return Collection.__super__.constructor.apply(this, arguments);
       }
-
-      _.extend(Collection.prototype, activeSyncMachine, safeSyncCallback, serviceErrorCallback, overrideXHR);
-
-      advice.call(Collection.prototype);
 
       Collection.prototype.model = Model;
 
@@ -31,7 +26,6 @@
         if (typeof this.url !== 'function') {
           throw new Error('Please use urlRoot instead of url as a collection property');
         }
-        this.activateSyncMachine();
         this.on('dispose', function(model) {
           if (model instanceof Chaplin.Model && !this.disposed) {
             return this.remove(model);
@@ -137,16 +131,6 @@
         })(this)) : void 0;
       };
 
-      Collection.prototype.sync = function() {
-        this.serviceErrorCallback.apply(this, arguments);
-        this.safeSyncCallback.apply(this, arguments);
-        return this.safeDeferred(Collection.__super__.sync.apply(this, arguments));
-      };
-
-      Collection.prototype.fetch = function() {
-        return this.overrideXHR(Collection.__super__.fetch.apply(this, arguments));
-      };
-
 
       /**
        * Incorporate the collection state.
@@ -191,7 +175,7 @@
 
       return Collection;
 
-    })(Chaplin.Collection);
+    })(utils.mix(Chaplin.Collection)["with"](ActiveSyncMachine, OverrideXHR, SafeSyncCallback, ServiceErrorCallback));
   });
 
 }).call(this);

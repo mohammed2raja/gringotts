@@ -25,7 +25,7 @@
         }
       ];
 
-      DialogView.prototype.optionNames = ModalView.prototype.optionNames.concat(['title', 'text', 'buttons']);
+      DialogView.prototype.optionNames = DialogView.prototype.optionNames.concat(['title', 'text', 'buttons']);
 
       DialogView.prototype.events = {
         'click button': function(e) {

@@ -20,7 +20,7 @@
 
       NotificationView.prototype.className = 'alert alert-success alert-dismissable';
 
-      NotificationView.prototype.optionNames = View.prototype.optionNames.concat(['undoSelector', 'fadeSpeed', 'reqTimeout']);
+      NotificationView.prototype.optionNames = NotificationView.prototype.optionNames.concat(['undoSelector', 'fadeSpeed', 'reqTimeout']);
 
       NotificationView.prototype.undoSelector = '.undo';
 
