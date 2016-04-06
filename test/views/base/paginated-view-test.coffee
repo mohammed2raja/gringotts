@@ -1,8 +1,8 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
-  activeSyncMachine = require 'mixins/active-sync-machine'
-  stringTemplate = require 'mixins/string-template'
+  ActiveSyncMachine = require 'mixins/active-sync-machine'
+  StringTemplate = require 'mixins/string-template'
   PaginatedCollection = require 'models/base/paginated-collection'
   PaginatedView = require 'views/base/paginated-view'
   View = require 'views/base/view'
@@ -12,28 +12,18 @@ define (require) ->
     className: 'test-item col-md-4'
     getTemplateFunction: -> -> '<td><td><td>'
 
-  class MockPaginatedCollection extends PaginatedCollection
-    _.extend @prototype, activeSyncMachine
-
+  class MockPaginatedCollection extends ActiveSyncMachine PaginatedCollection
     urlRoot: '/test'
     DEFAULTS: _.extend {}, PaginatedCollection::DEFAULTS,
       per_page: 10
 
-    initialize: ->
-      super
-      @activateSyncMachine()
-
-  class MockPaginatedView extends PaginatedView
-    _.extend @prototype, stringTemplate
-
+  class MockPaginatedView extends StringTemplate PaginatedView
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'
     templatePath: 'test/templates'
 
-  class MockInfinitePaginatedView extends PaginatedView
-    _.extend @prototype, stringTemplate
-
+  class MockInfinitePaginatedView extends StringTemplate PaginatedView
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'
@@ -164,9 +154,6 @@ define (require) ->
             collection.count = 101
           it 'should correctly return _getPageInfo', ->
             expect(view._getPageInfo()).to.eql expecting
-
-    it 'should set the convenience className', ->
-      expect(view.className).to.equal 'paginated-table-test'
 
     context 'loading indicator start syncing', ->
       beforeEach ->

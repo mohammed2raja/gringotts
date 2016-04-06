@@ -1,14 +1,14 @@
 define (require) ->
   Chaplin = require 'chaplin'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
-  ErrorToggleView = require 'mixins/error-toggle-view'
+  ServiceErrorReady = require 'mixins/service-error-ready'
 
   class ItemViewTest extends Chaplin.View
     autoRender: yes
     getTemplateFunction: ->
       -> '<span>1</span>'
 
-  class CollectionViewTest extends ErrorToggleView Chaplin.CollectionView
+  class CollectionViewTest extends ServiceErrorReady Chaplin.CollectionView
     autoRender: yes
     itemView: ItemViewTest
     getTemplateFunction: ->
@@ -19,7 +19,7 @@ define (require) ->
 
   class ActiveSyncCollection extends ActiveSyncMachine Chaplin.Collection
 
-  describe 'ErrorToggleView', ->
+  describe 'ServiceErrorReady', ->
     view = null
     collection = null
     syncMachine = null

@@ -4,13 +4,10 @@
 #
 # Works with the event emitted by the `service-unavailable` mixin.
 define (require) ->
-  (superclass) -> class ErrorToggleView extends superclass
-
+  (superclass) -> class ServiceErrorReady extends superclass
+    errorSelector: '.service-error'
     listen:
       # Triggers as a result of a request.
-      'service-unavailable collection': -> @$(@_errorSelector()).show()
-
+      'service-unavailable collection': -> @$(@errorSelector).show()
       # Reset error messages on subsequent requests.
-      'syncStateChange collection': -> @$(@_errorSelector()).hide()
-
-    _errorSelector: -> @errorSelector or '.service-error'
+      'syncStateChange collection': -> @$(@errorSelector).hide()

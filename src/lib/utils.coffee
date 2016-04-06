@@ -47,20 +47,6 @@ define (require) ->
     tag.attr(attrs) if attrs
     tag[0].outerHTML
 
-  ###*
-   * Generates a convenient css class name for QE purposes.
-   * Assumingly it's being used for every view in the application.
-   * @param  {String} className Existing view's class name.
-   * @param  {String} template  View's template path.
-   * @return {String}           A newly generated class name using template.
-  ###
-  utils.convenienceClass = (className, template) ->
-    if template
-      convenient = template.replace /\//g, '-'
-      original = if className then " #{className}" else ''
-      className = "#{convenient}#{original}"
-    className
-
   utils.parseJSON = (str) ->
     result = false
 

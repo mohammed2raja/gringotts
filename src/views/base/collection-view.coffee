@@ -3,14 +3,14 @@ define (require) ->
   Handlebars = require 'handlebars'
   utils = require '../../lib/utils'
   StringTemplate = require '../../mixins/string-template'
-  ConvenienceClass = require '../../mixins/convenience-class'
-  ErrorToggleView = require '../../mixins/error-toggle-view'
+  Automatable = require '../../mixins/automatable'
+  ServiceErrorReady = require '../../mixins/service-error-ready'
 
   ###*
    * @param {object} sortableTableHeaders - Headers for the table.
   ###
   class CollectionView extends utils.mix Chaplin.CollectionView
-      .with StringTemplate, ConvenienceClass, ErrorToggleView
+      .with StringTemplate, Automatable, ServiceErrorReady
 
     listen:
       # Re-render all partials with *-Infos

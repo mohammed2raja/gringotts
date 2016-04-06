@@ -6,7 +6,6 @@ define (require) ->
   ###
   class ModalView extends View
     optionNames: @::optionNames.concat ['forceOneInstance']
-    className: 'modal'
     attributes:
       tabindex: -1
       role: 'dialog'
@@ -18,6 +17,11 @@ define (require) ->
       @_hide()
       # dispose responsibility is on model's holder
       return @dispose() unless @model or @collection
+
+    render: ->
+      className = @$el.attr('class') or ''
+      @$el.attr 'class', "#{className} modal" if className.indexOf 'modal' < 0
+      super
 
     attach: (opts) ->
       super
