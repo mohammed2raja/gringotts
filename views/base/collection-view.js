@@ -3,13 +3,13 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, ConvenienceClass, ErrorToggleView, Handlebars, StringTemplate, utils;
+    var Automatable, Chaplin, CollectionView, Handlebars, ServiceErrorReady, StringTemplate, utils;
     Chaplin = require('chaplin');
     Handlebars = require('handlebars');
     utils = require('../../lib/utils');
     StringTemplate = require('../../mixins/string-template');
-    ConvenienceClass = require('../../mixins/convenience-class');
-    ErrorToggleView = require('../../mixins/error-toggle-view');
+    Automatable = require('../../mixins/automatable');
+    ServiceErrorReady = require('../../mixins/service-error-ready');
 
     /**
      * @param {object} sortableTableHeaders - Headers for the table.
@@ -118,7 +118,7 @@
 
       return CollectionView;
 
-    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplate, ConvenienceClass, ErrorToggleView));
+    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplate, Automatable, ServiceErrorReady));
   });
 
 }).call(this);

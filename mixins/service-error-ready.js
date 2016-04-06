@@ -4,28 +4,26 @@
 
   define(function(require) {
     return function(superclass) {
-      var ErrorToggleView;
-      return ErrorToggleView = (function(superClass) {
-        extend(ErrorToggleView, superClass);
+      var ServiceErrorReady;
+      return ServiceErrorReady = (function(superClass) {
+        extend(ServiceErrorReady, superClass);
 
-        function ErrorToggleView() {
-          return ErrorToggleView.__super__.constructor.apply(this, arguments);
+        function ServiceErrorReady() {
+          return ServiceErrorReady.__super__.constructor.apply(this, arguments);
         }
 
-        ErrorToggleView.prototype.listen = {
+        ServiceErrorReady.prototype.errorSelector = '.service-error';
+
+        ServiceErrorReady.prototype.listen = {
           'service-unavailable collection': function() {
-            return this.$(this._errorSelector()).show();
+            return this.$(this.errorSelector).show();
           },
           'syncStateChange collection': function() {
-            return this.$(this._errorSelector()).hide();
+            return this.$(this.errorSelector).hide();
           }
         };
 
-        ErrorToggleView.prototype._errorSelector = function() {
-          return this.errorSelector || '.service-error';
-        };
-
-        return ErrorToggleView;
+        return ServiceErrorReady;
 
       })(superclass);
     };

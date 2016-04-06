@@ -23,13 +23,9 @@
        */
 
       PaginatedView.prototype.toggleLoadingIndicator = function() {
-        var itemClassName, visible;
-        itemClassName = utils.convenienceClass(this.itemView.prototype.className, this.itemView.prototype.template);
-        if (!itemClassName) {
-          throw new Error('Please define a className for your itemViews.');
-        }
+        var visible;
         visible = this.collection.isSyncing();
-        this.$("." + (itemClassName.split(/\s+|\s+/).join('.'))).toggle(!visible);
+        this.$('tbody > tr').not(this.loadingSelector).not(this.fallbackSelector).not(this.errorSelector).toggle(!visible);
         return this.$loading.toggle(visible);
       };
 

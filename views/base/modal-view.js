@@ -18,8 +18,6 @@
 
       ModalView.prototype.optionNames = ModalView.prototype.optionNames.concat(['forceOneInstance']);
 
-      ModalView.prototype.className = 'modal';
-
       ModalView.prototype.attributes = {
         tabindex: -1,
         role: 'dialog'
@@ -35,6 +33,15 @@
         if (!(this.model || this.collection)) {
           return this.dispose();
         }
+      };
+
+      ModalView.prototype.render = function() {
+        var className;
+        className = this.$el.attr('class') || '';
+        if (className.indexOf('modal' < 0)) {
+          this.$el.attr('class', className + " modal");
+        }
+        return ModalView.__super__.render.apply(this, arguments);
       };
 
       ModalView.prototype.attach = function(opts) {
