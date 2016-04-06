@@ -12,6 +12,8 @@
         return DialogView.__super__.constructor.apply(this, arguments);
       }
 
+      DialogView.prototype.className = 'dialog';
+
       DialogView.prototype.template = 'dialog';
 
       DialogView.prototype.title = null;
