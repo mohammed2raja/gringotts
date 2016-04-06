@@ -2,6 +2,7 @@ define (require) ->
   ModalView = require './base/modal-view'
 
   class DialogView extends ModalView
+    className: 'dialog'
     template: 'dialog'
     title: null
     text: null
