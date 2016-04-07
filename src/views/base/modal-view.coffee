@@ -20,7 +20,9 @@ define (require) ->
 
     render: ->
       className = @$el.attr('class') or ''
-      @$el.attr 'class', "#{className} modal" if className.indexOf 'modal' < 0
+      className += ' ' unless className is ''
+      if className.indexOf('modal') < 0
+        @$el.attr 'class', "#{className}modal"
       super
 
     attach: (opts) ->
