@@ -1,7 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   Automatable = require 'mixins/automatable'
-  StringTemplatable = require 'mixins/string-template'
+  StringTemplatable = require 'mixins/string-templatable'
 
   class MockView extends StringTemplatable Automatable Chaplin.View
     template: 'foo/automatable-view'

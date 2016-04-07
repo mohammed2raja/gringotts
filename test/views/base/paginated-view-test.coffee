@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
-  StringTemplatable = require 'mixins/string-template'
+  StringTemplatable = require 'mixins/string-templatable'
   PaginatedCollection = require 'models/base/paginated-collection'
   PaginatedView = require 'views/base/paginated-view'
   View = require 'views/base/view'

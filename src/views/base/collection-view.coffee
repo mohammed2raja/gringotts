@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   Handlebars = require 'handlebars'
   utils = require '../../lib/utils'
-  StringTemplatable = require '../../mixins/string-template'
+  StringTemplatable = require '../../mixins/string-templatable'
   Automatable = require '../../mixins/automatable'
   ServiceErrorReady = require '../../mixins/service-error-ready'
 

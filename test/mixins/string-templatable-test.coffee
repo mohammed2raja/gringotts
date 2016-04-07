@@ -1,5 +1,5 @@
 define (require) ->
-  StringTemplatable = require 'mixins/string-template'
+  StringTemplatable = require 'mixins/string-templatable'
   View = require 'views/base/view'
 
   class MockView extends StringTemplatable View

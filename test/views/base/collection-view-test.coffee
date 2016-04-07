@@ -1,6 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
-  StringTemplatable = require 'mixins/string-template'
+  StringTemplatable = require 'mixins/string-templatable'
   Collection = require 'models/base/collection'
   CollectionView = require 'views/base/collection-view'
   View = require 'views/base/view'
