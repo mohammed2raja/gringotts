@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
-  StringTemplate = require 'mixins/string-template'
+  StringTemplatable = require 'mixins/string-template'
   PaginatedCollection = require 'models/base/paginated-collection'
   PaginatedView = require 'views/base/paginated-view'
   View = require 'views/base/view'
@@ -17,13 +17,13 @@ define (require) ->
     DEFAULTS: _.extend {}, PaginatedCollection::DEFAULTS,
       per_page: 10
 
-  class MockPaginatedView extends StringTemplate PaginatedView
+  class MockPaginatedView extends StringTemplatable PaginatedView
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'
     templatePath: 'test/templates'
 
-  class MockInfinitePaginatedView extends StringTemplate PaginatedView
+  class MockInfinitePaginatedView extends StringTemplatable PaginatedView
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'

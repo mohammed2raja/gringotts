@@ -1,6 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
-  StringTemplate = require 'mixins/string-template'
+  StringTemplatable = require 'mixins/string-template'
   Collection = require 'models/base/collection'
   CollectionView = require 'views/base/collection-view'
   View = require 'views/base/view'
@@ -16,7 +16,7 @@ define (require) ->
     DEFAULTS: _.extend {}, Collection::DEFAULTS,
       sort_by: 'attrA'
 
-  class MockCollectionView extends StringTemplate CollectionView
+  class MockCollectionView extends StringTemplatable CollectionView
     itemView: MockItemView
     template: 'table-test'
     templatePath: 'test/templates'

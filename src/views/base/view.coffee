@@ -1,8 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   Automatable = require '../../mixins/automatable'
-  StringTemplate = require '../../mixins/string-template'
+  StringTemplatable = require '../../mixins/string-template'
 
-  class View extends Automatable StringTemplate Chaplin.View
+  class View extends Automatable StringTemplatable Chaplin.View
     autoRender: yes
-    optionNames: @::optionNames.concat ['template']

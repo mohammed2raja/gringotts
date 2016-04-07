@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   Handlebars = require 'handlebars'
   utils = require '../../lib/utils'
-  StringTemplate = require '../../mixins/string-template'
+  StringTemplatable = require '../../mixins/string-template'
   Automatable = require '../../mixins/automatable'
   ServiceErrorReady = require '../../mixins/service-error-ready'
 
@@ -10,7 +10,7 @@ define (require) ->
    * @param {object} sortableTableHeaders - Headers for the table.
   ###
   class CollectionView extends utils.mix Chaplin.CollectionView
-      .with StringTemplate, Automatable, ServiceErrorReady
+      .with StringTemplatable, Automatable, ServiceErrorReady
 
     listen:
       # Re-render all partials with *-Infos
@@ -18,7 +18,7 @@ define (require) ->
       'sync collection': -> @renderControls()
       'sort collection': -> @renderControls()
     optionNames: @::optionNames.concat [
-      'template', 'sortableTableHeaders', 'routeName', 'routeParams'
+      'sortableTableHeaders', 'routeName', 'routeParams'
     ]
     loadingSelector: '.loading'
     fallbackSelector: '.empty'
