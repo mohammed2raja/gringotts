@@ -146,3 +146,8 @@ define (require) ->
       it 'should be false for non-equal values', ->
         Handlebars.helpers.ifequal 100, 200, hbsOptions
         expect(hbsOptions.inverse).to.be.calledOnce
+
+    context 'array helper', ->
+      it 'should return array for arguments', ->
+        result = Handlebars.helpers.array 10, 55, 647, hbsOptions
+        expect(result).to.eql [10, 55, 647]

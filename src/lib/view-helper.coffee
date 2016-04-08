@@ -95,3 +95,11 @@ define (require) ->
       return options.fn(this)
     else
       return options.inverse(this)
+
+  ###*
+   * Retunrs list of arguments as array. Useful for {{url (array a b c)}}
+   * @param  {Array} opts... Input arguments
+   * @return {Array}         Array of arguments
+  ###
+  Handlebars.registerHelper 'array', (opts...) ->
+    _.initial opts
