@@ -3,10 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Automatable, Chaplin, StringTemplate, View;
+    var Automatable, Chaplin, StringTemplatable, View;
     Chaplin = require('chaplin');
     Automatable = require('../../mixins/automatable');
-    StringTemplate = require('../../mixins/string-template');
+    StringTemplatable = require('../../mixins/string-templatable');
     return View = (function(superClass) {
       extend(View, superClass);
 
@@ -16,11 +16,9 @@
 
       View.prototype.autoRender = true;
 
-      View.prototype.optionNames = View.prototype.optionNames.concat(['template']);
-
       return View;
 
-    })(Automatable(StringTemplate(Chaplin.View)));
+    })(Automatable(StringTemplatable(Chaplin.View)));
   });
 
 }).call(this);

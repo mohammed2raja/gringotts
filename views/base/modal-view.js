@@ -38,8 +38,11 @@
       ModalView.prototype.render = function() {
         var className;
         className = this.$el.attr('class') || '';
-        if (className.indexOf('modal' < 0)) {
-          this.$el.attr('class', className + " modal");
+        if (className !== '') {
+          className += ' ';
+        }
+        if (className.indexOf('modal') < 0) {
+          this.$el.attr('class', className + "modal");
         }
         return ModalView.__super__.render.apply(this, arguments);
       };

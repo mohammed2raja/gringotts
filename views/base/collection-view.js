@@ -3,11 +3,11 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Automatable, Chaplin, CollectionView, Handlebars, ServiceErrorReady, StringTemplate, utils;
+    var Automatable, Chaplin, CollectionView, Handlebars, ServiceErrorReady, StringTemplatable, utils;
     Chaplin = require('chaplin');
     Handlebars = require('handlebars');
     utils = require('../../lib/utils');
-    StringTemplate = require('../../mixins/string-template');
+    StringTemplatable = require('../../mixins/string-templatable');
     Automatable = require('../../mixins/automatable');
     ServiceErrorReady = require('../../mixins/service-error-ready');
 
@@ -33,7 +33,7 @@
         }
       };
 
-      CollectionView.prototype.optionNames = CollectionView.prototype.optionNames.concat(['template', 'sortableTableHeaders', 'routeName', 'routeParams']);
+      CollectionView.prototype.optionNames = CollectionView.prototype.optionNames.concat(['sortableTableHeaders', 'routeName', 'routeParams']);
 
       CollectionView.prototype.loadingSelector = '.loading';
 
@@ -118,7 +118,7 @@
 
       return CollectionView;
 
-    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplate, Automatable, ServiceErrorReady));
+    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplatable, Automatable, ServiceErrorReady));
   });
 
 }).call(this);
