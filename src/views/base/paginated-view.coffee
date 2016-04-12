@@ -16,59 +16,54 @@ define (require) ->
         .not(@errorSelector).toggle !visible
       @$loading.toggle visible
 
-    # Generate the range string for pagination controls
-    _getPaginationString: (min, max, info) ->
-      strPath = if @infinitePagination then 'infinite' else 'total'
-      out = "#{[min, max].join '-'}"
-      out += " of #{info.count}" unless @infinitePagination
-      if I18n? then out = I18n.t "items.#{strPath}",
-        {start: min, end: max, total: info.count}
-      out
+    _getStats: (min, max, info) ->
+      if I18n?
+        I18n.t 'items.total', start: min, end: max, total: info.count
+      else
+        "#{[min, max].join '-'} of #{info.count}"
 
+    _getRangeString: (page, perPage, info) ->
+      maxItems = info.pages * perPage
+      max =
+        if info.count is maxItems then info.count
+        else Math.min info.count, page * perPage
+      min = (page - 1) * perPage + 1
+      min = Math.min min, max
+      @_getStats min, max, info
+
+    # setup what the pagination template is expecting
     _getPageInfo: ->
+      infinite = @collection.infinite
       state = @collection.getState {}, true
-
-      _.each ['page', 'per_page'], (i) ->
-        state[i] = parseInt state[i]
-
-      info = # setup what the pagination template is expecting
+      perPage = parseInt state.per_page
+      page = if infinite then state.page else parseInt state.page
+      info =
         viewId: @cid
         count: @collection.count
-        page: state.page
-        perPage: state.per_page
-        pages: Math.ceil @collection.count / state.per_page
-        prev: false
-        next: false
+        page: page
+        perPage: perPage
 
-      if @infinitePagination
-        if @collection.count is state.per_page
-          info.pages = state.page + 1
-          info.multiPaged = true
-        else
-          info.pages = state.page
-          info.multiPaged = false
+      if infinite
+        info.pages = 1
+        info.multiPaged = true
+        info.prev = if page isnt 1 then 1 else 0
+        info.next = @collection.nextPageId
       else
-        info.multiPaged = info.count > info.perPage
+        info.pages = Math.ceil @collection.count / perPage
+        info.multiPaged = @collection.count > perPage
+        info.prev = if page > 1 then page - 1 else 0
+        info.next = if page < info.pages then page + 1 else 0
+        info.range = @_getRangeString page, perPage, info
 
-      maxItems = info.pages * info.perPage
-      max = Math.min @collection.count, info.page * info.perPage
-      max = @collection.count if @collection.count is maxItems
-      min = (info.page - 1) * info.perPage + 1
-      min = Math.min min, max
-      info.prev = state.page - 1 if state.page > 1
-      info.next = state.page + 1 if state.page < info.pages
+      info.nextState =
+        if info.next then @collection.getState page: info.next
+        else @collection.getState()
+      info.prevState =
+        if info.prev then @collection.getState page: info.prev
+        else @collection.getState()
+
       info.routeName = @routeName
       info.routeParams = @routeParams
-      info.range = @_getPaginationString min, max, info
-
-      info.nextState = if info.next
-        @collection.getState page: info.next
-      else @collection.getState()
-
-      info.prevState = if info.prev
-        @collection.getState page: info.prev
-      else @collection.getState()
-
       info
 
     ###*

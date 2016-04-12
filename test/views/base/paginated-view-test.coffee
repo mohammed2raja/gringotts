@@ -14,21 +14,13 @@ define (require) ->
 
   class MockPaginatedCollection extends ActiveSyncMachine PaginatedCollection
     urlRoot: '/test'
-    DEFAULTS: _.extend {}, PaginatedCollection::DEFAULTS,
-      per_page: 10
+    DEFAULTS: _.extend {}, @::DEFAULTS, per_page: 10
 
   class MockPaginatedView extends StringTemplatable PaginatedView
     itemView: MockItemView
     listSelector: 'tbody'
     template: 'paginated-table-test'
     templatePath: 'test/templates'
-
-  class MockInfinitePaginatedView extends StringTemplatable PaginatedView
-    itemView: MockItemView
-    listSelector: 'tbody'
-    template: 'paginated-table-test'
-    templatePath: 'test/templates'
-    infinitePagination: true
 
   describe 'Paginated View', ->
     collection = null
@@ -71,7 +63,6 @@ define (require) ->
       beforeEach ->
         I18n = t: (address, context) ->
           i18ns = items:
-            infinite: "#{context.min}-#{context.max}"
             total: "#{context.min}-#{context.max} of #{context.count}"
           _.result i18ns, address
 
@@ -81,7 +72,7 @@ define (require) ->
           page: 1
           perPage: 10
           pages: Math.ceil(101 / 10)
-          prev: false
+          prev: 0
           next: 2
           range: '1-10 of 101'
           routeName: 'test'
@@ -106,31 +97,28 @@ define (require) ->
       context 'with infinite pagination', ->
         beforeEach ->
           collection.count = 10
+          collection.infinite = true
+          collection.nextPageId = '555'
           expecting.count = 10
-          expecting.range = '1-10'
-          expecting.pages = 2
-          view.infinitePagination = true
+          delete expecting.range
+          expecting.pages = 1
+          expecting.next = '555'
+          expecting.nextState = page: '555'
           view.renderControls()
-
-        afterEach ->
-          expecting.pages = 11
-          collection.count = 101
-          expecting.count = 101
-          expecting.range = '1-10 of 101'
-          view.infinitePagination = false
 
         it 'should correctly return _getPageInfo', ->
           expect(view._getPageInfo()).to.eql expecting
 
         it 'should show the correct string', ->
-          expecting = '1-10'
-          expect(view.$('.pagination-controls strong').text()).to.eql expecting
+          expect(view.$('.pagination-controls strong').text()).to.eql ''
 
       context 'without I18n', ->
         oldI18n = null
+
         beforeEach ->
           oldI18n = I18n
           I18n = null
+
         afterEach ->
           I18n = oldI18n
           oldI18n = null
@@ -141,17 +129,15 @@ define (require) ->
 
         context 'with infinite pagination', ->
           beforeEach ->
-            view.infinitePagination = true
             collection.count = 10
-            expecting.pages = 2
+            collection.infinite = true
+            collection.nextPageId = '555'
+            delete expecting.range
+            expecting.pages = 1
             expecting.count = 10
-            expecting.range = '1-10'
-          afterEach ->
-            view.infinitePagination = false
-            expecting.pages = 11
-            expecting.range = '1-10 of 101'
-            expecting.count = 101
-            collection.count = 101
+            expecting.next = '555'
+            expecting.nextState = page: '555'
+
           it 'should correctly return _getPageInfo', ->
             expect(view._getPageInfo()).to.eql expecting
 

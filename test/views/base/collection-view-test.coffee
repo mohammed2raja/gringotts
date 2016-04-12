@@ -13,7 +13,7 @@ define (require) ->
   class MockCollection extends Collection
     syncKey: 'tests'
     urlRoot: '/test'
-    DEFAULTS: _.extend {}, Collection::DEFAULTS,
+    DEFAULTS: _.extend {}, @::DEFAULTS,
       sort_by: 'attrA'
 
   class MockCollectionView extends StringTemplatable CollectionView
