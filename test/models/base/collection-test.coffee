@@ -1,13 +1,13 @@
 define (require) ->
   Chaplin = require 'chaplin'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
-  OverrideXHR = require 'mixins/override-xhr'
+  Abortable = require 'mixins/abortable'
   SafeSyncCallback = require 'mixins/safe-sync-callback'
   ServiceErrorCallback = require 'mixins/service-error-callback'
   Collection = require 'models/base/collection'
 
   class MockCollection extends Collection
-    DEFAULTS: _.extend {}, Collection::DEFAULTS, {sort_by: 'attrA'}
+    DEFAULTS: _.extend {}, @::DEFAULTS, sort_by: 'attrA'
     syncKey: 'tests'
     urlRoot: '/test'
 
@@ -44,7 +44,7 @@ define (require) ->
         expect(funcs).to.include.members _.functions ActiveSyncMachine::
         expect(funcs).to.include.members _.functions SafeSyncCallback::
         expect(funcs).to.include.members _.functions ServiceErrorCallback::
-        expect(funcs).to.include.members _.functions OverrideXHR::
+        expect(funcs).to.include.members _.functions Abortable::
 
     context 'sorting remotely', ->
       beforeEach ->
@@ -76,18 +76,6 @@ define (require) ->
         it 'should fetch from the server', ->
           expecting = ['/test', '?', 'sort_by=attrB', 'order=desc']
           testRequest expecting, server.requests[0]
-
-    context 'upon disposal', ->
-      beforeEach ->
-        collection = new MockCollection data
-        sinon.stub collection, 'remove'
-        collection.models[0].dispose()
-
-      afterEach ->
-        collection.remove.restore()
-
-      it 'should remove a model upon disposal', ->
-        expect(collection.remove).to.have.beenCalled
 
     context 'changing', ->
       spy = null

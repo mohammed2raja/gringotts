@@ -2,12 +2,12 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require '../../lib/utils'
   ActiveSyncMachine = require '../../mixins/active-sync-machine'
-  OverrideXHR = require '../../mixins/override-xhr'
+  Abortable = require '../../mixins/abortable'
   SafeSyncCallback = require '../../mixins/safe-sync-callback'
 
   # Abstract class for models. Includes useful mixins by default.
   class Model extends utils.mix Chaplin.Model
-      .with ActiveSyncMachine, OverrideXHR, SafeSyncCallback
+      .with ActiveSyncMachine, Abortable, SafeSyncCallback
 
     save: (key, val, options) ->
       super or $.Deferred() # handling validation false result

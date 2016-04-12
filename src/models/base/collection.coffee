@@ -2,32 +2,17 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require '../../lib/utils'
   ActiveSyncMachine = require '../../mixins/active-sync-machine'
-  OverrideXHR = require '../../mixins/override-xhr'
+  Abortable = require '../../mixins/abortable'
   SafeSyncCallback = require '../../mixins/safe-sync-callback'
   ServiceErrorCallback = require '../../mixins/service-error-callback'
   Model = require './model'
 
   # Abstract class for collections. Includes useful mixins by default.
   class Collection extends utils.mix Chaplin.Collection
-      .with ActiveSyncMachine, OverrideXHR
+      .with ActiveSyncMachine, Abortable
         , SafeSyncCallback, ServiceErrorCallback
 
     model: Model
-
-    initialize: ->
-      super
-      @state = {}
-
-      throw new Error(
-        'Please use urlRoot instead of url as a collection property'
-      ) unless typeof @url is 'function'
-
-      # Without this collections keep growing and it causes problems with new
-      # notifications being inserted after old ones are disposed.
-      @on 'dispose', (model) ->
-        @remove model if model instanceof Chaplin.Model and !@disposed
-
-      @on 'remove', -> @count = Math.max 0, (@count or 1) - 1
 
     ###*
      * State of the data with relation to the server.
@@ -51,6 +36,14 @@ define (require) ->
      # Override when necessary.
     ###
     DEFAULTS_SERVER_MAP: {}
+
+    initialize: ->
+      unless typeof @url is 'function'
+        throw new Error 'Please use urlRoot instead
+          of url as a collection property'
+      super
+      @state = {}
+      @on 'remove', -> @count = Math.max 0, (@count or 1) - 1
 
     ###*
      * Strips the state from all undefined or default values

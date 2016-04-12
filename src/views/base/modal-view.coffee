@@ -21,7 +21,7 @@ define (require) ->
     render: ->
       className = @$el.attr('class') or ''
       className += ' ' unless className is ''
-      if className.indexOf('modal') < 0
+      unless /(^|\s+)modal(\s+|$)/ig.test className
         @$el.attr 'class', "#{className}modal"
       super
 

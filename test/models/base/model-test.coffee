@@ -1,7 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
-  OverrideXHR = require 'mixins/override-xhr'
+  Abortable = require 'mixins/abortable'
   SafeSyncCallback = require 'mixins/safe-sync-callback'
   Model = require 'models/base/model'
 
@@ -22,7 +22,7 @@ define (require) ->
       funcs = _.functions Model::
       expect(funcs).to.include.members _.functions ActiveSyncMachine::
       expect(funcs).to.include.members _.functions SafeSyncCallback::
-      expect(funcs).to.include.members _.functions OverrideXHR::
+      expect(funcs).to.include.members _.functions Abortable::
 
     context 'safe save', ->
       deferred = null
