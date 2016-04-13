@@ -3,11 +3,11 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ActiveSyncMachine, Chaplin, Model, OverrideXHR, SafeSyncCallback, utils;
+    var Abortable, ActiveSyncMachine, Chaplin, Model, SafeSyncCallback, utils;
     Chaplin = require('chaplin');
     utils = require('../../lib/utils');
     ActiveSyncMachine = require('../../mixins/active-sync-machine');
-    OverrideXHR = require('../../mixins/override-xhr');
+    Abortable = require('../../mixins/abortable');
     SafeSyncCallback = require('../../mixins/safe-sync-callback');
     return Model = (function(superClass) {
       extend(Model, superClass);
@@ -33,7 +33,7 @@
 
       return Model;
 
-    })(utils.mix(Chaplin.Model)["with"](ActiveSyncMachine, OverrideXHR, SafeSyncCallback));
+    })(utils.mix(Chaplin.Model)["with"](ActiveSyncMachine, Abortable, SafeSyncCallback));
   });
 
 }).call(this);

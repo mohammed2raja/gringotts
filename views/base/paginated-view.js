@@ -29,71 +29,59 @@
         return this.$loading.toggle(visible);
       };
 
-      PaginatedView.prototype._getPaginationString = function(min, max, info) {
-        var out, strPath;
-        strPath = this.infinitePagination ? 'infinite' : 'total';
-        out = "" + ([min, max].join('-'));
-        if (!this.infinitePagination) {
-          out += " of " + info.count;
-        }
+      PaginatedView.prototype._getStats = function(min, max, info) {
         if (typeof I18n !== "undefined" && I18n !== null) {
-          out = I18n.t("items." + strPath, {
+          return I18n.t('items.total', {
             start: min,
             end: max,
             total: info.count
           });
+        } else {
+          return ([min, max].join('-')) + " of " + info.count;
         }
-        return out;
+      };
+
+      PaginatedView.prototype._getRangeString = function(page, perPage, info) {
+        var max, maxItems, min;
+        maxItems = info.pages * perPage;
+        max = info.count === maxItems ? info.count : Math.min(info.count, page * perPage);
+        min = (page - 1) * perPage + 1;
+        min = Math.min(min, max);
+        return this._getStats(min, max, info);
       };
 
       PaginatedView.prototype._getPageInfo = function() {
-        var info, max, maxItems, min, state;
+        var infinite, info, page, perPage, state;
+        infinite = this.collection.infinite;
         state = this.collection.getState({}, true);
-        _.each(['page', 'per_page'], function(i) {
-          return state[i] = parseInt(state[i]);
-        });
+        perPage = parseInt(state.per_page);
+        page = infinite ? state.page : parseInt(state.page);
         info = {
           viewId: this.cid,
           count: this.collection.count,
-          page: state.page,
-          perPage: state.per_page,
-          pages: Math.ceil(this.collection.count / state.per_page),
-          prev: false,
-          next: false
+          page: page,
+          perPage: perPage
         };
-        if (this.infinitePagination) {
-          if (this.collection.count === state.per_page) {
-            info.pages = state.page + 1;
-            info.multiPaged = true;
-          } else {
-            info.pages = state.page;
-            info.multiPaged = false;
-          }
+        if (infinite) {
+          info.pages = 1;
+          info.multiPaged = true;
+          info.prev = page !== 1 ? 1 : 0;
+          info.next = this.collection.nextPageId;
         } else {
-          info.multiPaged = info.count > info.perPage;
+          info.pages = Math.ceil(this.collection.count / perPage);
+          info.multiPaged = this.collection.count > perPage;
+          info.prev = page > 1 ? page - 1 : 0;
+          info.next = page < info.pages ? page + 1 : 0;
+          info.range = this._getRangeString(page, perPage, info);
         }
-        maxItems = info.pages * info.perPage;
-        max = Math.min(this.collection.count, info.page * info.perPage);
-        if (this.collection.count === maxItems) {
-          max = this.collection.count;
-        }
-        min = (info.page - 1) * info.perPage + 1;
-        min = Math.min(min, max);
-        if (state.page > 1) {
-          info.prev = state.page - 1;
-        }
-        if (state.page < info.pages) {
-          info.next = state.page + 1;
-        }
-        info.routeName = this.routeName;
-        info.routeParams = this.routeParams;
-        info.range = this._getPaginationString(min, max, info);
         info.nextState = info.next ? this.collection.getState({
           page: info.next
         }) : this.collection.getState();
         info.prevState = info.prev ? this.collection.getState({
           page: info.prev
         }) : this.collection.getState();
+        info.routeName = this.routeName;
+        info.routeParams = this.routeParams;
         return info;
       };
 

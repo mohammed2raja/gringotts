@@ -3,11 +3,11 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ActiveSyncMachine, Chaplin, Collection, Model, OverrideXHR, SafeSyncCallback, ServiceErrorCallback, utils;
+    var Abortable, ActiveSyncMachine, Chaplin, Collection, Model, SafeSyncCallback, ServiceErrorCallback, utils;
     Chaplin = require('chaplin');
     utils = require('../../lib/utils');
     ActiveSyncMachine = require('../../mixins/active-sync-machine');
-    OverrideXHR = require('../../mixins/override-xhr');
+    Abortable = require('../../mixins/abortable');
     SafeSyncCallback = require('../../mixins/safe-sync-callback');
     ServiceErrorCallback = require('../../mixins/service-error-callback');
     Model = require('./model');
@@ -19,22 +19,6 @@
       }
 
       Collection.prototype.model = Model;
-
-      Collection.prototype.initialize = function() {
-        Collection.__super__.initialize.apply(this, arguments);
-        this.state = {};
-        if (typeof this.url !== 'function') {
-          throw new Error('Please use urlRoot instead of url as a collection property');
-        }
-        this.on('dispose', function(model) {
-          if (model instanceof Chaplin.Model && !this.disposed) {
-            return this.remove(model);
-          }
-        });
-        return this.on('remove', function() {
-          return this.count = Math.max(0, (this.count || 1) - 1);
-        });
-      };
 
 
       /**
@@ -65,6 +49,17 @@
        */
 
       Collection.prototype.DEFAULTS_SERVER_MAP = {};
+
+      Collection.prototype.initialize = function() {
+        if (typeof this.url !== 'function') {
+          throw new Error('Please use urlRoot instead of url as a collection property');
+        }
+        Collection.__super__.initialize.apply(this, arguments);
+        this.state = {};
+        return this.on('remove', function() {
+          return this.count = Math.max(0, (this.count || 1) - 1);
+        });
+      };
 
 
       /**
@@ -175,7 +170,7 @@
 
       return Collection;
 
-    })(utils.mix(Chaplin.Collection)["with"](ActiveSyncMachine, OverrideXHR, SafeSyncCallback, ServiceErrorCallback));
+    })(utils.mix(Chaplin.Collection)["with"](ActiveSyncMachine, Abortable, SafeSyncCallback, ServiceErrorCallback));
   });
 
 }).call(this);

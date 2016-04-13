@@ -41,7 +41,7 @@
         if (className !== '') {
           className += ' ';
         }
-        if (className.indexOf('modal') < 0) {
+        if (!/(^|\s+)modal(\s+|$)/ig.test(className)) {
           this.$el.attr('class', className + "modal");
         }
         return ModalView.__super__.render.apply(this, arguments);

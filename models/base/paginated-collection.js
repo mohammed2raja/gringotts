@@ -21,6 +21,21 @@
         per_page: 30
       });
 
+
+      /**
+       * Sets the pagination mode for collection.
+       * @type {Boolean} True if infitine, false otherwise
+       */
+
+      PaginatedCollection.prototype.infinite = false;
+
+      PaginatedCollection.prototype.parse = function(resp) {
+        if (this.infinite) {
+          this.nextPageId = resp.next_page_id;
+        }
+        return PaginatedCollection.__super__.parse.apply(this, arguments);
+      };
+
       return PaginatedCollection;
 
     })(Collection);
