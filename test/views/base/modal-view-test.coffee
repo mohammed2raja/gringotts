@@ -31,13 +31,6 @@ define (require) ->
       it 'should have modal class set', ->
         expect(view.$el).to.have.attr 'class', 'modal'
 
-      context 'on second render', ->
-        beforeEach ->
-          view.render()
-
-        it 'should have only one modal class', ->
-          expect(view.$el).to.have.attr 'class', 'modal'
-
       context 'and then hiding modal', ->
         beforeEach ->
           view.$el.trigger 'hidden.bs.modal'

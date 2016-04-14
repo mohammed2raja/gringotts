@@ -1,11 +1,13 @@
 define (require) ->
+  Classy = require '../../mixins/classy'
   View = require './view'
 
   ###*
    * View for bootstrap modals
   ###
-  class ModalView extends View
+  class ModalView extends Classy View
     optionNames: @::optionNames.concat ['forceOneInstance']
+    classyName: 'modal'
     attributes:
       tabindex: -1
       role: 'dialog'
@@ -17,13 +19,6 @@ define (require) ->
       @_hide()
       # dispose responsibility is on model's holder
       return @dispose() unless @model or @collection
-
-    render: ->
-      className = @$el.attr('class') or ''
-      className += ' ' unless className is ''
-      unless /(^|\s+)modal(\s+|$)/ig.test className
-        @$el.attr 'class', "#{className}modal"
-      super
 
     attach: (opts) ->
       super
