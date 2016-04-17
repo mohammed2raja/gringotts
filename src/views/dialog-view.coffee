@@ -6,7 +6,7 @@ define (require) ->
     template: 'dialog'
     title: null
     text: null
-    buttons: [{text:'OK', className: 'btn-action'}]
+    buttons: [{text: I18n?.t('buttons.OK') or 'OK', className: 'btn-action'}]
     optionNames: @::optionNames.concat [
       'title', 'text', 'buttons'
     ]
@@ -14,8 +14,7 @@ define (require) ->
       'click button': (e) ->
         $el = $(e.currentTarget)
         @buttons.forEach (b) =>
-          if b.click and $el.hasClass b.className
-            b.click.call this, e
+          b.click.call this, e if b.click and $el.hasClass b.className
 
     getTemplateData: ->
       _.extend super, {@title, @text, @buttons}

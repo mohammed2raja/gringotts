@@ -1,0 +1,72 @@
+{{#*inline "header"}}
+  {{#if title}}
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title">{{title}}</h4>
+    </div>
+  {{/if}}
+{{/inline}}
+
+{{#*inline "body-content"}}
+  {{#if html}}
+    {{{html}}}
+  {{else}}
+    <p>{{text}}</p>
+  {{/if}}
+{{/inline}}
+
+{{#*inline "footer"}}
+  <div class="modal-footer">
+    {{#each buttons}}
+      <button type="button" class="btn {{className}}"
+          {{#unless click.prototype}}data-dismiss="modal"{{/unless}}>
+        {{~text~}}
+      </button>
+    {{/each}}
+  </div>
+{{/inline}}
+
+{{#*inline "modal-content"}}
+  {{!-- Do not apply fade if it's a current state to enable initial BS modal animations --}}
+  <div class="modal-content {{current}}-view{{#unlessEqual state current}} fade{{/unlessEqual}}">
+    {{> @partial-block }}
+  </div>
+{{/inline}}
+
+<div class="modal-dialog">
+  {{#> modal-content current='default'}}
+    {{> header default}}
+    <div class="modal-body">
+      {{> body-content default}}
+    </div>
+    {{> footer default}}
+    {{> progressPulse class="loading fade"}}
+  {{/modal-content}}
+
+  {{#> modal-content current='progress'}}
+    {{> header progress}}
+    <div class="modal-body">
+      {{> body-content progress}}
+      {{> progressPulse}}
+    </div>
+    {{> footer progress}}
+  {{/modal-content}}
+
+  {{#> modal-content current='error'}}
+    {{> header error}}
+    <div class="modal-body">
+      {{> body-content error}}
+    </div>
+    {{> footer error}}
+  {{/modal-content}}
+
+  {{#> modal-content current='success'}}
+    {{> header success}}
+    <div class="modal-body">
+      {{> body-content success}}
+    </div>
+    {{> footer success}}
+  {{/modal-content}}
+</div>

@@ -147,6 +147,15 @@ define (require) ->
         Handlebars.helpers.ifequal 100, 200, hbsOptions
         expect(hbsOptions.inverse).to.be.calledOnce
 
+    context 'unlessEqual helper', ->
+      it 'should be true for non-equal values', ->
+        Handlebars.helpers.unlessEqual 100, 200, hbsOptions
+        expect(hbsOptions.fn).to.be.calledOnce
+
+      it 'should be false for equal values', ->
+        Handlebars.helpers.unlessEqual 100, 100, hbsOptions
+        expect(hbsOptions.inverse).to.be.calledOnce
+
     context 'array helper', ->
       it 'should return array for arguments', ->
         result = Handlebars.helpers.array 10, 55, 647, hbsOptions

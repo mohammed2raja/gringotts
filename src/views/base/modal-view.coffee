@@ -7,7 +7,7 @@ define (require) ->
   ###
   class ModalView extends Classy View
     optionNames: @::optionNames.concat ['forceOneInstance']
-    classyName: 'modal'
+    classyName: 'modal fade'
     attributes:
       tabindex: -1
       role: 'dialog'

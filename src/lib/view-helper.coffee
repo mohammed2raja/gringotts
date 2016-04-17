@@ -91,7 +91,19 @@ define (require) ->
     if arguments.length < 3
       throw new Error('Handlebars Helper equal needs 2 parameters')
 
-    if lvalue == rvalue
+    if lvalue is rvalue
+      return options.fn(this)
+    else
+      return options.inverse(this)
+
+  ###*
+   * Compares two values and renders matching template like #unless
+  ###
+  Handlebars.registerHelper 'unlessEqual', (lvalue, rvalue, options) ->
+    if arguments.length < 3
+      throw new Error('Handlebars Helper equal needs 2 parameters')
+
+    if lvalue isnt rvalue
       return options.fn(this)
     else
       return options.inverse(this)

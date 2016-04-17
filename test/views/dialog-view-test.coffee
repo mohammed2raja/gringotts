@@ -20,8 +20,8 @@ define (require) ->
       view.render()
 
     afterEach ->
-      view.dispose() unless view.disposed
       $.fn.modal.restore()
+      view.dispose() unless view.disposed
 
     it 'should have title set', ->
       expect(view.$ '.modal-title').to.have.text title
@@ -33,7 +33,7 @@ define (require) ->
       expect(view.$ '.btn.btn-action').to.exist.and.to.have.text 'Yes'
       expect(view.$ '.btn.btn-cancel').to.exist.and.to.have.text 'No'
 
-    context 'on click', ->
+    context 'on action click', ->
       beforeEach ->
         view.$('.btn.btn-action').trigger 'click'
 

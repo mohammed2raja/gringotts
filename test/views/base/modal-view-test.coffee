@@ -29,7 +29,7 @@ define (require) ->
         expect($ 'body').to.have.class 'no-scroll'
 
       it 'should have modal class set', ->
-        expect(view.$el).to.have.attr 'class', 'modal'
+        expect(view.$el).to.have.attr 'class', 'modal fade'
 
       context 'and then hiding modal', ->
         beforeEach ->
