@@ -3,7 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ModalView, View;
+    var Classy, ModalView, View;
+    Classy = require('../../mixins/classy');
     View = require('./view');
 
     /**
@@ -17,6 +18,8 @@
       }
 
       ModalView.prototype.optionNames = ModalView.prototype.optionNames.concat(['forceOneInstance']);
+
+      ModalView.prototype.classyName = 'modal fade';
 
       ModalView.prototype.attributes = {
         tabindex: -1,
@@ -33,18 +36,6 @@
         if (!(this.model || this.collection)) {
           return this.dispose();
         }
-      };
-
-      ModalView.prototype.render = function() {
-        var className;
-        className = this.$el.attr('class') || '';
-        if (className !== '') {
-          className += ' ';
-        }
-        if (!/(^|\s+)modal(\s+|$)/ig.test(className)) {
-          this.$el.attr('class', className + "modal");
-        }
-        return ModalView.__super__.render.apply(this, arguments);
       };
 
       ModalView.prototype.attach = function(opts) {
@@ -73,7 +64,7 @@
 
       return ModalView;
 
-    })(View);
+    })(Classy(View));
   });
 
 }).call(this);

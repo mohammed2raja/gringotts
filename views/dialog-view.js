@@ -22,7 +22,7 @@
 
       DialogView.prototype.buttons = [
         {
-          text: 'OK',
+          text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.OK') : void 0) || 'OK',
           className: 'btn-action'
         }
       ];
