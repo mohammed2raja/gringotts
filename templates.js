@@ -176,13 +176,13 @@ this["Handlebars"]["progress-dialog"] = Handlebars.template({"1":function(contai
 
   return "  <div class=\"modal-content "
     + container.escapeExpression(((helper = (helper = helpers.current || (depth0 != null ? depth0.current : depth0)) != null ? helper : alias2),(typeof helper === "function" ? helper.call(alias1,{"name":"current","hash":{},"data":data}) : helper)))
-    + "-view"
-    + ((stack1 = (helpers.unlessEqual || (depth0 && depth0.unlessEqual) || alias2).call(alias1,(depth0 != null ? depth0.state : depth0),(depth0 != null ? depth0.current : depth0),{"name":"unlessEqual","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "-view fade"
+    + ((stack1 = (helpers.ifequal || (depth0 && depth0.ifequal) || alias2).call(alias1,(depth0 != null ? depth0.state : depth0),(depth0 != null ? depth0.current : depth0),{"name":"ifequal","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\">\n"
     + ((stack1 = container.invokePartial(partials["@partial-block"],depth0,{"name":"@partial-block","data":data,"indent":"    ","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
     + "  </div>\n";
 },"14":function(container,depth0,helpers,partials,data) {
-    return " fade";
+    return " in";
 },"16":function(container,depth0,helpers,partials,data) {
     var stack1;
 

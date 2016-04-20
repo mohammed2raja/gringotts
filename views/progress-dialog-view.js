@@ -53,20 +53,25 @@
       };
 
       ProgressDialogView.prototype.events = {
+        'show.bs.modal': function() {
+          return this.$stateView().removeClass('fade');
+        },
+        'shown.bs.modal': function() {
+          return this.$stateView().addClass('fade');
+        },
         'click button': function(e) {
           var $btn, ref;
           $btn = $(e.currentTarget);
-          if ($btn.data('dismiss') === 'modal') {
-            return this.$("." + this.state + "-view").removeClass('fade');
-          } else {
-            return (ref = this[this.state]) != null ? ref.buttons.forEach((function(_this) {
-              return function(b) {
-                if (b.click && $btn.hasClass(b.className)) {
-                  return b.click.call(_this, e);
-                }
-              };
-            })(this)) : void 0;
-          }
+          return (ref = this[this.state]) != null ? ref.buttons.forEach((function(_this) {
+            return function(b) {
+              if (b.click && $btn.hasClass(b.className)) {
+                return b.click.call(_this, e);
+              }
+            };
+          })(this)) : void 0;
+        },
+        'hide.bs.modal': function() {
+          return this.$stateView().removeClass('fade');
         },
         'hidden.bs.modal': function() {
           if (this.state === 'success') {
@@ -174,11 +179,11 @@
         }
         this.state = state;
         if ((ref = this[state]) != null ? ref.html : void 0) {
-          this.$("." + state + "-view .modal-body").html(this[state].html());
+          this.$stateView().find('.modal-body').html(this[state].html());
         }
         return _.each(STATES, (function(_this) {
           return function(s) {
-            return _this.$("." + s + "-view").addClass('fade').toggleClass('in', s === state && !_this.empty(state));
+            return _this.$stateView(s).addClass('fade').toggleClass('in', s === state && !_this.empty(state));
           };
         })(this));
       };
@@ -192,6 +197,13 @@
 
       ProgressDialogView.prototype.setLoading = function(loading) {
         return this.$('.loading').toggleClass('in', loading);
+      };
+
+      ProgressDialogView.prototype.$stateView = function(state) {
+        if (state == null) {
+          state = this.state;
+        }
+        return this.$("." + state + "-view");
       };
 
       ProgressDialogView.prototype.progressState = function() {

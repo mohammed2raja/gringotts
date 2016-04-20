@@ -17,8 +17,6 @@
         return ModalView.__super__.constructor.apply(this, arguments);
       }
 
-      ModalView.prototype.optionNames = ModalView.prototype.optionNames.concat(['forceOneInstance']);
-
       ModalView.prototype.classyName = 'modal fade';
 
       ModalView.prototype.attributes = {
@@ -26,40 +24,36 @@
         role: 'dialog'
       };
 
-      ModalView.prototype._hide = function() {
-        var ref;
-        return (ref = this.$el) != null ? ref.modal('hide') : void 0;
-      };
-
-      ModalView.prototype._dispose = function() {
-        this._hide();
-        if (!(this.model || this.collection)) {
-          return this.dispose();
+      ModalView.prototype.events = {
+        'shown.bs.modal': function() {
+          return $('body').addClass('no-scroll');
+        },
+        'hidden.bs.modal': function() {
+          $('body').removeClass('no-scroll');
+          this.hidden = true;
+          if (this.disposeRequested || !(this.model || this.collection)) {
+            return this.dispose();
+          }
         }
       };
 
       ModalView.prototype.attach = function(opts) {
-        var $body;
         ModalView.__super__.attach.apply(this, arguments);
-        if (!!this.forceOneInstance && (this.template != null) && $("." + this.template).length) {
-          return this._dispose();
-        }
-        $body = $('body');
-        this.$el.on('shown.bs.modal', function() {
-          return $body.addClass('no-scroll');
-        });
-        this.$el.on('hidden.bs.modal', (function(_this) {
-          return function() {
-            $body.removeClass('no-scroll');
-            return _this._dispose();
-          };
-        })(this));
         return this.$el.modal(opts);
       };
 
+      ModalView.prototype.hide = function() {
+        if (this.$el && this.$el.hasClass('in')) {
+          return this.$el.modal('hide');
+        }
+      };
+
       ModalView.prototype.dispose = function() {
-        this._hide();
-        return ModalView.__super__.dispose.apply(this, arguments);
+        this.hide();
+        if (this.hidden) {
+          ModalView.__super__.dispose.apply(this, arguments);
+        }
+        return this.disposeRequested = true;
       };
 
       return ModalView;
