@@ -1,5 +1,5 @@
 {
-  "name": "Gringotts",
+  "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "main": "config.js",
   "version": "0.5.7",
