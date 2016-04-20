@@ -29,13 +29,16 @@ define (require) ->
       'synced model': -> @onSynced()
       'error model': (model, $xhr) -> @onError $xhr
     events:
+      'show.bs.modal': ->
+        @$stateView().removeClass 'fade' # to enable BS animation
+      'shown.bs.modal': ->
+        @$stateView().addClass 'fade'
       'click button': (e) ->
         $btn = $(e.currentTarget)
-        if $btn.data('dismiss') is 'modal'
-          @$(".#{@state}-view").removeClass 'fade' # to enable BS animation
-        else
-          @[@state]?.buttons.forEach (b) =>
-            b.click.call this, e if b.click and $btn.hasClass b.className
+        @[@state]?.buttons.forEach (b) =>
+          b.click.call this, e if b.click and $btn.hasClass b.className
+      'hide.bs.modal': ->
+        @$stateView().removeClass 'fade' # to enable BS animation
       'hidden.bs.modal': ->
         if @state is 'success' then @onDone?() else @onCancel?()
 
@@ -99,8 +102,8 @@ define (require) ->
       @state = state
       # re-render in case if hbs template shows model updated data
       if @[state]?.html
-        @$(".#{state}-view .modal-body").html @[state].html()
-      _.each STATES, (s) => @$(".#{s}-view").addClass('fade').toggleClass 'in',
+        @$stateView().find('.modal-body').html @[state].html()
+      _.each STATES, (s) => @$stateView(s).addClass('fade').toggleClass 'in',
           s is state and not @empty state
 
     empty: (state) ->
@@ -109,6 +112,9 @@ define (require) ->
 
     setLoading: (loading) ->
       @$('.loading').toggleClass 'in', loading
+
+    $stateView: (state=@state) ->
+      @$(".#{state}-view")
 
     progressState: ->
       if @model.isSyncing() and @progress then 'progress' else 'default'

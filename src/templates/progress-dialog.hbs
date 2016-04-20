@@ -29,8 +29,7 @@
 {{/inline}}
 
 {{#*inline "modal-content"}}
-  {{!-- Do not apply fade if it's a current state to enable initial BS modal animations --}}
-  <div class="modal-content {{current}}-view{{#unlessEqual state current}} fade{{/unlessEqual}}">
+  <div class="modal-content {{current}}-view fade{{#ifequal state current}} in{{/ifequal}}">
     {{> @partial-block }}
   </div>
 {{/inline}}

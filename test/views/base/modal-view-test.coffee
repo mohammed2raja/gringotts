@@ -1,5 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
+  modalHelpers = require 'test/helpers/modal-helpers'
   ModalView = require 'views/base/modal-view'
 
   class MockModal extends ModalView
@@ -9,49 +10,55 @@ define (require) ->
   describe 'ModalView', ->
     view = null
     model = null
+    transition = null
 
     beforeEach ->
-      sinon.stub $.fn, 'modal'
+      modalHelpers.stubModal -> {transition}
       view = new MockModal {model}
-      sinon.spy view, 'dispose'
 
     afterEach ->
+      try view.dispose() unless view.disposed
       $.fn.modal.restore()
-      unless view.disposed
-        view.dispose.restore()
-        view.dispose()
 
-    context 'showing modal', ->
+    it 'should add scroll classes', ->
+      expect($ 'body').to.have.class 'no-scroll'
+
+    it 'should have modal class set', ->
+      expect(view.$el).to.have.attr 'class', 'modal fade in'
+
+    context 'and then hiding modal', ->
       beforeEach ->
-        view.$el.trigger 'shown.bs.modal'
+        view.$el.modal 'hide'
 
-      it 'should add scroll classes', ->
-        expect($ 'body').to.have.class 'no-scroll'
+      it 'should remove scroll classes', ->
+        expect($ 'body').not.to.have.class 'no-scroll'
 
-      it 'should have modal class set', ->
-        expect(view.$el).to.have.attr 'class', 'modal fade'
-
-      context 'and then hiding modal', ->
-        beforeEach ->
-          view.$el.trigger 'hidden.bs.modal'
-
-        it 'should remove scroll classes', ->
-          expect($ 'body').not.to.have.class 'no-scroll'
-
-        it 'should hide itself', ->
-          expect($.fn.modal).to.have.been.calledWith 'hide'
-
-        it 'should dispose itself', ->
-          expect(view.dispose).to.have.been.calledOnce
+      it 'should dispose itself', ->
+        expect(view.disposed).to.be.true
 
     context 'on disposing', ->
       beforeEach ->
+        transition = true
         view.dispose()
+
+      afterEach ->
+        transition = null
 
       it 'should hide modal after disposed', ->
         expect($.fn.modal).to.have.been.calledWith 'hide'
 
-    context 'with model', ->
+      it 'should not be disposed before modal is hidden', ->
+        expect(view.disposed).to.be.false
+
+      context 'and modal was hidden', ->
+        beforeEach ->
+          transition = null
+          view.$el.modal 'hide'
+
+        it 'should dispose modal view', ->
+          expect(view.disposed).to.be.true
+
+    context 'with model after modal is hidden', ->
       before ->
         model = new Chaplin.Model()
 
@@ -59,24 +66,39 @@ define (require) ->
         model = null
 
       beforeEach ->
-        view.$el.trigger 'hidden.bs.modal'
-
-      it 'should hide itself', ->
-        expect($.fn.modal).to.have.been.calledWith 'hide'
+        view.$el.modal 'hide'
 
       it 'should not dispose itself', ->
-        expect(view.dispose).to.have.not.been.called
+        expect(view.disposed).to.be.false
 
-    context 'when forcing one instance', ->
-      anotherView = null
+      context 'if disposed is called from outside', ->
+        beforeEach ->
+          model.dispose()
+
+        it 'should dispose itself', -> # since modal is hidden already
+          expect(view.disposed).to.be.true
+
+    context 'with model on disposing', ->
+      before ->
+        model = new Chaplin.Model()
+
+      after ->
+        model = null
 
       beforeEach ->
-        $('body').append $('<div></div>').addClass('modal-test')
-        anotherView = new MockModal forceOneInstance: true
+        transition = true
+        view.dispose()
 
-      afterEach ->
-        $('div.modal-test').remove()
-        anotherView = null
+      it 'should hide modal after disposed', ->
+        expect($.fn.modal).to.have.been.calledWith 'hide'
 
-      it 'should not create modal dialog', ->
-        expect(anotherView.disposed).to.be.true
+      it 'should not dispose itself', -> # since it's still visible
+        expect(view.disposed).to.be.false
+
+      context 'after modal is hidden', ->
+        beforeEach ->
+          transition = null
+          view.$el.modal 'hide'
+
+        it 'should dispose itself', ->
+          expect(view.disposed).to.be.true

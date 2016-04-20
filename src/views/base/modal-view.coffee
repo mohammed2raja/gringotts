@@ -6,34 +6,28 @@ define (require) ->
    * View for bootstrap modals
   ###
   class ModalView extends Classy View
-    optionNames: @::optionNames.concat ['forceOneInstance']
     classyName: 'modal fade'
     attributes:
       tabindex: -1
       role: 'dialog'
-
-    _hide: ->
-      @$el?.modal 'hide'
-
-    _dispose: ->
-      @_hide()
-      # dispose responsibility is on model's holder
-      return @dispose() unless @model or @collection
+    events:
+      # Globally prevent scrolling of page when modal is displayed.
+      'shown.bs.modal': ->
+        $('body').addClass 'no-scroll'
+      'hidden.bs.modal': ->
+        $('body').removeClass 'no-scroll'
+        @hidden = true
+        # dispose responsibility is on model's holder
+        @dispose() if @disposeRequested or not (@model or @collection)
 
     attach: (opts) ->
       super
-      if !!@forceOneInstance and @template? and $(".#{@template}").length
-        return @_dispose()
-
-      $body = $ 'body'
-      # Globally prevent scrolling of page when modal is displayed.
-      @$el.on 'shown.bs.modal', ->
-        $body.addClass 'no-scroll'
-      @$el.on 'hidden.bs.modal', =>
-        $body.removeClass 'no-scroll'
-        @_dispose()
       @$el.modal opts
 
+    hide: ->
+      @$el.modal 'hide' if @$el and @$el.hasClass 'in'
+
     dispose: ->
-      @_hide()
-      super
+      @hide()
+      super if @hidden # wait untils BS animations over
+      @disposeRequested = true

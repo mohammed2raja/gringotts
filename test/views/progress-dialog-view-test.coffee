@@ -1,5 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
+  modalHelpers = require 'test/helpers/modal-helpers'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
   ProgressDialogView = require 'views/progress-dialog-view'
   templates = require 'test/templates'
@@ -13,9 +14,10 @@ define (require) ->
     onDone = null
     onCancel = null
     syncing = null
+    transition = null
 
     beforeEach ->
-      sinon.stub $.fn, 'modal'
+      modalHelpers.stubModal -> {transition}
       onDone = sinon.spy()
       onCancel = sinon.spy()
       model = new MockModel()
@@ -24,8 +26,8 @@ define (require) ->
         viewConfig
 
     afterEach ->
+      try view.dispose()
       $.fn.modal.restore()
-      view.dispose()
       model.dispose()
 
     it 'should be initialized', ->
@@ -39,15 +41,39 @@ define (require) ->
       expect(view.success.buttons).to.
         include text: 'Okay', className: 'btn-action'
 
-    it 'should have default state without fade', ->
-      expect(view.$ '.default-view').to.not.have.class 'fade'
+    it 'should have default view with proper classes', ->
+      expect(view.$ '.default-view').to.have.class 'fade in'
 
     it 'should have default state button', ->
       expect(view.$ '.default-view .modal-footer .btn').to.exist
 
+    context 'with animations', ->
+      before ->
+        transition = true
+
+      after ->
+        transition = null
+
+      it 'should have default view without fade class', ->
+        expect(view.$ '.default-view').to.not.have.class 'fade'
+
+      context 'on animation over', ->
+        beforeEach ->
+          view.$el.trigger 'shown.bs.modal'
+
+        it 'should have default view with fade class', ->
+          expect(view.$ '.default-view').to.have.class 'fade'
+
+      context 'on hiding', ->
+        beforeEach ->
+          view.$el.modal 'hide'
+
+        it 'should have default view without fade class', ->
+          expect(view.$ '.default-view').to.not.have.class 'fade'
+
     context 'on closing dialog', ->
       beforeEach ->
-        view.$el.trigger 'hidden.bs.modal'
+        view.$el.modal 'hide'
 
       it 'should call onCancel handler', ->
         expect(onCancel).to.have.been.calledOnce
@@ -82,7 +108,7 @@ define (require) ->
 
         context 'on closing dialog', ->
           beforeEach ->
-            view.$el.trigger 'hidden.bs.modal'
+            view.$el.modal 'hide'
 
           it 'should call onCancel handler', ->
             expect(onCancel).to.have.been.calledOnce
@@ -100,7 +126,7 @@ define (require) ->
 
         context 'on closing dialog', ->
           beforeEach ->
-            view.$el.trigger 'hidden.bs.modal'
+            view.$el.modal 'hide'
 
           it 'should call onDone handler', ->
             expect(onDone).to.have.been.calledOnce
@@ -214,7 +240,7 @@ define (require) ->
           expect(view.state).to.equal 'progress'
 
         it 'should have progress state without fade', ->
-          expect(view.$ '.progress-view').to.not.have.class 'fade'
+          expect(view.$ '.progress-view').to.have.class 'fade in'
 
     context 'with custom template states', ->
       before ->
