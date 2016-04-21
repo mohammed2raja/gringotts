@@ -10,5 +10,9 @@ define (require) ->
 
     fetch: ->
       $xhr = super
-      @_currentXHR.abort?() if @_currentXHR and @isSyncing()
-      @_currentXHR = if $xhr then $xhr.always => delete @_currentXHR
+      if @currentXHR and _.isFunction(@currentXHR.abort) and @isSyncing()
+        @currentXHR
+          # muting the ajax error raised during abort
+          .fail ($xhr) -> $xhr.errorHandled = true if $xhr.status is 0
+          .abort()
+      @currentXHR = if $xhr then $xhr.always => delete @currentXHR

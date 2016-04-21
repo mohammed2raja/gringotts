@@ -25,23 +25,23 @@ define (require) ->
       model.dispose()
 
     it 'should set the currentXHR property', ->
-      expect(model._currentXHR).to.eql xhr
+      expect(model.currentXHR).to.eql xhr
 
     context 'on finish request', ->
       beforeEach ->
         server.respond()
 
       it 'should delete currentXHR property', ->
-        expect(model._currentXHR).to.be.undefined
+        expect(model.currentXHR).to.be.undefined
 
     context 'on second fetch', ->
       beforeEach (done) ->
-        sinon.spy model._currentXHR, 'abort'
+        sinon.spy model.currentXHR, 'abort'
         model.fetch()
         done()
 
       it 'should abort the initial request', ->
-        expect(model._currentXHR.abort).to.have.been.calledOne
+        expect(model.currentXHR.abort).to.have.been.calledOne
 
     context 'if applied to wrong superclass', ->
       it 'should fail initialization', ->
