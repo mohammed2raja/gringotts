@@ -45,7 +45,7 @@
             return _handle401(context, $xhr);
           } else if (status === 403 && !errorHandled) {
             return _handle403(context, $xhr);
-          } else if ((status !== 0 && status !== 200 && status !== 201) && !errorHandled) {
+          } else if ((status !== 200 && status !== 201) && !errorHandled) {
             return _handle(context, $xhr);
           }
         });

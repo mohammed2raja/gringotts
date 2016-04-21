@@ -24,16 +24,18 @@
         };
 
         Abortable.prototype.fetch = function() {
-          var $xhr, base;
+          var $xhr;
           $xhr = Abortable.__super__.fetch.apply(this, arguments);
-          if (this._currentXHR && this.isSyncing()) {
-            if (typeof (base = this._currentXHR).abort === "function") {
-              base.abort();
-            }
+          if (this.currentXHR && _.isFunction(this.currentXHR.abort) && this.isSyncing()) {
+            this.currentXHR.fail(function($xhr) {
+              if ($xhr.status === 0) {
+                return $xhr.errorHandled = true;
+              }
+            }).abort();
           }
-          return this._currentXHR = $xhr ? $xhr.always((function(_this) {
+          return this.currentXHR = $xhr ? $xhr.always((function(_this) {
             return function() {
-              return delete _this._currentXHR;
+              return delete _this.currentXHR;
             };
           })(this)) : void 0;
         };
