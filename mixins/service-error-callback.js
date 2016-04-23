@@ -26,7 +26,7 @@
           return options.error = (function(_this) {
             return function($xhr) {
               var ctx;
-              if ($xhr.status !== 0 || $xhr.statusText === 'error') {
+              if ($xhr.statusText !== 'abort' || $xhr.statusText === 'error') {
                 ctx = options.context || _this;
                 if (callback != null) {
                   callback.apply(ctx, arguments);
@@ -34,7 +34,8 @@
                 if (typeof _this.abortSync === "function") {
                   _this.abortSync();
                 }
-                return _this.trigger('service-unavailable');
+                _this.trigger('service-unavailable');
+                return $xhr.errorHandled = true;
               }
             };
           })(this);

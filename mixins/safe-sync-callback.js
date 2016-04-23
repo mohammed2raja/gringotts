@@ -21,20 +21,20 @@
           if (!options) {
             return;
           }
-          return _.each(['success', 'error', 'complete'], function(cb) {
-            var callback, ctx;
-            callback = options[cb];
-            if (callback) {
-              ctx = options.context || this;
-              return options[cb] = (function(_this) {
-                return function() {
+          return _.each(['success', 'error', 'complete'], (function(_this) {
+            return function(cb) {
+              var callback, ctx;
+              callback = options[cb];
+              if (callback) {
+                ctx = options.context || _this;
+                return options[cb] = function() {
                   if (!_this.disposed) {
                     return callback.apply(ctx, arguments);
                   }
                 };
-              })(this);
-            }
-          }, this);
+              }
+            };
+          })(this));
         };
 
         SafeSyncCallback.prototype.safeDeferred = function($xhr) {
