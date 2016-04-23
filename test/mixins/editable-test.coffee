@@ -131,7 +131,9 @@ define (require) ->
       context 'with a paste', ->
         before ->
           event = $.Event 'paste'
-          event.originalEvent = clipboardData: {getData: -> 'sesame'}
+          event.originalEvent =
+            clipboardData: {getData: -> 'sesame'}
+            preventDefault: ->
 
         after ->
           event = null

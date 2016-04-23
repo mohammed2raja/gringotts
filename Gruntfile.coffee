@@ -1,6 +1,4 @@
 module.exports = (grunt) ->
-  'use strict'
-
   # Load all grunt tasks matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt)
 
