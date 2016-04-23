@@ -137,6 +137,8 @@ module.exports = (grunt) ->
       # Keep copy task clean.
       release:
         command: 'cp bower.json public/src/'
+      bower:
+        command: 'bower install'
       localBuild:
         command: ->
           buildPath = grunt.option 'target'
@@ -185,7 +187,12 @@ module.exports = (grunt) ->
         tasks: 'copy:test'
 
   # Create aliased tasks.
-  grunt.registerTask 'default', ['build', 'lint', 'test', 'concurrent']
+  grunt.registerTask 'default', [
+    'shell:bower'
+    'build'
+    'lint'
+    'test'
+    'concurrent']
   grunt.registerTask 'docs', ['citare-scriptum', 'gh-pages:docs']
   grunt.registerTask 'test', ['blanket_mocha:test']
   grunt.registerTask 'test:ci', [

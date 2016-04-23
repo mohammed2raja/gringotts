@@ -1,15 +1,15 @@
-# Allow a model to specify the function name to use for validation.
-# The function will be invoked on the instance or default to a provided
-# blank method if it does not exist.
-#
-# The specified function should return a truthy value only
-# if there is a problem (per Backbone conventions).
 define (require) ->
   # Default validation criterion
   blank = (text) ->
     message = I18n?.t('error.validation.value_required') or 'Value Required'
     message if not text or text.length is 0
 
+  # Allow a model to specify the function name to use for validation.
+  # The function will be invoked on the instance or default to a provided
+  # blank method if it does not exist.
+  #
+  # The specified function should return a truthy value only
+  # if there is a problem (per Backbone conventions).
   (superclass) -> class ValidateAttrs extends superclass
     # Map of attributes to validation method.
     validateAttrs: {}

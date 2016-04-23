@@ -1,17 +1,3 @@
-# This mixin will take a JSON blob that contains an `errors` hash
-# **e.g.** `{...., "errors": {"PROP1": "msg", "PROP2": "msg2"...}}`
-# and place a Bootstrap `.help-block` below the `input` whose
-# selector matches `PROP` above. The content of said element will
-# be the `msg` value associated with the `PROP`.
-#
-# Generic errors are specified with a `generic` key in the `errors`
-# hash where the messages are listed in an array as the values of
-# the key.
-#
-# We default to using the `name` attribute, but other attributes can be
-# specified via the `opts` hash with `inputAttr`.
-#
-# `id` and `class` attributes will use the appropriate selectors.
 define (require) ->
   # Map of the different methods for each attribute type.
   selectorFns =
@@ -23,6 +9,20 @@ define (require) ->
   errorBlock = (error) ->
     "<p class='help-block'>#{error}</p>"
 
+  # This mixin will take a JSON blob that contains an `errors` hash
+  # **e.g.** `{...., "errors": {"PROP1": "msg", "PROP2": "msg2"...}}`
+  # and place a Bootstrap `.help-block` below the `input` whose
+  # selector matches `PROP` above. The content of said element will
+  # be the `msg` value associated with the `PROP`.
+  #
+  # Generic errors are specified with a `generic` key in the `errors`
+  # hash where the messages are listed in an array as the values of
+  # the key.
+  #
+  # We default to using the `name` attribute, but other attributes can be
+  # specified via the `opts` hash with `inputAttr`.
+  #
+  # `id` and `class` attributes will use the appropriate selectors.
   (superclass) -> class FormErrors extends superclass
     # Message to display for general/parse errors.
     genericErrMsg: 'There was a problem. Please try again.'

@@ -15,7 +15,6 @@ define (require) ->
       server = sinon.fakeServer.create()
       collection = new MockCollection()
       collection.url = 'hey'
-      sinon.stub collection, 'publishEvent'
       sinon.stub collection, 'trigger'
       sinon.spy collection, 'abortSync'
 
@@ -64,17 +63,6 @@ define (require) ->
           it 'should invoke the callback', ->
             expect(callbackSpy).to.be.calledOnce
             expect(collection.trigger).to.be.calledWith 'service-unavailable'
-
-        context 'with a canceled request', ->
-          before ->
-            statusCode = 0
-          after ->
-            statusCode = null
-
-          it 'should do nothing', ->
-            expect(collection.trigger).not.to.
-              be.calledWith 'service-unavailable'
-            expect(collection.publishEvent).not.to.be.called
 
         context 'with a different status callback', ->
           before ->

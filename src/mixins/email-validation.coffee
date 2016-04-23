@@ -1,6 +1,6 @@
 define (require) ->
-    # Should match what we use in the backend
-    # from this stackoverflow http://stackoverflow.com/questions/46155/
+  # Should match what we use in the backend
+  # from this stackoverflow http://stackoverflow.com/questions/46155/
   regex = /// ^
     (([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))
     @

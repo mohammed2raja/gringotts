@@ -1,8 +1,3 @@
-# This mixin adds genericSave handler method that could be used in combine
-# with editable mixin to handle save actions from editable UI input controls.
-#
-# Pass delayedSave true in options to turn on couple of secs delay before
-# saving update value on server. The notification with Undo will be shown.
 define (require) ->
   utils = require 'lib/utils'
 
@@ -17,6 +12,11 @@ define (require) ->
           @publishEvent 'notify', message, classes: 'alert-danger'
           $xhr.errorHandled = true
 
+  # This mixin adds genericSave handler method that could be used in combine
+  # with editable mixin to handle save actions from editable UI input controls.
+  #
+  # Pass delayedSave true in options to turn on couple of secs delay before
+  # saving update value on server. The notification with Undo will be shown.
   (superclass) -> class GenericSave extends superclass
     genericSave: (opts) ->
       # The model should already have been validated
