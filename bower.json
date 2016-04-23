@@ -2,7 +2,7 @@
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "main": "config.js",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "licenses": [
     {
       "type": "MIT",
@@ -11,20 +11,20 @@
   ],
   "ignore": [],
   "dependencies": {
-    "almond": "0.2.9",
+    "almond": "0.3.2",
     "backbone": "1.2.3",
     "bootstrap": "3.3.6",
-    "bootstrap-select": "1.9.3",
-    "chaplin": "1.1.0",
+    "bootstrap-select": "1.10.0",
+    "chaplin": "1.1.1",
     "handlebars": "4.0.5",
-    "jquery": "2.1.0",
+    "jquery": "2.2.3",
     "lodash": "3.10.1",
-    "moment": "2.12.0",
-    "requirejs": "2.1.10"
+    "moment": "2.13.0",
+    "requirejs": "2.2.0"
   },
   "devDependencies": {
     "blanket": "1.1.7",
-    "chai": "3.4.2",
+    "chai": "3.5.0",
     "chai-jquery": "2.0.1",
     "mocha": "2.3.4",
     "sinon": "http://sinonjs.org/releases/sinon-1.17.2.js",
