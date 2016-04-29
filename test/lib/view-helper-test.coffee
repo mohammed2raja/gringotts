@@ -87,6 +87,10 @@ define (require) ->
         it 'should add attributes', ->
           expect($ icon.string).to.have.attr 'title', 'My Title'
 
+      it 'should return nothing if name is not set', ->
+        icon = Handlebars.helpers.icon()
+        expect(icon).to.be.undefined
+
     it 'should format date correctly with default input format', ->
       timeStamp = Handlebars.helpers.dateFormat '1969-12-31', 'l', {}
       expect(timeStamp).to.equal '12/31/1969'

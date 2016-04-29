@@ -31,6 +31,7 @@ define (require) ->
   #
   # **e.g.** `{{icon 'awesome' 'extra-classy'}}`
   Handlebars.registerHelper 'icon', (name, attrs={}) ->
+    return unless name
     icon = $('<span>')
     if typeof attrs is 'string'
       attrs = class: attrs
