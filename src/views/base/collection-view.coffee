@@ -23,6 +23,9 @@ define (require) ->
     loadingSelector: '.loading'
     fallbackSelector: '.empty'
     sortingPartial: 'sortTableHeader'
+    useCssAnimation: yes
+    animationStartClass: 'fade'
+    animationEndClass: 'in'
 
     _highlightColumns: ->
       state = @collection.getState {}, true
