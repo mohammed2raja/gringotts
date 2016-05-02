@@ -41,6 +41,12 @@
 
       CollectionView.prototype.sortingPartial = 'sortTableHeader';
 
+      CollectionView.prototype.useCssAnimation = true;
+
+      CollectionView.prototype.animationStartClass = 'fade';
+
+      CollectionView.prototype.animationEndClass = 'in';
+
       CollectionView.prototype._highlightColumns = function() {
         var idx, state;
         state = this.collection.getState({}, true);
