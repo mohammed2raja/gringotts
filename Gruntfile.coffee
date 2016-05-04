@@ -5,9 +5,15 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
 
+    verbosity:
+      hide:
+        tasks: ['string-replace']
+
     clean:
       public:
         src: 'public/*'
+      'hbs-strip':
+        src: ['tmp/src/*', 'tmp/test/*']
 
     coffee:
       compile:
@@ -23,7 +29,6 @@ module.exports = (grunt) ->
         src: ['*.coffee', '**/*.coffee']
         dest: 'public/src/test'
         ext: '.js'
-
 
     handlebars:
       compile_test:
@@ -115,15 +120,26 @@ module.exports = (grunt) ->
         updateConfigs: ['pkg']
 
     coffeelint:
-      source: ['{src,test}/**/*.coffee', 'Gruntfile.coffee']
+      app:
+        src: ['{src,test}/**/*.coffee', 'Gruntfile.coffee']
       options:
         configFile: 'coffeelint.json'
+
+    'string-replace':
+      'hbs-strip':
+        files: [
+          {'tmp/': 'src/templates/**/*.hbs'}
+          {'tmp/': 'test/templates/**/*.hbs'}
+        ]
+        options:
+          replacements:
+            [{pattern: /{{.*}}/g, replacement: ''}]
 
     htmlhint:
       options:
         htmlhintrc: '.htmlhintrc'
       html:
-        src: ['src/templates/**/*.hbs', 'test/templates/**/*.hbs']
+        src: ['tmp/src/templates/**/*.hbs', 'tmp/test/templates/**/*.hbs']
 
     shell:
       options:
@@ -171,14 +187,15 @@ module.exports = (grunt) ->
         tasks: [
           'newer:handlebars'
           'newer:coffee'
-          'coffeelint'
+          'newer:coffeelint'
+          'htmllint'
           'blanket_mocha:test'
           'shell:localBuild'
         ]
 
-      lint:
+      grunt:
         files: 'Gruntfile.coffee'
-        tasks: 'coffeelint'
+        tasks: 'newer:coffeelint'
 
       test:
         files: 'test/index.html'
@@ -215,9 +232,16 @@ module.exports = (grunt) ->
     'shell:specs'
   ]
 
+  grunt.registerTask 'htmllint', [
+    'verbosity'
+    'string-replace:hbs-strip'
+    'htmlhint'
+    'clean:hbs-strip'
+  ]
+
   grunt.registerTask 'lint', [
     'coffeelint'
-    'htmlhint'
+    'htmllint'
   ]
 
   grunt.registerTask 'build', [
