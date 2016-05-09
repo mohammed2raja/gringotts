@@ -210,7 +210,7 @@ module.exports = (grunt) ->
     'concurrent']
   grunt.registerTask 'docs', ['citare-scriptum', 'gh-pages:docs']
   grunt.registerTask 'test', ['blanket_mocha:test']
-  grunt.registerTask 'test:ci', [
+  grunt.registerTask 'test-ci', [
     'compile'
     'copy'
     'lint'
