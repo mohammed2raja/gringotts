@@ -14,7 +14,7 @@ Handlebars.registerPartial("pagination", Handlebars.template({"1":function(conta
     + "\"\n       class=\"prev-page "
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(3, data, 0),"inverse":container.program(5, data, 0),"data":data})) != null ? stack1 : "")
     + "\">\n      "
-    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"thin-arrow","rotate-left",{"name":"icon","hash":{},"data":data}))
+    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"atlas-arrow-thin-up","rotate-left",{"name":"icon","hash":{},"data":data}))
     + "\n    </a>\n    <strong>"
     + alias3(((helper = (helper = helpers.range || (depth0 != null ? depth0.range : depth0)) != null ? helper : alias2),(typeof helper === "function" ? helper.call(alias1,{"name":"range","hash":{},"data":data}) : helper)))
     + "</strong>\n    <a href=\""
@@ -22,7 +22,7 @@ Handlebars.registerPartial("pagination", Handlebars.template({"1":function(conta
     + "\"\n       class=\"next-page "
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(3, data, 0),"inverse":container.program(8, data, 0),"data":data})) != null ? stack1 : "")
     + "\">\n      "
-    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"thin-arrow","rotate-right",{"name":"icon","hash":{},"data":data}))
+    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"atlas-arrow-thin-up","rotate-right",{"name":"icon","hash":{},"data":data}))
     + "\n    </a>\n  ";
 },"3":function(container,depth0,helpers,partials,data) {
     return "hidden";
@@ -245,7 +245,7 @@ this["Handlebars"]["progress-dialog"] = Handlebars.template({"1":function(contai
 this["Handlebars"]["progress-success"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.escapeExpression;
 
-  return alias1((helpers.icon || (depth0 && depth0.icon) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"sign-check",{"name":"icon","hash":{},"data":data}))
+  return alias1((helpers.icon || (depth0 && depth0.icon) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"misc-sign-check",{"name":"icon","hash":{},"data":data}))
     + "\n<h1>"
     + alias1(container.lambda(((stack1 = (depth0 != null ? depth0.success : depth0)) != null ? stack1.text : stack1), depth0))
     + "</h1>\n";
