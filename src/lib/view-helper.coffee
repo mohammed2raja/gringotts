@@ -24,6 +24,7 @@ define (require) ->
     utils.reverse criteria, params, query or hbsOpts.hash
 
   # Output element for use with font icon classes.
+  # If name has couple of classes then the last one is used as icon name.
   # We use generic class name with a specific one for cleaner stylesheets.
   # You can specify a second argument to add additional attributes.
   # If the second argument is a hash it will add the keys/values as attrs.
@@ -36,7 +37,10 @@ define (require) ->
     if typeof attrs is 'string'
       attrs = class: attrs
     icon.attr attrs
-    icon.addClass "icon #{name}-font"
+    names = _.compact name?.split ' '
+    classes = _.initial(names).join ' '
+    iconName = _.last names
+    icon.addClass(classes).addClass "icon icon-#{iconName}"
     new Handlebars.SafeString icon[0].outerHTML
 
   # Format time by passing in the format string.

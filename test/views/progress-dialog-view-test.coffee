@@ -37,7 +37,7 @@ define (require) ->
       expect(view.error.title).to.eq "Hmm. That didn't seem to work. Try again?"
       expect(view.error.buttons).to.
         include text: 'Cancel', className: 'btn-cancel'
-      expect(view.success.html()).to.contain 'sign-check-font'
+      expect(view.success.html()).to.contain 'icon-misc-sign-check'
       expect(view.success.buttons).to.
         include text: 'Okay', className: 'btn-action'
 

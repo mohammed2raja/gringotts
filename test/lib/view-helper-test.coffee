@@ -59,23 +59,24 @@ define (require) ->
 
     context 'icon helper', ->
       icon = null
+      first = null
       second = null
 
       beforeEach ->
-        icon = Handlebars.helpers.icon 'uber', second
+        icon = Handlebars.helpers.icon first or 'triangle', second
 
       afterEach ->
         icon = null
 
       it 'should create HTML element', ->
-        expect($ icon.string).to.have.class 'uber-font'
+        expect($ icon.string).to.have.class 'icon-triangle'
 
       context 'with a string', ->
-        before -> second = 'always'
+        before -> second = 'rectangle'
         after -> second = null
 
         it 'should add classes', ->
-          expect($ icon.string).to.have.class 'always'
+          expect($ icon.string).to.have.class 'rectangle'
 
       context 'with an object', ->
         before ->
@@ -86,6 +87,14 @@ define (require) ->
 
         it 'should add attributes', ->
           expect($ icon.string).to.have.attr 'title', 'My Title'
+
+      context 'with a complex name', ->
+        before -> first = 'my   sweet dreamy circle'
+        after -> first = null
+
+        it 'should add all classes', ->
+          expect($ icon.string).to.have.class('my').and.have.class('sweet')
+            .and.have.class('dreamy').and.have.class('icon-circle')
 
       it 'should return nothing if name is not set', ->
         icon = Handlebars.helpers.icon()

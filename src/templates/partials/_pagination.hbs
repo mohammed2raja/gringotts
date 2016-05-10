@@ -2,12 +2,12 @@
   {{#if count}}{{#if routeName}}
     <a href="{{url routeName routeParams prevState}}"
        class="prev-page {{#unless multiPaged}}hidden{{else}}{{#unless prev}}disabled-arrow{{/unless}}{{/unless}}">
-      {{icon 'thin-arrow' 'rotate-left'}}
+      {{icon 'atlas-arrow-thin-up' 'rotate-left'}}
     </a>
     <strong>{{range}}</strong>
     <a href="{{url routeName routeParams nextState}}"
        class="next-page {{#unless multiPaged}}hidden{{else}}{{#unless next}}disabled-arrow{{/unless}}{{/unless}}">
-      {{icon 'thin-arrow' 'rotate-right'}}
+      {{icon 'atlas-arrow-thin-up' 'rotate-right'}}
     </a>
   {{/if}}{{/if}}
 </div>
