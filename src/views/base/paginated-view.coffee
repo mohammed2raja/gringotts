@@ -34,7 +34,7 @@ define (require) ->
     # setup what the pagination template is expecting
     _getPageInfo: ->
       infinite = @collection.infinite
-      state = @collection.getState {}, true
+      state = @collection.getState {}, inclDefaults: yes, usePrefix: no
       perPage = parseInt state.per_page
       page = if infinite then state.page else parseInt state.page
       info =

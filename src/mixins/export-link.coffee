@@ -8,7 +8,7 @@ define (require) ->
      * @return {String}
     ###
     exportLink: (baseUrl) ->
-      state = _.clone @collection.getState {}, true
+      state = _.clone @collection.getState {}, inclDefaults: yes
       delete state.page
       delete state.per_page
       @collection.url baseUrl, state

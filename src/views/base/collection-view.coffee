@@ -27,7 +27,7 @@ define (require) ->
     animationEndClass: 'in'
 
     _highlightColumns: ->
-      state = @collection.getState {}, true
+      state = @collection.getState {}, inclDefaults: yes
       idx = @$("th[data-sort=#{state.sort_by}]").index()
       @$("#{@listSelector} #{@itemView::tagName} td")
         .removeClass 'highlighted'
@@ -37,11 +37,9 @@ define (require) ->
 
     _getSortInfo: ->
       return null unless @sortableTableHeaders
-      state = @collection.getState {}, true
-
+      state = @collection.getState {}, inclDefaults: yes, usePrefix: no
       if !state.sort_by
         throw new Error 'Please define a sort_by attribute within DEFAULTS'
-
       _.transform @sortableTableHeaders, (result, title, column) =>
         order = if column is state.sort_by then state.order else ''
         nextOrder = if order is 'asc' then 'desc' else 'asc'

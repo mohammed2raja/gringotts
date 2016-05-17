@@ -21,6 +21,13 @@ define (require) ->
     state: null
 
     ###*
+     * Custom string keyword to scope input state keys. Useful if there is
+     * a case of using two or more instances of CollectionView on one page.
+     * @type {String}
+    ###
+    prefix: null
+
+    ###*
      * Default queryparam object for this collection.
      * Must contain all possible querynewState.
      * Override when necessary.
@@ -29,11 +36,10 @@ define (require) ->
       order: 'desc'
       q: undefined
       sort_by: undefined
-      page: 1
 
     ###*
-     # Used to map local property names to queryparam server attrs
-     # Override when necessary.
+     * Used to map local property names to queryparam server attrs
+     * Override when necessary.
     ###
     DEFAULTS_SERVER_MAP: {}
 
@@ -46,61 +52,75 @@ define (require) ->
       @on 'remove', -> @count = Math.max 0, (@count or 1) - 1
 
     ###*
-     * Strips the state from all undefined or default values
-     * @param  {Object} state
-     * @param  {Boolean} withDefaults=false whether defaults should be removed
+     * Generates a state hash from the current state and given overrides.
+     * @param  {Object} overrides={} Optional overrides
+     * @param  {Object} opts={}      inclDefaults - adds default state
+     *                               values into result, it is false by default.
+     *                               usePrefix - adds prefix string into state
+     *                               property key, it is true by default.
+     * @return {Object}              Combined state
     ###
-    _stripState: (state, withDefaults=false) ->
-      _.omit state, (value, key) =>
-        value is undefined or
-          _.isEqual(@DEFAULTS[key], value) and !withDefaults
-
-    ###*
-     # Generate a state from the given and current states.
-     # Whenever we getState we need to pass in all non-default
-     # prop/values that we want.
-     # @prop {object} overrides - Optional local-formatted state to include or
-     #                            override.
-     # @prop {boolean} withDefaults
-     # @returns {object} state
-    ###
-    getState: (overrides={}, withDefaults=false) ->
+    getState: (overrides={}, opts={}) ->
       state = _.extend {}, @DEFAULTS, @state, overrides
-
       # make sure only local properties are being passed in
-      unless _.isEmpty _.intersection(
-        _.keys(state), _.keys(@DEFAULTS_SERVER_MAP)
-      ) then throw new Error 'Pass in only local state properties.'
-
-      # omit undefined values & defaults unless we need them
-      @_stripState(state, withDefaults)
+      unless _.isEmpty _.intersection _.keys(state)
+          , _.keys @DEFAULTS_SERVER_MAP
+        throw new Error 'Pass in only local state properties.'
+      state = @stripEmptyOrDefault state, opts
+      # add prefixes and include alien values if requested
+      if @prefix and (not _.isBoolean(opts.usePrefix) or opts.usePrefix)
+        state = _(state).mapKeys (value, key) => "#{@prefix}_#{key}"
+          .extend(@alienState).value()
+      state
 
     ###*
-     # @param {object} state - Queryparams for the new state
+     * Sets current state.
+     * @param {Object} state - Queryparams for the new state
     ###
     setState: (state={}) ->
-      @state = @_stripState state
+      @state = @stripEmptyOrDefault @unprefixKeys state
       @trigger 'stateChange', this, @state
       @fetch(reset: true)?.fail => @reset()
 
     ###*
-     * Incorporate the collection state.
-     * @param   {string} urlRoot optional urlRoot to calculate url, if it's
-     *                           not set this.urlRoot will be used.
-     * @returns {string}
+     * Strips the state from all undefined or default values
     ###
-    url: (urlRoot=@urlRoot, state=@getState({}, true)) ->
-      throw new Error(
-        'Please define a urlRoot when implementing a collection'
-      ) unless urlRoot
+    stripEmptyOrDefault: (state, opts={}) ->
+      return state = _.omit state, (value, key) =>
+        value is undefined or
+          (_.isEqual(@DEFAULTS[key], value) and !opts.inclDefaults)
 
+    ###*
+     * Saves all alien values (without prefixes) into a separete hash
+     * (to return on getState()). Renames prefixed keys into normal form.
+     * @return {Object}
+    ###
+    unprefixKeys: (state) ->
+      return state unless @prefix
+      @alienState = {}
+      return state = _(state).omit (value, key) =>
+        if alien = key.indexOf(@prefix) < 0
+          @alienState[key] = value
+        return alien
+      .mapKeys (value, key) => key.replace "#{@prefix}_", ''
+      .value()
+
+    ###*
+     * Incorporate the collection state.
+     * @param   {String} urlRoot optional urlRoot to calculate url, if it's
+     *                           not set this.urlRoot will be used.
+     * @returns {String}
+    ###
+    url: (urlRoot=@urlRoot, state) ->
+      throw new Error 'Please define a urlRoot
+        when implementing a collection' unless urlRoot
+      state = @getState {}, inclDefaults: yes, usePrefix: no unless state
       # convert from local state keys to server state keys
-      queryState = _.mapKeys state, (value, key) =>
+      state = _.mapKeys state, (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
-
       # format the url for the ajax call
-      query = utils.querystring.stringify queryState
-      base = if _.isFunction(urlRoot) then urlRoot.apply this else urlRoot
+      query = utils.querystring.stringify state
+      base = if _.isFunction(urlRoot) then urlRoot.apply(this) else urlRoot
       if query then "#{base}?#{query}" else "#{base}"
 
     parse: (resp) ->

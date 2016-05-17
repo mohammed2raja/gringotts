@@ -66,7 +66,7 @@ define (require) ->
 
         it 'should fetch from the server', ->
           expecting = ['/test', '?', 'sort_by=attrA', 'order=desc']
-          testRequest expecting, server.requests[0]
+          testRequest expecting, _.last server.requests
 
       context 'setting the state by changing state', ->
         beforeEach ->
@@ -75,7 +75,7 @@ define (require) ->
 
         it 'should fetch from the server', ->
           expecting = ['/test', '?', 'sort_by=attrB', 'order=desc']
-          testRequest expecting, server.requests[0]
+          testRequest expecting, _.last server.requests
 
     context 'changing', ->
       spy = null
@@ -105,3 +105,62 @@ define (require) ->
 
       it 'should reset all existing items', ->
         expect(collection.length).to.equal 0
+
+    context 'with default values', ->
+      beforeEach ->
+        collection = new MockCollection data
+        collection.DEFAULTS = _.extend {}, MockCollection::DEFAULTS
+          , some_value: 5
+        collection.setState other_value: 'a'
+        server.respond()
+
+      it 'should return proper simple state', ->
+        state = collection.getState()
+        expect(state).to.eql other_value: 'a'
+
+      it 'should return proper state with defaults', ->
+        state = collection.getState {}, inclDefaults: yes
+        expect(state).to.eql other_value: 'a', some_value: 5, order: 'desc'
+          , sort_by: 'attrA'
+
+    context 'with custom prefix', ->
+      beforeEach ->
+        collection = new MockCollection data
+        collection.prefix = 'local'
+        collection.setState local_page: 20, local_per_page: 15
+          , some_global: 'a'
+        server.respond()
+
+      afterEach ->
+        collection.dispose()
+
+      it 'should initialize state and alien state properly', ->
+        expect(collection.state).to.eql page: 20, per_page: 15
+        expect(collection.alienState).to.eql some_global: 'a'
+
+      it 'should fetch from the server', ->
+        request = _.last server.requests
+        expecting = ['/test', '?', 'page=20', 'per_page=15']
+        testRequest expecting, request
+        expect(request.url).to.not.contain 'some_global'
+
+      context 'on getting state', ->
+        opts = null
+        state = null
+
+        beforeEach ->
+          state = collection.getState {}, opts
+
+        it 'should return state with prefix keys', ->
+          expect(state).to.eql local_page: 20, local_per_page: 15
+            , some_global: 'a'
+
+        context 'with usePrefix no option', ->
+          before ->
+            opts = usePrefix: no
+
+          after ->
+            opts = null
+
+          it 'should return state with simple keys', ->
+            expect(state).to.eql page: 20, per_page: 15

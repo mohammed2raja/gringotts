@@ -41,7 +41,7 @@ define (require) ->
         expect(collection.getState()).to.eql {}
 
       it 'should return the default state when desired', ->
-        expect(collection.getState {}, true).to.eql {
+        expect(collection.getState {}, inclDefaults: yes).to.eql {
           page: 1
           per_page: 30
           order: 'desc'
@@ -77,7 +77,7 @@ define (require) ->
             q: 'testSearch'
             order: 'desc'
 
-          expect(collection.getState {}, true).to.eql expecting
+          expect(collection.getState {}, inclDefaults: yes).to.eql expecting
 
         context 'then resetting to defaults', ->
           beforeEach ->
