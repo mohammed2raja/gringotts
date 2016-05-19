@@ -48,7 +48,9 @@
 
       CollectionView.prototype._highlightColumns = function() {
         var idx, state;
-        state = this.collection.getState({}, true);
+        state = this.collection.getState({}, {
+          inclDefaults: true
+        });
         idx = this.$("th[data-sort=" + state.sort_by + "]").index();
         return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not('[colspan]').addClass('highlighted');
       };
@@ -58,7 +60,10 @@
         if (!this.sortableTableHeaders) {
           return null;
         }
-        state = this.collection.getState({}, true);
+        state = this.collection.getState({}, {
+          inclDefaults: true,
+          usePrefix: false
+        });
         if (!state.sort_by) {
           throw new Error('Please define a sort_by attribute within DEFAULTS');
         }

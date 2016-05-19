@@ -23,7 +23,9 @@
 
         ExportLink.prototype.exportLink = function(baseUrl) {
           var state;
-          state = _.clone(this.collection.getState({}, true));
+          state = _.clone(this.collection.getState({}, {
+            inclDefaults: true
+          }));
           delete state.page;
           delete state.per_page;
           return this.collection.url(baseUrl, state);

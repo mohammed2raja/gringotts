@@ -30,6 +30,15 @@
 
 
       /**
+       * Custom string keyword to scope input state keys. Useful if there is
+       * a case of using two or more instances of CollectionView on one page.
+       * @type {String}
+       */
+
+      Collection.prototype.prefix = null;
+
+
+      /**
        * Default queryparam object for this collection.
        * Must contain all possible querynewState.
        * Override when necessary.
@@ -38,14 +47,13 @@
       Collection.prototype.DEFAULTS = {
         order: 'desc',
         q: void 0,
-        sort_by: void 0,
-        page: 1
+        sort_by: void 0
       };
 
 
       /**
-        * Used to map local property names to queryparam server attrs
-        * Override when necessary.
+       * Used to map local property names to queryparam server attrs
+       * Override when necessary.
        */
 
       Collection.prototype.DEFAULTS_SERVER_MAP = {};
@@ -63,51 +71,42 @@
 
 
       /**
-       * Strips the state from all undefined or default values
-       * @param  {Object} state
-       * @param  {Boolean} withDefaults=false whether defaults should be removed
+       * Generates a state hash from the current state and given overrides.
+       * @param  {Object} overrides={} Optional overrides
+       * @param  {Object} opts={}      inclDefaults - adds default state
+       *                               values into result, it is false by default.
+       *                               usePrefix - adds prefix string into state
+       *                               property key, it is true by default.
+       * @return {Object}              Combined state
        */
 
-      Collection.prototype._stripState = function(state, withDefaults) {
-        if (withDefaults == null) {
-          withDefaults = false;
-        }
-        return _.omit(state, (function(_this) {
-          return function(value, key) {
-            return value === void 0 || _.isEqual(_this.DEFAULTS[key], value) && !withDefaults;
-          };
-        })(this));
-      };
-
-
-      /**
-        * Generate a state from the given and current states.
-        * Whenever we getState we need to pass in all non-default
-        * prop/values that we want.
-        * @prop {object} overrides - Optional local-formatted state to include or
-        *                            override.
-        * @prop {boolean} withDefaults
-        * @returns {object} state
-       */
-
-      Collection.prototype.getState = function(overrides, withDefaults) {
+      Collection.prototype.getState = function(overrides, opts) {
         var state;
         if (overrides == null) {
           overrides = {};
         }
-        if (withDefaults == null) {
-          withDefaults = false;
+        if (opts == null) {
+          opts = {};
         }
         state = _.extend({}, this.DEFAULTS, this.state, overrides);
         if (!_.isEmpty(_.intersection(_.keys(state), _.keys(this.DEFAULTS_SERVER_MAP)))) {
           throw new Error('Pass in only local state properties.');
         }
-        return this._stripState(state, withDefaults);
+        state = this.stripEmptyOrDefault(state, opts);
+        if (this.prefix && (!_.isBoolean(opts.usePrefix) || opts.usePrefix)) {
+          state = _(state).mapKeys((function(_this) {
+            return function(value, key) {
+              return _this.prefix + "_" + key;
+            };
+          })(this)).extend(this.alienState).value();
+        }
+        return state;
       };
 
 
       /**
-        * @param {object} state - Queryparams for the new state
+       * Sets current state.
+       * @param {Object} state - Queryparams for the new state
        */
 
       Collection.prototype.setState = function(state) {
@@ -115,7 +114,7 @@
         if (state == null) {
           state = {};
         }
-        this.state = this._stripState(state);
+        this.state = this.stripEmptyOrDefault(this.unprefixKeys(state));
         this.trigger('stateChange', this, this.state);
         return (ref = this.fetch({
           reset: true
@@ -128,29 +127,75 @@
 
 
       /**
+       * Strips the state from all undefined or default values
+       */
+
+      Collection.prototype.stripEmptyOrDefault = function(state, opts) {
+        if (opts == null) {
+          opts = {};
+        }
+        return state = _.omit(state, (function(_this) {
+          return function(value, key) {
+            return value === void 0 || (_.isEqual(_this.DEFAULTS[key], value) && !opts.inclDefaults);
+          };
+        })(this));
+      };
+
+
+      /**
+       * Saves all alien values (without prefixes) into a separete hash
+       * (to return on getState()). Renames prefixed keys into normal form.
+       * @return {Object}
+       */
+
+      Collection.prototype.unprefixKeys = function(state) {
+        if (!this.prefix) {
+          return state;
+        }
+        this.alienState = {};
+        return state = _(state).omit((function(_this) {
+          return function(value, key) {
+            var alien;
+            if (alien = key.indexOf(_this.prefix) < 0) {
+              _this.alienState[key] = value;
+            }
+            return alien;
+          };
+        })(this)).mapKeys((function(_this) {
+          return function(value, key) {
+            return key.replace(_this.prefix + "_", '');
+          };
+        })(this)).value();
+      };
+
+
+      /**
        * Incorporate the collection state.
-       * @param   {string} urlRoot optional urlRoot to calculate url, if it's
+       * @param   {String} urlRoot optional urlRoot to calculate url, if it's
        *                           not set this.urlRoot will be used.
-       * @returns {string}
+       * @returns {String}
        */
 
       Collection.prototype.url = function(urlRoot, state) {
-        var base, query, queryState;
+        var base, query;
         if (urlRoot == null) {
           urlRoot = this.urlRoot;
-        }
-        if (state == null) {
-          state = this.getState({}, true);
         }
         if (!urlRoot) {
           throw new Error('Please define a urlRoot when implementing a collection');
         }
-        queryState = _.mapKeys(state, (function(_this) {
+        if (!state) {
+          state = this.getState({}, {
+            inclDefaults: true,
+            usePrefix: false
+          });
+        }
+        state = _.mapKeys(state, (function(_this) {
           return function(value, key) {
             return _.invert(_this.DEFAULTS_SERVER_MAP)[key] || key;
           };
         })(this));
-        query = utils.querystring.stringify(queryState);
+        query = utils.querystring.stringify(state);
         base = _.isFunction(urlRoot) ? urlRoot.apply(this) : urlRoot;
         if (query) {
           return base + "?" + query;

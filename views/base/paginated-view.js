@@ -53,7 +53,10 @@
       PaginatedView.prototype._getPageInfo = function() {
         var infinite, info, page, perPage, state;
         infinite = this.collection.infinite;
-        state = this.collection.getState({}, true);
+        state = this.collection.getState({}, {
+          inclDefaults: true,
+          usePrefix: false
+        });
         perPage = parseInt(state.per_page);
         page = infinite ? state.page : parseInt(state.page);
         info = {
