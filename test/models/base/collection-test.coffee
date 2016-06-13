@@ -1,9 +1,11 @@
 define (require) ->
   Chaplin = require 'chaplin'
+  Backbone = require 'backbone'
   ActiveSyncMachine = require 'mixins/active-sync-machine'
   Abortable = require 'mixins/abortable'
   SafeSyncCallback = require 'mixins/safe-sync-callback'
   ServiceErrorCallback = require 'mixins/service-error-callback'
+  SwissAjax = require 'lib/swiss-ajax'
   Collection = require 'models/base/collection'
 
   class MockCollection extends Collection
@@ -164,3 +166,30 @@ define (require) ->
 
           it 'should return state with simple keys', ->
             expect(state).to.eql page: 20, per_page: 15
+
+    context 'with complex urlRoot', ->
+      urlRoots =
+        array: ['/boo', '/foo', '/moo']
+        hash: {items: '/boo', trash: '/foo', else: '/moo'}
+
+      beforeEach ->
+        Backbone.ajax = SwissAjax.ajax
+
+      afterEach ->
+        Backbone.ajax = SwissAjax.backboneAjax
+
+      _.keys(urlRoots).forEach (key) ->
+        context "of type #{key}", ->
+          beforeEach ->
+            collection = new MockCollection()
+            collection.urlRoot = urlRoots[key]
+            collection.setState a: 'b'
+            server.respond()
+
+          afterEach ->
+            collection.dispose()
+
+          it 'should request proper urls', ->
+            request = _.first server.requests
+            expecting = ['/boo', '?', 'a=b']
+            testRequest expecting, request

@@ -119,9 +119,33 @@ define (require) ->
       state = _.mapKeys state, (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
       # format the url for the ajax call
-      query = utils.querystring.stringify state
       base = if _.isFunction(urlRoot) then urlRoot.apply(this) else urlRoot
-      if query then "#{base}?#{query}" else "#{base}"
+      query = utils.querystring.stringify state
+      @urlWithQuery base, query
+
+    ###*
+     * Combines URL base with query params.
+     * @param  {String|Array|Object} base Base part of the URL, it supported
+     *                                    in form of Array (of URLs), Object
+     *                                    (Hash of URLs) or String (just URL).
+     * @param  {String} query             Query params string
+     * @return {String|Array|Object}      A new instance of amended base.
+    ###
+    urlWithQuery: (base, query) ->
+      url = base
+      if query
+        if _.isString base
+          url = "#{base}?#{query}"
+        else if _.isArray(base) and base.length > 0
+          bases = _.clone base
+          bases[0] = "#{_.first(bases)}?#{query}"
+          url = bases
+        else if _.isObject(base) and keys = _.keys base
+          bases = _.clone base
+          firstKey = _.first keys
+          bases[firstKey] = "#{bases[firstKey]}?#{query}"
+          url = bases
+      url
 
     parse: (resp) ->
       if @syncKey
