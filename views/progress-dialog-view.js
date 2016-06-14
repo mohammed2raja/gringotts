@@ -75,10 +75,15 @@
         },
         'hidden.bs.modal': function() {
           if (this.state === 'success') {
-            return typeof this.onDone === "function" ? this.onDone() : void 0;
+            if (typeof this.onDone === "function") {
+              this.onDone();
+            }
           } else {
-            return typeof this.onCancel === "function" ? this.onCancel() : void 0;
+            if (typeof this.onCancel === "function") {
+              this.onCancel();
+            }
           }
+          return this.dispose();
         }
       };
 
