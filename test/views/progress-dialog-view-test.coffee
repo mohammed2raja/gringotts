@@ -78,6 +78,9 @@ define (require) ->
       it 'should call onCancel handler', ->
         expect(onCancel).to.have.been.calledOnce
 
+      it 'should be disposed', ->
+        expect(view.disposed).to.be.true
+
     context 'on model syncing', ->
       beforeEach ->
         model.beginSync()

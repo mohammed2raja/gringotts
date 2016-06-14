@@ -41,6 +41,7 @@ define (require) ->
         @$stateView().removeClass 'fade' # to enable BS animation
       'hidden.bs.modal': ->
         if @state is 'success' then @onDone?() else @onCancel?()
+        @dispose()
 
     initialize: ->
       super
