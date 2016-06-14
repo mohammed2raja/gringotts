@@ -195,13 +195,39 @@
             return _.invert(_this.DEFAULTS_SERVER_MAP)[key] || key;
           };
         })(this));
-        query = utils.querystring.stringify(state);
         base = _.isFunction(urlRoot) ? urlRoot.apply(this) : urlRoot;
+        query = utils.querystring.stringify(state);
+        return this.urlWithQuery(base, query);
+      };
+
+
+      /**
+       * Combines URL base with query params.
+       * @param  {String|Array|Object} base Base part of the URL, it supported
+       *                                    in form of Array (of URLs), Object
+       *                                    (Hash of URLs) or String (just URL).
+       * @param  {String} query             Query params string
+       * @return {String|Array|Object}      A new instance of amended base.
+       */
+
+      Collection.prototype.urlWithQuery = function(base, query) {
+        var bases, firstKey, keys, url;
+        url = base;
         if (query) {
-          return base + "?" + query;
-        } else {
-          return "" + base;
+          if (_.isString(base)) {
+            url = base + "?" + query;
+          } else if (_.isArray(base) && base.length > 0) {
+            bases = _.clone(base);
+            bases[0] = (_.first(bases)) + "?" + query;
+            url = bases;
+          } else if (_.isObject(base) && (keys = _.keys(base))) {
+            bases = _.clone(base);
+            firstKey = _.first(keys);
+            bases[firstKey] = bases[firstKey] + "?" + query;
+            url = bases;
+          }
         }
+        return url;
       };
 
       Collection.prototype.parse = function(resp) {
