@@ -1,8 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  ActiveSyncMachine = require 'mixins/active-sync-machine'
-  Abortable = require 'mixins/abortable'
-  SafeSyncCallback = require 'mixins/safe-sync-callback'
+  MixinCheck = require 'test/helpers/mixin-check'
   Model = require 'models/base/model'
 
   describe 'Base Model', ->
@@ -20,9 +18,9 @@ define (require) ->
 
     it 'should have proper mixins applied', ->
       funcs = _.functions Model::
-      expect(funcs).to.include.members _.functions ActiveSyncMachine::
-      expect(funcs).to.include.members _.functions SafeSyncCallback::
-      expect(funcs).to.include.members _.functions Abortable::
+      ['ActiveSyncMachine', 'SafeSyncCallback', 'Abortable', 'WithHeaders']
+        .forEach (mixin) ->
+          expect(funcs).to.include.members _.functions MixinCheck[mixin]::
 
     context 'safe save', ->
       deferred = null

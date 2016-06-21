@@ -22,18 +22,16 @@ define (require) ->
 
     beforeEach ->
       server = sinon.fakeServer.create()
-      model = new MockModel()
-      model.fetch()
-      return # to avoid passing Deferred to mocha runner
 
     afterEach ->
       server.restore()
-      model.dispose()
 
     context 'with default configuration', ->
+      $xhr = null
+
       beforeEach ->
         model = new MockModel()
-        model.fetch()
+        $xhr = model.fetch()
         return # to avoid passing Deferred to mocha runner
 
       afterEach ->
@@ -43,6 +41,18 @@ define (require) ->
         headers = _.last(server.requests).requestHeaders
         expect(headers).to.have.property 'Content-Type', 'application/json'
         expect(headers).to.have.property 'Accept', 'application/json'
+
+      it 'should sync without options too', ->
+        model.sync 'create', model
+        expect(_.last(server.requests).method).to.be.equal 'POST'
+
+      context 'aborting request', ->
+        beforeEach ->
+          $xhr.abort()
+          return # to avoid passing Deferred to mocha runner
+
+        it 'should abort fetch request', ->
+          expect(_.last(server.requests).aborted).to.be.equal true
 
     context 'with simple custom configuration', ->
       beforeEach ->

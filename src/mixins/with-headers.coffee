@@ -24,8 +24,11 @@ define (require) ->
      * @return {Deferred}   A jquery Deferred object.
     ###
     sync: (method, model, options) ->
-      @resolveHeaders(@HEADERS).then (headers) =>
-        super method, model, @extendWithHeaders options, headers
+      $xhr = null
+      deferred = @resolveHeaders(@HEADERS).then (headers) =>
+        $xhr = super method, model, @extendWithHeaders options, headers
+      deferred.abort = -> $xhr?.abort() # compatibility with ajax deferred
+      deferred
 
     ###*
      * Resolves headers actual value. Since headers maybe be a function then
@@ -47,4 +50,4 @@ define (require) ->
      * Extends the Backbone ajax options with headers hash object.
     ###
     extendWithHeaders: (options, headers) ->
-      _.extend options, headers: _.extend {}, options.headers, headers
+      _.extend options, headers: _.extend {}, options?.headers, headers

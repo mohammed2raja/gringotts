@@ -1,10 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   Backbone = require 'backbone'
-  ActiveSyncMachine = require 'mixins/active-sync-machine'
-  Abortable = require 'mixins/abortable'
-  SafeSyncCallback = require 'mixins/safe-sync-callback'
-  ServiceErrorCallback = require 'mixins/service-error-callback'
+  MixinCheck = require 'test/helpers/mixin-check'
   SwissAjax = require 'lib/swiss-ajax'
   Collection = require 'models/base/collection'
 
@@ -43,10 +40,9 @@ define (require) ->
 
       it 'should have proper mixins applied', ->
         funcs = _.functions Collection::
-        expect(funcs).to.include.members _.functions ActiveSyncMachine::
-        expect(funcs).to.include.members _.functions SafeSyncCallback::
-        expect(funcs).to.include.members _.functions ServiceErrorCallback::
-        expect(funcs).to.include.members _.functions Abortable::
+        ['ActiveSyncMachine', 'SafeSyncCallback', 'ServiceErrorCallback',
+        'Abortable', 'WithHeaders'].forEach (mixin) ->
+          expect(funcs).to.include.members _.functions MixinCheck[mixin]::
 
     context 'sorting remotely', ->
       beforeEach ->

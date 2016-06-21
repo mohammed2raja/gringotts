@@ -128,3 +128,14 @@ define (require) ->
 
           it 'should invoke the callback with the correct context', ->
             expect(ctxCallback).to.be.called
+
+    context 'aborting request', ->
+      $xhr = null
+
+      beforeEach ->
+        $xhr = collection.fetch()
+        $xhr.abort()
+        return # to avoid passing Deferred to mocha runner
+
+      it 'should abort fetch request', ->
+        expect(_.last(server.requests).aborted).to.be.equal true

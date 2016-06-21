@@ -5,11 +5,12 @@ define (require) ->
   Abortable = require '../../mixins/abortable'
   SafeSyncCallback = require '../../mixins/safe-sync-callback'
   ServiceErrorCallback = require '../../mixins/service-error-callback'
+  WithHeaders = require '../../mixins/with-headers'
   Model = require './model'
 
   # Abstract class for collections. Includes useful mixins by default.
   class Collection extends utils.mix Chaplin.Collection
-      .with ActiveSyncMachine, Abortable
+      .with WithHeaders, ActiveSyncMachine, Abortable
         , SafeSyncCallback, ServiceErrorCallback
 
     model: Model
