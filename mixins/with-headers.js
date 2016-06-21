@@ -44,11 +44,17 @@
          */
 
         WithHeaders.prototype.sync = function(method, model, options) {
-          return this.resolveHeaders(this.HEADERS).then((function(_this) {
+          var $xhr, deferred;
+          $xhr = null;
+          deferred = this.resolveHeaders(this.HEADERS).then((function(_this) {
             return function(headers) {
-              return WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
+              return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
             };
           })(this));
+          deferred.abort = function() {
+            return $xhr != null ? $xhr.abort() : void 0;
+          };
+          return deferred;
         };
 
 
@@ -76,7 +82,7 @@
 
         WithHeaders.prototype.extendWithHeaders = function(options, headers) {
           return _.extend(options, {
-            headers: _.extend({}, options.headers, headers)
+            headers: _.extend({}, options != null ? options.headers : void 0, headers)
           });
         };
 
