@@ -21,13 +21,17 @@ define (require) ->
     # an empty object in the tests.
     context 'URL helper', ->
       beforeEach ->
-        sinon.stub utils, 'reverse'
+        sinon.stub utils, 'reverse', -> ''
       afterEach ->
         utils.reverse.restore()
 
       it 'should work without arguments', ->
         Handlebars.helpers.url {}
         expect(utils.reverse).to.be.calledOnce
+
+      it 'should return "/" if route is empty', ->
+        url = Handlebars.helpers.url {}
+        expect(url).to.be.equal '/'
 
       it 'should properly format URLs with params', ->
         Handlebars.helpers.url 'route', 'params', {}
