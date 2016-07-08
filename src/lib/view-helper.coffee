@@ -21,7 +21,7 @@ define (require) ->
       else if options[1] then [options[1]]
       else null
     query = options[2]
-    utils.reverse(criteria, params, query or hbsOpts.hash) or '/'
+    utils.reverse criteria, params, query or hbsOpts.hash
 
   # Output element for use with font icon classes.
   # If name has couple of classes then the last one is used as icon name.

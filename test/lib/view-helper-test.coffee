@@ -29,10 +29,6 @@ define (require) ->
         Handlebars.helpers.url {}
         expect(utils.reverse).to.be.calledOnce
 
-      it 'should return "/" if route is empty', ->
-        url = Handlebars.helpers.url {}
-        expect(url).to.be.equal '/'
-
       it 'should properly format URLs with params', ->
         Handlebars.helpers.url 'route', 'params', {}
         expect(utils.reverse).to.be.calledWith 'route', ['params']
