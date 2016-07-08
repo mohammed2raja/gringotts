@@ -172,6 +172,7 @@ module.exports = (grunt) ->
           base: ['public', 'test']
           port: 8000
           keepalive: true
+          useAvailablePort: true
 
     # Only run tasks on modified files.
     watch:
