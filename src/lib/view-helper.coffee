@@ -93,25 +93,23 @@ define (require) ->
    * Compares two values and renders matching template like #if
   ###
   handlebars.registerHelper 'ifequal', (lvalue, rvalue, options) ->
-    if arguments.length < 3
+    if arguments.length < 2
       throw new Error('Handlebars Helper equal needs 2 parameters')
-
+    {fn, inverse} = utils.getHandlebarsFuncs [options or {}]
     if lvalue is rvalue
-      return options.fn(this)
-    else
-      return options.inverse(this)
+      if fn then fn this else true
+    else if inverse then inverse this else false
 
   ###*
    * Compares two values and renders matching template like #unless
   ###
   handlebars.registerHelper 'unlessEqual', (lvalue, rvalue, options) ->
-    if arguments.length < 3
+    if arguments.length < 2
       throw new Error('Handlebars Helper equal needs 2 parameters')
-
+    {fn, inverse} = utils.getHandlebarsFuncs [options or {}]
     if lvalue isnt rvalue
-      return options.fn(this)
-    else
-      return options.inverse(this)
+      if fn then fn this else true
+    else if inverse then inverse this else false
 
   ###*
    * Retunrs list of arguments as array. Useful for {{url (array a b c)}}

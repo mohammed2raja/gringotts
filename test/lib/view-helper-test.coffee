@@ -152,22 +152,38 @@ define (require) ->
         expect(result).to.eql 'str1str2str3'
 
     context 'ifequal helper', ->
-      it 'should be true for equal values', ->
-        handlebars.helpers.ifequal 100, 100, hbsOptions
-        expect(hbsOptions.fn).to.be.calledOnce
+      context 'with fn and inverse blocks', ->
+        it 'should be true for equal values', ->
+          handlebars.helpers.ifequal 100, 100, hbsOptions
+          expect(hbsOptions.fn).to.be.calledOnce
 
-      it 'should be false for non-equal values', ->
-        handlebars.helpers.ifequal 100, 200, hbsOptions
-        expect(hbsOptions.inverse).to.be.calledOnce
+        it 'should be false for non-equal values', ->
+          handlebars.helpers.ifequal 100, 200, hbsOptions
+          expect(hbsOptions.inverse).to.be.calledOnce
+
+      context 'without fn and inverse blocks', ->
+        it 'should be true for equal values', ->
+          expect(handlebars.helpers.ifequal 100, 100).to.be.true
+
+        it 'should be false for non-equal values', ->
+          expect(handlebars.helpers.ifequal 100, 200).to.be.false
 
     context 'unlessEqual helper', ->
-      it 'should be true for non-equal values', ->
-        handlebars.helpers.unlessEqual 100, 200, hbsOptions
-        expect(hbsOptions.fn).to.be.calledOnce
+      context 'with fn and inverse blocks', ->
+        it 'should be true for non-equal values', ->
+          handlebars.helpers.unlessEqual 100, 200, hbsOptions
+          expect(hbsOptions.fn).to.be.calledOnce
 
-      it 'should be false for equal values', ->
-        handlebars.helpers.unlessEqual 100, 100, hbsOptions
-        expect(hbsOptions.inverse).to.be.calledOnce
+        it 'should be false for equal values', ->
+          handlebars.helpers.unlessEqual 100, 100, hbsOptions
+          expect(hbsOptions.inverse).to.be.calledOnce
+
+      context 'without fn and inverse blocks', ->
+        it 'should be true for non-equal values', ->
+          expect(handlebars.helpers.unlessEqual 100, 200).to.be.true
+
+        it 'should be false for equal values', ->
+          expect(handlebars.helpers.unlessEqual 100, 100).to.be.false
 
     context 'array helper', ->
       it 'should return array for arguments', ->
