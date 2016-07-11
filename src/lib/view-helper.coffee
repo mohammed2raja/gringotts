@@ -1,5 +1,5 @@
 define (require) ->
-  Handlebars = require 'handlebars'
+  handlebars = require 'handlebars'
   moment = require 'moment'
   utils = require './utils'
   $ = require 'jquery'
@@ -10,7 +10,7 @@ define (require) ->
   # Get Chaplin-declared named routes.
   #
   # **e.g.** `{{#url "like" "105"}}{{/url}}`
-  Handlebars.registerHelper 'url', (opts...) ->
+  handlebars.registerHelper 'url', (opts...) ->
     # Account for the Handlebars context argument that gets append to every call
     options = _.initial opts
     hbsOpts = _.last opts
@@ -31,7 +31,7 @@ define (require) ->
   # If it is a string it will add it as a class.
   #
   # **e.g.** `{{icon 'awesome' 'extra-classy'}}`
-  Handlebars.registerHelper 'icon', (name, attrs={}) ->
+  handlebars.registerHelper 'icon', (name, attrs={}) ->
     return unless name
     icon = $('<span>')
     if typeof attrs is 'string'
@@ -41,28 +41,28 @@ define (require) ->
     classes = _.initial(names).join ' '
     iconName = _.last names
     icon.addClass(classes).addClass "icon icon-#{iconName}"
-    new Handlebars.SafeString icon[0].outerHTML
+    new handlebars.SafeString icon[0].outerHTML
 
   # Format time by passing in the format string.
   # The default input parsing format is ISO.
   #
   # **e.g.** `ll, h:mm:ss a`
-  Handlebars.registerHelper 'dateFormat', (opts...) ->
+  handlebars.registerHelper 'dateFormat', (opts...) ->
     [time, format, inputFormat] = _.initial opts
     hbsOpts = _.last opts
     moment(time, inputFormat or moment.ISO_8601).format(format)
 
   # Output a link to an email address with the address as the text
-  Handlebars.registerHelper 'mailTo', (email) ->
-    email = Handlebars.Utils.escapeExpression email
+  handlebars.registerHelper 'mailTo', (email) ->
+    email = handlebars.Utils.escapeExpression email
     html = utils.tagBuilder 'a', email, href: "mailto:#{email}"
-    new Handlebars.SafeString html
+    new handlebars.SafeString html
 
   ###*
    * A simple helper to concat strings.
    * @param {array} opts A list of string to be combined.
   ###
-  Handlebars.registerHelper 'concat', (opts...) ->
+  handlebars.registerHelper 'concat', (opts...) ->
     result = _(opts).initial().reduce (result, part) ->
       result + part
     , ''
@@ -71,19 +71,19 @@ define (require) ->
    * Helper which accepts two or more booleans and returns
    * template block executions.
   ###
-  Handlebars.registerHelper 'or', (opts...) ->
+  handlebars.registerHelper 'or', (opts...) ->
     {fn, inverse, args} = utils.getHandlebarsFuncs opts
     if _.isEmpty _.compact(args)
       if inverse then inverse this else false
     else if fn then fn this else true
 
-  Handlebars.registerHelper 'and', (opts...) ->
+  handlebars.registerHelper 'and', (opts...) ->
     {fn, inverse, args} = utils.getHandlebarsFuncs opts
     if _.every args
       if fn then fn this else true
     else if inverse then inverse this else false
 
-  Handlebars.registerHelper 'not', (opts...) ->
+  handlebars.registerHelper 'not', (opts...) ->
     {fn, inverse, args} = utils.getHandlebarsFuncs opts
     if _.isEmpty _.compact(args)
       if fn then fn this else true
@@ -92,7 +92,7 @@ define (require) ->
   ###*
    * Compares two values and renders matching template like #if
   ###
-  Handlebars.registerHelper 'ifequal', (lvalue, rvalue, options) ->
+  handlebars.registerHelper 'ifequal', (lvalue, rvalue, options) ->
     if arguments.length < 3
       throw new Error('Handlebars Helper equal needs 2 parameters')
 
@@ -104,7 +104,7 @@ define (require) ->
   ###*
    * Compares two values and renders matching template like #unless
   ###
-  Handlebars.registerHelper 'unlessEqual', (lvalue, rvalue, options) ->
+  handlebars.registerHelper 'unlessEqual', (lvalue, rvalue, options) ->
     if arguments.length < 3
       throw new Error('Handlebars Helper equal needs 2 parameters')
 
@@ -118,5 +118,5 @@ define (require) ->
    * @param  {Array} opts... Input arguments
    * @return {Array}         Array of arguments
   ###
-  Handlebars.registerHelper 'array', (opts...) ->
+  handlebars.registerHelper 'array', (opts...) ->
     _.initial opts

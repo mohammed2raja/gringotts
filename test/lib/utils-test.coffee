@@ -48,10 +48,10 @@ define (require) ->
 
         it 'should log an exception to Raven', ->
           expect(result).to.be.false
-          expect(Raven.captureException).to.have.been.called
+          expect(window.Raven.captureException).to.have.been.called
 
         it 'should pass the string that failed to parse', ->
-          secondArg = Raven.captureException.lastCall.args[1]
+          secondArg = window.Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'invalid'
 
       context 'with empty string', ->
@@ -59,7 +59,7 @@ define (require) ->
         after -> value = null
 
         it 'should pass the string that failed to parse', ->
-          secondArg = Raven.captureException.lastCall.args[1]
+          secondArg = window.Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'Empty string'
 
       context 'with undefined', ->
@@ -67,7 +67,7 @@ define (require) ->
         after -> value = null
 
         it 'should pass the string that failed to parse', ->
-          secondArg = Raven.captureException.lastCall.args[1]
+          secondArg = window.Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'undefined'
 
     context 'mix', ->

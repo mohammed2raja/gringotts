@@ -1,6 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  Handlebars = require 'handlebars'
+  handlebars = require 'handlebars'
   utils = require '../../lib/utils'
   StringTemplatable = require '../../mixins/string-templatable'
   ServiceErrorReady = require '../../mixins/service-error-ready'
@@ -65,7 +65,7 @@ define (require) ->
 
     renderControls: ->
       sortInfo = @_getSortInfo()
-      template = Handlebars.partials[@sortingPartial]
+      template = handlebars.partials[@sortingPartial]
       return unless sortInfo and template
       @$(".sorting-control.#{@cid}").each (i, el) ->
         $el = $(el)

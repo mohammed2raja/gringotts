@@ -1,6 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  MixinCheck = require 'test/helpers/mixin-check'
+  mixinCheck = require 'test/helpers/mixin-check'
   Model = require 'models/base/model'
 
   describe 'Base Model', ->
@@ -20,7 +20,7 @@ define (require) ->
       funcs = _.functions Model::
       ['ActiveSyncMachine', 'SafeSyncCallback', 'Abortable', 'WithHeaders']
         .forEach (mixin) ->
-          expect(funcs).to.include.members _.functions MixinCheck[mixin]::
+          expect(funcs).to.include.members _.functions mixinCheck[mixin]::
 
     context 'safe save', ->
       deferred = null

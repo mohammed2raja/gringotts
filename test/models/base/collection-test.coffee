@@ -1,8 +1,8 @@
 define (require) ->
   Chaplin = require 'chaplin'
   Backbone = require 'backbone'
-  MixinCheck = require 'test/helpers/mixin-check'
-  SwissAjax = require 'lib/swiss-ajax'
+  mixinCheck = require 'test/helpers/mixin-check'
+  swissAjax = require 'lib/swiss-ajax'
   Collection = require 'models/base/collection'
 
   class MockCollection extends Collection
@@ -42,7 +42,7 @@ define (require) ->
         funcs = _.functions Collection::
         ['ActiveSyncMachine', 'SafeSyncCallback', 'ServiceErrorCallback',
         'Abortable', 'WithHeaders'].forEach (mixin) ->
-          expect(funcs).to.include.members _.functions MixinCheck[mixin]::
+          expect(funcs).to.include.members _.functions mixinCheck[mixin]::
 
     context 'sorting remotely', ->
       beforeEach ->
@@ -169,10 +169,10 @@ define (require) ->
         hash: {items: '/boo', trash: '/foo', else: '/moo'}
 
       beforeEach ->
-        Backbone.ajax = SwissAjax.ajax
+        Backbone.ajax = swissAjax.ajax
 
       afterEach ->
-        Backbone.ajax = SwissAjax.backboneAjax
+        Backbone.ajax = swissAjax.backboneAjax
 
       _.keys(urlRoots).forEach (key) ->
         context "of type #{key}", ->

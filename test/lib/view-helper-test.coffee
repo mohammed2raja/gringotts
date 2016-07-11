@@ -1,5 +1,5 @@
 define (require) ->
-  Handlebars = require 'handlebars'
+  handlebars = require 'handlebars'
   utils = require 'lib/utils'
   viewHelper = require 'lib/view-helper'
 
@@ -26,35 +26,35 @@ define (require) ->
         utils.reverse.restore()
 
       it 'should work without arguments', ->
-        Handlebars.helpers.url {}
+        handlebars.helpers.url {}
         expect(utils.reverse).to.be.calledOnce
 
       it 'should properly format URLs with params', ->
-        Handlebars.helpers.url 'route', 'params', {}
+        handlebars.helpers.url 'route', 'params', {}
         expect(utils.reverse).to.be.calledWith 'route', ['params']
 
       it 'should properly format URLs with params as object', ->
-        Handlebars.helpers.url 'route', {p1:1, p2:2}, {}
+        handlebars.helpers.url 'route', {p1:1, p2:2}, {}
         expect(utils.reverse).to.be.calledWith 'route', {p1:1, p2:2}
 
       it 'should properly format URLs with params as array', ->
-        Handlebars.helpers.url 'route', ['param1', 'param2'], {}
+        handlebars.helpers.url 'route', ['param1', 'param2'], {}
         expect(utils.reverse).to.be.calledWith 'route', ['param1', 'param2']
 
       it 'should properly format URLs without params', ->
-        Handlebars.helpers.url 'path', {}
+        handlebars.helpers.url 'path', {}
         expect(utils.reverse).to.be.calledWith 'path'
 
       it 'should be able to be called without a query', ->
-        Handlebars.helpers.url 'path', 5, {}
+        handlebars.helpers.url 'path', 5, {}
         expect(utils.reverse).to.be.calledWith 'path', [5]
 
       it 'should pass the query along', ->
-        Handlebars.helpers.url 'starbuck', null, 'rank=lt', {}
+        handlebars.helpers.url 'starbuck', null, 'rank=lt', {}
         expect(utils.reverse).to.be.calledWith 'starbuck', null, 'rank=lt'
 
       it 'should pass the handlebars hash into query', ->
-        Handlebars.helpers.url 'route', 5, null, hash: p1: 1
+        handlebars.helpers.url 'route', 5, null, hash: p1: 1
         expect(utils.reverse).to.be.calledWith 'route', [5], p1: 1
 
     context 'icon helper', ->
@@ -63,7 +63,7 @@ define (require) ->
       second = null
 
       beforeEach ->
-        icon = Handlebars.helpers.icon first or 'triangle', second
+        icon = handlebars.helpers.icon first or 'triangle', second
 
       afterEach ->
         icon = null
@@ -97,15 +97,15 @@ define (require) ->
             .and.have.class('dreamy').and.have.class('icon-circle')
 
       it 'should return nothing if name is not set', ->
-        icon = Handlebars.helpers.icon()
+        icon = handlebars.helpers.icon()
         expect(icon).to.be.undefined
 
     it 'should format date correctly with default input format', ->
-      timeStamp = Handlebars.helpers.dateFormat '1969-12-31', 'l', {}
+      timeStamp = handlebars.helpers.dateFormat '1969-12-31', 'l', {}
       expect(timeStamp).to.equal '12/31/1969'
 
     it 'should format date correctly with custom input format', ->
-      timeStamp = Handlebars.helpers.dateFormat '26/11/1982', 'l',
+      timeStamp = handlebars.helpers.dateFormat '26/11/1982', 'l',
         'DD/MM/YYYY', {}
       expect(timeStamp).to.equal '11/26/1982'
 
@@ -113,7 +113,7 @@ define (require) ->
       $el = null
 
       beforeEach ->
-        $el = $ Handlebars.helpers.mailTo('<hax>').string
+        $el = $ handlebars.helpers.mailTo('<hax>').string
 
       it 'should escape the email', ->
         expect($el).to.contain '&lt;hax&gt;'
@@ -125,25 +125,25 @@ define (require) ->
     context 'and operator', ->
       context 'with fn and inverse blocks', ->
         it 'should call inverse when containing a falsy value', ->
-          Handlebars.helpers.and true, false, true, hbsOptions
+          handlebars.helpers.and true, false, true, hbsOptions
           expect(hbsOptions.inverse).to.be.calledOnce
 
         it 'should call fn when containing no falsy values', ->
-          Handlebars.helpers.and true, true, 1, 'yes', hbsOptions
+          handlebars.helpers.and true, true, 1, 'yes', hbsOptions
           expect(hbsOptions.fn).to.be.calledOnce
 
       context 'without fn and inverse blocks', ->
         it 'should return false when containing a falsy value', ->
-          expect(Handlebars.helpers.and true, true, false).to.eql false
+          expect(handlebars.helpers.and true, true, false).to.eql false
 
         it 'should return true when containing all truthy values', ->
-          expect(Handlebars.helpers.and true, 'yes', 1).to.eql.true
+          expect(handlebars.helpers.and true, 'yes', 1).to.eql.true
 
     context 'concat strings', ->
       result = null
 
       beforeEach ->
-        result = Handlebars.helpers.concat 'str1', 'str2', 'str3', hbsOptions
+        result = handlebars.helpers.concat 'str1', 'str2', 'str3', hbsOptions
 
       afterEach ->
         result = null
@@ -153,23 +153,23 @@ define (require) ->
 
     context 'ifequal helper', ->
       it 'should be true for equal values', ->
-        Handlebars.helpers.ifequal 100, 100, hbsOptions
+        handlebars.helpers.ifequal 100, 100, hbsOptions
         expect(hbsOptions.fn).to.be.calledOnce
 
       it 'should be false for non-equal values', ->
-        Handlebars.helpers.ifequal 100, 200, hbsOptions
+        handlebars.helpers.ifequal 100, 200, hbsOptions
         expect(hbsOptions.inverse).to.be.calledOnce
 
     context 'unlessEqual helper', ->
       it 'should be true for non-equal values', ->
-        Handlebars.helpers.unlessEqual 100, 200, hbsOptions
+        handlebars.helpers.unlessEqual 100, 200, hbsOptions
         expect(hbsOptions.fn).to.be.calledOnce
 
       it 'should be false for equal values', ->
-        Handlebars.helpers.unlessEqual 100, 100, hbsOptions
+        handlebars.helpers.unlessEqual 100, 100, hbsOptions
         expect(hbsOptions.inverse).to.be.calledOnce
 
     context 'array helper', ->
       it 'should return array for arguments', ->
-        result = Handlebars.helpers.array 10, 55, 647, hbsOptions
+        result = handlebars.helpers.array 10, 55, 647, hbsOptions
         expect(result).to.eql [10, 55, 647]

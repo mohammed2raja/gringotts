@@ -1,5 +1,5 @@
 define (require) ->
-  Handlebars = require 'handlebars'
+  handlebars = require 'handlebars'
   utils = require '../../lib/utils'
   CollectionView = require './collection-view'
 
@@ -77,7 +77,7 @@ define (require) ->
     renderControls: ->
       super
       pageInfo = @_getPageInfo()
-      template = Handlebars.partials[@paginationPartial]
+      template = handlebars.partials[@paginationPartial]
       return unless pageInfo and template
       @$(".pagination-controls.#{@cid}").each (i, el) ->
         $(el).replaceWith template pageInfo

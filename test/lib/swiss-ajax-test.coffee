@@ -1,6 +1,6 @@
 define (require) ->
   Backbone = require 'backbone'
-  SwissAjax = require 'lib/swiss-ajax'
+  swissAjax = require 'lib/swiss-ajax'
   Model = require 'models/base/model'
 
   class MockModelString extends Model
@@ -28,16 +28,16 @@ define (require) ->
     Array: MockModelArray
     Hash: MockModelHash
 
-  describe 'SwissAjax', ->
+  describe 'swissAjax', ->
     server = null
     model = null
 
     beforeEach ->
-      Backbone.ajax = SwissAjax.ajax
+      Backbone.ajax = swissAjax.ajax
       server = sinon.fakeServer.create()
 
     afterEach ->
-      Backbone.ajax = SwissAjax.backboneAjax
+      Backbone.ajax = swissAjax.backboneAjax
       server.restore()
       model.dispose()
 

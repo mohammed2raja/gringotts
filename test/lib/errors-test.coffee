@@ -1,8 +1,8 @@
 define (require) ->
   utils = require 'lib/utils'
-  Errors = require 'lib/errors'
+  errors = require 'lib/errors'
 
-  describe 'Errors', ->
+  describe 'errors', ->
     describe 'setupErrorHandling', ->
       reload = null
       publishEvent = null
@@ -15,7 +15,7 @@ define (require) ->
         sinon.stub utils, 'redirectTo'
         ((window.I18n = {}).t = (text) -> text) if i18n
         # Fake window-like object
-        Errors.setupErrorHandling
+        errors.setupErrorHandling
           location: {reload}
           publishEvent: publishEvent
 

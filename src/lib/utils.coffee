@@ -58,7 +58,7 @@ define (require) ->
         str = 'undefined'
       else if str.length is 0
         str = 'Empty string'
-      Raven?.captureException error, tags: {str}
+      window.Raven?.captureException error, tags: {str}
 
     result
 
