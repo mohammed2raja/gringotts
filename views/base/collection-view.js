@@ -3,9 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, Handlebars, ServiceErrorReady, StringTemplatable, utils;
+    var Chaplin, CollectionView, ServiceErrorReady, StringTemplatable, handlebars, utils;
     Chaplin = require('chaplin');
-    Handlebars = require('handlebars');
+    handlebars = require('handlebars');
     utils = require('../../lib/utils');
     StringTemplatable = require('../../mixins/string-templatable');
     ServiceErrorReady = require('../../mixins/service-error-ready');
@@ -111,7 +111,7 @@
       CollectionView.prototype.renderControls = function() {
         var sortInfo, template;
         sortInfo = this._getSortInfo();
-        template = Handlebars.partials[this.sortingPartial];
+        template = handlebars.partials[this.sortingPartial];
         if (!(sortInfo && template)) {
           return;
         }

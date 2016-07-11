@@ -3,8 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var CollectionView, Handlebars, PaginatedView, utils;
-    Handlebars = require('handlebars');
+    var CollectionView, PaginatedView, handlebars, utils;
+    handlebars = require('handlebars');
     utils = require('../../lib/utils');
     CollectionView = require('./collection-view');
     return PaginatedView = (function(superClass) {
@@ -105,7 +105,7 @@
         var pageInfo, template;
         PaginatedView.__super__.renderControls.apply(this, arguments);
         pageInfo = this._getPageInfo();
-        template = Handlebars.partials[this.paginationPartial];
+        template = handlebars.partials[this.paginationPartial];
         if (!(pageInfo && template)) {
           return;
         }
