@@ -20,7 +20,10 @@ define (require) ->
       errors = _.reduce @validateAttrs, (memo, name, attr) =>
         method = @[name] or blank
         # Only validate attributes passed in (including ones with falsy values)
-        modelErr = method.call this, attrs[attr] if attrs.hasOwnProperty attr
+        # or validate everything required for a complete model validation
+        # (options.validate=true is passed by backbone)
+        if attrs.hasOwnProperty(attr) or method is blank and options?.validate
+          modelErr = method.call this, attrs[attr]
         if modelErr
           foundError = yes
           memo[attr] = modelErr

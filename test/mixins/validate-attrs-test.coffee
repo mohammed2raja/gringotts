@@ -17,18 +17,18 @@ define (require) ->
     afterEach ->
       model.dispose()
 
-    it 'returns falsy with no errors', ->
+    it 'should return falsy with no errors', ->
       expect(model.isValid()).to.be.true
       expect(model.validateName).to.be.calledOnce
 
-    it 'returns an object with erroneous values for invalid values', ->
+    it 'should return an object with erroneous values for invalid values', ->
       model.set {'age'}
       model.validateAge = (age) -> 'missing' unless typeof age is 'number'
       model.validateAttrs = age: 'validateAge'
       model.isValid()
       expect(model.validationError.age).to.equal 'missing'
 
-    it 'accepts falsy values', ->
+    it 'should accept falsy values', ->
       model.set superuser: null
       model.validateSU = (val) -> val
       sinon.spy model, 'validateSU'
@@ -36,18 +36,17 @@ define (require) ->
       expect(model.isValid()).to.be.true
       expect(model.validateSU).to.be.calledOnce
 
-    it 'defaults to a blank check', ->
-      model.set {'title'}
+    it 'should validate all attrs on complete modal validation', ->
       model.validateAttrs =
         name: 'validateName'
         title: 'blank'
-      expect(model.isValid()).to.be.true
+      expect(model.isValid()).to.be.false
 
-    it 'only validates attributes with methods', ->
+    it 'should only validate attributes with methods', ->
       model.set {title: ''}
       expect(model.isValid()).to.be.true
 
-    it 'only validates attributes specified', ->
+    it 'should only validate attributes specified', ->
       model.set {'status'}
       model.validateStatus = -> 'invalid status'
       model.validateAttrs =
@@ -56,7 +55,7 @@ define (require) ->
       valid = model.validate name: model.get 'name'
       expect(valid).not.to.be.ok
 
-    it 'works with multiple models', ->
+    it 'should work with multiple models', ->
       model = new MockModel name: 'Eve'
       model.validateName = (text) ->
         'name too long' if text.length > 5
@@ -67,12 +66,12 @@ define (require) ->
       expect(model.validateName).to.be.calledTwice
       model.dispose()
 
-    it 'can validate attributes on the model', ->
+    it 'should be able to validate attributes on the model', ->
       model.validateName = ->
         'name too long' if @get('name').length > 5
       expect(model.isValid()).to.be.false
 
-    it 'returns proper validate error for blank check', ->
+    it 'should return proper validate error for blank check', ->
       model.set {'test': null}
       model.validateAttrs = test: 'missingMethod'
       expect(model.isValid()).to.be.false
