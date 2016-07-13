@@ -29,7 +29,7 @@
             return function(memo, name, attr) {
               var method, modelErr;
               method = _this[name] || blank;
-              if (attrs.hasOwnProperty(attr)) {
+              if (attrs.hasOwnProperty(attr) || method === blank && (options != null ? options.validate : void 0)) {
                 modelErr = method.call(_this, attrs[attr]);
               }
               if (modelErr) {
