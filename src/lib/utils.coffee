@@ -9,6 +9,7 @@
 define (require) ->
   Backbone = require 'backbone'
   Chaplin = require 'chaplin'
+  moment = require 'moment'
 
   # Alias to DOM library provided.
   $ = Backbone.$
@@ -49,7 +50,6 @@ define (require) ->
 
   utils.parseJSON = (str) ->
     result = false
-
     try
       result = JSON.parse str
     catch error
@@ -59,8 +59,13 @@ define (require) ->
       else if str.length is 0
         str = 'Empty string'
       window.Raven?.captureException error, tags: {str}
-
     result
+
+  utils.toBrowserDate = (date) ->
+    moment(date).format 'YYYY-MM-DD' if date
+
+  utils.toServerDate = (date) ->
+    moment(date).toISOString() if date
 
   ###*
    * Processes hbs helper arguments and extracts funcs and vars.

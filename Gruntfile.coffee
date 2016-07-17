@@ -160,18 +160,11 @@ module.exports = (grunt) ->
           "rm -r #{buildPath};" +
           "cp -R -v public/src #{buildPath};"
 
-    concurrent:
-      pipe:
-        tasks: ['connect', 'watch']
-        options:
-          logConcurrentOutput: yes
-
     connect:
       server:
         options:
           base: ['public', 'test']
           port: 8000
-          keepalive: true
           useAvailablePort: true
 
     # Only run tasks on modified files.
@@ -207,8 +200,10 @@ module.exports = (grunt) ->
     'shell:bower'
     'build'
     'lint'
+    'connect'
     'test'
-    'concurrent']
+    'watch'
+    ]
   grunt.registerTask 'docs', ['citare-scriptum', 'gh-pages:docs']
   grunt.registerTask 'test', ['blanket_mocha:test']
   grunt.registerTask 'test-ci', [

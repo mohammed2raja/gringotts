@@ -1,0 +1,14 @@
+<form>
+  <div class="form-group">
+    <label for="adminName" class="control-label">Name</label>
+    <input type="text" class="form-control" id="adminName"
+        name="name" autofocus pattern="{{regex.name}}" />
+    <span class="help-block hidden"></span>
+  </div>
+  <div class="form-group">
+    <label for="adminEmail" class="control-label">Email</label>
+    <input type="email" class="form-control" id="adminEmail"
+        name="email" pattern="{{regex.email}}">
+    <span class="help-block hidden"></span>
+  </div>
+</form>

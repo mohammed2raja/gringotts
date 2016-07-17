@@ -70,6 +70,16 @@ define (require) ->
           secondArg = window.Raven.captureException.lastCall.args[1]
           expect(secondArg).to.eql tags: str: 'undefined'
 
+    context 'toBrowserDate', ->
+      it 'should convert data to HTML5 date', ->
+        date = utils.toBrowserDate '2016-07-18'
+        expect(date).to.equal '2016-07-18'
+
+    context 'toServerDate', ->
+      it 'should parse a number', ->
+        date = utils.toServerDate '2016-07-18'
+        expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
+
     context 'mix', ->
       target = null
 

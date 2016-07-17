@@ -12,4 +12,5 @@ require [
   'bootstrap_tooltip'
   'bootstrap_transition'
   'ext/bootstrap-select'
+  'stickit'
 ]

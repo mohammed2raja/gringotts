@@ -12,6 +12,10 @@ require.config
     underscore: '../vendor/bower/lodash/lodash'
     jquery: '../vendor/bower/jquery/dist/jquery'
 
+    stickit: '../vendor/bower/backbone.stickit/backbone.stickit'
+    backbone_validation:
+      '../vendor/bower/backbone-validation/dist/backbone-validation-amd'
+
     # Bootstrap plugins
     bootstrap_button: '../vendor/bower/bootstrap/js/button'
     bootstrap_collapse: '../vendor/bower/bootstrap/js/collapse'
@@ -44,5 +48,7 @@ require.config
     bootstrap_transition:
       deps: ['jquery']
 
+    backbone_validation:
+      deps: ['backbone']
     'ext/bootstrap-select':
       deps: ['bootstrap_select']

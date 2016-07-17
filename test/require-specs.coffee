@@ -22,7 +22,9 @@ require {baseUrl: '../src'}, ['config'], ->
       'sinon'
     ], (chai, sinonChai, chaiJquery) ->
       # Create `window.describe` etc. for our BDD-like tests.
-      mocha.setup ui: 'bdd'
+      mochaConfig = ui: 'bdd'
+      mochaConfig.timeout = 0 unless window.PHANTOMJS
+      mocha.setup mochaConfig
       chai.use sinonChai
       chai.use chaiJquery
 
