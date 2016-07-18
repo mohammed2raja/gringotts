@@ -2,7 +2,7 @@
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "main": "config.js",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "licenses": [
     {
       "type": "MIT",
@@ -12,9 +12,11 @@
   "ignore": [],
   "dependencies": {
     "almond": "0.3.2",
+    "backbone-validation": "0.11.5",
+    "backbone.stickit": "0.9.2",
     "backbone": "1.2.3",
-    "bootstrap": "3.3.6",
     "bootstrap-select": "1.10.0",
+    "bootstrap": "3.3.6",
     "chaplin": "1.1.1",
     "handlebars": "4.0.5",
     "jquery": "2.2.3",
