@@ -3,9 +3,12 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var BROWSER_DATE, backboneValidation, moment;
+    var BROWSER_DATE, backboneValidation, i, key, len, moment, ref;
     moment = require('moment');
     backboneValidation = require('backbone_validation');
+    backboneValidation.configure({
+      labelFormatter: 'label'
+    });
     _.extend(backboneValidation.patterns, {
       name: /^((?!<\\?.*>).)+/,
       email: /^[^@]+@[^@]+\.[^@]+$/,
@@ -17,6 +20,13 @@
       guid: '{0} must be a valid guid',
       date: '{0} must be a valid date'
     });
+    if (typeof I18n !== "undefined" && I18n !== null) {
+      ref = _.keys(backboneValidation.messages);
+      for (i = 0, len = ref.length; i < len; i++) {
+        key = ref[i];
+        backboneValidation.messages[key] = I18n.t("error.validation." + key);
+      }
+    }
     BROWSER_DATE = ['MM/DD/YYYY', 'YYYY-MM-DD'];
 
     /**
@@ -33,7 +43,17 @@
           return Validatable.__super__.constructor.apply(this, arguments);
         }
 
-        _.extend(Validatable.prototype, backboneValidation.mixin);
+        _.extend(Validatable.prototype, _.extend({}, backboneValidation.mixin, {
+          isValid: function(option) {
+            return backboneValidation.mixin.isValid.apply(this, [option || true]);
+          },
+          validate: function() {
+            var error;
+            error = backboneValidation.mixin.validate.apply(this, arguments);
+            this.validationError = error || null;
+            return error;
+          }
+        }));
 
         Validatable.prototype.validateDate = function(value, attr) {
           if (value && !moment(value, BROWSER_DATE).isValid()) {

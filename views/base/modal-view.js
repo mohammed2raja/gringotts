@@ -20,7 +20,6 @@
       ModalView.prototype.classyName = 'modal fade';
 
       ModalView.prototype.attributes = {
-        tabindex: -1,
         role: 'dialog'
       };
 

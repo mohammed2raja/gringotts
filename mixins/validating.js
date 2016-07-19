@@ -12,6 +12,18 @@
         validate: true
       }
     });
+    backboneValidation.configure({
+      valid: function(view, attr, selector) {
+        var $el, $group;
+        $el = view.$("[name=" + attr + "]");
+        return $group = $el.closest('.form-group').removeClass('has-error').find('.help-block').html('').addClass('hidden');
+      },
+      invalid: function(view, attr, error, selector) {
+        var $el, $group;
+        $el = view.$("[name=" + attr + "]");
+        return $group = $el.closest('.form-group').addClass('has-error').find('.help-block').html(error).removeClass('hidden');
+      }
+    });
 
     /**
      * Turn on validation for view UI upon model attributes update.
@@ -27,25 +39,20 @@
           return Validating.__super__.constructor.apply(this, arguments);
         }
 
-        Validating.prototype.patterns = backboneValidation.patterns;
 
-        Validating.prototype.validationConfig = {
-          forceUpdate: true,
-          valid: function(view, attr, selector) {
-            var $el, $group;
-            $el = view.$("[name=" + attr + "]");
-            return $group = $el.closest('.form-group').removeClass('has-error').find('.help-block').html('').addClass('hidden');
-          },
-          invalid: function(view, attr, error, selector) {
-            var $el, $group;
-            $el = view.$("[name=" + attr + "]");
-            return $group = $el.closest('.form-group').addClass('has-error').find('.help-block').html(error).removeClass('hidden');
-          }
-        };
+        /**
+         * Regex patterns that may be used in template data to
+         * fill DOM elements pattern property.
+         * @type {Object}
+         */
+
+        Validating.prototype.patterns = backboneValidation.patterns;
 
         Validating.prototype.initialize = function() {
           Validating.__super__.initialize.apply(this, arguments);
-          return backboneValidation.bind(this, this.validationConfig);
+          if (this.model) {
+            return this.bindModel(this.model);
+          }
         };
 
         Validating.prototype.getTemplateData = function() {
@@ -54,6 +61,29 @@
               return re.source;
             })
           });
+        };
+
+        Validating.prototype.dispose = function() {
+          if (this.model) {
+            this.unbindModel(this.model);
+          }
+          return Validating.__super__.dispose.apply(this, arguments);
+        };
+
+        Validating.prototype.bindModel = function(model) {
+          if (model.associatedViews) {
+            if (model.associatedViews.indexOf(this) < 0) {
+              return model.associatedViews.push(this);
+            }
+          } else {
+            return model.associatedViews = [this];
+          }
+        };
+
+        Validating.prototype.unbindModel = function(model) {
+          if (model.associatedViews) {
+            return model.associatedViews = _.without(model.associatedViews, this);
+          }
         };
 
         return Validating;

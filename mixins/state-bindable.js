@@ -3,8 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Backbone;
-    Backbone = require('backbone');
+    var chaplin;
+    chaplin = require('chaplin');
 
     /**
      * Adds state model, that is a data source for state bindings.
@@ -49,7 +49,7 @@
 
         StateBindable.prototype.initialize = function() {
           StateBindable.__super__.initialize.apply(this, arguments);
-          return this.state = new Backbone.Model(_.result(this, 'initialState'));
+          return this.state = new chaplin.Model(_.result(this, 'initialState'));
         };
 
         StateBindable.prototype.render = function() {
@@ -57,6 +57,11 @@
           if (this.state && this.stateBindings) {
             return this.addBinding(this.state, _.result(this, 'stateBindings'));
           }
+        };
+
+        StateBindable.prototype.dispose = function() {
+          StateBindable.__super__.dispose.apply(this, arguments);
+          return this.state.dispose();
         };
 
         return StateBindable;
