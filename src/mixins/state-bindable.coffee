@@ -1,5 +1,5 @@
 define (require) ->
-  Backbone = require 'backbone'
+  chaplin = require 'chaplin'
 
   ###*
    * Adds state model, that is a data source for state bindings.
@@ -30,9 +30,13 @@ define (require) ->
 
     initialize: ->
       super
-      @state = new Backbone.Model _.result this, 'initialState'
+      @state = new chaplin.Model _.result this, 'initialState'
 
     render: ->
       super
       if @state and @stateBindings
         @addBinding @state, _.result this, 'stateBindings'
+
+    dispose: ->
+      super
+      @state.dispose()

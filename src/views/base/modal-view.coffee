@@ -8,7 +8,6 @@ define (require) ->
   class ModalView extends Classy View
     classyName: 'modal fade'
     attributes:
-      tabindex: -1
       role: 'dialog'
     events:
       # Globally prevent scrolling of page when modal is displayed.

@@ -2,6 +2,10 @@ define (require) ->
   moment = require 'moment'
   backboneValidation = require 'backbone_validation'
 
+  backboneValidation.configure {
+    labelFormatter: 'label'
+  }
+
   # Override/extend default validation patterns
   _.extend backboneValidation.patterns,
     name: /^((?!<\\?.*>).)+/
@@ -15,6 +19,10 @@ define (require) ->
     guid: '{0} must be a valid guid'
     date: '{0} must be a valid date'
 
+  if I18n?
+    for key in _.keys backboneValidation.messages
+      backboneValidation.messages[key] = I18n.t "error.validation.#{key}"
+
   # Expected date format from browser input[type=date] elements
   BROWSER_DATE = ['MM/DD/YYYY', 'YYYY-MM-DD']
 
@@ -24,7 +32,15 @@ define (require) ->
    * @param  {Backbone.Model} superclass
   ###
   (superclass) -> class Validatable extends superclass
-    _.extend @prototype, backboneValidation.mixin
+    _.extend @prototype, _.extend {}, backboneValidation.mixin,
+      # HACK force model validation if no args passed
+      isValid: (option) ->
+        backboneValidation.mixin.isValid.apply this, [option || true]
+      # HACK until https://github.com/thedersen/backbone.validation/issues/232
+      validate: ->
+        error = backboneValidation.mixin.validate.apply this, arguments
+        @validationError = error || null
+        error
 
     validateDate: (value, attr) ->
       if value and not moment(value, BROWSER_DATE).isValid()

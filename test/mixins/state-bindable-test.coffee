@@ -31,6 +31,13 @@ define (require) ->
         it 'should set button enabled', ->
           expect(view.$ '#button').to.not.have.attr 'disabled'
 
+      context 'on view dispose', ->
+        beforeEach ->
+          view.dispose()
+
+        it 'should dispose state model', ->
+          expect(view.state.disposed).to.be.true
+
     context 'configs set directly', ->
       beforeEach ->
         MockView::initialState = initialState

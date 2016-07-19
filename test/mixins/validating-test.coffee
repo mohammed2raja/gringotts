@@ -38,6 +38,9 @@ define (require) ->
       view.dispose()
       model.dispose()
 
+    it 'should update model associated views', ->
+      expect(model.associatedViews).to.include view
+
     it 'should apply regex patterns', ->
       expect(view.$ '#adminName').to.have.prop 'pattern',
         patterns.name.source
@@ -53,7 +56,7 @@ define (require) ->
 
     context 'on validation with errors', ->
       beforeEach ->
-        model.isValid true
+        model.isValid()
 
       it 'should keep help blocks visible', ->
         expect(view.$ '.help-block').to.not.have.class 'hidden'
@@ -75,3 +78,10 @@ define (require) ->
         it 'should keep help blocks hidden and empty', ->
           expect(view.$ '.help-block').to.have.class 'hidden'
           expect(view.$ '.help-block').to.have.text ''
+
+    context 'on dispose', ->
+      beforeEach ->
+        view.dispose()
+
+      it 'should remove view from model', ->
+        expect(model.associatedViews).to.not.include view

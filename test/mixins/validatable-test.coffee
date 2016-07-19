@@ -32,7 +32,7 @@ define (require) ->
       model.dispose()
 
     it 'should not be valid by default', ->
-      isValid = model.isValid true
+      isValid = model.isValid()
       expect(isValid).to.be.false
 
     it 'should have errors of required', ->
