@@ -9,7 +9,8 @@
     stickit.addHandler({
       selector: '*',
       setOptions: {
-        validate: true
+        validate: true,
+        forceUpdate: true
       }
     });
     backboneValidation.configure({
