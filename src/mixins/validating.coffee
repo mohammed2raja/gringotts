@@ -2,10 +2,15 @@ define (require) ->
   backboneValidation = require 'backbone_validation'
   stickit = require 'stickit'
 
-  # force validation on all view-to-model bindings set
   stickit.addHandler {
     selector: '*'
-    setOptions: validate: true
+    setOptions:
+      # force validation of a new value upon setting it to model
+      validate: true
+      # force updating model with a new value even
+      # if there is a validation error
+      # This is to make sure that UI state and model state are synced
+      forceUpdate: true
   }
 
   backboneValidation.configure {
