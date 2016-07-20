@@ -181,15 +181,15 @@ module.exports = (grunt) ->
         tasks: [
           'newer:handlebars'
           'newer:coffee'
-          'newer:coffeelint'
-          'htmllint'
+          'force:newer:coffeelint'
+          'force:htmllint'
           'blanket_mocha:test'
           'shell:localBuild'
         ]
 
       grunt:
         files: 'Gruntfile.coffee'
-        tasks: 'newer:coffeelint'
+        tasks: 'force:newer:coffeelint'
 
       test:
         files: 'test/index.html'
@@ -199,7 +199,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'default', [
     'shell:bower'
     'build'
-    'lint'
+    'force:lint'
     'connect'
     'test'
     'watch'
