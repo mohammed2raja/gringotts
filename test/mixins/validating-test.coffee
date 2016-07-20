@@ -56,7 +56,7 @@ define (require) ->
 
     context 'on validation with errors', ->
       beforeEach ->
-        model.isValid()
+        model.validate()
 
       it 'should keep help blocks visible', ->
         expect(view.$ '.help-block').to.not.have.class 'hidden'
@@ -75,9 +75,20 @@ define (require) ->
           view.$('[name="name"]').val('Johny').trigger 'change'
           view.$('[name="email"]').val('test@example.com').trigger 'change'
 
+        it 'should update model attributes', ->
+          expect(model.get 'name').to.equal 'Johny'
+          expect(model.get 'email').to.equal 'test@example.com'
+
         it 'should keep help blocks hidden and empty', ->
           expect(view.$ '.help-block').to.have.class 'hidden'
           expect(view.$ '.help-block').to.have.text ''
+
+        context 'after another error', ->
+          beforeEach ->
+            view.$('[name="name"]').val('').trigger 'change'
+
+          it 'should force update model attribute with invalid value', ->
+            expect(model.get 'name').to.be.empty
 
     context 'on dispose', ->
       beforeEach ->
