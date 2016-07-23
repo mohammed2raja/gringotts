@@ -40,6 +40,14 @@
 
 
       /**
+       * List of state keys to ignore while building url for fetching items.
+       * @type {Array}
+       */
+
+      Collection.prototype.ignoreKeys = null;
+
+
+      /**
        * Default queryparam object for this collection.
        * Must contain all possible querynewState.
        * Override when necessary.
@@ -191,7 +199,7 @@
             usePrefix: false
           });
         }
-        state = _.mapKeys(state, (function(_this) {
+        state = _.mapKeys(_.omit(state, this.ignoreKeys), (function(_this) {
           return function(value, key) {
             return _.invert(_this.DEFAULTS_SERVER_MAP)[key] || key;
           };

@@ -3,9 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var _revertChanges, utils;
+    var revertChanges, utils;
     utils = require('lib/utils');
-    _revertChanges = function(opts, $xhr) {
+    revertChanges = function(opts, $xhr) {
       var message, ref, ref1, ref2, ref3, response;
       if ((ref = opts.$field) != null) {
         ref.text(opts.original);
@@ -50,13 +50,13 @@
               success: function() {
                 return opts.model.save(opts.attribute, opts.value, opts).fail((function(_this) {
                   return function($xhr) {
-                    return _revertChanges.call(_this, opts, $xhr);
+                    return revertChanges.call(_this, opts, $xhr);
                   };
                 })(this));
               },
               undo: (function(_this) {
                 return function() {
-                  return _revertChanges.call(_this, opts);
+                  return revertChanges.call(_this, opts);
                 };
               })(this)
             }));
@@ -67,7 +67,7 @@
               };
             })(this)).fail((function(_this) {
               return function($xhr) {
-                return _revertChanges.call(_this, opts, $xhr);
+                return revertChanges.call(_this, opts, $xhr);
               };
             })(this));
           }

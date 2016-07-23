@@ -3,10 +3,11 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, ServiceErrorReady, StringTemplatable, handlebars, utils;
+    var Chaplin, CollectionView, Routing, ServiceErrorReady, StringTemplatable, handlebars, utils;
     Chaplin = require('chaplin');
     handlebars = require('handlebars');
     utils = require('../../lib/utils');
+    Routing = require('../../mixins/routing');
     StringTemplatable = require('../../mixins/string-templatable');
     ServiceErrorReady = require('../../mixins/service-error-ready');
 
@@ -32,7 +33,7 @@
         }
       };
 
-      CollectionView.prototype.optionNames = CollectionView.prototype.optionNames.concat(['sortableTableHeaders', 'routeName', 'routeParams']);
+      CollectionView.prototype.optionNames = CollectionView.prototype.optionNames.concat(['sortableTableHeaders']);
 
       CollectionView.prototype.loadingSelector = '.loading';
 
@@ -46,7 +47,7 @@
 
       CollectionView.prototype.animationEndClass = 'in';
 
-      CollectionView.prototype._highlightColumns = function() {
+      CollectionView.prototype.highlightColumns = function() {
         var idx, state;
         state = this.collection.getState({}, {
           inclDefaults: true
@@ -55,7 +56,7 @@
         return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not('[colspan]').addClass('highlighted');
       };
 
-      CollectionView.prototype._getSortInfo = function() {
+      CollectionView.prototype.getSortInfo = function() {
         var state;
         if (!this.sortableTableHeaders) {
           return null;
@@ -91,7 +92,7 @@
 
       CollectionView.prototype.getTemplateData = function() {
         var sortInfo;
-        sortInfo = this._getSortInfo();
+        sortInfo = this.getSortInfo();
         if (sortInfo) {
           return _.extend(CollectionView.__super__.getTemplateData.apply(this, arguments), {
             sortInfo: sortInfo
@@ -104,13 +105,13 @@
       CollectionView.prototype.renderAllItems = function() {
         CollectionView.__super__.renderAllItems.apply(this, arguments);
         if (this.sortableTableHeaders) {
-          return this._highlightColumns();
+          return this.highlightColumns();
         }
       };
 
       CollectionView.prototype.renderControls = function() {
         var sortInfo, template;
-        sortInfo = this._getSortInfo();
+        sortInfo = this.getSortInfo();
         template = handlebars.partials[this.sortingPartial];
         if (!(sortInfo && template)) {
           return;
@@ -128,7 +129,7 @@
 
       return CollectionView;
 
-    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplatable, ServiceErrorReady));
+    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplatable, ServiceErrorReady, Routing));
   });
 
 }).call(this);

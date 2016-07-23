@@ -29,7 +29,7 @@
         return this.$loading.toggle(visible);
       };
 
-      PaginatedView.prototype._getStats = function(min, max, info) {
+      PaginatedView.prototype.getStats = function(min, max, info) {
         if (typeof I18n !== "undefined" && I18n !== null) {
           return I18n.t('items.total', {
             start: min,
@@ -41,16 +41,16 @@
         }
       };
 
-      PaginatedView.prototype._getRangeString = function(page, perPage, info) {
+      PaginatedView.prototype.getRangeString = function(page, perPage, info) {
         var max, maxItems, min;
         maxItems = info.pages * perPage;
         max = info.count === maxItems ? info.count : Math.min(info.count, page * perPage);
         min = (page - 1) * perPage + 1;
         min = Math.min(min, max);
-        return this._getStats(min, max, info);
+        return this.getStats(min, max, info);
       };
 
-      PaginatedView.prototype._getPageInfo = function() {
+      PaginatedView.prototype.getPageInfo = function() {
         var infinite, info, page, perPage, state;
         infinite = this.collection.infinite;
         state = this.collection.getState({}, {
@@ -75,7 +75,7 @@
           info.multiPaged = this.collection.count > perPage;
           info.prev = page > 1 ? page - 1 : 0;
           info.next = page < info.pages ? page + 1 : 0;
-          info.range = this._getRangeString(page, perPage, info);
+          info.range = this.getRangeString(page, perPage, info);
         }
         info.nextState = info.next ? this.collection.getState({
           page: info.next
@@ -97,14 +97,14 @@
 
       PaginatedView.prototype.getTemplateData = function() {
         return _.extend(PaginatedView.__super__.getTemplateData.apply(this, arguments), {
-          pageInfo: this._getPageInfo()
+          pageInfo: this.getPageInfo()
         });
       };
 
       PaginatedView.prototype.renderControls = function() {
         var pageInfo, template;
         PaginatedView.__super__.renderControls.apply(this, arguments);
-        pageInfo = this._getPageInfo();
+        pageInfo = this.getPageInfo();
         template = handlebars.partials[this.paginationPartial];
         if (!(pageInfo && template)) {
           return;
