@@ -56,7 +56,7 @@ define (require) ->
       expect(utils.reverse).to.be.calledWith 'test', null, {order: 'asc'}
 
     it 'should get sortInfo', ->
-      expect(view._getSortInfo()).to.eql {
+      expect(view.getSortInfo()).to.eql {
         attrA:
           attr: 'attrA'
           viewId: view.cid
@@ -92,7 +92,7 @@ define (require) ->
         server.respond()
 
       it 'should correctly determine the sortInfo', ->
-        expect(view._getSortInfo()).to.eql {
+        expect(view.getSortInfo()).to.eql {
           attrA:
             attr: 'attrA'
             viewId: view.cid
@@ -118,7 +118,7 @@ define (require) ->
         server.respond()
 
       it 'should correctly determine the sortInfo', ->
-        expect(view._getSortInfo()).to.eql {
+        expect(view.getSortInfo()).to.eql {
           attrA:
             attr: 'attrA'
             viewId: view.cid

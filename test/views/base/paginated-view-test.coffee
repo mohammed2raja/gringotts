@@ -85,8 +85,8 @@ define (require) ->
         I18n = null
 
       context 'with normal pagination', ->
-        it 'should correctly returns _getPageInfo', ->
-          expect(view._getPageInfo()).to.eql expecting
+        it 'should correctly returns getPageInfo', ->
+          expect(view.getPageInfo()).to.eql expecting
 
         it 'should show the correct string', ->
           expecting = '1-10 of 101'
@@ -104,8 +104,8 @@ define (require) ->
           expecting.nextState = page: '555'
           view.renderControls()
 
-        it 'should correctly return _getPageInfo', ->
-          expect(view._getPageInfo()).to.eql expecting
+        it 'should correctly return getPageInfo', ->
+          expect(view.getPageInfo()).to.eql expecting
 
         it 'should show the correct string', ->
           expect(view.$('.pagination-controls strong').text()).to.eql ''
@@ -123,7 +123,7 @@ define (require) ->
 
         context 'with normal pagination', ->
           it 'should correctly return page info', ->
-            expect(view._getPageInfo()).to.eql expecting
+            expect(view.getPageInfo()).to.eql expecting
 
         context 'with infinite pagination', ->
           beforeEach ->
@@ -136,8 +136,8 @@ define (require) ->
             expecting.next = '555'
             expecting.nextState = page: '555'
 
-          it 'should correctly return _getPageInfo', ->
-            expect(view._getPageInfo()).to.eql expecting
+          it 'should correctly return getPageInfo', ->
+            expect(view.getPageInfo()).to.eql expecting
 
     context 'loading indicator start syncing', ->
       beforeEach ->
@@ -183,4 +183,4 @@ define (require) ->
           prevState:
             page: 2
 
-        expect(view._getPageInfo()).to.eql expecting
+        expect(view.getPageInfo()).to.eql expecting

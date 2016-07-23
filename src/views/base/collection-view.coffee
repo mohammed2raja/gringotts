@@ -2,6 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   handlebars = require 'handlebars'
   utils = require '../../lib/utils'
+  Routing = require '../../mixins/routing'
   StringTemplatable = require '../../mixins/string-templatable'
   ServiceErrorReady = require '../../mixins/service-error-ready'
 
@@ -9,16 +10,14 @@ define (require) ->
    * @param {object} sortableTableHeaders - Headers for the table.
   ###
   class CollectionView extends utils.mix Chaplin.CollectionView
-      .with StringTemplatable, ServiceErrorReady
+      .with StringTemplatable, ServiceErrorReady, Routing
 
     listen:
       # Re-render all partials with *-Infos
       'request collection': -> @renderControls()
       'sync collection': -> @renderControls()
       'sort collection': -> @renderControls()
-    optionNames: @::optionNames.concat [
-      'sortableTableHeaders', 'routeName', 'routeParams'
-    ]
+    optionNames: @::optionNames.concat ['sortableTableHeaders']
     loadingSelector: '.loading'
     fallbackSelector: '.empty'
     sortingPartial: 'sortTableHeader'
@@ -26,7 +25,7 @@ define (require) ->
     animationStartClass: 'fade'
     animationEndClass: 'in'
 
-    _highlightColumns: ->
+    highlightColumns: ->
       state = @collection.getState {}, inclDefaults: yes
       idx = @$("th[data-sort=#{state.sort_by}]").index()
       @$("#{@listSelector} #{@itemView::tagName} td")
@@ -35,7 +34,7 @@ define (require) ->
         .not '[colspan]' # remove indicator rows which take up the entire width
         .addClass 'highlighted'
 
-    _getSortInfo: ->
+    getSortInfo: ->
       return null unless @sortableTableHeaders
       state = @collection.getState {}, inclDefaults: yes, usePrefix: no
       if !state.sort_by
@@ -55,16 +54,16 @@ define (require) ->
       , {}
 
     getTemplateData: ->
-      sortInfo = @_getSortInfo()
+      sortInfo = @getSortInfo()
       if sortInfo then _.extend super, {sortInfo}
       else super
 
     renderAllItems: ->
       super
-      @_highlightColumns() if @sortableTableHeaders
+      @highlightColumns() if @sortableTableHeaders
 
     renderControls: ->
-      sortInfo = @_getSortInfo()
+      sortInfo = @getSortInfo()
       template = handlebars.partials[@sortingPartial]
       return unless sortInfo and template
       @$(".sorting-control.#{@cid}").each (i, el) ->

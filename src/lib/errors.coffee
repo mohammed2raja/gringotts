@@ -5,19 +5,19 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
 
-  _parseResponse = ($xhr) ->
+  parseResponse = ($xhr) ->
     try
       return utils.parseJSON $xhr.responseText
     catch
       return null
 
-  _resolveMessage = (response) ->
+  resolveMessage = (response) ->
     response?.error or response?.message
 
   ##
   # Session Expired handler
   ##
-  _handle401 = (context, $xhr) ->
+  handle401 = (context, $xhr) ->
     # Since the session is now expired reloading a page will trigger an
     # auth check and bounce the user to the login page. Because of that
     # after they successfully log back in they should be redirected back
@@ -27,10 +27,10 @@ define (require) ->
   ##
   # Access Denied handler
   ##
-  _handle403 = (context, $xhr) ->
-    response = _parseResponse $xhr
+  handle403 = (context, $xhr) ->
+    response = parseResponse $xhr
     utils.redirectTo {}
-    message = _resolveMessage(response) or
+    message = resolveMessage(response) or
       I18n?.t('error.no_access') or
       "Sorry, you don't have access to that section of the application."
     (context or Chaplin.EventBroker).publishEvent 'notify',
@@ -40,9 +40,9 @@ define (require) ->
   ##
   # Generic error handler
   ##
-  _handle = (context, $xhr) ->
-    response = _parseResponse $xhr
-    message = _resolveMessage(response) or
+  handle = (context, $xhr) ->
+    response = parseResponse $xhr
+    message = resolveMessage(response) or
       I18n?.t('error.notification') or
       'There was a problem communicating with the server.'
     (context or Chaplin.EventBroker).publishEvent 'notify', message,
@@ -52,7 +52,7 @@ define (require) ->
   setupErrorHandling: (context) ->
     $(document).ajaxError (event, $xhr) ->
       {status, errorHandled} = $xhr
-      if status is 401 then _handle401 context, $xhr
-      else if status is 403 and not errorHandled then _handle403 context, $xhr
+      if status is 401 then handle401 context, $xhr
+      else if status is 403 and not errorHandled then handle403 context, $xhr
       else if status not in [200, 201] and not errorHandled
-        _handle context, $xhr
+        handle context, $xhr

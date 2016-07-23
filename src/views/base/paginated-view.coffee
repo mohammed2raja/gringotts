@@ -16,23 +16,23 @@ define (require) ->
         .not(@errorSelector).toggle !visible
       @$loading.toggle visible
 
-    _getStats: (min, max, info) ->
+    getStats: (min, max, info) ->
       if I18n?
         I18n.t 'items.total', start: min, end: max, total: info.count
       else
         "#{[min, max].join '-'} of #{info.count}"
 
-    _getRangeString: (page, perPage, info) ->
+    getRangeString: (page, perPage, info) ->
       maxItems = info.pages * perPage
       max =
         if info.count is maxItems then info.count
         else Math.min info.count, page * perPage
       min = (page - 1) * perPage + 1
       min = Math.min min, max
-      @_getStats min, max, info
+      @getStats min, max, info
 
     # setup what the pagination template is expecting
-    _getPageInfo: ->
+    getPageInfo: ->
       infinite = @collection.infinite
       state = @collection.getState {}, inclDefaults: yes, usePrefix: no
       perPage = parseInt state.per_page
@@ -53,7 +53,7 @@ define (require) ->
         info.multiPaged = @collection.count > perPage
         info.prev = if page > 1 then page - 1 else 0
         info.next = if page < info.pages then page + 1 else 0
-        info.range = @_getRangeString page, perPage, info
+        info.range = @getRangeString page, perPage, info
 
       info.nextState =
         if info.next then @collection.getState page: info.next
@@ -72,11 +72,11 @@ define (require) ->
      * @return {object} Context for use within the template.
     ###
     getTemplateData: ->
-      _.extend super, pageInfo: @_getPageInfo()
+      _.extend super, pageInfo: @getPageInfo()
 
     renderControls: ->
       super
-      pageInfo = @_getPageInfo()
+      pageInfo = @getPageInfo()
       template = handlebars.partials[@paginationPartial]
       return unless pageInfo and template
       @$(".pagination-controls.#{@cid}").each (i, el) ->

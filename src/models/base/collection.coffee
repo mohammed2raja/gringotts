@@ -29,6 +29,12 @@ define (require) ->
     prefix: null
 
     ###*
+     * List of state keys to ignore while building url for fetching items.
+     * @type {Array}
+    ###
+    ignoreKeys: null
+
+    ###*
      * Default queryparam object for this collection.
      * Must contain all possible querynewState.
      * Override when necessary.
@@ -117,7 +123,7 @@ define (require) ->
         when implementing a collection' unless urlRoot
       state = @getState {}, inclDefaults: yes, usePrefix: no unless state
       # convert from local state keys to server state keys
-      state = _.mapKeys state, (value, key) =>
+      state = _.mapKeys _.omit(state, @ignoreKeys), (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
       # format the url for the ajax call
       base = if _.isFunction(urlRoot) then urlRoot.apply(this) else urlRoot

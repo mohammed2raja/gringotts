@@ -1,7 +1,7 @@
 define (require) ->
   utils = require 'lib/utils'
 
-  _revertChanges = (opts, $xhr) ->
+  revertChanges = (opts, $xhr) ->
     opts.$field?.text opts.original
     opts.$field?.attr 'href', opts.href if opts.href
     @makeEditable? opts unless $xhr
@@ -28,10 +28,10 @@ define (require) ->
           _.extend {}, opts,
             success: ->
               opts.model.save opts.attribute, opts.value, opts
-              .fail ($xhr) => _revertChanges.call this, opts, $xhr
+              .fail ($xhr) => revertChanges.call this, opts, $xhr
             undo: =>
-              _revertChanges.call this, opts
+              revertChanges.call this, opts
       else
         opts.model.save opts.attribute, opts.value, opts
         .done => @publishEvent 'notify', opts.saveMessage
-        .fail ($xhr) => _revertChanges.call this, opts, $xhr
+        .fail ($xhr) => revertChanges.call this, opts, $xhr

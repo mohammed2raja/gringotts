@@ -15,7 +15,7 @@ define (require) ->
       expect(request.url).to.contain expecting
 
   describe 'Base Collection', ->
-    server = null
+    sandbox = null
     collection = null
     collectionClass = null
     data = [
@@ -26,10 +26,10 @@ define (require) ->
     ]
 
     beforeEach ->
-      server = sinon.fakeServer.create()
+      sandbox = sinon.sandbox.create useFakeServer: true
 
     afterEach ->
-      server.restore()
+      sandbox.restore()
 
     context 'initialization', ->
       beforeEach ->
@@ -59,31 +59,37 @@ define (require) ->
 
       context 'setting the state by force setting', ->
         beforeEach ->
-          collection.setState {}
-          server.respond()
+          collection.ignoreKeys = ['boo']
+          collection.setState foo: 1, boo: 2
+          sandbox.server.respond()
 
-        it 'should fetch from the server', ->
-          expecting = ['/test', '?', 'sort_by=attrA', 'order=desc']
-          testRequest expecting, _.last server.requests
+        it 'should fetch from the server with proper url', ->
+          expecting = ['/test', '?', 'sort_by=attrA', 'order=desc', 'foo=1']
+          request = _.last sandbox.server.requests
+          testRequest expecting, request
+
+        it 'should fetch without ignored keys', ->
+          request = _.last sandbox.server.requests
+          expect(request.url).to.not.contain 'boo=2'
 
       context 'setting the state by changing state', ->
         beforeEach ->
           collection.setState {sort_by: 'attrB'}
-          server.respond()
+          sandbox.server.respond()
 
-        it 'should fetch from the server', ->
+        it 'should fetch from the server with proper url', ->
           expecting = ['/test', '?', 'sort_by=attrB', 'order=desc']
-          testRequest expecting, _.last server.requests
+          testRequest expecting, _.last sandbox.server.requests
 
     context 'changing', ->
       spy = null
 
       beforeEach ->
         collection = new MockCollection()
-        spy = sinon.spy()
+        spy = sandbox.spy()
         collection.on 'stateChange', spy
         collection.setState {a:'b'}
-        server.respond()
+        sandbox.server.respond()
 
       afterEach ->
         collection.dispose()
@@ -95,8 +101,8 @@ define (require) ->
       beforeEach ->
         collection = new MockCollection data
         collection.setState {}
-        server.respondWith [500, {}, '{}']
-        server.respond()
+        sandbox.server.respondWith [500, {}, '{}']
+        sandbox.server.respond()
 
       afterEach ->
         collection.dispose()
@@ -110,7 +116,7 @@ define (require) ->
         collection.DEFAULTS = _.extend {}, MockCollection::DEFAULTS
           , some_value: 5
         collection.setState other_value: 'a'
-        server.respond()
+        sandbox.server.respond()
 
       it 'should return proper simple state', ->
         state = collection.getState()
@@ -127,7 +133,7 @@ define (require) ->
         collection.prefix = 'local'
         collection.setState local_page: 20, local_per_page: 15
           , some_global: 'a'
-        server.respond()
+        sandbox.server.respond()
 
       afterEach ->
         collection.dispose()
@@ -137,7 +143,7 @@ define (require) ->
         expect(collection.alienState).to.eql some_global: 'a'
 
       it 'should fetch from the server', ->
-        request = _.last server.requests
+        request = _.last sandbox.server.requests
         expecting = ['/test', '?', 'page=20', 'per_page=15']
         testRequest expecting, request
         expect(request.url).to.not.contain 'some_global'
@@ -180,12 +186,12 @@ define (require) ->
             collection = new MockCollection()
             collection.urlRoot = urlRoots[key]
             collection.setState a: 'b'
-            server.respond()
+            sandbox.server.respond()
 
           afterEach ->
             collection.dispose()
 
           it 'should request proper urls', ->
-            request = _.first server.requests
+            request = _.first sandbox.server.requests
             expecting = ['/boo', '?', 'a=b']
             testRequest expecting, request
