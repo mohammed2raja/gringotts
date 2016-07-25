@@ -44,6 +44,17 @@ define (require) ->
         'Abortable', 'WithHeaders'].forEach (mixin) ->
           expect(funcs).to.include.members _.functions mixinCheck[mixin]::
 
+      context 'proxy', ->
+        beforeEach ->
+          collection.state = a: 1, b: 2
+
+        it 'should return proper proxy', ->
+          state = collection.proxy.getState {c: 3}, inclDefaults: yes
+          expect(state).to.eql {
+            a: 1, b: 2, c: 3,
+            order: 'desc', sort_by: 'attrA'
+          }
+
     context 'sorting remotely', ->
       beforeEach ->
         collection = new MockCollection data
