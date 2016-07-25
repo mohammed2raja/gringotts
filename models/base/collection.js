@@ -48,6 +48,14 @@
 
 
       /**
+       * A simple proxy object with only getState method to pass around.
+       * @return {Object}
+       */
+
+      Collection.prototype.proxy = null;
+
+
+      /**
        * Default queryparam object for this collection.
        * Must contain all possible querynewState.
        * Override when necessary.
@@ -73,6 +81,9 @@
         }
         Collection.__super__.initialize.apply(this, arguments);
         this.state = {};
+        this.proxy = {
+          getState: _.bind(this.getState, this)
+        };
         return this.on('remove', function() {
           return this.count = Math.max(0, (this.count || 1) - 1);
         });
