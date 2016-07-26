@@ -68,6 +68,16 @@ define (require) ->
     moment(date).toISOString() if date
 
   ###*
+   * Navigates to a specific route.
+   * @param  {[Chaplin.Route|String} route  A Chaplin route or string
+   *                                        name of a route to redirect to.
+  ###
+  utils.redirectToRoute = (route) ->
+    utils.redirectTo route.name or route,
+      route.params,
+      query: utils.querystring.parse route.query
+
+  ###*
    * Processes hbs helper arguments and extracts funcs and vars.
    * @param  {Object} opts Handlebars helper arguments.
    * @return {Object}      A hash with fn, inverse and args.

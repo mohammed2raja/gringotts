@@ -80,6 +80,25 @@ define (require) ->
         date = utils.toServerDate '2016-07-18'
         expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
 
+    context 'redirectToRoute', ->
+      beforeEach ->
+        sinon.stub utils, 'redirectTo'
+
+      afterEach ->
+        utils.redirectTo.restore()
+
+      it 'should call redirectTo with proper arguments for a route', ->
+        utils.redirectToRoute
+          name: 'foo'
+          params: id: 26
+          query: 'a=b'
+        expect(utils.redirectTo).to.have.been.calledWith 'foo', id: 26,
+          query: a: 'b'
+
+      it 'should call redirectTo with proper arguments for a string', ->
+        utils.redirectToRoute 'foo'
+        expect(utils.redirectTo).to.have.been.calledWith 'foo'
+
     context 'mix', ->
       target = null
 
