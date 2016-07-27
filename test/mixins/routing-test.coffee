@@ -1,6 +1,7 @@
 define (require) ->
   utils = require 'lib/utils'
   Chaplin = require 'chaplin'
+  Collection = require 'models/base/collection'
   Routing = require 'mixins/routing'
 
   class MockView extends Routing Chaplin.View
@@ -52,11 +53,14 @@ define (require) ->
 
 
     context 'collection view', ->
+      collection = null
+
       beforeEach ->
         sandbox = sinon.sandbox.create()
         sandbox.stub Chaplin.View::, 'getTemplateFunction'
+        collection = new Chaplin.Collection [1, 2, 3]
         view = new MockCollectionView {
-          collection: new Chaplin.Collection [1, 2, 3]
+          collection
           routeName: 'that-route'
           routeParams: 'those-params'
           routeState: {}
@@ -64,6 +68,7 @@ define (require) ->
 
       afterEach ->
         sandbox.restore()
+        collection.dispose()
         view.dispose()
 
       it 'should set properties to child views', ->
@@ -95,3 +100,24 @@ define (require) ->
         it 'should call redirectTo', ->
           expect(utils.redirectTo).to.have.been.calledWith 'that-route',
             'those-params', query: a: 1, b: 2, c: 3
+
+    context 'collection view with proxy state', ->
+      collection = null
+
+      beforeEach ->
+        sandbox = sinon.sandbox.create()
+        sandbox.stub Chaplin.View::, 'getTemplateFunction'
+        collection = new Collection [1, 2, 3]
+        view = new MockCollectionView {
+          collection
+          routeName: 'that-route'
+          routeParams: 'those-params'
+        }
+
+      afterEach ->
+        sandbox.restore()
+        collection.dispose()
+        view.dispose()
+
+      it 'should take proxyState from collection', ->
+        expect(view.routeState).to.equal collection.proxyState

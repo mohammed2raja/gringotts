@@ -38,7 +38,7 @@ define (require) ->
      * A simple proxy object with only getState method to pass around.
      * @return {Object}
     ###
-    proxy: null
+    proxyState: null
 
     ###*
      * Default queryparam object for this collection.
@@ -62,7 +62,7 @@ define (require) ->
           of url as a collection property'
       super
       @state = {}
-      @proxy = getState: _.bind @getState, this
+      @proxyState = getState: _.bind @getState, this
       @on 'remove', -> @count = Math.max 0, (@count or 1) - 1
 
     ###*

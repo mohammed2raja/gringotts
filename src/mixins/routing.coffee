@@ -14,6 +14,10 @@ define (require) ->
     ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeState']
     optionNames: @::optionNames.concat @::ROUTING_OPTIONS
 
+    initialize: ->
+      super
+      @routeState = @collection?.proxyState unless @routeState
+
     ###*
      * Overrides Chaplin.CollectionView method to init sub items with
      * routing properties

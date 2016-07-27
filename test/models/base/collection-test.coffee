@@ -44,12 +44,12 @@ define (require) ->
         'Abortable', 'WithHeaders'].forEach (mixin) ->
           expect(funcs).to.include.members _.functions mixinCheck[mixin]::
 
-      context 'proxy', ->
+      context 'proxyState', ->
         beforeEach ->
           collection.state = a: 1, b: 2
 
         it 'should return proper proxy', ->
-          state = collection.proxy.getState {c: 3}, inclDefaults: yes
+          state = collection.proxyState.getState {c: 3}, inclDefaults: yes
           expect(state).to.eql {
             a: 1, b: 2, c: 3,
             order: 'desc', sort_by: 'attrA'
