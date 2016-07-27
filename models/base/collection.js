@@ -52,7 +52,7 @@
        * @return {Object}
        */
 
-      Collection.prototype.proxy = null;
+      Collection.prototype.proxyState = null;
 
 
       /**
@@ -81,7 +81,7 @@
         }
         Collection.__super__.initialize.apply(this, arguments);
         this.state = {};
-        this.proxy = {
+        this.proxyState = {
           getState: _.bind(this.getState, this)
         };
         return this.on('remove', function() {

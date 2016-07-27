@@ -28,6 +28,14 @@
 
         Routing.prototype.optionNames = Routing.prototype.optionNames.concat(Routing.prototype.ROUTING_OPTIONS);
 
+        Routing.prototype.initialize = function() {
+          var ref;
+          Routing.__super__.initialize.apply(this, arguments);
+          if (!this.routeState) {
+            return this.routeState = (ref = this.collection) != null ? ref.proxyState : void 0;
+          }
+        };
+
 
         /**
          * Overrides Chaplin.CollectionView method to init sub items with
