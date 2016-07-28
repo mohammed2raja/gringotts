@@ -1,8 +1,8 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  utils = require '../../lib/utils'
-  Editable = require 'mixins/editable'
-  GenericSave = require 'mixins/generic-save'
+  utils = require 'lib/utils'
+  Editable = require 'mixins/views/editable'
+  GenericSave = require 'mixins/views/generic-save'
 
   class FakeView extends Editable GenericSave Chaplin.View
     autoRender: yes

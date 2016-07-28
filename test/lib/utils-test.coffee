@@ -80,26 +80,7 @@ define (require) ->
         date = utils.toServerDate '2016-07-18'
         expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
 
-    context 'redirectToRoute', ->
-      beforeEach ->
-        sinon.stub utils, 'redirectTo'
-
-      afterEach ->
-        utils.redirectTo.restore()
-
-      it 'should call redirectTo with proper arguments for a route', ->
-        utils.redirectToRoute
-          name: 'foo'
-          params: id: 26
-          query: 'a=b'
-        expect(utils.redirectTo).to.have.been.calledWith 'foo', id: 26,
-          query: a: 'b'
-
-      it 'should call redirectTo with proper arguments for a string', ->
-        utils.redirectToRoute 'foo'
-        expect(utils.redirectTo).to.have.been.calledWith 'foo'
-
-    context 'mix', ->
+    context 'mixins utils', ->
       target = null
 
       class S
@@ -116,23 +97,20 @@ define (require) ->
         id: ->
           super + 'b'
 
-      MixinC = (superclass) -> class C extends superclass
-        c: true
-        id: ->
-          super + 'c'
-
-      class T extends utils.mix(S).with MixinA, MixinB, MixinC
+      class T extends MixinA S
         t: true
 
       beforeEach ->
         target = new T()
 
-      it 'should apply all mixin properties', ->
-        expect(target.s).to.be.true
-        expect(target.t).to.be.true
-        expect(target.a).to.be.true
-        expect(target.b).to.be.true
-        expect(target.c).to.be.true
+      it 'should return true for target having MixinA', ->
+        expect(utils.instanceWithMixin target, MixinA).to.be.true
 
-      it 'should override methods with mixins ones', ->
-        expect(target.id()).to.be.equal 'sabc'
+      it 'should return false for target having MixinB', ->
+        expect(utils.instanceWithMixin target, MixinB).to.be.false
+
+      it 'should return true for class T having MixinA', ->
+        expect(utils.classWithMixin T, MixinA).to.be.true
+
+      it 'should return false for class T having MixinB', ->
+        expect(utils.classWithMixin T, MixinB).to.be.false

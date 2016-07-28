@@ -1,26 +1,25 @@
 define (require) ->
-  Chaplin = require 'chaplin'
-  mixinCheck = require 'test/helpers/mixin-check'
+  utils = require 'lib/utils'
+  ActiveSyncMachine = require 'mixins/models/active-sync-machine'
+  SafeSyncCallback = require 'mixins/models/safe-sync-callback'
+  Abortable = require 'mixins/models/abortable'
+  WithHeaders = require 'mixins/models/with-headers'
   Model = require 'models/base/model'
 
   describe 'Base Model', ->
-    server = null
     model = null
 
     beforeEach ->
-      server = sinon.fakeServer.create()
       model = new Model()
-      model.url = 'abc'
 
     afterEach ->
-      server.restore()
       model.dispose()
 
     it 'should have proper mixins applied', ->
-      funcs = _.functions Model::
-      ['ActiveSyncMachine', 'SafeSyncCallback', 'Abortable', 'WithHeaders']
-        .forEach (mixin) ->
-          expect(funcs).to.include.members _.functions mixinCheck[mixin]::
+      expect(utils.instanceWithMixin model, ActiveSyncMachine).to.be.true
+      expect(utils.instanceWithMixin model, SafeSyncCallback).to.be.true
+      expect(utils.instanceWithMixin model, Abortable).to.be.true
+      expect(utils.instanceWithMixin model, WithHeaders).to.be.true
 
     context 'safe save', ->
       deferred = null

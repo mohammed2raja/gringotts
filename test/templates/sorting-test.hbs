@@ -1,0 +1,14 @@
+<table class="table">
+  <thead>
+    <tr class="headings">
+      {{> sortTableHeader attr='attr_a' sortInfo=sortInfo}}
+      <th><span>Unsortable Attribute</span></th>
+      {{> sortTableHeader attr='attr_b' sortInfo=sortInfo}}
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="loading"><td colspan="3">Loading...</td></tr>
+    <tr class="empty"><td colspan="3">Empty</td></tr>
+    <tr class="service-error"><td colspan="3">Error</td></tr>
+  </tbody>
+</table>

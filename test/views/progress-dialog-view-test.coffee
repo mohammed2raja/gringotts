@@ -1,7 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   modalHelpers = require 'test/helpers/modal-helpers'
-  ActiveSyncMachine = require 'mixins/active-sync-machine'
+  ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   ProgressDialogView = require 'views/progress-dialog-view'
   templates = require 'test/templates'
 

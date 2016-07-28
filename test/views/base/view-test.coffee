@@ -3,14 +3,12 @@ define (require) ->
 
   describe 'View', ->
     view = null
-    template = null
-    viewConfig = null
 
     beforeEach ->
-      view = new View viewConfig or {}
+      view = new View()
 
     afterEach ->
       view.dispose()
 
-    it 'initializes', ->
+    it 'should be initialized', ->
       expect(view).to.be.an.instanceOf View

@@ -1,10 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  utils = require '../../lib/utils'
-  ActiveSyncMachine = require '../../mixins/active-sync-machine'
-  Abortable = require '../../mixins/abortable'
-  SafeSyncCallback = require '../../mixins/safe-sync-callback'
-  WithHeaders = require '../../mixins/with-headers'
+  utils = require 'lib/utils'
+  ActiveSyncMachine = require '../../mixins/models/active-sync-machine'
+  Abortable = require '../../mixins/models/abortable'
+  SafeSyncCallback = require '../../mixins/models/safe-sync-callback'
+  WithHeaders = require '../../mixins/models/with-headers'
 
   # Abstract class for models. Includes useful mixins by default.
   class Model extends utils.mix Chaplin.Model

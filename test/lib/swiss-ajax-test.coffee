@@ -1,15 +1,15 @@
 define (require) ->
   Backbone = require 'backbone'
+  Chaplin = require 'chaplin'
   swissAjax = require 'lib/swiss-ajax'
-  Model = require 'models/base/model'
 
-  class MockModelString extends Model
+  class MockModelString extends Chaplin.Model
     url: '/foo'
 
-  class MockModelSingleArray extends Model
+  class MockModelSingleArray extends Chaplin.Model
     url: ['/foo']
 
-  class MockModelArray extends Model
+  class MockModelArray extends Chaplin.Model
     url: ['/aoo', '/boo', '/coo']
     # It's recommended to handle multiple data results in parse() method.
     # Normally the only instance of JSON object should be passed down to
@@ -17,7 +17,7 @@ define (require) ->
     parse: (resp) ->
       super _.extend {}, resp[0], resp[1], resp[2]
 
-  class MockModelHash extends Model
+  class MockModelHash extends Chaplin.Model
     url: {aoo: '/aoo', boo: '/boo', coo: '/coo'}
     parse: (resp) ->
       super _.extend {}, resp.aoo, resp.boo, resp.coo

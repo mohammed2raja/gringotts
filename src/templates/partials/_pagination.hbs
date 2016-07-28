@@ -1,5 +1,5 @@
 <div class="pagination-controls {{viewId}}">
-  {{#if count}}{{#if routeName}}
+  {{#if count}}
     <a href="{{url routeName routeParams prevState}}"
        class="prev-page {{#unless multiPaged}}hidden{{else}}{{#unless prev}}disabled-arrow{{/unless}}{{/unless}}">
       {{icon 'atlas-arrow-thin-up' 'rotate-left'}}
@@ -9,5 +9,5 @@
        class="next-page {{#unless multiPaged}}hidden{{else}}{{#unless next}}disabled-arrow{{/unless}}{{/unless}}">
       {{icon 'atlas-arrow-thin-up' 'rotate-right'}}
     </a>
-  {{/if}}{{/if}}
+  {{/if}}
 </div>

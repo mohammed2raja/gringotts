@@ -1,5 +1,5 @@
 define (require) ->
-  Classy = require '../../mixins/classy'
+  Classy = require '../../mixins/views/classy'
   View = require './view'
 
   ###*
