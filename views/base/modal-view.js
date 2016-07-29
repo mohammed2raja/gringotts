@@ -4,7 +4,7 @@
 
   define(function(require) {
     var Classy, ModalView, View;
-    Classy = require('../../mixins/classy');
+    Classy = require('../../mixins/views/classy');
     View = require('./view');
 
     /**

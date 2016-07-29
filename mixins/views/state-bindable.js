@@ -3,8 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var chaplin;
-    chaplin = require('chaplin');
+    var Chaplin, helper;
+    Chaplin = require('chaplin');
+    helper = require('../helper');
 
     /**
      * Adds state model, that is a data source for state bindings.
@@ -48,8 +49,9 @@
         StateBindable.prototype.stateBindings = null;
 
         StateBindable.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
           StateBindable.__super__.initialize.apply(this, arguments);
-          return this.state = new chaplin.Model(_.result(this, 'initialState'));
+          return this.state = new Chaplin.Model(_.result(this, 'initialState'));
         };
 
         StateBindable.prototype.render = function() {

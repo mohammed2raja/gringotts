@@ -3,8 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var utils;
-    utils = require('../lib/utils');
+    var helper, utils;
+    utils = require('lib/utils');
+    helper = require('../helper');
     return function(superclass) {
       var BadModel;
       return BadModel = (function(superClass) {
@@ -33,6 +34,11 @@
               return $xhr.errorHandled = true;
             }
           }
+        };
+
+        BadModel.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
+          return BadModel.__super__.initialize.apply(this, arguments);
         };
 
         return BadModel;

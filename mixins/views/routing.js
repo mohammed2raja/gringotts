@@ -3,21 +3,25 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var utils;
+    var helper, utils;
     utils = require('lib/utils');
+    helper = require('../helper');
 
     /**
-     * A utility mixin for View or CollectionView. It helps to pass routing
+     * A utility mixin for a View or a CollectionView. It helps to pass routing
      * parameters down the view hierarchy. Also adds helper methods to get current
-     * browser query state (usually it's received from a Collection) or to
-     * redirect browser to current route with updated query state.
-     * The routeState is expected to be a Collection or it's proxy with getState()
-     * method.
-     * @param  {View|CollectionView} superclass Only views
+     * browser query state (usually it's received from a Collection or a Model
+     * with StatefulUrlParams mixin applied) or to redirect browser to current
+     * route with updated query state.
+     * The routeState is expected to be a StatefulUrlParams or it's proxy
+     * with getState() method.
+     * @param  {View|CollectionView} superclass
      */
     return function(superclass) {
       var Routing;
       return Routing = (function(superClass) {
+        var ref;
+
         extend(Routing, superClass);
 
         function Routing() {
@@ -26,13 +30,14 @@
 
         Routing.prototype.ROUTING_OPTIONS = ['routeName', 'routeParams', 'routeState'];
 
-        Routing.prototype.optionNames = Routing.prototype.optionNames.concat(Routing.prototype.ROUTING_OPTIONS);
+        Routing.prototype.optionNames = (ref = Routing.prototype.optionNames) != null ? ref.concat(Routing.prototype.ROUTING_OPTIONS) : void 0;
 
         Routing.prototype.initialize = function() {
-          var ref;
+          var ref1;
+          helper.assertViewOrCollectionView(this);
           Routing.__super__.initialize.apply(this, arguments);
           if (!this.routeState) {
-            return this.routeState = (ref = this.collection) != null ? ref.proxyState : void 0;
+            return this.routeState = (ref1 = this.collection || this.model) != null ? typeof ref1.proxyState === "function" ? ref1.proxyState() : void 0 : void 0;
           }
         };
 
@@ -59,13 +64,6 @@
             routeName: this.routeName,
             routeParams: this.routeParams
           });
-        };
-
-        Routing.prototype.render = function() {
-          if (!'routeName') {
-            throw new Error("Can't render view when routeName isn't set");
-          }
-          return Routing.__super__.render.apply(this, arguments);
         };
 
 
@@ -100,6 +98,9 @@
          */
 
         Routing.prototype.getBrowserState = function() {
+          if (!this.routeState) {
+            throw new Error("Can't get state since @routeState isn't set.");
+          }
           return this.routeState.getState({}, {
             inclDefaults: true
           });
@@ -114,6 +115,9 @@
         Routing.prototype.setBrowserState = function(state) {
           if (state == null) {
             state = {};
+          }
+          if (!this.routeState) {
+            throw new Error("Can't set browser state since @routeState isn't set.");
           }
           return utils.redirectTo(this.routeName, this.routeParams, {
             query: this.routeState.getState(state)

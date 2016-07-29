@@ -3,18 +3,27 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
     return function(superclass) {
       var StringTemplatable;
       return StringTemplatable = (function(superClass) {
+        var ref;
+
         extend(StringTemplatable, superClass);
 
         function StringTemplatable() {
           return StringTemplatable.__super__.constructor.apply(this, arguments);
         }
 
-        StringTemplatable.prototype.optionNames = StringTemplatable.prototype.optionNames.concat(['template']);
+        StringTemplatable.prototype.optionNames = (ref = StringTemplatable.prototype.optionNames) != null ? ref.concat(['template']) : void 0;
 
         StringTemplatable.prototype.templatePath = 'templates';
+
+        StringTemplatable.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
+          return StringTemplatable.__super__.initialize.apply(this, arguments);
+        };
 
         StringTemplatable.prototype.getTemplateFunction = function() {
           var template;

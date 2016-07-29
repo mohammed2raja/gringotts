@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
     return function(superclass) {
       var Content;
       return Content = (function(superClass) {
@@ -15,6 +17,11 @@
         Content.prototype.container = '#content';
 
         Content.prototype.containerMethod = 'prepend';
+
+        Content.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
+          return Content.__super__.initialize.apply(this, arguments);
+        };
 
         return Content;
 

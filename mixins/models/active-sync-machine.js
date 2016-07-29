@@ -3,8 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin;
+    var Chaplin, helper;
     Chaplin = require('chaplin');
+    helper = require('../helper');
     return function(superclass) {
       var ActiveSyncMachine;
       return ActiveSyncMachine = (function(superClass) {
@@ -17,6 +18,7 @@
         _.extend(ActiveSyncMachine.prototype, Chaplin.SyncMachine);
 
         ActiveSyncMachine.prototype.initialize = function() {
+          helper.assertModelOrCollection(this);
           ActiveSyncMachine.__super__.initialize.apply(this, arguments);
           return this.activateSyncMachine();
         };

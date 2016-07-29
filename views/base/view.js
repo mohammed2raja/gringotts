@@ -5,7 +5,7 @@
   define(function(require) {
     var Chaplin, StringTemplatable, View;
     Chaplin = require('chaplin');
-    StringTemplatable = require('../../mixins/string-templatable');
+    StringTemplatable = require('../../mixins/views/string-templatable');
     return View = (function(superClass) {
       extend(View, superClass);
 

@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
     return function(superclass) {
       var ExportLink;
       return ExportLink = (function(superClass) {
@@ -11,6 +13,11 @@
         function ExportLink() {
           return ExportLink.__super__.constructor.apply(this, arguments);
         }
+
+        ExportLink.prototype.initialize = function() {
+          helper.assertCollectionView(this);
+          return ExportLink.__super__.initialize.apply(this, arguments);
+        };
 
 
         /**

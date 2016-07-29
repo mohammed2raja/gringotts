@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
 
     /**
      * An extensible mixin to intercept Model's syncing operation and adding
@@ -30,10 +32,11 @@
         };
 
         WithHeaders.prototype.initialize = function() {
-          WithHeaders.__super__.initialize.apply(this, arguments);
+          helper.assertModelOrCollection(this);
           if (!this.HEADERS) {
             throw new Error('HEADERS is required');
           }
+          return WithHeaders.__super__.initialize.apply(this, arguments);
         };
 
 

@@ -3,9 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var BROWSER_DATE, backboneValidation, i, key, len, moment, ref;
+    var BROWSER_DATE, backboneValidation, helper, i, key, len, moment, ref;
     moment = require('moment');
     backboneValidation = require('backbone_validation');
+    helper = require('../helper');
     backboneValidation.configure({
       labelFormatter: 'label'
     });
@@ -54,6 +55,11 @@
             return error;
           }
         }));
+
+        Validatable.prototype.initialize = function() {
+          helper.assertModel(this);
+          return Validatable.__super__.initialize.apply(this, arguments);
+        };
 
         Validatable.prototype.validateDate = function(value, attr) {
           if (value && !moment(value, BROWSER_DATE).isValid()) {

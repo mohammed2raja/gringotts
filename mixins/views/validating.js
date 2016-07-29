@@ -3,9 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var backboneValidation, stickit;
+    var backboneValidation, helper, stickit;
     backboneValidation = require('backbone_validation');
     stickit = require('stickit');
+    helper = require('../helper');
     stickit.addHandler({
       selector: '*',
       setOptions: {
@@ -50,6 +51,7 @@
         Validating.prototype.patterns = backboneValidation.patterns;
 
         Validating.prototype.initialize = function() {
+          helper.assertView(this);
           Validating.__super__.initialize.apply(this, arguments);
           if (this.model) {
             return this.bindModel(this.model);

@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
     return function(superclass) {
       var ServiceErrorCallback;
       return ServiceErrorCallback = (function(superClass) {
@@ -11,6 +13,11 @@
         function ServiceErrorCallback() {
           return ServiceErrorCallback.__super__.constructor.apply(this, arguments);
         }
+
+        ServiceErrorCallback.prototype.initialize = function() {
+          helper.assertModelOrCollection(this);
+          return ServiceErrorCallback.__super__.initialize.apply(this, arguments);
+        };
 
         ServiceErrorCallback.prototype.sync = function() {
           this.serviceErrorCallback.apply(this, arguments);

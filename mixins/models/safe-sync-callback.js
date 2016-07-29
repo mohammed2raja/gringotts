@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
     return function(superclass) {
       var SafeSyncCallback;
       return SafeSyncCallback = (function(superClass) {
@@ -11,6 +13,11 @@
         function SafeSyncCallback() {
           return SafeSyncCallback.__super__.constructor.apply(this, arguments);
         }
+
+        SafeSyncCallback.prototype.initialize = function() {
+          helper.assertModelOrCollection(this);
+          return SafeSyncCallback.__super__.initialize.apply(this, arguments);
+        };
 
         SafeSyncCallback.prototype.sync = function() {
           this.safeSyncCallback.apply(this, arguments);

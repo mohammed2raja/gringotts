@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
 
     /**
      * Just another way to add custom css class to View element
@@ -21,10 +23,8 @@
         Classy.prototype.classyName = null;
 
         Classy.prototype.initialize = function() {
-          Classy.__super__.initialize.apply(this, arguments);
-          if (!_.isFunction(this.render)) {
-            throw new Error('Classy mixin works only with Backbone.View');
-          }
+          helper.assertViewOrCollectionView(this);
+          return Classy.__super__.initialize.apply(this, arguments);
         };
 
         Classy.prototype.render = function() {

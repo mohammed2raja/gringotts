@@ -3,8 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var revertChanges, utils;
+    var helper, revertChanges, utils;
     utils = require('lib/utils');
+    helper = require('../helper');
     revertChanges = function(opts, $xhr) {
       var message, ref, ref1, ref2, ref3, response;
       if ((ref = opts.$field) != null) {
@@ -39,6 +40,11 @@
         function GenericSave() {
           return GenericSave.__super__.constructor.apply(this, arguments);
         }
+
+        GenericSave.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
+          return GenericSave.__super__.initialize.apply(this, arguments);
+        };
 
         GenericSave.prototype.genericSave = function(opts) {
           opts = _.extend({}, _.omit(opts, ['success']), {

@@ -3,6 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var helper;
+    helper = require('../helper');
     return function(superclass) {
       var ServiceErrorReady;
       return ServiceErrorReady = (function(superClass) {
@@ -21,6 +23,11 @@
           'syncStateChange collection': function() {
             return this.$(this.errorSelector).hide();
           }
+        };
+
+        ServiceErrorReady.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
+          return ServiceErrorReady.__super__.initialize.apply(this, arguments);
         };
 
         return ServiceErrorReady;

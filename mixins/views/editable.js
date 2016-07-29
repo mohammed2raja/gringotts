@@ -3,7 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var DEFAULTS, checkInput, cleanEl, convertNumber, updateLink;
+    var DEFAULTS, checkInput, cleanEl, convertNumber, helper, updateLink;
+    helper = require('../helper');
     DEFAULTS = {
       errorClass: 'error-input'
     };
@@ -69,6 +70,11 @@
         function Editable() {
           return Editable.__super__.constructor.apply(this, arguments);
         }
+
+        Editable.prototype.initialize = function() {
+          helper.assertViewOrCollectionView(this);
+          return Editable.__super__.initialize.apply(this, arguments);
+        };
 
         Editable.prototype.makeEditable = function(opts) {
           if ($('[data-edit][contenteditable]').length) {

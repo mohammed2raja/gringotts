@@ -3,11 +3,15 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
+    var ActiveSyncMachine, helper, utils;
+    utils = require('lib/utils');
+    helper = require('../helper');
+    ActiveSyncMachine = require('./active-sync-machine');
 
     /**
      * Aborts the existing fetch request if a new one is being requested.
      */
-    return function(superclass) {
+    return function(base) {
       var Abortable;
       return Abortable = (function(superClass) {
         extend(Abortable, superClass);
@@ -17,10 +21,8 @@
         }
 
         Abortable.prototype.initialize = function() {
-          Abortable.__super__.initialize.apply(this, arguments);
-          if (!_.isFunction(this.isSyncing)) {
-            throw new Error('Abortable mixin works only with ActiveSyncMachine');
-          }
+          helper.assertModelOrCollection(this);
+          return Abortable.__super__.initialize.apply(this, arguments);
         };
 
         Abortable.prototype.fetch = function() {
@@ -42,7 +44,7 @@
 
         return Abortable;
 
-      })(superclass);
+      })(utils.mix(base)["with"](ActiveSyncMachine));
     };
   });
 

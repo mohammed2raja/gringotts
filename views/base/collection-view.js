@@ -3,17 +3,11 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, Routing, ServiceErrorReady, StringTemplatable, handlebars, utils;
+    var Chaplin, CollectionView, ServiceErrorReady, StringTemplatable, utils;
     Chaplin = require('chaplin');
-    handlebars = require('handlebars');
-    utils = require('../../lib/utils');
-    Routing = require('../../mixins/routing');
-    StringTemplatable = require('../../mixins/string-templatable');
-    ServiceErrorReady = require('../../mixins/service-error-ready');
-
-    /**
-     * @param {object} sortableTableHeaders - Headers for the table.
-     */
+    utils = require('lib/utils');
+    StringTemplatable = require('../../mixins/views/string-templatable');
+    ServiceErrorReady = require('../../mixins/views/service-error-ready');
     return CollectionView = (function(superClass) {
       extend(CollectionView, superClass);
 
@@ -21,25 +15,9 @@
         return CollectionView.__super__.constructor.apply(this, arguments);
       }
 
-      CollectionView.prototype.listen = {
-        'request collection': function() {
-          return this.renderControls();
-        },
-        'sync collection': function() {
-          return this.renderControls();
-        },
-        'sort collection': function() {
-          return this.renderControls();
-        }
-      };
-
-      CollectionView.prototype.optionNames = CollectionView.prototype.optionNames.concat(['sortableTableHeaders']);
-
       CollectionView.prototype.loadingSelector = '.loading';
 
       CollectionView.prototype.fallbackSelector = '.empty';
-
-      CollectionView.prototype.sortingPartial = 'sortTableHeader';
 
       CollectionView.prototype.useCssAnimation = true;
 
@@ -47,89 +25,9 @@
 
       CollectionView.prototype.animationEndClass = 'in';
 
-      CollectionView.prototype.highlightColumns = function() {
-        var idx, state;
-        state = this.collection.getState({}, {
-          inclDefaults: true
-        });
-        idx = this.$("th[data-sort=" + state.sort_by + "]").index();
-        return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not('[colspan]').addClass('highlighted');
-      };
-
-      CollectionView.prototype.getSortInfo = function() {
-        var state;
-        if (!this.sortableTableHeaders) {
-          return null;
-        }
-        state = this.collection.getState({}, {
-          inclDefaults: true,
-          usePrefix: false
-        });
-        if (!state.sort_by) {
-          throw new Error('Please define a sort_by attribute within DEFAULTS');
-        }
-        return _.transform(this.sortableTableHeaders, (function(_this) {
-          return function(result, title, column) {
-            var nextOrder, order;
-            order = column === state.sort_by ? state.order : '';
-            nextOrder = order === 'asc' ? 'desc' : 'asc';
-            result[column] = {
-              viewId: _this.cid,
-              attr: column,
-              text: title,
-              order: order,
-              routeName: _this.routeName,
-              routeParams: _this.routeParams,
-              nextState: _this.collection.getState({
-                order: nextOrder,
-                sort_by: column
-              })
-            };
-            return result;
-          };
-        })(this), {});
-      };
-
-      CollectionView.prototype.getTemplateData = function() {
-        var sortInfo;
-        sortInfo = this.getSortInfo();
-        if (sortInfo) {
-          return _.extend(CollectionView.__super__.getTemplateData.apply(this, arguments), {
-            sortInfo: sortInfo
-          });
-        } else {
-          return CollectionView.__super__.getTemplateData.apply(this, arguments);
-        }
-      };
-
-      CollectionView.prototype.renderAllItems = function() {
-        CollectionView.__super__.renderAllItems.apply(this, arguments);
-        if (this.sortableTableHeaders) {
-          return this.highlightColumns();
-        }
-      };
-
-      CollectionView.prototype.renderControls = function() {
-        var sortInfo, template;
-        sortInfo = this.getSortInfo();
-        template = handlebars.partials[this.sortingPartial];
-        if (!(sortInfo && template)) {
-          return;
-        }
-        return this.$(".sorting-control." + this.cid).each(function(i, el) {
-          var $el, attr;
-          $el = $(el);
-          attr = $el.attr('data-sort');
-          return $el.replaceWith(template({
-            sortInfo: sortInfo,
-            attr: attr
-          }));
-        });
-      };
-
       return CollectionView;
 
-    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplatable, ServiceErrorReady, Routing));
+    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplatable, ServiceErrorReady));
   });
 
 }).call(this);
