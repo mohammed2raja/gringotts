@@ -1,4 +1,5 @@
 define (require) ->
+  Backbone = require 'backbone'
   utils = require 'lib/utils'
   Chaplin = require 'chaplin'
   Routing = require 'mixins/views/routing'
@@ -7,6 +8,10 @@ define (require) ->
 
   class MockCollectionView extends Routing Chaplin.CollectionView
     itemView: Chaplin.View
+
+    onBrowserStateChange: (state) ->
+      super
+      @gotBrowserState = state
 
   describe 'Routing', ->
     sandbox = null
@@ -101,12 +106,15 @@ define (require) ->
 
     context 'collection view with proxy state', ->
       collection = null
+      proxy = null
 
       beforeEach ->
         sandbox = sinon.sandbox.create()
         sandbox.stub Chaplin.View::, 'getTemplateFunction'
         collection = new Chaplin.Collection [1, 2, 3]
-        collection.proxyState = -> getState: -> a: 1
+        proxy = getState: -> a: 1, b: 2
+        _.extend proxy, Backbone.Events
+        collection.proxyState = -> proxy
         view = new MockCollectionView {
           collection
           routeName: 'that-route'
@@ -119,4 +127,19 @@ define (require) ->
         view.dispose()
 
       it 'should take proxyState from collection', ->
-        expect(view.routeState.getState()).to.eql a: 1
+        expect(view.routeState.getState()).to.eql a: 1, b: 2
+
+      context 'on proxy stateChange', ->
+        beforeEach ->
+          proxy.trigger 'stateChange', x: 1, y: 2
+
+        it 'should call virtual method onBrowserStateChange', ->
+          expect(view.gotBrowserState).to.eql x: 1, y: 2
+
+      context 'on browser state set', ->
+        beforeEach ->
+          view.setBrowserState c: 3 # assuming that own sets mute 'stateChange'
+          proxy.trigger 'stateChange', q: 1, w: 2
+
+        it 'should not call virtual method onBrowserStateChange', ->
+          expect(view.gotBrowserState).to.be.undefined

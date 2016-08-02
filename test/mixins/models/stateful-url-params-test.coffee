@@ -38,6 +38,28 @@ define (require) ->
         state = collection.proxyState().getState {c: 3}, inclDefaults: yes
         expect(state).to.eql a: 1, b: 2, c: 3, foo: 'moo', boo: 'goo'
 
+      context 'trigerring stateChange event on collection', ->
+        eventSpy = null
+        proxyState = null
+
+        beforeEach (done) ->
+          proxyState = collection.proxyState()
+          proxyState.on 'stateChange', eventSpy = sandbox.spy()
+          collection.setState x: 1, y: 2
+          done()
+
+        it 'should re-trigger even on proxy', ->
+          expect(eventSpy).to.have.been.calledWith x: 1, y: 2
+
+        context 'when disposed', ->
+          beforeEach (done) ->
+            proxyState.dispose()
+            collection.setState w: 1, e: 2
+            done()
+
+          it 'should not re-trigger collection events', ->
+            expect(eventSpy).to.have.not.been.calledWith w: 1, e: 2
+
     context 'setting the state', ->
       beforeEach ->
         collection.ignoreKeys = ['coo']
@@ -66,7 +88,7 @@ define (require) ->
         collection.dispose()
 
       it 'should raise stateChange event', ->
-        expect(spy).to.have.been.calledWith collection, {a:'b'}
+        expect(spy).to.have.been.calledWith a: 'b', collection
 
     context 'on fetch fail', ->
       beforeEach ->

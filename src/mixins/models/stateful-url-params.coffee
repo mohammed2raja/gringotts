@@ -1,4 +1,5 @@
 define (require) ->
+  Backbone = require 'backbone'
   utils = require 'lib/utils'
   helper = require '../helper'
 
@@ -84,7 +85,7 @@ define (require) ->
     ###
     setState: (state={}) ->
       @state = @stripEmptyOrDefault @unprefixKeys state
-      @trigger 'stateChange', this, @state
+      @trigger 'stateChange', @state, this
       @fetch(reset: true)?.fail => @reset()
 
     ###*
@@ -152,9 +153,23 @@ define (require) ->
           url = bases
       url
 
+    class StateProxy
+      _.extend @prototype, Backbone.Events
+
+      constructor: (collection) ->
+        @getState = _.bind collection.getState, collection
+        @listenTo collection, 'stateChange', (state) =>
+          @trigger 'stateChange', state, this
+
+      dispose: ->
+        delete @getState
+        @stopListening()
+        @off()
+
+
     ###*
      * A simple proxy object with only getState method to pass around.
      * @return {Object}
     ###
     proxyState: ->
-      getState: _.bind @getState, this
+      new StateProxy this
