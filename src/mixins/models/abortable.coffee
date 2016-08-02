@@ -1,12 +1,14 @@
 define (require) ->
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
   ActiveSyncMachine = require './active-sync-machine'
 
   ###*
    * Aborts the existing fetch request if a new one is being requested.
   ###
   (base) -> class Abortable extends utils.mix(base).with ActiveSyncMachine
+    helper.setTypeName @prototype, 'Abortable'
+
     initialize: ->
       helper.assertModelOrCollection this
       super

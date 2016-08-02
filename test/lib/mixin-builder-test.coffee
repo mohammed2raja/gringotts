@@ -1,5 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
+  helper = require 'lib/mixin-helper'
 
   describe 'MixinBuilder', ->
     context 'mix', ->
@@ -10,16 +11,19 @@ define (require) ->
         id: -> 's'
 
       MixinA = (superclass) -> class A extends superclass
+        helper.setTypeName @prototype, 'A'
         a: true
         id: ->
           super + 'a'
 
       MixinB = (superclass) -> class B extends superclass
+        helper.setTypeName @prototype, 'B'
         b: true
         id: ->
           super + 'b'
 
       MixinC = (superclass) -> class C extends superclass
+        helper.setTypeName @prototype, 'C'
         c: true
         id: ->
           super + 'c'
@@ -48,18 +52,21 @@ define (require) ->
         id: -> 's'
 
       MixinA = (superclass) -> class A extends superclass
+        helper.setTypeName @prototype, 'A'
         a: true
         id: ->
           super + 'a'
 
       MixinB =
         (superclass) -> class B extends utils.mix(superclass).with MixinA
+          helper.setTypeName @prototype, 'B'
           b: true
           id: ->
             super + 'b'
 
       MixinC =
         (superclass) -> class C extends utils.mix(superclass).with MixinA
+          helper.setTypeName @prototype, 'C'
           c: true
           id: ->
             super + 'c'

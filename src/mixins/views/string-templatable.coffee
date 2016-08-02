@@ -1,5 +1,5 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   # This mixin grants the ability for views to specify a string
   # as their template property.
@@ -10,6 +10,8 @@ define (require) ->
   # You can override the template path by passing in `templatePath`
   # in the options.
   (superclass) -> class StringTemplatable extends superclass
+    helper.setTypeName @prototype, 'StringTemplatable'
+
     optionNames: @::optionNames?.concat ['template']
     templatePath: 'templates'
 

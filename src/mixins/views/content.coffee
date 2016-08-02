@@ -1,7 +1,9 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   (superclass) -> class Content extends superclass
+    helper.setTypeName @prototype, 'Content'
+
     container: '#content'
     containerMethod: 'prepend'
 

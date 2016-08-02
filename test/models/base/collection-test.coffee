@@ -1,5 +1,5 @@
 define (require) ->
-  utils = require 'lib/utils'
+  helper = require 'lib/mixin-helper'
   ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   SafeSyncCallback = require 'mixins/models/safe-sync-callback'
   ServiceErrorCallback = require 'mixins/models/service-error-callback'
@@ -17,9 +17,9 @@ define (require) ->
       collection.dispose()
 
     it 'should have proper mixins applied', ->
-      expect(utils.instanceWithMixin collection, ActiveSyncMachine).to.be.true
-      expect(utils.instanceWithMixin collection, SafeSyncCallback).to.be.true
-      expect(utils.instanceWithMixin collection, ServiceErrorCallback)
+      expect(helper.instanceWithMixin collection, ActiveSyncMachine).to.be.true
+      expect(helper.instanceWithMixin collection, SafeSyncCallback).to.be.true
+      expect(helper.instanceWithMixin collection, ServiceErrorCallback)
         .to.be.true
-      expect(utils.instanceWithMixin collection, Abortable).to.be.true
-      expect(utils.instanceWithMixin collection, WithHeaders).to.be.true
+      expect(helper.instanceWithMixin collection, Abortable).to.be.true
+      expect(helper.instanceWithMixin collection, WithHeaders).to.be.true

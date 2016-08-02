@@ -1,6 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   ###*
    * Adds state model, that is a data source for state bindings.
@@ -9,6 +9,8 @@ define (require) ->
    * @param  {Backbone.View} superclass
   ###
   (superclass) -> class StateBindable extends superclass
+    helper.setTypeName @prototype, 'StateBindable'
+
     ###*
      * Initial state of UI, that passed to state model.
      * The value could be either an object or a function.

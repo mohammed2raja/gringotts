@@ -1,7 +1,7 @@
 define (require) ->
   Backbone = require 'backbone'
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   ###*
    * Adds a capability of scoping a Collection or Model url with custom query
@@ -17,6 +17,8 @@ define (require) ->
    * @param  {Model|Collection} superclass
   ###
   (superclass) -> class StatefulUrlParams extends superclass
+    helper.setTypeName @prototype, 'StatefulUrlParams'
+
     ###*
      * Default query params hash for this collection.
      * Override when necessary.

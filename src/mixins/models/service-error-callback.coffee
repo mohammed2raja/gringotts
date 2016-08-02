@@ -1,10 +1,12 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   # This mixin alerts the user when APIs are down via a `notify` event through
   # `publishEvent`. It should be called in sync method.
   # A `service-unavailable` event is triggered on the model/collection as well.
   (superclass) -> class ServiceErrorCallback extends superclass
+    helper.setTypeName @prototype, 'ServiceErrorCallback'
+
     initialize: ->
       helper.assertModelOrCollection this
       super

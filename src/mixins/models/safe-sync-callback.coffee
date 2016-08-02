@@ -1,9 +1,11 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   # This mixin prevent errors when sync/fetch callback executes after
   # route change when model is disposed. It should be called in sync method.
   (superclass) -> class SafeSyncCallback extends superclass
+    helper.setTypeName @prototype, 'SafeSyncCallback'
+
     initialize: ->
       helper.assertModelOrCollection this
       super

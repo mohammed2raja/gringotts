@@ -1,7 +1,7 @@
 define (require) ->
   backboneValidation = require 'backbone_validation'
   stickit = require 'stickit'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   stickit.addHandler {
     selector: '*'
@@ -34,6 +34,8 @@ define (require) ->
    * @param  {Backbone.View} superclass
   ###
   (superclass) -> class Validating extends superclass
+    helper.setTypeName @prototype, 'Validating'
+
     ###*
      * Regex patterns that may be used in template data to
      * fill DOM elements pattern property.

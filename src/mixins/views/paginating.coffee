@@ -1,7 +1,7 @@
 define (require) ->
   handlebars = require 'handlebars'
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
   Routing = require './routing'
 
   ###*
@@ -10,6 +10,8 @@ define (require) ->
    * @param  {CollectionView} base superclass
   ###
   (base) -> class Paginating extends utils.mix(base).with Routing
+    helper.setTypeName @prototype, 'Paginating'
+
     ###*
      * Name of handlebars partial with pagination controls.
      * @type {String}

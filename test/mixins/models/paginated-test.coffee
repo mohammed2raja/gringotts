@@ -1,6 +1,6 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  utils = require 'lib/utils'
+  helper = require 'lib/mixin-helper'
   Paginated = require 'mixins/models/paginated'
   SyncKey = require 'mixins/models/sync-key'
   StatefulUrlParams = require 'mixins/models/stateful-url-params'
@@ -25,8 +25,8 @@ define (require) ->
       expect(collection).to.be.instanceOf MockPaginatedCollection
 
     it 'should have proper mixins applied', ->
-      expect(utils.instanceWithMixin collection, StatefulUrlParams).to.be.true
-      expect(utils.instanceWithMixin collection, SyncKey).to.be.true
+      expect(helper.instanceWithMixin collection, StatefulUrlParams).to.be.true
+      expect(helper.instanceWithMixin collection, SyncKey).to.be.true
 
     context 'fetching', ->
       infinite = false

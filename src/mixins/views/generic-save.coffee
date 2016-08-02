@@ -1,6 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   revertChanges = (opts, $xhr) ->
     opts.$field?.text opts.original
@@ -19,6 +19,8 @@ define (require) ->
   # Pass delayedSave true in options to turn on couple of secs delay before
   # saving update value on server. The notification with Undo will be shown.
   (superclass) -> class GenericSave extends superclass
+    helper.setTypeName @prototype, 'GenericSave'
+
     initialize: ->
       helper.assertViewOrCollectionView this
       super

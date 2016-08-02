@@ -1,6 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
   StatefulUrlParams = require './stateful-url-params'
 
   ###*
@@ -10,6 +10,8 @@ define (require) ->
    * @param  {Collection} base superclass
   ###
   (base) -> class Sorted extends utils.mix(base).with StatefulUrlParams
+    helper.setTypeName @prototype, 'Sorted'
+
     DEFAULTS: _.extend {}, @::DEFAULTS,
       order: 'desc'
       sort_by: undefined

@@ -1,4 +1,6 @@
 define (require) ->
+  mixinHelper = require './mixin-helper'
+
   ###*
    * A helper class that gets a list of mixins and creates
    * a chain of inheritance.
@@ -7,7 +9,7 @@ define (require) ->
     ###*
      * @param  {Type} superclass A target class to mixin into.
     ###
-    constructor: (@superclass, @utils) ->
+    constructor: (@superclass) ->
 
     ###*
      * @param  {Array} ...  A collection of mixins.
@@ -15,5 +17,6 @@ define (require) ->
     ###
     with: ->
       _.reduce arguments,
-        (c, mixin) => if @utils.classWithMixin(c, mixin) then c else mixin c
+        (c, mixin) ->
+          if mixinHelper.classWithMixin(c, mixin) then c else mixin c
         @superclass

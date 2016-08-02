@@ -1,6 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   # Allow the view to redirect to a specified `route` when a model's
   # request results in a `403` or `404`. A `notify` event will be
@@ -10,6 +10,8 @@ define (require) ->
   # and specify a `message` to be passed with the event. If it's a function,
   # the first argument will be the model.
   (superclass) -> class BadModel extends superclass
+    helper.setTypeName @prototype, 'BadModel'
+
     badModelOpts: {}
     listen:
       'error model': (model, $xhr) ->

@@ -1,6 +1,6 @@
 define (require) ->
   utils = require 'lib/utils'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   ###*
    * A utility mixin for a View or a CollectionView. It helps to pass routing
@@ -13,6 +13,8 @@ define (require) ->
    * @param  {View|CollectionView} superclass
   ###
   (superclass) -> class Routing extends superclass
+    helper.setTypeName @prototype, 'Routing'
+
     ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeState']
     optionNames: @::optionNames?.concat @::ROUTING_OPTIONS
 

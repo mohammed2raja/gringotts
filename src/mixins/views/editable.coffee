@@ -1,7 +1,7 @@
 #coffeelint: disable=cyclomatic_complexity
 define (require) ->
 #coffeelint: enable=cyclomatic_complexity
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   DEFAULTS =
     errorClass: 'error-input'
@@ -65,6 +65,8 @@ define (require) ->
         updateLink opts if opts.href
 
   (superclass) -> class Editable extends superclass
+    helper.setTypeName @prototype, 'Editable'
+
     initialize: ->
       helper.assertViewOrCollectionView this
       super

@@ -1,5 +1,5 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   ###*
    * Checks response JSON on every fetch and extracts items stored in "syncKey"
@@ -17,6 +17,8 @@ define (require) ->
    * @param  {Collection}  superclass
   ###
   (superclass) -> class SyncKey extends superclass
+    helper.setTypeName @prototype, 'SyncKey'
+
     ###*
      * Name of the property in response JSON that carries an array of items.
      * @type {String}

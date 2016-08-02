@@ -1,5 +1,5 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   ###*
    * An extensible mixin to intercept Model's syncing operation and adding
@@ -7,6 +7,8 @@ define (require) ->
    * @param  {Model|Collection} superclass Any Backbone Model or Collection.
   ###
   (superclass) -> class WithHeaders extends superclass
+    helper.setTypeName @prototype, 'WithHeaders'
+
     ###*
      * A few default headers that are assumed to be added
      * to every ajax request.

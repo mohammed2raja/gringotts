@@ -1,5 +1,5 @@
 define (require) ->
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   ###*
    * Just another way to add custom css class to View element
@@ -7,6 +7,8 @@ define (require) ->
    * @param  {Backbone.View} superclass
   ###
   (superclass) -> class Classy extends superclass
+    helper.setTypeName @prototype, 'Classy'
+
     classyName: null
 
     initialize: ->

@@ -1,9 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   (superclass) -> class ActiveSyncMachine extends superclass
     _.extend @prototype, Chaplin.SyncMachine
+    helper.setTypeName @prototype, 'ActiveSyncMachine'
 
     initialize: ->
       helper.assertModelOrCollection this

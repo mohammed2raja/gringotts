@@ -1,7 +1,7 @@
 define (require) ->
   moment = require 'moment'
   backboneValidation = require 'backbone_validation'
-  helper = require '../helper'
+  helper = require '../../lib/mixin-helper'
 
   backboneValidation.configure {
     labelFormatter: 'label'
@@ -33,6 +33,8 @@ define (require) ->
    * @param  {Backbone.Model} superclass
   ###
   (superclass) -> class Validatable extends superclass
+    helper.setTypeName @prototype, 'Validatable'
+
     _.extend @prototype, _.extend {}, backboneValidation.mixin,
       # HACK force model validation if no args passed
       isValid: (option) ->

@@ -1,5 +1,5 @@
 define (require) ->
-  utils = require 'lib/utils'
+  helper = require 'lib/mixin-helper'
   ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   SafeSyncCallback = require 'mixins/models/safe-sync-callback'
   Abortable = require 'mixins/models/abortable'
@@ -16,10 +16,10 @@ define (require) ->
       model.dispose()
 
     it 'should have proper mixins applied', ->
-      expect(utils.instanceWithMixin model, ActiveSyncMachine).to.be.true
-      expect(utils.instanceWithMixin model, SafeSyncCallback).to.be.true
-      expect(utils.instanceWithMixin model, Abortable).to.be.true
-      expect(utils.instanceWithMixin model, WithHeaders).to.be.true
+      expect(helper.instanceWithMixin model, ActiveSyncMachine).to.be.true
+      expect(helper.instanceWithMixin model, SafeSyncCallback).to.be.true
+      expect(helper.instanceWithMixin model, Abortable).to.be.true
+      expect(helper.instanceWithMixin model, WithHeaders).to.be.true
 
     context 'safe save', ->
       deferred = null

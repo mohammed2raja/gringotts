@@ -79,38 +79,3 @@ define (require) ->
       it 'should parse a number', ->
         date = utils.toServerDate '2016-07-18'
         expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
-
-    context 'mixins utils', ->
-      target = null
-
-      class S
-        s: true
-        id: -> 's'
-
-      MixinA = (superclass) -> class A extends superclass
-        a: true
-        id: ->
-          super + 'a'
-
-      MixinB = (superclass) -> class B extends superclass
-        b: true
-        id: ->
-          super + 'b'
-
-      class T extends MixinA S
-        t: true
-
-      beforeEach ->
-        target = new T()
-
-      it 'should return true for target having MixinA', ->
-        expect(utils.instanceWithMixin target, MixinA).to.be.true
-
-      it 'should return false for target having MixinB', ->
-        expect(utils.instanceWithMixin target, MixinB).to.be.false
-
-      it 'should return true for class T having MixinA', ->
-        expect(utils.classWithMixin T, MixinA).to.be.true
-
-      it 'should return false for class T having MixinB', ->
-        expect(utils.classWithMixin T, MixinB).to.be.false
