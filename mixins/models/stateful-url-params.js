@@ -3,7 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper, utils;
+    var Backbone, helper, utils;
+    Backbone = require('backbone');
     utils = require('lib/utils');
     helper = require('../helper');
 
@@ -23,6 +24,8 @@
     return function(superclass) {
       var StatefulUrlParams;
       return StatefulUrlParams = (function(superClass) {
+        var StateProxy;
+
         extend(StatefulUrlParams, superClass);
 
         function StatefulUrlParams() {
@@ -126,7 +129,7 @@
             state = {};
           }
           this.state = this.stripEmptyOrDefault(this.unprefixKeys(state));
-          this.trigger('stateChange', this, this.state);
+          this.trigger('stateChange', this.state, this);
           return (ref = this.fetch({
             reset: true
           })) != null ? ref.fail((function(_this) {
@@ -241,6 +244,28 @@
           return url;
         };
 
+        StateProxy = (function() {
+          _.extend(StateProxy.prototype, Backbone.Events);
+
+          function StateProxy(collection) {
+            this.getState = _.bind(collection.getState, collection);
+            this.listenTo(collection, 'stateChange', (function(_this) {
+              return function(state) {
+                return _this.trigger('stateChange', state, _this);
+              };
+            })(this));
+          }
+
+          StateProxy.prototype.dispose = function() {
+            delete this.getState;
+            this.stopListening();
+            return this.off();
+          };
+
+          return StateProxy;
+
+        })();
+
 
         /**
          * A simple proxy object with only getState method to pass around.
@@ -248,9 +273,7 @@
          */
 
         StatefulUrlParams.prototype.proxyState = function() {
-          return {
-            getState: _.bind(this.getState, this)
-          };
+          return new StateProxy(this);
         };
 
         return StatefulUrlParams;

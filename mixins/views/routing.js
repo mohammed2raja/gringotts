@@ -37,7 +37,16 @@
           helper.assertViewOrCollectionView(this);
           Routing.__super__.initialize.apply(this, arguments);
           if (!this.routeState) {
-            return this.routeState = (ref1 = this.collection || this.model) != null ? typeof ref1.proxyState === "function" ? ref1.proxyState() : void 0 : void 0;
+            this.routeState = (ref1 = this.collection || this.model) != null ? typeof ref1.proxyState === "function" ? ref1.proxyState() : void 0 : void 0;
+          }
+          if (this.routeState && this.routeState.trigger) {
+            return this.listenTo(this.routeState, 'stateChange', function(state) {
+              if (!this.muteStateChangeEvent) {
+                return this.onBrowserStateChange(state);
+              } else {
+                return delete this.muteStateChangeEvent;
+              }
+            });
           }
         };
 
@@ -109,7 +118,7 @@
 
         /**
          * Redirect to current route with new query params.
-         * @param {Object}
+         * @param {Object} state to build URL query params with.
          */
 
         Routing.prototype.setBrowserState = function(state) {
@@ -119,17 +128,35 @@
           if (!this.routeState) {
             throw new Error("Can't set browser state since @routeState isn't set.");
           }
+          if (!this.routeName) {
+            throw new Error("Can't set browser state since @routeName isn't set.");
+          }
+          this.muteStateChangeEvent = true;
           return utils.redirectTo(this.routeName, this.routeParams, {
             query: this.routeState.getState(state)
           });
         };
 
+
+        /**
+         * Override this method to add your logic upon browser state change.
+         * @param  {Object} state current browser state from URL query params.
+         */
+
+        Routing.prototype.onBrowserStateChange = function(state) {};
+
         Routing.prototype.dispose = function() {
+          var ref1;
           this.ROUTING_OPTIONS.forEach((function(_this) {
             return function(key) {
               return delete _this[key];
             };
           })(this));
+          if ((ref1 = this.routeState) != null) {
+            if (typeof ref1.dispose === "function") {
+              ref1.dispose();
+            }
+          }
           return Routing.__super__.dispose.apply(this, arguments);
         };
 
