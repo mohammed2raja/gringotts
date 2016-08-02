@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var SafeSyncCallback;
       return SafeSyncCallback = (function(superClass) {
@@ -13,6 +13,8 @@
         function SafeSyncCallback() {
           return SafeSyncCallback.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(SafeSyncCallback.prototype, 'SafeSyncCallback');
 
         SafeSyncCallback.prototype.initialize = function() {
           helper.assertModelOrCollection(this);

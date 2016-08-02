@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var StringTemplatable;
       return StringTemplatable = (function(superClass) {
@@ -15,6 +15,8 @@
         function StringTemplatable() {
           return StringTemplatable.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(StringTemplatable.prototype, 'StringTemplatable');
 
         StringTemplatable.prototype.optionNames = (ref = StringTemplatable.prototype.optionNames) != null ? ref.concat(['template']) : void 0;
 

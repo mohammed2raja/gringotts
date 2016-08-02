@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var ServiceErrorCallback;
       return ServiceErrorCallback = (function(superClass) {
@@ -13,6 +13,8 @@
         function ServiceErrorCallback() {
           return ServiceErrorCallback.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(ServiceErrorCallback.prototype, 'ServiceErrorCallback');
 
         ServiceErrorCallback.prototype.initialize = function() {
           helper.assertModelOrCollection(this);

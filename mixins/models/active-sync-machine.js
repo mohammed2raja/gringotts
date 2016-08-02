@@ -5,7 +5,7 @@
   define(function(require) {
     var Chaplin, helper;
     Chaplin = require('chaplin');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var ActiveSyncMachine;
       return ActiveSyncMachine = (function(superClass) {
@@ -16,6 +16,8 @@
         }
 
         _.extend(ActiveSyncMachine.prototype, Chaplin.SyncMachine);
+
+        helper.setTypeName(ActiveSyncMachine.prototype, 'ActiveSyncMachine');
 
         ActiveSyncMachine.prototype.initialize = function() {
           helper.assertModelOrCollection(this);

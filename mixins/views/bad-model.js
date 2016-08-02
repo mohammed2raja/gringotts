@@ -5,7 +5,7 @@
   define(function(require) {
     var helper, utils;
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var BadModel;
       return BadModel = (function(superClass) {
@@ -14,6 +14,8 @@
         function BadModel() {
           return BadModel.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(BadModel.prototype, 'BadModel');
 
         BadModel.prototype.badModelOpts = {};
 

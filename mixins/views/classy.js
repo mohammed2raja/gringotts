@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
 
     /**
      * Just another way to add custom css class to View element
@@ -19,6 +19,8 @@
         function Classy() {
           return Classy.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Classy.prototype, 'Classy');
 
         Classy.prototype.classyName = null;
 

@@ -4,7 +4,7 @@
 
   define(function(require) {
     var DEFAULTS, checkInput, cleanEl, convertNumber, helper, updateLink;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     DEFAULTS = {
       errorClass: 'error-input'
     };
@@ -70,6 +70,8 @@
         function Editable() {
           return Editable.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Editable.prototype, 'Editable');
 
         Editable.prototype.initialize = function() {
           helper.assertViewOrCollectionView(this);

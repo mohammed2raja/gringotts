@@ -6,7 +6,7 @@
     var Backbone, helper, utils;
     Backbone = require('backbone');
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
 
     /**
      * Adds a capability of scoping a Collection or Model url with custom query
@@ -31,6 +31,8 @@
         function StatefulUrlParams() {
           return StatefulUrlParams.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(StatefulUrlParams.prototype, 'StatefulUrlParams');
 
 
         /**

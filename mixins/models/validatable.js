@@ -6,7 +6,7 @@
     var BROWSER_DATE, backboneValidation, helper, i, key, len, moment, ref;
     moment = require('moment');
     backboneValidation = require('backbone_validation');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     backboneValidation.configure({
       labelFormatter: 'label'
     });
@@ -43,6 +43,8 @@
         function Validatable() {
           return Validatable.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Validatable.prototype, 'Validatable');
 
         _.extend(Validatable.prototype, _.extend({}, backboneValidation.mixin, {
           isValid: function(option) {

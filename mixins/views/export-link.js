@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var ExportLink;
       return ExportLink = (function(superClass) {
@@ -13,6 +13,8 @@
         function ExportLink() {
           return ExportLink.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(ExportLink.prototype, 'ExportLink');
 
         ExportLink.prototype.initialize = function() {
           helper.assertCollectionView(this);

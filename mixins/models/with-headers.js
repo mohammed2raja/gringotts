@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
 
     /**
      * An extensible mixin to intercept Model's syncing operation and adding
@@ -19,6 +19,8 @@
         function WithHeaders() {
           return WithHeaders.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(WithHeaders.prototype, 'WithHeaders');
 
 
         /**

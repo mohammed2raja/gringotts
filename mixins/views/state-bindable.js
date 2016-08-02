@@ -5,7 +5,7 @@
   define(function(require) {
     var Chaplin, helper;
     Chaplin = require('chaplin');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
 
     /**
      * Adds state model, that is a data source for state bindings.
@@ -21,6 +21,8 @@
         function StateBindable() {
           return StateBindable.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(StateBindable.prototype, 'StateBindable');
 
 
         /**

@@ -5,7 +5,7 @@
   define(function(require) {
     var helper, utils;
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
 
     /**
      * A utility mixin for a View or a CollectionView. It helps to pass routing
@@ -27,6 +27,8 @@
         function Routing() {
           return Routing.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Routing.prototype, 'Routing');
 
         Routing.prototype.ROUTING_OPTIONS = ['routeName', 'routeParams', 'routeState'];
 

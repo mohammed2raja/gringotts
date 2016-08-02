@@ -6,7 +6,7 @@
     var Routing, handlebars, helper, utils;
     handlebars = require('handlebars');
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     Routing = require('./routing');
 
     /**
@@ -22,6 +22,8 @@
         function Sorting() {
           return Sorting.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Sorting.prototype, 'Sorting');
 
 
         /**

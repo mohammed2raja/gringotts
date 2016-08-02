@@ -5,7 +5,7 @@
   define(function(require) {
     var ActiveSyncMachine, helper, utils;
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     ActiveSyncMachine = require('./active-sync-machine');
 
     /**
@@ -19,6 +19,8 @@
         function Abortable() {
           return Abortable.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Abortable.prototype, 'Abortable');
 
         Abortable.prototype.initialize = function() {
           helper.assertModelOrCollection(this);

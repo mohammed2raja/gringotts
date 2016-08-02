@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var Content;
       return Content = (function(superClass) {
@@ -13,6 +13,8 @@
         function Content() {
           return Content.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Content.prototype, 'Content');
 
         Content.prototype.container = '#content';
 

@@ -5,7 +5,7 @@
   define(function(require) {
     var StatefulUrlParams, helper, utils;
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     StatefulUrlParams = require('./stateful-url-params');
 
     /**
@@ -22,6 +22,8 @@
         function Sorted() {
           return Sorted.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Sorted.prototype, 'Sorted');
 
         Sorted.prototype.DEFAULTS = _.extend({}, Sorted.prototype.DEFAULTS, {
           order: 'desc',

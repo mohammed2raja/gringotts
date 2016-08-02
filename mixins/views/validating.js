@@ -6,7 +6,7 @@
     var backboneValidation, helper, stickit;
     backboneValidation = require('backbone_validation');
     stickit = require('stickit');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     stickit.addHandler({
       selector: '*',
       setOptions: {
@@ -40,6 +40,8 @@
         function Validating() {
           return Validating.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Validating.prototype, 'Validating');
 
 
         /**

@@ -5,7 +5,7 @@
   define(function(require) {
     var StatefulUrlParams, SyncKey, helper, utils;
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     StatefulUrlParams = require('./stateful-url-params');
     SyncKey = require('./sync-key');
 
@@ -23,6 +23,8 @@
         function Paginated() {
           return Paginated.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(Paginated.prototype, 'Paginated');
 
         Paginated.prototype.DEFAULTS = _.extend({}, Paginated.prototype.DEFAULTS, {
           page: 1,

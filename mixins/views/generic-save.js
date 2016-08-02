@@ -5,7 +5,7 @@
   define(function(require) {
     var helper, revertChanges, utils;
     utils = require('lib/utils');
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     revertChanges = function(opts, $xhr) {
       var message, ref, ref1, ref2, ref3, response;
       if ((ref = opts.$field) != null) {
@@ -40,6 +40,8 @@
         function GenericSave() {
           return GenericSave.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(GenericSave.prototype, 'GenericSave');
 
         GenericSave.prototype.initialize = function() {
           helper.assertViewOrCollectionView(this);

@@ -4,7 +4,7 @@
 
   define(function(require) {
     var helper;
-    helper = require('../helper');
+    helper = require('../../lib/mixin-helper');
     return function(superclass) {
       var ServiceErrorReady;
       return ServiceErrorReady = (function(superClass) {
@@ -13,6 +13,8 @@
         function ServiceErrorReady() {
           return ServiceErrorReady.__super__.constructor.apply(this, arguments);
         }
+
+        helper.setTypeName(ServiceErrorReady.prototype, 'ServiceErrorReady');
 
         ServiceErrorReady.prototype.errorSelector = '.service-error';
 
