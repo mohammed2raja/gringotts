@@ -14,6 +14,9 @@ define (require) ->
       url:
         required: true
         pattern: 'url'
+      domain:
+        required: false
+        pattern: 'domain'
       guid:
         required: false
         pattern: 'guid'
@@ -48,7 +51,8 @@ define (require) ->
         model.set {
           name: '<johny>'
           email: 'example.com'
-          url: 'domain'
+          url: 'domain.com/test'
+          domain: 'domain'
           guid: '55555'
           date: 'is_this_a_date?'
         }
@@ -59,6 +63,7 @@ define (require) ->
           name: 'Name must be a valid name'
           email: 'Email must be a valid email'
           url: 'Url must be a valid url'
+          domain: 'Domain must be a valid domain'
           guid: 'Guid must be a valid guid'
           date: 'Date must be a valid date'
         }
@@ -68,7 +73,8 @@ define (require) ->
         model.set {
           name: 'johny'
           email: 'test@example.com'
-          url: 'domain.com'
+          url: 'http://domain.com/test/image.png'
+          domain: 'domain.com'
           guid: '5e379ddf-130d-4813-b263-6371f30a97ca'
           date: '2016-07-17'
         }

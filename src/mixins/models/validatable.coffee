@@ -11,7 +11,10 @@ define (require) ->
   _.extend backboneValidation.patterns,
     name: /^((?!<\\?.*>).)+/
     email: /^[^@]+@[^@]+\.[^@]+$/
-    url: /[a-z0-9.\-]+\.[a-zA-Z]{2,}/
+    domain: /[a-z0-9.\-]+\.[a-zA-Z]{2,}/
+    url: ///
+      https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}
+      \b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)///
     guid: ///^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}
       -[89ab][0-9a-f]{3}-[0-9a-f]{12}$///
 
@@ -19,6 +22,7 @@ define (require) ->
     name: '{0} must be a valid name'
     guid: '{0} must be a valid guid'
     date: '{0} must be a valid date'
+    domain: '{0} must be a valid domain'
 
   if I18n?
     for key in _.keys backboneValidation.messages
