@@ -33,13 +33,13 @@ define (require) ->
     it 'should be initialized', ->
       expect(view).to.be.instanceOf ProgressDialogView
       expect(view.default.buttons).to.
-        include text: 'OK', className: 'btn-action'
+        include text: 'OK', className: 'btn-primary'
       expect(view.error.title).to.eq "Hmm. That didn't seem to work. Try again?"
       expect(view.error.buttons).to.
-        include text: 'Cancel', className: 'btn-cancel'
+        include text: 'Cancel', className: 'btn-link'
       expect(view.success.html()).to.contain 'icon-misc-sign-check'
       expect(view.success.buttons).to.
-        include text: 'Okay', className: 'btn-action'
+        include text: 'Okay', className: 'btn-primary'
 
     it 'should have default view with proper classes', ->
       expect(view.$ '.default-view').to.have.class 'fade in'
@@ -157,8 +157,8 @@ define (require) ->
             title: 'Doing This!'
             text: 'Do you want to do it?'
             buttons: [
-              {text: 'Cancel', className: 'btn-cancel'}
-              {text: 'Do it', className: 'btn-action', click: _.noop}
+              {text: 'Cancel', className: 'btn-link'}
+              {text: 'Do it', className: 'btn-primary', click: _.noop}
             ]
           progress:
             title: 'Doing it right now'
@@ -181,12 +181,12 @@ define (require) ->
         expect(view.$ '.default-view .modal-title').to.have.text 'Doing This!'
         expect(view.$ '.default-view .modal-body p')
           .to.have.text 'Do you want to do it?'
-        expect(view.$ '.default-view .modal-footer .btn-cancel').to.exist
-        expect(view.$ '.default-view .modal-footer .btn-action').to.exist
+        expect(view.$ '.default-view .modal-footer .btn-link').to.exist
+        expect(view.$ '.default-view .modal-footer .btn-primary').to.exist
 
       context 'on action button click', ->
         beforeEach ->
-          view.$('.default-view .modal-footer .btn-action').trigger 'click'
+          view.$('.default-view .modal-footer .btn-primary').trigger 'click'
 
         it 'should invoke click handler', ->
           expect(actionSpy).to.have.been.calledWith sinon.match.object
@@ -216,7 +216,7 @@ define (require) ->
 
           context 'on try again button click', ->
             beforeEach ->
-              view.$('.error-view .modal-footer .btn-action').trigger 'click'
+              view.$('.error-view .modal-footer .btn-primary').trigger 'click'
 
             it 'should invoke click handler', ->
               expect(tryAgainSpy).to.have.been.calledWith sinon.match.object
