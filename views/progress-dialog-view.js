@@ -98,7 +98,7 @@
             buttons: [
               {
                 text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.OK') : void 0) || 'OK',
-                className: 'btn-action'
+                className: 'btn-primary'
               }
             ]
           },
@@ -107,7 +107,7 @@
             buttons: _([
               {
                 text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.cancel') : void 0) || 'Cancel',
-                className: 'btn-cancel'
+                className: 'btn-link'
               }
             ]).concat(_.extend(_.clone(_.first(_.filter((ref = this["default"]) != null ? ref.buttons : void 0, function(b) {
               return b.click;
@@ -124,7 +124,7 @@
             buttons: [
               {
                 text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.Okay') : void 0) || 'Okay',
-                className: 'btn-action'
+                className: 'btn-primary'
               }
             ]
           }
