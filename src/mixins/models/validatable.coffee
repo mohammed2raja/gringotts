@@ -24,10 +24,6 @@ define (require) ->
     date: '{0} must be a valid date'
     domain: '{0} must be a valid domain'
 
-  if I18n?
-    for key in _.keys backboneValidation.messages
-      backboneValidation.messages[key] = I18n.t "error.validation.#{key}"
-
   # Expected date format from browser input[type=date] elements
   BROWSER_DATE = ['MM/DD/YYYY', 'YYYY-MM-DD']
 
