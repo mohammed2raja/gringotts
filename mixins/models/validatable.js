@@ -3,7 +3,7 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var BROWSER_DATE, backboneValidation, helper, i, key, len, moment, ref;
+    var BROWSER_DATE, backboneValidation, helper, moment;
     moment = require('moment');
     backboneValidation = require('backbone_validation');
     helper = require('../../lib/mixin-helper');
@@ -23,13 +23,6 @@
       date: '{0} must be a valid date',
       domain: '{0} must be a valid domain'
     });
-    if (typeof I18n !== "undefined" && I18n !== null) {
-      ref = _.keys(backboneValidation.messages);
-      for (i = 0, len = ref.length; i < len; i++) {
-        key = ref[i];
-        backboneValidation.messages[key] = I18n.t("error.validation." + key);
-      }
-    }
     BROWSER_DATE = ['MM/DD/YYYY', 'YYYY-MM-DD'];
 
     /**
