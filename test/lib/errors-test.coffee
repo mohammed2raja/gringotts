@@ -1,31 +1,37 @@
 define (require) ->
+  Chaplin = require 'chaplin'
   utils = require 'lib/utils'
   errors = require 'lib/errors'
 
   describe 'errors', ->
+    sandbox = null
+
+    beforeEach ->
+      sandbox = sinon.sandbox.create()
+
+    afterEach ->
+      sandbox.restore()
+
     describe 'setupErrorHandling', ->
-      reload = null
       publishEvent = null
+      originalBroker = null
       i18n = null
 
       beforeEach ->
-        reload = sinon.spy()
+        sandbox.spy utils, 'parseJSON'
+        sandbox.stub utils, 'redirectTo'
+        sandbox.stub utils, 'setLocation'
+        sandbox.stub utils, 'reloadLocation'
         publishEvent = sinon.spy()
-        sinon.spy utils, 'parseJSON'
-        sinon.stub utils, 'redirectTo'
+        originalBroker = Chaplin.EventBroker
+        Chaplin.EventBroker = {publishEvent}
         ((window.I18n = {}).t = (text) -> text) if i18n
-        # Fake window-like object
-        errors.setupErrorHandling
-          location: {reload}
-          publishEvent: publishEvent
+        errors.setupErrorHandling()
 
       afterEach ->
         $(document).off 'ajaxError'
-        utils.parseJSON.restore()
-        utils.redirectTo.restore()
         delete window.I18n
-        reload = null
-        publishEvent = null
+        Chaplin.EventBroker = originalBroker
 
       it 'should attach something to the document', ->
         expect($._data(document).events).to.exist
@@ -42,13 +48,23 @@ define (require) ->
 
         context 'with 401 (session expired)', ->
           before ->
-            xhr = status: 401, responseText: '{"CODE": "SESSION_EXPIRED"}'
+            xhr = status: 401
 
           after ->
             xhr = null
 
           it 'should reload the window', ->
-            expect(reload).to.have.been.calledOnce
+            expect(utils.reloadLocation).to.have.been.calledOnce
+
+          context 'with redirect_url', ->
+            before ->
+              xhr.responseText = '{"redirect_url": "/foo"}'
+
+            after ->
+              xhr.responseText = null
+
+            it 'should redirect to url', ->
+              expect(utils.setLocation).to.have.been.calledWith '/foo'
 
         context 'with 403 (access denied)', ->
           before ->
@@ -69,6 +85,7 @@ define (require) ->
           context 'and response JSON', ->
             before ->
               xhr.responseText = '{"error": "No access available"}'
+
             after ->
               xhr.responseText = null
 

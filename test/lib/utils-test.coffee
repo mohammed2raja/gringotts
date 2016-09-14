@@ -5,6 +5,14 @@ define (require) ->
   describe 'Utils lib', ->
     $el = null
 
+    context 'openURL', ->
+      it 'should open URLs', ->
+        sinon.stub window, 'open'
+        utils.openURL 'fum'
+        expect(window.open).to.be.calledOnce
+        expect(window.open).to.be.calledWith 'fum'
+        window.open.restore()
+
     context 'tagBuilder', ->
       beforeEach ->
         $el = $ utils.tagBuilder 'a', 'Everything is awesome!', href: '#'

@@ -12,6 +12,15 @@ define (require) ->
   #coffeelint: enable=max_line_length
   _.extend {}, Chaplin.utils,
 
+    openURL: (path) ->
+      window.open path
+
+    setLocation: (path) ->
+      window.location = path
+
+    reloadLocation: ->
+      window.location.reload()
+
     # Returns a string representation of an HTML node of type `tagName` wrapping
     # `content` with HTML attributes `attrs`.
     tagBuilder: (tagName, content, attrs, escape=yes) ->
