@@ -20,6 +20,7 @@ define (require) ->
       beforeEach ->
         sandbox.spy utils, 'parseJSON'
         sandbox.stub utils, 'redirectTo'
+        sandbox.stub utils, 'getLocation', -> '/my/location/'
         sandbox.stub utils, 'setLocation'
         sandbox.stub utils, 'reloadLocation'
         publishEvent = sinon.spy()
@@ -38,40 +39,71 @@ define (require) ->
           .and.to.have.property 'ajaxError'
 
       context 'after an ajax error', ->
+        status = null
+        errorHandled = null
+        responseText = null
+        url = null
         xhr = null
 
         beforeEach ->
-          $(document).trigger 'ajaxError', xhr
-
-        afterEach ->
-          xhr.errorHandled = null
+          xhr = {status, errorHandled, responseText}
+          $(document).trigger 'ajaxError', [
+            xhr
+            url: url or 'http://example.com'
+          ]
 
         context 'with 401 (session expired)', ->
           before ->
-            xhr = status: 401
+            status = 401
+            errorHandled = true # even if it's handled
 
           after ->
-            xhr = null
+            status = null
+            errorHandled = null
 
           it 'should reload the window', ->
             expect(utils.reloadLocation).to.have.been.calledOnce
 
           context 'with redirect_url', ->
             before ->
-              xhr.responseText = '{"redirect_url": "/foo"}'
+              responseText = '{"redirect_url": "/foo"}'
 
             after ->
-              xhr.responseText = null
+              responseText = null
 
-            it 'should redirect to url', ->
-              expect(utils.setLocation).to.have.been.calledWith '/foo'
+            it 'should redirect to proper url', ->
+              expect(utils.setLocation).to.have.been
+                .calledWith 'http://example.com/foo?destination=/my/location/'
+
+            context 'and relative request url', ->
+              before ->
+                url = '/some/api'
+
+              after ->
+                url = null
+
+              it 'should redirect to proper url', ->
+                expect(utils.setLocation).to.have.been
+                  .calledWith '/foo'
+
+            context 'and very profound request url', ->
+              before ->
+                url = 'https://example.edu.com/some/api?field=1#hook'
+
+              after ->
+                url = null
+
+              it 'should redirect to proper url', ->
+                expect(utils.setLocation).to.have.been
+                  .calledWith 'https://example.edu.com/foo' +
+                    '?destination=/my/location/'
 
         context 'with 403 (access denied)', ->
           before ->
-            xhr = status: 403
+            status = 403
 
           after ->
-            xhr = null
+            status = null
 
           it 'should redirect to root route', ->
             expect(utils.redirectTo).to.have.been.calledWith {}
@@ -84,10 +116,10 @@ define (require) ->
 
           context 'and response JSON', ->
             before ->
-              xhr.responseText = '{"error": "No access available"}'
+              responseText = '{"error": "No access available"}'
 
             after ->
-              xhr.responseText = null
+              responseText = null
 
             it 'should notify with message from response', ->
               expect(publishEvent).to.have.been.
@@ -104,12 +136,27 @@ define (require) ->
               text = I18n.t 'error.no_access'
               expect(publishEvent).to.have.been.calledWith 'notify', text
 
+          context 'when error is handled', ->
+            before ->
+              status = 403
+              errorHandled = true
+
+            after ->
+              status = null
+              errorHandled = null
+
+            it 'should not redirect to root route', ->
+              expect(utils.redirectTo).to.have.not.been.calledOnce
+
+            it 'should not send error notification', ->
+              expect(publishEvent).to.have.not.been.calledOnce
+
         context 'with a random failure', ->
           before ->
-            xhr = status: 500
+            status = 500
 
           after ->
-            xhr = null
+            status = null
 
           it 'should send error notification', ->
             expect(publishEvent).to.have.been.calledWith 'notify'
@@ -119,10 +166,10 @@ define (require) ->
 
           context 'and response JSON', ->
             before ->
-              xhr.responseText = '{"message": "Operation failed!"}'
+              responseText = '{"message": "Operation failed!"}'
 
             after ->
-              xhr.responseText = null
+              responseText = null
 
             it 'should notify with message from response', ->
               expect(publishEvent).to.have.been.
@@ -141,11 +188,23 @@ define (require) ->
 
           context 'and bad response JSON', ->
             before ->
-              xhr.responseText = '<html></html>'
+              responseText = '<html></html>'
 
             after ->
-              xhr.responseText = null
+              responseText = null
 
             it 'should notify with default message', ->
               expect(publishEvent).to.have.been.calledWith 'notify',
                 'There was a problem communicating with the server.'
+
+          context 'when error is handled', ->
+            before ->
+              status = 500
+              errorHandled = true
+
+            after ->
+              status = null
+              errorHandled = null
+
+            it 'should not send error notification', ->
+              expect(publishEvent).to.have.not.been.calledOnce

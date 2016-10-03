@@ -269,7 +269,13 @@ module.exports = (grunt) ->
       buildPath = grunt.option 'target'
       if buildPath
         grunt.log.writeln "Building gringotts into #{buildPath}..."
-        grunt.task.run(['build', 'shell:localBuild', 'watch'])
+        grunt.task.run [
+          'build'
+          'connect'
+          'test'
+          'shell:localBuild'
+          'watch'
+        ]
       else
         grunt.log.writeln(
           'Target parameter (i.e. --target="...") is required'

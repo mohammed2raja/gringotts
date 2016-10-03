@@ -3,7 +3,13 @@ define (require) ->
   utils = require 'lib/utils'
 
   describe 'Utils lib', ->
-    $el = null
+    it 'should correctly combine weird urls', ->
+      url = utils.urlJoin '', '/foo'
+      expect(url).to.equal '/foo'
+      url = utils.urlJoin '/', '/foo'
+      expect(url).to.equal '/foo'
+      url = utils.urlJoin '/', 'foo'
+      expect(url).to.equal '/foo'
 
     context 'openURL', ->
       it 'should open URLs', ->
@@ -14,6 +20,8 @@ define (require) ->
         window.open.restore()
 
     context 'tagBuilder', ->
+      $el = null
+
       beforeEach ->
         $el = $ utils.tagBuilder 'a', 'Everything is awesome!', href: '#'
 

@@ -5,7 +5,7 @@ define (require) ->
   ajaxForArray = ->
     options = _.first arguments
     $.when.apply $, options.url.map (url) ->
-      $.ajax _.merge _.omit(options, ['url', 'success']), {url}
+      backboneAjax _.merge _.omit(options, ['url', 'success']), {url}
     .done ->
       resp =
         if options.url.length > 1
@@ -20,7 +20,7 @@ define (require) ->
       memo.push {key, url}
     , []
     $.when.apply $, pairs.map (pair) ->
-      $.ajax _.merge _.omit(options, ['url', 'success']), url: pair.url
+      backboneAjax _.merge _.omit(options, ['url', 'success']), url: pair.url
     .done ->
       resp = _.slice(arguments).reduce (memo, arg, i) ->
         memo[pairs[i].key] = _.first arg

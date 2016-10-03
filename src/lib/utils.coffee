@@ -1,6 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   moment = require 'moment'
+  join = require 'url_join'
   MixinBuilder = require './mixin-builder'
 
   #coffeelint: disable=max_line_length
@@ -15,11 +16,22 @@ define (require) ->
     openURL: (path) ->
       window.open path
 
+    getLocation: ->
+      window.location
+
     setLocation: (path) ->
       window.location = path
 
     reloadLocation: ->
       window.location.reload()
+
+    ###*
+     * A wrapper over url join utility.
+    ###
+    urlJoin: ->
+      url = join.apply this, arguments
+      # HACK: fix bug in url_join, where it adds '//' if first arg is empty
+      url.replace /^(\/\/)/, '/'
 
     # Returns a string representation of an HTML node of type `tagName` wrapping
     # `content` with HTML attributes `attrs`.

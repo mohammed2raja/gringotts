@@ -17,6 +17,12 @@ define (require) ->
       'Content-Type': 'application/json'
       'Accept': 'application/json'
 
+    ###*
+     * Force passing cookies to ajax requests while in CORS mode.
+     * @type {Boolean}
+    ###
+    withCredentials: true
+
     initialize: ->
       helper.assertModelOrCollection this
       unless @HEADERS
@@ -55,4 +61,6 @@ define (require) ->
      * Extends the Backbone ajax options with headers hash object.
     ###
     extendWithHeaders: (options, headers) ->
-      _.extend options, headers: _.extend {}, options?.headers, headers
+      _.extend options,
+        xhrFields: {@withCredentials}
+        headers: _.extend {}, options?.headers, headers

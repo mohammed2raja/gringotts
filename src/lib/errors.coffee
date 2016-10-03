@@ -2,6 +2,9 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
 
+  # from http://stackoverflow.com/a/33651369/1309164
+  ROOT_DOMAIN_REGEX = /^(?:https?:)?(?:\/\/)?([^\/\?]+)/mig
+
   parseResponse = ($xhr) ->
     try
       return utils.parseJSON $xhr.responseText
@@ -18,10 +21,14 @@ define (require) ->
   ###*
    * Session expired handler.
   ###
-  handle401 = ($xhr) ->
+  handle401 = ($xhr, options={}) ->
     response = parseResponse $xhr
     if url = response?.redirect_url
-      utils.setLocation url
+      if match = options.url?.match ROOT_DOMAIN_REGEX
+        utils.setLocation utils.urlJoin(match[0], url) +
+          "?destination=#{utils.getLocation()}"
+      else
+        utils.setLocation url
     else
       # Since the session is now expired reloading a page will trigger an
       # auth check and bounce the user to the login page. Because of that
@@ -57,16 +64,19 @@ define (require) ->
    * Generic error handler.
   ###
   handle = ($xhr) ->
-    if $xhr.status is 401 then handle401 $xhr
-    else if $xhr.status is 403 then handle403 $xhr
-    else if $xhr.status not in [200, 201] then handleAny $xhr
+    if $xhr.status is 401 # force handling of 401 even if error is handled
+      handle401.apply this, arguments
+    else if not $xhr.errorHandled
+      if $xhr.status is 403
+        handle403.apply this, arguments
+      else if $xhr.status not in [200, 201]
+        handleAny.apply this, arguments
 
   ###*
    * Setups global error listeners.
   ###
   setupErrorHandling = ->
-    $(document).ajaxError (event, $xhr) ->
-      handle $xhr unless $xhr.errorHandled
+    $(document).ajaxError (event, $xhr, options) -> handle $xhr, options
 
   ###*
    * This is meant to be used in the application bootstrapping code such as
