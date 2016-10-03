@@ -28,7 +28,7 @@ if window.PHANTOMJS or window.location.search.indexOf('cov=true') >= 0
 
   script.setAttribute(
     'data-cover-adapter'
-    '../node_modules/grunt-blanket-mocha/support/mocha-blanket.js'
+    '../node_modules/grunt-mocha-blanket/support/mocha-blanket.js'
   )
   script.setAttribute 'data-cover-flags', 'branchTracking'
   script.setAttribute 'data-cover-never', '[\'templates\']'

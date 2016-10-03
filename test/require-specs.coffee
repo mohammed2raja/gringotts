@@ -30,7 +30,7 @@ require {baseUrl: '../src'}, ['config'], ->
 
       if window.PHANTOMJS
         blanket.options 'reporter',
-          '../node_modules/grunt-blanket-mocha/support/grunt-reporter.js'
+          '../node_modules/grunt-mocha-blanket/support/grunt-reporter.js'
 
       if window.location.search.indexOf('cov=true') >= 0
         $('#change-coverage').on 'change', ->

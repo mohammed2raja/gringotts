@@ -59,7 +59,7 @@ module.exports = (grunt) ->
         src: [
           'test/index.html'
           'vendor/**/mocha.css'
-          'node_modules/grunt-blanket-mocha/**/support/*.js'
+          'node_modules/grunt-mocha-blanket/**/support/*.js'
         ]
         dest: 'public/'
       assets:
@@ -80,13 +80,17 @@ module.exports = (grunt) ->
         logErrors: yes
         moduleThreshold : 60
         modulePattern : './src/(.*?)/'
-      ci:
-        src: 'public/test/index.html'
-        dest: 'test-results.xml'
-        options:
-          reporter: 'XUnit'
       test:
         src: 'public/test/index.html'
+      report_spec:
+        src: 'public/test/index.html'
+        options:
+          reporter: 'spec'
+      report_xunit:
+        src: 'public/test/index.html'
+        options:
+          reporter: 'XUnit'
+          reporterOptions: output: 'test-results.xml'
 
     'citare-scriptum':
       options:
@@ -204,13 +208,19 @@ module.exports = (grunt) ->
     'test'
     'watch'
     ]
-  grunt.registerTask 'docs', ['citare-scriptum', 'gh-pages:docs']
+
+  grunt.registerTask 'docs', [
+    'citare-scriptum'
+    'gh-pages:docs']
+
   grunt.registerTask 'test', ['blanket_mocha:test']
+
   grunt.registerTask 'test-ci', [
     'compile'
     'copy'
     'lint'
-    'blanket_mocha:ci'
+    'force:blanket_mocha:report_spec'
+    'blanket_mocha:report_xunit'
   ]
 
   grunt.registerTask 'release', 'Create release branch', (version='') ->
