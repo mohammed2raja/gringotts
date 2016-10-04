@@ -33,6 +33,14 @@
           'Accept': 'application/json'
         };
 
+
+        /**
+         * Force passing cookies to ajax requests while in CORS mode.
+         * @type {Boolean}
+         */
+
+        WithHeaders.prototype.withCredentials = true;
+
         WithHeaders.prototype.initialize = function() {
           helper.assertModelOrCollection(this);
           if (!this.HEADERS) {
@@ -87,6 +95,9 @@
 
         WithHeaders.prototype.extendWithHeaders = function(options, headers) {
           return _.extend(options, {
+            xhrFields: {
+              withCredentials: this.withCredentials
+            },
             headers: _.extend({}, options != null ? options.headers : void 0, headers)
           });
         };

@@ -2,7 +2,7 @@
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
   "main": "config.js",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "licenses": [
     {
       "type": "MIT",
@@ -22,7 +22,8 @@
     "jquery": "2.2.3",
     "lodash": "3.10.1",
     "moment": "2.13.0",
-    "requirejs": "2.2.0"
+    "requirejs": "2.2.0",
+    "url-join": "1.1.0"
   },
   "devDependencies": {
     "blanket": "1.1.7",

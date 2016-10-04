@@ -8,6 +8,7 @@
       moment: '../vendor/bower/moment/moment',
       underscore: '../vendor/bower/lodash/lodash',
       jquery: '../vendor/bower/jquery/dist/jquery',
+      url_join: '../vendor/bower/url-join/lib/url-join',
       stickit: '../vendor/bower/backbone.stickit/backbone.stickit',
       backbone_validation: '../vendor/bower/backbone-validation/dist/backbone-validation-amd',
       bootstrap_button: '../vendor/bower/bootstrap/js/button',
