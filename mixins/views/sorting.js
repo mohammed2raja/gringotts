@@ -137,15 +137,19 @@
           if (!(sortInfo && template)) {
             return;
           }
-          return this.$(".sorting-control." + this.cid).each(function(i, el) {
-            var $el, attr;
-            $el = $(el);
-            attr = $el.attr('data-sort');
-            return $el.replaceWith(template({
-              sortInfo: sortInfo,
-              attr: attr
-            }));
-          });
+          return this.$(".sorting-control." + this.cid).each((function(_this) {
+            return function(i, el) {
+              var $el, attr, classes;
+              $el = $(el);
+              attr = $el.attr('data-sort');
+              classes = $el.removeClass("sorting-control " + _this.cid).attr('class');
+              return $el.replaceWith(template({
+                sortInfo: sortInfo,
+                attr: attr,
+                "class": classes
+              }));
+            };
+          })(this));
         };
 
         return Sorting;

@@ -50,12 +50,14 @@ Handlebars.registerPartial("progressPulse", Handlebars.template({"compiler":[7,"
     + "\">\n  <div class=\"overlay\"></div>\n  <div class=\"animation\">\n    <span class=\"circle\"></span>\n    <span class=\"circle\"></span>\n    <span class=\"circle\"></span>\n  </div>\n</div>\n";
 },"useData":true}));
 
-Handlebars.registerPartial("sortTableHeader", Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
+Handlebars.registerPartial("sortTableHeader", Handlebars.template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "  <th data-sort=\""
     + alias4(((helper = (helper = helpers.attr || (depth0 != null ? depth0.attr : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"attr","hash":{},"data":data}) : helper)))
     + "\" class=\"sorting-control "
+    + alias4(container.lambda((depths[1] != null ? depths[1]["class"] : depths[1]), depth0))
+    + " "
     + alias4(((helper = (helper = helpers.viewId || (depth0 != null ? depth0.viewId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"viewId","hash":{},"data":data}) : helper)))
     + "\">\n    <a href=\""
     + alias4((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextState : depth0),{"name":"url","hash":{},"data":data}))
@@ -64,11 +66,11 @@ Handlebars.registerPartial("sortTableHeader", Handlebars.template({"1":function(
     + "\">\n      <span>"
     + alias4(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"text","hash":{},"data":data}) : helper)))
     + "</span><span class=\"indicator\"></span>\n    </a>\n  </th>\n";
-},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
-  return ((stack1 = helpers["with"].call(alias1,helpers.lookup.call(alias1,(depth0 != null ? depth0.sortInfo : depth0),(depth0 != null ? depth0.attr : depth0),{"name":"lookup","hash":{},"data":data}),{"name":"with","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
-},"useData":true}));
+  return ((stack1 = helpers["with"].call(alias1,helpers.lookup.call(alias1,(depth0 != null ? depth0.sortInfo : depth0),(depth0 != null ? depth0.attr : depth0),{"name":"lookup","hash":{},"data":data}),{"name":"with","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+},"useData":true,"useDepths":true}));
 
 this["Handlebars"]["dialog"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var helper;
