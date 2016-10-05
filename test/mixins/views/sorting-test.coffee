@@ -48,7 +48,7 @@ define (require) ->
       expect(view.$ 'th[data-sort=attr_a]').to.have.class('sorting-control')
         .and.to.have.class "#{view.cid}"
       expect(view.$ 'th[data-sort=attr_b]').to.have.class('sorting-control')
-        .and.to.have.class "#{view.cid}"
+        .and.to.have.class("#{view.cid}").and.to.have.class('foo')
 
     it 'should render headers labels', ->
       expect(view.$ 'th[data-sort=attr_a] span').to.have.text 'Attribute A'
@@ -78,3 +78,6 @@ define (require) ->
         expect($link_a).to.have.attr 'href', 'test?order=asc'
         expect($link_b).to.have.class('asc').and.to.have
           .attr 'href', 'test?sort_by=attr_b'
+
+      it 'should apply custom classes', ->
+        expect(view.$ 'th[data-sort=attr_b]').to.have.class('foo')

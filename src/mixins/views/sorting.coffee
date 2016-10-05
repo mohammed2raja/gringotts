@@ -86,7 +86,8 @@ define (require) ->
       sortInfo = @getSortInfo()
       template = handlebars.partials[@sortingPartial]
       return unless sortInfo and template
-      @$(".sorting-control.#{@cid}").each (i, el) ->
+      @$(".sorting-control.#{@cid}").each (i, el) =>
         $el = $(el)
         attr = $el.attr 'data-sort'
-        $el.replaceWith template {sortInfo, attr}
+        classes = $el.removeClass("sorting-control #{@cid}").attr 'class'
+        $el.replaceWith template {sortInfo, attr, class: classes}
