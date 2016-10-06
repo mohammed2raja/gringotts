@@ -189,3 +189,9 @@ define (require) ->
       it 'should return array for arguments', ->
         result = handlebars.helpers.array 10, 55, 647, hbsOptions
         expect(result).to.eql [10, 55, 647]
+
+    context 'object helper', ->
+      it 'should return object for hash', ->
+        result = handlebars.helpers.object null,
+          _.extend {}, hbsOptions, hash: {a: 10, b: 55}
+        expect(result).to.eql {a: 10, b: 55}

@@ -112,9 +112,17 @@ define (require) ->
     else if inverse then inverse this else false
 
   ###*
-   * Retunrs list of arguments as array. Useful for {{url (array a b c)}}
+   * Returns list of arguments as array. Useful for {{url (array a b c)}}
    * @param  {Array} opts... Input arguments
    * @return {Array}         Array of arguments
   ###
   handlebars.registerHelper 'array', (opts...) ->
     _.initial opts
+
+  ###*
+   * Returns hash of arguments as object. Useful for {{url (object a=b c=d)}}
+   * @param  {Object} opts... Input hash
+   * @return {Object}         Object from arguments
+  ###
+  handlebars.registerHelper 'object', (opts...) ->
+    _.last(opts).hash
