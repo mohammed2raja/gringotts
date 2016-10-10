@@ -36,6 +36,7 @@ define (require) ->
       collection = new MockCollection()
       view = new MockSortingView _.extend {routeName: 'test', collection}
       collection.setState {}
+      collection.fetch()
       sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
       sandbox.server.respond()
 
@@ -69,6 +70,7 @@ define (require) ->
     context 'changing sorting order', ->
       beforeEach ->
         collection.setState order: 'asc', sort_by: 'attr_b'
+        collection.fetch()
         sandbox.server.respond()
 
       it 'should render links correctly', ->

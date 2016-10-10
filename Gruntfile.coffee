@@ -187,7 +187,7 @@ module.exports = (grunt) ->
           'newer:coffee'
           'force:newer:coffeelint'
           'force:htmllint'
-          'blanket_mocha:test'
+          'force:blanket_mocha:test'
           'shell:localBuild'
         ]
 
@@ -207,13 +207,16 @@ module.exports = (grunt) ->
     'connect'
     'test'
     'watch'
-    ]
+  ]
 
   grunt.registerTask 'docs', [
     'citare-scriptum'
-    'gh-pages:docs']
+    'gh-pages:docs'
+  ]
 
-  grunt.registerTask 'test', ['blanket_mocha:test']
+  grunt.registerTask 'test', [
+    'force:blanket_mocha:test'
+  ]
 
   grunt.registerTask 'test-ci', [
     'compile'

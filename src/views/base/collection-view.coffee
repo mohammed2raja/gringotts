@@ -12,10 +12,12 @@ define (require) ->
     animationStartClass: 'fade'
     animationEndClass: 'in'
 
-    modelsBy: (rows) ->
+    modelsFrom: (rows) ->
+      rows = if rows.length then rows else [rows]
       itemViews = _.values @getItemViews()
       models = _.filter(itemViews, (v) -> v.el in rows).map (v) -> v.model
 
-    rowsBy: (models) ->
+    rowsFrom: (models) ->
+      models = if models.length then models else [models]
       itemViews = _.values @getItemViews()
       rows = _.filter(itemViews, (v) -> v.model in models).map (v) -> v.el

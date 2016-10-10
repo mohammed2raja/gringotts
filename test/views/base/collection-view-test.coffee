@@ -30,10 +30,16 @@ define (require) ->
     it 'should be initialized', ->
       expect(view).to.be.an.instanceOf CollectionView
 
-    context 'modelsBy helper', ->
+    context 'modelsFrom helper', ->
       it 'should return models by rows', ->
-        expect(view.modelsBy view.$ '.test-item').to.eql models
+        expect(view.modelsFrom view.$ '.test-item').to.eql models
 
-    context 'rowsBy helper', ->
+      it 'should return model by a row', ->
+        expect(view.modelsFrom view.$('.test-item')[0]).to.eql [models[0]]
+
+    context 'rowsFrom helper', ->
       it 'should return rows by models', ->
-        expect(view.rowsBy models).to.eql view.$('.test-item').toArray()
+        expect(view.rowsFrom models).to.eql view.$('.test-item').toArray()
+
+      it 'should return row by a model', ->
+        expect(view.rowsFrom models[0]).to.eql [view.$('.test-item')[0]]

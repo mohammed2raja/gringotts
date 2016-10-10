@@ -5,9 +5,17 @@ define (require) ->
     unless _this instanceof Chaplin.Model
       throw new Error 'This mixin can be applied only to models.'
 
+  assertNotModel: (_this) ->
+    if _this instanceof Chaplin.Model
+      throw new Error 'This mixin can not be applied to models.'
+
   assertCollection: (_this) ->
     unless _this instanceof Chaplin.Collection
       throw new Error 'This mixin can be applied only to collections.'
+
+  assertNotCollection: (_this) ->
+    if _this instanceof Chaplin.Collection
+      throw new Error 'This mixin can not be applied to collections.'
 
   assertModelOrCollection: (_this) ->
     unless (_this instanceof Chaplin.Model or

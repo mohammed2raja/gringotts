@@ -39,6 +39,7 @@ define (require) ->
       collection.infinite = infinite
       view = new MockPaginatingView {routeName: 'test', collection}
       collection.setState {}
+      collection.fetch()
       sandbox.server.respondWith [200, {}, JSON.stringify({
         next_page_id: 'abcdef'
         count: 101
@@ -72,6 +73,7 @@ define (require) ->
     context 'changing to next page', ->
       beforeEach ->
         collection.setState page: 3
+        collection.fetch()
         sandbox.server.respond()
 
       it 'should render links correctly', ->
@@ -88,6 +90,7 @@ define (require) ->
     context 'changing to last page', ->
       beforeEach ->
         collection.setState page: 11
+        collection.fetch()
         sandbox.server.respond()
 
       it 'should render links correctly', ->

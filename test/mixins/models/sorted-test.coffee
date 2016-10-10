@@ -2,6 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   helper = require 'lib/mixin-helper'
   Sorted = require 'mixins/models/sorted'
+  ForcedReset = require 'mixins/models/forced-reset'
   StatefulUrlParams = require 'mixins/models/stateful-url-params'
 
   class MockSortedCollection extends Sorted Chaplin.Collection
@@ -24,6 +25,7 @@ define (require) ->
 
     it 'should have proper mixins applied', ->
       expect(helper.instanceWithMixin collection, StatefulUrlParams).to.be.true
+      expect(helper.instanceWithMixin collection, ForcedReset).to.be.true
 
     context 'fetching', ->
       beforeEach ->

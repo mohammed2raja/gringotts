@@ -1,6 +1,7 @@
 define (require) ->
   utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
+  ForcedReset = require './forced-reset'
   StatefulUrlParams = require './stateful-url-params'
   SyncKey = require './sync-key'
 
@@ -11,7 +12,7 @@ define (require) ->
    * @param  {Collection} base superclass
   ###
   (base) -> class Paginated extends utils.mix(base).with(StatefulUrlParams,
-    SyncKey)
+    ForcedReset, SyncKey)
     helper.setTypeName @prototype, 'Paginated'
 
     DEFAULTS: _.extend {}, @::DEFAULTS,

@@ -1,6 +1,7 @@
 define (require) ->
   utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
+  ForcedReset = require './forced-reset'
   StatefulUrlParams = require './stateful-url-params'
 
   ###*
@@ -9,7 +10,8 @@ define (require) ->
    * sync action.
    * @param  {Collection} base superclass
   ###
-  (base) -> class Sorted extends utils.mix(base).with StatefulUrlParams
+  (base) -> class Sorted extends utils.mix(base).with(StatefulUrlParams,
+    ForcedReset)
     helper.setTypeName @prototype, 'Sorted'
 
     DEFAULTS: _.extend {}, @::DEFAULTS,

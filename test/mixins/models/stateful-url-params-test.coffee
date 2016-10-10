@@ -42,29 +42,42 @@ define (require) ->
         eventSpy = null
         proxyState = null
 
-        beforeEach (done) ->
+        beforeEach ->
           proxyState = collection.proxyState()
           proxyState.on 'stateChange', eventSpy = sandbox.spy()
           collection.setState x: 1, y: 2
-          done()
 
         it 'should re-trigger even on proxy', ->
           expect(eventSpy).to.have.been.calledWith x: 1, y: 2
 
         context 'when disposed', ->
-          beforeEach (done) ->
+          beforeEach ->
             proxyState.dispose()
             collection.setState w: 1, e: 2
-            done()
 
           it 'should not re-trigger collection events', ->
             expect(eventSpy).to.have.not.been.calledWith w: 1, e: 2
 
-    context 'setting the state', ->
+    context 'setting empty state', ->
+      difference = null
+
+      beforeEach ->
+        difference = collection.setState {}
+
+      it 'should return null difference for setState', ->
+        expect(difference).to.be.null
+
+    context 'setting the hash state', ->
+      difference = null
+
       beforeEach ->
         collection.ignoreKeys = ['coo']
-        collection.setState foo: 1, boo: 'goo', coo: 'hoo'
+        difference = collection.setState foo: 1, boo: 'goo', coo: 'hoo'
+        collection.fetch()
         sandbox.server.respond()
+
+      it 'should return proper difference for setState call', ->
+        expect(difference).to.eql ['foo', 'coo']
 
       it 'should fetch from the server with proper url', ->
         expecting = ['/test', '?', 'foo=1', 'boo=goo']
@@ -75,40 +88,75 @@ define (require) ->
         request = _.last sandbox.server.requests
         expect(request.url).to.not.contain 'coo=hoo'
 
+      context 'setting the same state again', ->
+        beforeEach ->
+          difference = collection.setState boo: 'goo', foo: 1, coo: 'hoo'
+
+        it 'should return null difference for setState call', ->
+          expect(difference).to.be.null
+
+      context 'setting the empty state', ->
+        beforeEach ->
+          difference = collection.setState {}
+
+        it 'should return proper difference fo setState', ->
+          expect(difference).to.eql ['foo', 'coo']
+
+    context 'setting the string state', ->
+      difference = null
+
+      beforeEach ->
+        difference = collection.setState 'boo=goo&coo=hoo'
+        collection.fetch()
+        sandbox.server.respond()
+
+      it 'should return proper difference for setState', ->
+        expect(difference).to.eql ['coo']
+
+      it 'should update state properly', ->
+        expect(collection.getState {}, inclDefaults: yes).to
+          .eql boo: 'goo', coo: 'hoo', foo: 'moo'
+
+      it 'should fetch from the server with proper url', ->
+        expecting = ['/test', '?', 'coo=hoo', 'boo=goo']
+        request = _.last sandbox.server.requests
+        testRequest request, expecting
+
     context 'changing event', ->
       spy = null
 
       beforeEach ->
         spy = sandbox.spy()
         collection.on 'stateChange', spy
-        collection.setState {a:'b'}
-        sandbox.server.respond()
+        collection.setState a: 'b', c: 'd'
 
       afterEach ->
         collection.dispose()
 
       it 'should raise stateChange event', ->
-        expect(spy).to.have.been.calledWith a: 'b', collection
+        expect(spy).to.have.been.calledOnce
+        expect(spy).to.have.been.calledWith a: 'b', c: 'd', collection
 
-    context 'on fetch fail', ->
-      beforeEach ->
-        collection = new MockCollection [{}, {}, {}]
-        collection.setState {}
-        sandbox.server.respondWith [500, {}, '{}']
-        sandbox.server.respond()
+      context 'setting the same state again', ->
+        beforeEach ->
+          collection.setState c: 'd', a: 'b'
 
-      afterEach ->
-        collection.dispose()
+        it 'should not raise stateChange event', ->
+          expect(spy).to.have.been.calledOnce
 
-      it 'should reset all existing items', ->
-        expect(collection.length).to.equal 0
+      context 'setting the empty again', ->
+        beforeEach ->
+          collection.setState {}
+
+        it 'should raise stateChange event', ->
+          expect(spy).to.have.been.calledTwice
+          expect(spy).to.have.been.calledWith {}, collection
 
     context 'with default values', ->
       beforeEach ->
         collection.DEFAULTS = _.extend {}, MockCollection::DEFAULTS
           , some_value: 5
         collection.setState other_value: 'a'
-        sandbox.server.respond()
 
       it 'should return proper simple state', ->
         state = collection.getState()
@@ -124,6 +172,7 @@ define (require) ->
         collection.prefix = 'local'
         collection.setState local_page: 20, local_per_page: 15
           , some_global: 'a'
+        collection.fetch()
         sandbox.server.respond()
 
       it 'should initialize state and alien state properly', ->
@@ -160,6 +209,7 @@ define (require) ->
     context 'url overriding', ->
       beforeEach ->
         collection.setState coo: 'hoo'
+        collection.fetch()
         sandbox.server.respond()
 
       it 'should override url with custom rootUrl', ->
@@ -187,6 +237,7 @@ define (require) ->
           beforeEach ->
             collection.urlRoot = urlRoots[key]
             collection.setState a: 'b'
+            collection.fetch()
             sandbox.server.respond()
 
           it 'should request proper urls', ->

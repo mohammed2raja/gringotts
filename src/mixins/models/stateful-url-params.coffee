@@ -83,12 +83,39 @@ define (require) ->
 
     ###*
      * Sets current state.
-     * @param {Object} state - Queryparams for the new state
+     * @param {String|Object} state  Queryparams for the new state
+     * @return {Array}      Array of changed value keys.
     ###
-    setState: (state={}) ->
-      @state = @stripEmptyOrDefault @unprefixKeys state
-      @trigger 'stateChange', @state, this
-      @fetch(reset: true)?.fail => @reset()
+    setState: (state) ->
+      if _.isString state
+        @setStateString state
+      else
+        @setStateHash state
+
+    ###*
+     * Sets current state in string format.
+     * @param {String}  state   Queryparams in string format "a=b&c=d"
+     * @return {Array}      Array of changed value keys.
+    ###
+    setStateString: (state='') ->
+      @setStateHash utils.querystring.parse state
+
+    ###*
+     * Sets current state in object format.
+     * @param {Object}  state   Queryparams in object format {a: 'b', c: 'd'}
+     * @return {Array}      Array of changed value keys.
+    ###
+    setStateHash: (state={}) ->
+      unless _.isObject state
+        throw new Error 'New state should be String or Object'
+      newState = @stripEmptyOrDefault @unprefixKeys state
+      diff = @stateDiff @state, newState
+      if diff.length
+        @state = newState
+        @trigger 'stateChange', newState, this
+        diff
+      else
+        null
 
     ###*
      * Strips the state from all undefined or default values
@@ -155,19 +182,27 @@ define (require) ->
           url = bases
       url
 
+    ###*
+     * Returns difference between two objects.
+     * @return {Array}  Array of different value keys.
+    ###
+    stateDiff: (stateA, stateB) ->
+      diffA = _.keys _.pick stateA, (v, k) -> not _.isEqual stateB[k], v
+      diffB = _.keys _.pick stateB, (v, k) -> not _.isEqual stateA[k], v
+      difference = _.union diffA, diffB
+
     class StateProxy
       _.extend @prototype, Backbone.Events
 
-      constructor: (collection) ->
-        @getState = _.bind collection.getState, collection
-        @listenTo collection, 'stateChange', (state) =>
+      constructor: (statefull) ->
+        @getState = _.bind statefull.getState, statefull
+        @listenTo statefull, 'stateChange', (state) =>
           @trigger 'stateChange', state, this
 
       dispose: ->
         delete @getState
         @stopListening()
         @off()
-
 
     ###*
      * A simple proxy object with only getState method to pass around.
