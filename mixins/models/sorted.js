@@ -3,9 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var StatefulUrlParams, helper, utils;
+    var ForcedReset, StatefulUrlParams, helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
+    ForcedReset = require('./forced-reset');
     StatefulUrlParams = require('./stateful-url-params');
 
     /**
@@ -37,7 +38,7 @@
 
         return Sorted;
 
-      })(utils.mix(base)["with"](StatefulUrlParams));
+      })(utils.mix(base)["with"](StatefulUrlParams, ForcedReset));
     };
   });
 

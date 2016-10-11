@@ -26,8 +26,9 @@
 
       CollectionView.prototype.animationEndClass = 'in';
 
-      CollectionView.prototype.modelsBy = function(rows) {
+      CollectionView.prototype.modelsFrom = function(rows) {
         var itemViews, models;
+        rows = rows.length ? rows : [rows];
         itemViews = _.values(this.getItemViews());
         return models = _.filter(itemViews, function(v) {
           var ref;
@@ -37,8 +38,9 @@
         });
       };
 
-      CollectionView.prototype.rowsBy = function(models) {
+      CollectionView.prototype.rowsFrom = function(models) {
         var itemViews, rows;
+        models = models.length ? models : [models];
         itemViews = _.values(this.getItemViews());
         return rows = _.filter(itemViews, function(v) {
           var ref;

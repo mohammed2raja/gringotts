@@ -3,9 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var StatefulUrlParams, SyncKey, helper, utils;
+    var ForcedReset, StatefulUrlParams, SyncKey, helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
+    ForcedReset = require('./forced-reset');
     StatefulUrlParams = require('./stateful-url-params');
     SyncKey = require('./sync-key');
 
@@ -58,7 +59,7 @@
 
         return Paginated;
 
-      })(utils.mix(base)["with"](StatefulUrlParams, SyncKey));
+      })(utils.mix(base)["with"](StatefulUrlParams, ForcedReset, SyncKey));
     };
   });
 

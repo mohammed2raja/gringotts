@@ -122,23 +122,56 @@
 
         /**
          * Sets current state.
-         * @param {Object} state - Queryparams for the new state
+         * @param {String|Object} state  Queryparams for the new state
+         * @return {Array}      Array of changed value keys.
          */
 
         StatefulUrlParams.prototype.setState = function(state) {
-          var ref;
+          if (_.isString(state)) {
+            return this.setStateString(state);
+          } else {
+            return this.setStateHash(state);
+          }
+        };
+
+
+        /**
+         * Sets current state in string format.
+         * @param {String}  state   Queryparams in string format "a=b&c=d"
+         * @return {Array}      Array of changed value keys.
+         */
+
+        StatefulUrlParams.prototype.setStateString = function(state) {
+          if (state == null) {
+            state = '';
+          }
+          return this.setStateHash(utils.querystring.parse(state));
+        };
+
+
+        /**
+         * Sets current state in object format.
+         * @param {Object}  state   Queryparams in object format {a: 'b', c: 'd'}
+         * @return {Array}      Array of changed value keys.
+         */
+
+        StatefulUrlParams.prototype.setStateHash = function(state) {
+          var diff, newState;
           if (state == null) {
             state = {};
           }
-          this.state = this.stripEmptyOrDefault(this.unprefixKeys(state));
-          this.trigger('stateChange', this.state, this);
-          return (ref = this.fetch({
-            reset: true
-          })) != null ? ref.fail((function(_this) {
-            return function() {
-              return _this.reset();
-            };
-          })(this)) : void 0;
+          if (!_.isObject(state)) {
+            throw new Error('New state should be String or Object');
+          }
+          newState = this.stripEmptyOrDefault(this.unprefixKeys(state));
+          diff = this.stateDiff(this.state, newState);
+          if (diff.length) {
+            this.state = newState;
+            this.trigger('stateChange', newState, this);
+            return diff;
+          } else {
+            return null;
+          }
         };
 
 
@@ -246,12 +279,29 @@
           return url;
         };
 
+
+        /**
+         * Returns difference between two objects.
+         * @return {Array}  Array of different value keys.
+         */
+
+        StatefulUrlParams.prototype.stateDiff = function(stateA, stateB) {
+          var diffA, diffB, difference;
+          diffA = _.keys(_.pick(stateA, function(v, k) {
+            return !_.isEqual(stateB[k], v);
+          }));
+          diffB = _.keys(_.pick(stateB, function(v, k) {
+            return !_.isEqual(stateA[k], v);
+          }));
+          return difference = _.union(diffA, diffB);
+        };
+
         StateProxy = (function() {
           _.extend(StateProxy.prototype, Backbone.Events);
 
-          function StateProxy(collection) {
-            this.getState = _.bind(collection.getState, collection);
-            this.listenTo(collection, 'stateChange', (function(_this) {
+          function StateProxy(statefull) {
+            this.getState = _.bind(statefull.getState, statefull);
+            this.listenTo(statefull, 'stateChange', (function(_this) {
               return function(state) {
                 return _this.trigger('stateChange', state, _this);
               };
