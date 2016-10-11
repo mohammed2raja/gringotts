@@ -72,14 +72,14 @@ define (require) ->
      * Redirect to current route with new query params.
      * @param {Object} state to build URL query params with.
     ###
-    setBrowserState: (state={}) ->
+    setBrowserState: (state={}, options) ->
       unless @routeState
         throw new Error "Can't set browser state since @routeState isn't set."
       unless @routeName
         throw new Error "Can't set browser state since @routeName isn't set."
       @muteStateChangeEvent = true # we don't want handle our own state change
       utils.redirectTo @routeName, @routeParams,
-        query: @routeState.getState state
+        _.extend {}, options, query: @routeState.getState state
 
     ###*
      * Override this method to add your logic upon browser state change.

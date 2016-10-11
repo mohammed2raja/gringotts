@@ -17,6 +17,13 @@ define (require) ->
     sandbox = null
     view = null
 
+    beforeEach ->
+      sandbox = sinon.sandbox.create()
+      sandbox.stub utils, 'redirectTo'
+
+    afterEach ->
+      sandbox.restore()
+
     context 'view', ->
       beforeEach ->
         view = new MockView {
@@ -59,7 +66,6 @@ define (require) ->
       collection = null
 
       beforeEach ->
-        sandbox = sinon.sandbox.create()
         sandbox.stub Chaplin.View::, 'getTemplateFunction'
         collection = new Chaplin.Collection [1, 2, 3]
         view = new MockCollectionView {
@@ -70,7 +76,6 @@ define (require) ->
         }
 
       afterEach ->
-        sandbox.restore()
         collection.dispose()
         view.dispose()
 
@@ -96,20 +101,32 @@ define (require) ->
         expect(state).to.eql a: 1, b: 2
 
       context 'on set', ->
+        options = null
+
         beforeEach ->
-          sandbox.stub utils, 'redirectTo'
-          view.setBrowserState c: 3
+          view.setBrowserState {c: 3}, options
 
         it 'should call redirectTo', ->
           expect(utils.redirectTo).to.have.been.calledWith 'that-route',
             'those-params', query: a: 1, b: 2, c: 3
+
+        context 'with options', ->
+          before ->
+            options = foo: 'some'
+
+          after ->
+            options = null
+
+          it 'should call redirectTo with options', ->
+            expect(utils.redirectTo).to.have.been
+              .calledWith 'that-route', 'those-params',
+                query: {a: 1, b: 2, c: 3}, foo: 'some'
 
     context 'collection view with proxy state', ->
       collection = null
       proxy = null
 
       beforeEach ->
-        sandbox = sinon.sandbox.create()
         sandbox.stub Chaplin.View::, 'getTemplateFunction'
         collection = new Chaplin.Collection [1, 2, 3]
         proxy = getState: -> a: 1, b: 2
@@ -122,7 +139,6 @@ define (require) ->
         }
 
       afterEach ->
-        sandbox.restore()
         collection.dispose()
         view.dispose()
 
