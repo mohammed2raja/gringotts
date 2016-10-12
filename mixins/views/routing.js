@@ -123,7 +123,7 @@
          * @param {Object} state to build URL query params with.
          */
 
-        Routing.prototype.setBrowserState = function(state) {
+        Routing.prototype.setBrowserState = function(state, options) {
           if (state == null) {
             state = {};
           }
@@ -134,9 +134,9 @@
             throw new Error("Can't set browser state since @routeName isn't set.");
           }
           this.muteStateChangeEvent = true;
-          return utils.redirectTo(this.routeName, this.routeParams, {
+          return utils.redirectTo(this.routeName, this.routeParams, _.extend({}, options, {
             query: this.routeState.getState(state)
-          });
+          }));
         };
 
 
