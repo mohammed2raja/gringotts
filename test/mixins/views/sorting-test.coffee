@@ -35,7 +35,7 @@ define (require) ->
         "#{path}?#{utils.querystring.stringify query}"
       collection = new MockCollection()
       view = new MockSortingView _.extend {routeName: 'test', collection}
-      collection.setState {}
+      collection.setQuery {}
       collection.fetch()
       sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
       sandbox.server.respond()
@@ -69,7 +69,7 @@ define (require) ->
 
     context 'changing sorting order', ->
       beforeEach ->
-        collection.setState order: 'asc', sort_by: 'attr_b'
+        collection.setQuery order: 'asc', sort_by: 'attr_b'
         collection.fetch()
         sandbox.server.respond()
 

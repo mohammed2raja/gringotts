@@ -3,7 +3,7 @@ define (require) ->
   helper = require 'lib/mixin-helper'
   Sorted = require 'mixins/models/sorted'
   ForcedReset = require 'mixins/models/forced-reset'
-  StatefulUrlParams = require 'mixins/models/stateful-url-params'
+  Queryable = require 'mixins/models/queryable'
 
   class MockSortedCollection extends Sorted Chaplin.Collection
     urlRoot: '/test'
@@ -24,7 +24,7 @@ define (require) ->
       expect(collection).to.be.instanceOf MockSortedCollection
 
     it 'should have proper mixins applied', ->
-      expect(helper.instanceWithMixin collection, StatefulUrlParams).to.be.true
+      expect(helper.instanceWithMixin collection, Queryable).to.be.true
       expect(helper.instanceWithMixin collection, ForcedReset).to.be.true
 
     context 'fetching', ->
@@ -33,6 +33,6 @@ define (require) ->
         sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
         sandbox.server.respond()
 
-      it 'should query the server with the default state', ->
+      it 'should query the server with the default query', ->
         request = _.last sandbox.server.requests
         expect(request.url).to.contain 'order=desc'

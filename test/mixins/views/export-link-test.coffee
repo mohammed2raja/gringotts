@@ -7,14 +7,14 @@ define (require) ->
 
   describe 'ExportLink', ->
     view = null
-    state = null
+    query = null
 
     beforeEach ->
       view = new MockCollectionView {
         collection:
           models: []
-          getState: -> _.extend {sort_by: 'swag'}, state
-          url: (url, state) -> "#{url}?#{utils.querystring.stringify(state)}"
+          getQuery: -> _.extend {sort_by: 'swag'}, query
+          url: (url, query) -> "#{url}?#{utils.querystring.stringify query}"
       }
 
     it 'should generate export link', ->
@@ -22,7 +22,7 @@ define (require) ->
 
     context 'with pagination', ->
       beforeEach ->
-        state = page: 5, per_page: 500
+        query = page: 5, per_page: 500
 
       it 'should exclude pagination params', ->
         expect(view.exportLink 'nasty/url').to.equal 'nasty/url?sort_by=swag'

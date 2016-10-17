@@ -2,9 +2,9 @@ define (require) ->
   Chaplin = require 'chaplin'
   Backbone = require 'backbone'
   swissAjax = require 'lib/swiss-ajax'
-  StatefulUrlParams = require 'mixins/models/stateful-url-params'
+  Queryable = require 'mixins/models/queryable'
 
-  class MockCollection extends StatefulUrlParams Chaplin.Collection
+  class MockCollection extends Queryable Chaplin.Collection
     DEFAULTS: _.extend {}, @::DEFAULTS, foo: 'moo', boo: 'goo'
     urlRoot: '/test'
 
@@ -14,7 +14,7 @@ define (require) ->
     _.each notexpecting, (notexp) ->
       expect(request.url).to.not.contain notexp
 
-  describe 'StatefulUrlParams mixin', ->
+  describe 'Queryable mixin', ->
     sandbox = null
     collection = null
 
@@ -28,55 +28,55 @@ define (require) ->
 
     it 'should be initialized', ->
       expect(collection).to.be.instanceOf MockCollection
-      expect(collection.state).to.be.eql {}
+      expect(collection.query).to.be.eql {}
 
-    context 'proxyState', ->
+    context 'proxyQueryable', ->
       beforeEach ->
-        collection.state = a: 1, b: 2
+        collection.query = a: 1, b: 2
 
       it 'should return proper proxy', ->
-        state = collection.proxyState().getState {c: 3}, inclDefaults: yes
-        expect(state).to.eql a: 1, b: 2, c: 3, foo: 'moo', boo: 'goo'
+        query = collection.proxyQueryable().getQuery {c: 3}, inclDefaults: yes
+        expect(query).to.eql a: 1, b: 2, c: 3, foo: 'moo', boo: 'goo'
 
-      context 'trigerring stateChange event on collection', ->
+      context 'trigerring queryChange event on collection', ->
         eventSpy = null
-        proxyState = null
+        proxyQueryable = null
 
         beforeEach ->
-          proxyState = collection.proxyState()
-          proxyState.on 'stateChange', eventSpy = sandbox.spy()
-          collection.setState x: 1, y: 2
+          proxyQueryable = collection.proxyQueryable()
+          proxyQueryable.on 'queryChange', eventSpy = sandbox.spy()
+          collection.setQuery x: 1, y: 2
 
         it 'should re-trigger even on proxy', ->
           expect(eventSpy).to.have.been.calledWith x: 1, y: 2
 
         context 'when disposed', ->
           beforeEach ->
-            proxyState.dispose()
-            collection.setState w: 1, e: 2
+            proxyQueryable.dispose()
+            collection.setQuery w: 1, e: 2
 
           it 'should not re-trigger collection events', ->
             expect(eventSpy).to.have.not.been.calledWith w: 1, e: 2
 
-    context 'setting empty state', ->
+    context 'setting empty query', ->
       difference = null
 
       beforeEach ->
-        difference = collection.setState {}
+        difference = collection.setQuery {}
 
-      it 'should return null difference for setState', ->
+      it 'should return null difference for setQuery', ->
         expect(difference).to.be.null
 
-    context 'setting the hash state', ->
+    context 'setting the hash query', ->
       difference = null
 
       beforeEach ->
         collection.ignoreKeys = ['coo']
-        difference = collection.setState foo: 1, boo: 'goo', coo: 'hoo'
+        difference = collection.setQuery foo: 1, boo: 'goo', coo: 'hoo'
         collection.fetch()
         sandbox.server.respond()
 
-      it 'should return proper difference for setState call', ->
+      it 'should return proper difference for setQuery call', ->
         expect(difference).to.eql ['foo', 'coo']
 
       it 'should fetch from the server with proper url', ->
@@ -88,33 +88,33 @@ define (require) ->
         request = _.last sandbox.server.requests
         expect(request.url).to.not.contain 'coo=hoo'
 
-      context 'setting the same state again', ->
+      context 'setting the same query again', ->
         beforeEach ->
-          difference = collection.setState boo: 'goo', foo: 1, coo: 'hoo'
+          difference = collection.setQuery boo: 'goo', foo: 1, coo: 'hoo'
 
-        it 'should return null difference for setState call', ->
+        it 'should return null difference for setQuery call', ->
           expect(difference).to.be.null
 
-      context 'setting the empty state', ->
+      context 'setting the empty query', ->
         beforeEach ->
-          difference = collection.setState {}
+          difference = collection.setQuery {}
 
-        it 'should return proper difference fo setState', ->
+        it 'should return proper difference fo setQuery', ->
           expect(difference).to.eql ['foo', 'coo']
 
-    context 'setting the string state', ->
+    context 'setting the string query', ->
       difference = null
 
       beforeEach ->
-        difference = collection.setState 'boo=goo&coo=hoo'
+        difference = collection.setQuery 'boo=goo&coo=hoo'
         collection.fetch()
         sandbox.server.respond()
 
-      it 'should return proper difference for setState', ->
+      it 'should return proper difference for setQuery', ->
         expect(difference).to.eql ['coo']
 
-      it 'should update state properly', ->
-        expect(collection.getState {}, inclDefaults: yes).to
+      it 'should update query properly', ->
+        expect(collection.getQuery {}, inclDefaults: yes).to
           .eql boo: 'goo', coo: 'hoo', foo: 'moo'
 
       it 'should fetch from the server with proper url', ->
@@ -127,57 +127,92 @@ define (require) ->
 
       beforeEach ->
         spy = sandbox.spy()
-        collection.on 'stateChange', spy
-        collection.setState a: 'b', c: 'd'
+        collection.on 'queryChange', spy
+        collection.setQuery a: 'b', c: 'd'
 
       afterEach ->
         collection.dispose()
 
-      it 'should raise stateChange event', ->
+      it 'should raise queryChange event', ->
         expect(spy).to.have.been.calledOnce
         expect(spy).to.have.been.calledWith a: 'b', c: 'd', collection
 
-      context 'setting the same state again', ->
+      context 'setting the same query again', ->
         beforeEach ->
-          collection.setState c: 'd', a: 'b'
+          collection.setQuery c: 'd', a: 'b'
 
-        it 'should not raise stateChange event', ->
+        it 'should not raise queryChange event', ->
           expect(spy).to.have.been.calledOnce
 
       context 'setting the empty again', ->
         beforeEach ->
-          collection.setState {}
+          collection.setQuery {}
 
-        it 'should raise stateChange event', ->
+        it 'should raise queryChange event', ->
           expect(spy).to.have.been.calledTwice
           expect(spy).to.have.been.calledWith {}, collection
+
+    context 'fetchWithQuery method', ->
+      isUnsynced = null
+
+      beforeEach ->
+        collection.isUnsynced = -> isUnsynced
+        collection.ignoreKeys = ['coo']
+        sandbox.stub collection, 'fetch'
+
+      context 'when query changed with different keys', ->
+        beforeEach ->
+          collection.fetchWithQuery goo: 'aaa', coo: 'hoo'
+
+        it 'should set query', ->
+          expect(collection.getQuery()).to.eql goo: 'aaa', coo: 'hoo'
+
+        it 'should fetch collection', ->
+          expect(collection.fetch).to.have.been.calledOnce
+
+      context 'when query changed only with ignored keys', ->
+        beforeEach ->
+          collection.fetchWithQuery coo: 'noo'
+
+        it 'should set query', ->
+          expect(collection.getQuery()).to.eql coo: 'noo'
+
+        it 'should not fetch collection', ->
+          expect(collection.fetch).to.not.have.been.calledOnce
+
+        context 'but collection was not synced yet', ->
+          before ->
+            isUnsynced = true
+
+          it 'should fetch collection', ->
+            expect(collection.fetch).to.have.been.calledOnce
 
     context 'with default values', ->
       beforeEach ->
         collection.DEFAULTS = _.extend {}, MockCollection::DEFAULTS
           , some_value: 5
-        collection.setState other_value: 'a'
+        collection.setQuery other_value: 'a'
 
-      it 'should return proper simple state', ->
-        state = collection.getState()
-        expect(state).to.eql other_value: 'a'
+      it 'should return proper simple query', ->
+        query = collection.getQuery()
+        expect(query).to.eql other_value: 'a'
 
-      it 'should return proper state with defaults', ->
-        state = collection.getState {}, inclDefaults: yes
-        expect(state).to.eql other_value: 'a', some_value: 5
+      it 'should return proper query with defaults', ->
+        query = collection.getQuery {}, inclDefaults: yes
+        expect(query).to.eql other_value: 'a', some_value: 5
           , foo: 'moo', boo: 'goo'
 
     context 'with custom prefix', ->
       beforeEach ->
         collection.prefix = 'local'
-        collection.setState local_page: 20, local_per_page: 15
+        collection.setQuery local_page: 20, local_per_page: 15
           , some_global: 'a'
         collection.fetch()
         sandbox.server.respond()
 
-      it 'should initialize state and alien state properly', ->
-        expect(collection.state).to.eql page: 20, per_page: 15
-        expect(collection.alienState).to.eql some_global: 'a'
+      it 'should initialize query and alien query properly', ->
+        expect(collection.query).to.eql page: 20, per_page: 15
+        expect(collection.alienQuery).to.eql some_global: 'a'
 
       it 'should fetch from the server', ->
         request = _.last sandbox.server.requests
@@ -185,15 +220,15 @@ define (require) ->
         notexpecting = ['some_global']
         testRequest request, expecting, notexpecting
 
-      context 'on getting state', ->
+      context 'on getting query', ->
         opts = null
-        state = null
+        query = null
 
         beforeEach ->
-          state = collection.getState {}, opts
+          query = collection.getQuery {}, opts
 
-        it 'should return state with prefix keys', ->
-          expect(state).to.eql local_page: 20, local_per_page: 15
+        it 'should return query with prefix keys', ->
+          expect(query).to.eql local_page: 20, local_per_page: 15
             , some_global: 'a'
 
         context 'with usePrefix no option', ->
@@ -203,12 +238,12 @@ define (require) ->
           after ->
             opts = null
 
-          it 'should return state with simple keys', ->
-            expect(state).to.eql page: 20, per_page: 15
+          it 'should return query with simple keys', ->
+            expect(query).to.eql page: 20, per_page: 15
 
     context 'url overriding', ->
       beforeEach ->
-        collection.setState coo: 'hoo'
+        collection.setQuery coo: 'hoo'
         collection.fetch()
         sandbox.server.respond()
 
@@ -217,7 +252,7 @@ define (require) ->
         expect(resultUrl.startsWith 'sneaky/url').to.be.true
         expect(resultUrl).to.have.string 'coo=hoo'
 
-      it 'should override url with custom state', ->
+      it 'should override url with custom query', ->
         expect(collection.url 'nasty/url', doo: 'woo').
           to.equal 'nasty/url?doo=woo'
 
@@ -236,7 +271,7 @@ define (require) ->
         context "of type #{key}", ->
           beforeEach ->
             collection.urlRoot = urlRoots[key]
-            collection.setState a: 'b'
+            collection.setQuery a: 'b'
             collection.fetch()
             sandbox.server.respond()
 

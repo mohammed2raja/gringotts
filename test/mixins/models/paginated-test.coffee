@@ -4,7 +4,7 @@ define (require) ->
   Paginated = require 'mixins/models/paginated'
   SyncKey = require 'mixins/models/sync-key'
   ForcedReset = require 'mixins/models/forced-reset'
-  StatefulUrlParams = require 'mixins/models/stateful-url-params'
+  Queryable = require 'mixins/models/queryable'
 
   class MockPaginatedCollection extends Paginated Chaplin.Collection
     syncKey: 'someItems'
@@ -26,7 +26,7 @@ define (require) ->
       expect(collection).to.be.instanceOf MockPaginatedCollection
 
     it 'should have proper mixins applied', ->
-      expect(helper.instanceWithMixin collection, StatefulUrlParams).to.be.true
+      expect(helper.instanceWithMixin collection, Queryable).to.be.true
       expect(helper.instanceWithMixin collection, SyncKey).to.be.true
       expect(helper.instanceWithMixin collection, ForcedReset).to.be.true
 
@@ -43,7 +43,7 @@ define (require) ->
         }]
         sandbox.server.respond()
 
-      it 'should query the server with the default state', ->
+      it 'should query the server with the default query params', ->
         request = _.last sandbox.server.requests
         _.each ['page=1', 'per_page=30'], (i) ->
           expect(request.url).to.contain i

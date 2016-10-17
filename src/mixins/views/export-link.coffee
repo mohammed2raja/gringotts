@@ -11,12 +11,12 @@ define (require) ->
     ###*
      * Generates a link to export items from the collection bypassing pagination
      * parameters. The mixin should be applied to views that
-     * have collection property. Collection should have getState() method.
+     * have collection property. Collection should have getQuery() method.
      * @param  {String} baseUrl - to build export url
      * @return {String}
     ###
     exportLink: (baseUrl) ->
-      state = _.clone @collection.getState {}, inclDefaults: yes
-      delete state.page
-      delete state.per_page
-      @collection.url baseUrl, state
+      query = _.clone @collection.getQuery {}, inclDefaults: yes
+      delete query.page
+      delete query.per_page
+      @collection.url baseUrl, query

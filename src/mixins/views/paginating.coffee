@@ -26,9 +26,9 @@ define (require) ->
 
     initialize: ->
       helper.assertCollectionView this
-      unless _.isFunction @collection?.getState
+      unless _.isFunction @collection?.getQuery
         throw new Error 'This view should have a collection with
-          getState() method. Most probably with Paginated mixin applied.'
+          getQuery() method. Most probably with Paginated mixin applied.'
       unless _.isFunction @collection?.isSyncing
         throw new Error 'This view should have a collection with
           isSyncing() method. Most probably with ActiveSyncMachine
@@ -76,9 +76,9 @@ define (require) ->
     # setup what the pagination template is expecting
     getPageInfo: ->
       infinite = @collection.infinite
-      state = @collection.getState {}, inclDefaults: yes, usePrefix: no
-      perPage = parseInt state.per_page
-      page = if infinite then state.page else parseInt state.page
+      query = @collection.getQuery {}, inclDefaults: yes, usePrefix: no
+      perPage = parseInt query.per_page
+      page = if infinite then query.page else parseInt query.page
       info =
         viewId: @cid
         count: @collection.count
@@ -97,12 +97,12 @@ define (require) ->
         info.next = if page < info.pages then page + 1 else 0
         info.range = @getRangeString page, perPage, info
 
-      info.nextState =
-        if info.next then @collection.getState page: info.next
-        else @collection.getState()
-      info.prevState =
-        if info.prev then @collection.getState page: info.prev
-        else @collection.getState()
+      info.nextQuery =
+        if info.next then @collection.getQuery page: info.next
+        else @collection.getQuery()
+      info.prevQuery =
+        if info.prev then @collection.getQuery page: info.prev
+        else @collection.getQuery()
 
       info.routeName = @routeName
       info.routeParams = @routeParams

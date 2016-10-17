@@ -6,28 +6,29 @@ define (require) ->
    * A utility mixin for a View or a CollectionView. It helps to pass routing
    * parameters down the view hierarchy. Also adds helper methods to get current
    * browser query state (usually it's received from a Collection or a Model
-   * with StatefulUrlParams mixin applied) or to redirect browser to current
+   * with Queryable mixin applied) or to redirect browser to current
    * route with updated query state.
-   * The routeState is expected to be a StatefulUrlParams or it's proxy
-   * with getState() method.
+   * The routeQueryable is expected to be a Queryable or it's proxy
+   * with getQuery() method.
    * @param  {View|CollectionView} superclass
   ###
   (superclass) -> class Routing extends superclass
     helper.setTypeName @prototype, 'Routing'
 
-    ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeState']
+    ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeQueryable']
     optionNames: @::optionNames?.concat @::ROUTING_OPTIONS
 
     initialize: ->
       helper.assertViewOrCollectionView this
       super
-      @routeState = (@collection or @model)?.proxyState?() unless @routeState
-      if @routeState and @routeState.trigger
-        @listenTo @routeState, 'stateChange', (state) ->
-          unless @muteStateChangeEvent
-            @onBrowserStateChange state
+      unless @routeQueryable
+        @routeQueryable = (@collection or @model)?.proxyQueryable?()
+      if @routeQueryable?.trigger
+        @listenTo @routeQueryable, 'queryChange', (query) ->
+          unless @muteQueryChangeEvent
+            @onBrowserQueryChange query
           else
-            delete @muteStateChangeEvent
+            delete @muteQueryChangeEvent
 
     ###*
      * Overrides Chaplin.CollectionView method to init sub items with
@@ -60,35 +61,36 @@ define (require) ->
       _.extend @routeOpts(), hash
 
     ###*
-     * Returns current state of the browser query relevant to the routeName.
+     * Returns current query of the browser query relevant to the routeName.
      * @return {Object}
     ###
-    getBrowserState: ->
-      unless @routeState
-        throw new Error "Can't get state since @routeState isn't set."
-      @routeState.getState {}, inclDefaults: yes
+    getBrowserQuery: ->
+      unless @routeQueryable
+        throw new Error "Can't get query since @routeQueryable isn't set."
+      @routeQueryable.getQuery {}, inclDefaults: yes
 
     ###*
      * Redirect to current route with new query params.
-     * @param {Object} state to build URL query params with.
+     * @param {Object} query to build URL query params with.
     ###
-    setBrowserState: (state={}, options) ->
-      unless @routeState
-        throw new Error "Can't set browser state since @routeState isn't set."
+    setBrowserQuery: (query={}, options) ->
+      unless @routeQueryable
+        throw new Error "Can't set browser query
+          since @routeQueryable isn't set."
       unless @routeName
-        throw new Error "Can't set browser state since @routeName isn't set."
-      @muteStateChangeEvent = true # we don't want handle our own state change
+        throw new Error "Can't set browser query since @routeName isn't set."
+      @muteQueryChangeEvent = true # we don't want handle our own query change
       utils.redirectTo @routeName, @routeParams,
-        _.extend {}, options, query: @routeState.getState state
+        _.extend {}, options, query: @routeQueryable.getQuery query
 
     ###*
-     * Override this method to add your logic upon browser state change.
-     * @param  {Object} state current browser state from URL query params.
+     * Override this method to add your logic upon browser query change.
+     * @param  {Object} query   current browser query from URL query params.
     ###
-    onBrowserStateChange: (state) ->
+    onBrowserQueryChange: (query) ->
 
     dispose: ->
       @ROUTING_OPTIONS.forEach (key) =>
         delete @[key]
-      @routeState?.dispose?()
+      @routeQueryable?.dispose?()
       super

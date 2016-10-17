@@ -9,9 +9,9 @@ define (require) ->
   class MockCollectionView extends Routing Chaplin.CollectionView
     itemView: Chaplin.View
 
-    onBrowserStateChange: (state) ->
+    onBrowserQueryChange: (query) ->
       super
-      @gotBrowserState = state
+      @gotBrowserQuery = query
 
   describe 'Routing', ->
     sandbox = null
@@ -29,7 +29,7 @@ define (require) ->
         view = new MockView {
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeState: {}
+          routeQueryable: {}
         }
 
       afterEach ->
@@ -38,7 +38,7 @@ define (require) ->
       it 'should set properties', ->
         expect(view.routeName).to.equal 'that-route'
         expect(view.routeParams).to.equal 'those-params'
-        expect(view.routeState).to.eql {}
+        expect(view.routeQueryable).to.eql {}
 
       it 'should return properties in template data', ->
         data = view.getTemplateData()
@@ -50,7 +50,7 @@ define (require) ->
         expect(options).to.eql {
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeState: {}
+          routeQueryable: {}
         }
 
       it 'should return extended route options', ->
@@ -59,7 +59,7 @@ define (require) ->
           a: 1
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeState: {}
+          routeQueryable: {}
         }
 
     context 'collection view', ->
@@ -72,7 +72,7 @@ define (require) ->
           collection
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeState: {}
+          routeQueryable: {}
         }
 
       afterEach ->
@@ -83,28 +83,28 @@ define (require) ->
         childView = _.first view.subviews
         expect(childView.routeName).to.equal 'that-route'
         expect(childView.routeParams).to.equal 'those-params'
-        expect(childView.routeState).to.eql {}
+        expect(childView.routeQueryable).to.eql {}
 
-    context 'browser state', ->
+    context 'browser query', ->
       beforeEach ->
         view = new MockView {
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeState: getState: (state) -> _.extend {a: 1, b: 2}, state
+          routeQueryable: getQuery: (query) -> _.extend {a: 1, b: 2}, query
         }
 
         afterEach ->
           view.dispose()
 
-      it 'should return state', ->
-        state = view.getBrowserState()
-        expect(state).to.eql a: 1, b: 2
+      it 'should return query', ->
+        query = view.getBrowserQuery()
+        expect(query).to.eql a: 1, b: 2
 
       context 'on set', ->
         options = null
 
         beforeEach ->
-          view.setBrowserState {c: 3}, options
+          view.setBrowserQuery {c: 3}, options
 
         it 'should call redirectTo', ->
           expect(utils.redirectTo).to.have.been.calledWith 'that-route',
@@ -122,16 +122,16 @@ define (require) ->
               .calledWith 'that-route', 'those-params',
                 query: {a: 1, b: 2, c: 3}, foo: 'some'
 
-    context 'collection view with proxy state', ->
+    context 'collection view with proxy queryable', ->
       collection = null
       proxy = null
 
       beforeEach ->
         sandbox.stub Chaplin.View::, 'getTemplateFunction'
         collection = new Chaplin.Collection [1, 2, 3]
-        proxy = getState: -> a: 1, b: 2
+        proxy = getQuery: -> a: 1, b: 2
         _.extend proxy, Backbone.Events
-        collection.proxyState = -> proxy
+        collection.proxyQueryable = -> proxy
         view = new MockCollectionView {
           collection
           routeName: 'that-route'
@@ -142,20 +142,20 @@ define (require) ->
         collection.dispose()
         view.dispose()
 
-      it 'should take proxyState from collection', ->
-        expect(view.routeState.getState()).to.eql a: 1, b: 2
+      it 'should take query from collection', ->
+        expect(view.routeQueryable.getQuery()).to.eql a: 1, b: 2
 
-      context 'on proxy stateChange', ->
+      context 'on proxy queryChange', ->
         beforeEach ->
-          proxy.trigger 'stateChange', x: 1, y: 2
+          proxy.trigger 'queryChange', x: 1, y: 2
 
-        it 'should call virtual method onBrowserStateChange', ->
-          expect(view.gotBrowserState).to.eql x: 1, y: 2
+        it 'should call virtual method onBrowserQueryChange', ->
+          expect(view.gotBrowserQuery).to.eql x: 1, y: 2
 
-      context 'on browser state set', ->
+      context 'on browser query set', ->
         beforeEach ->
-          view.setBrowserState c: 3 # assuming that own sets mute 'stateChange'
-          proxy.trigger 'stateChange', q: 1, w: 2
+          view.setBrowserQuery c: 3 # assuming that own sets mute 'queryChange'
+          proxy.trigger 'queryChange', q: 1, w: 2
 
-        it 'should not call virtual method onBrowserStateChange', ->
-          expect(view.gotBrowserState).to.be.undefined
+        it 'should not call virtual method onBrowserQueryChange', ->
+          expect(view.gotBrowserQuery).to.be.undefined

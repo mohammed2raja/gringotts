@@ -35,9 +35,9 @@ define (require) ->
       helper.assertCollectionView this
       unless @sortableTableHeaders
         throw new Error 'The sortableTableHeaders should be set for this view.'
-      unless _.isFunction @collection?.getState
+      unless _.isFunction @collection?.getQuery
         throw new Error 'This view should have collection with
-          getState() method. Most probably with Sorted mixin applied.'
+          getQuery() method. Most probably with Sorted mixin applied.'
       super
 
     getTemplateData: ->
@@ -53,11 +53,11 @@ define (require) ->
       @highlightColumns()
 
     getSortInfo: ->
-      state = @collection.getState {}, inclDefaults: yes, usePrefix: no
-      if !state.sort_by
+      query = @collection.getQuery {}, inclDefaults: yes, usePrefix: no
+      if !query.sort_by
         throw new Error 'Please define a sort_by attribute within DEFAULTS'
       _.transform @sortableTableHeaders, (result, title, column) =>
-        order = if column is state.sort_by then state.order else ''
+        order = if column is query.sort_by then query.order else ''
         nextOrder = if order is 'asc' then 'desc' else 'asc'
         result[column] =
           viewId: @cid
@@ -66,7 +66,7 @@ define (require) ->
           order: order
           routeName: @routeName
           routeParams: @routeParams
-          nextState: @collection.getState order: nextOrder, sort_by: column
+          nextQuery: @collection.getQuery order: nextOrder, sort_by: column
         result
       , {}
 
@@ -74,8 +74,8 @@ define (require) ->
      * Highlights with a css class currently sorted table column.
     ###
     highlightColumns: ->
-      state = @collection.getState {}, inclDefaults: yes, usePrefix: no
-      idx = @$("th[data-sort=#{state.sort_by}]").index()
+      query = @collection.getQuery {}, inclDefaults: yes, usePrefix: no
+      idx = @$("th[data-sort=#{query.sort_by}]").index()
       @$("#{@listSelector} #{@itemView::tagName} td")
         .removeClass 'highlighted'
         .filter ":nth-child(#{idx + 1})"
