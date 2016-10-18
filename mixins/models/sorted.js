@@ -3,16 +3,16 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ForcedReset, StatefulUrlParams, helper, utils;
+    var ForcedReset, Queryable, helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
     ForcedReset = require('./forced-reset');
-    StatefulUrlParams = require('./stateful-url-params');
+    Queryable = require('./queryable');
 
     /**
-     * Adds sorting support to a Collection. It relies on StatefulUrlParams
-     * mixin to persist sorting state and add to url query params on every
-     * sync action.
+     * Adds sorting support to a Collection. It relies on Queryable
+     * mixin to persist sorting query state and add it to url query params
+     * on every sync action.
      * @param  {Collection} base superclass
      */
     return function(base) {
@@ -38,7 +38,7 @@
 
         return Sorted;
 
-      })(utils.mix(base)["with"](StatefulUrlParams, ForcedReset));
+      })(utils.mix(base)["with"](Queryable, ForcedReset));
     };
   });
 

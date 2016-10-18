@@ -11,10 +11,10 @@
      * A utility mixin for a View or a CollectionView. It helps to pass routing
      * parameters down the view hierarchy. Also adds helper methods to get current
      * browser query state (usually it's received from a Collection or a Model
-     * with StatefulUrlParams mixin applied) or to redirect browser to current
+     * with Queryable mixin applied) or to redirect browser to current
      * route with updated query state.
-     * The routeState is expected to be a StatefulUrlParams or it's proxy
-     * with getState() method.
+     * The routeQueryable is expected to be a Queryable or it's proxy
+     * with getQuery() method.
      * @param  {View|CollectionView} superclass
      */
     return function(superclass) {
@@ -30,23 +30,23 @@
 
         helper.setTypeName(Routing.prototype, 'Routing');
 
-        Routing.prototype.ROUTING_OPTIONS = ['routeName', 'routeParams', 'routeState'];
+        Routing.prototype.ROUTING_OPTIONS = ['routeName', 'routeParams', 'routeQueryable'];
 
         Routing.prototype.optionNames = (ref = Routing.prototype.optionNames) != null ? ref.concat(Routing.prototype.ROUTING_OPTIONS) : void 0;
 
         Routing.prototype.initialize = function() {
-          var ref1;
+          var ref1, ref2;
           helper.assertViewOrCollectionView(this);
           Routing.__super__.initialize.apply(this, arguments);
-          if (!this.routeState) {
-            this.routeState = (ref1 = this.collection || this.model) != null ? typeof ref1.proxyState === "function" ? ref1.proxyState() : void 0 : void 0;
+          if (!this.routeQueryable) {
+            this.routeQueryable = (ref1 = this.collection || this.model) != null ? typeof ref1.proxyQueryable === "function" ? ref1.proxyQueryable() : void 0 : void 0;
           }
-          if (this.routeState && this.routeState.trigger) {
-            return this.listenTo(this.routeState, 'stateChange', function(state) {
-              if (!this.muteStateChangeEvent) {
-                return this.onBrowserStateChange(state);
+          if ((ref2 = this.routeQueryable) != null ? ref2.trigger : void 0) {
+            return this.listenTo(this.routeQueryable, 'queryChange', function(query) {
+              if (!this.muteQueryChangeEvent) {
+                return this.onBrowserQueryChange(query);
               } else {
-                return delete this.muteStateChangeEvent;
+                return delete this.muteQueryChangeEvent;
               }
             });
           }
@@ -104,15 +104,15 @@
 
 
         /**
-         * Returns current state of the browser query relevant to the routeName.
+         * Returns current query of the browser query relevant to the routeName.
          * @return {Object}
          */
 
-        Routing.prototype.getBrowserState = function() {
-          if (!this.routeState) {
-            throw new Error("Can't get state since @routeState isn't set.");
+        Routing.prototype.getBrowserQuery = function() {
+          if (!this.routeQueryable) {
+            throw new Error("Can't get query since @routeQueryable isn't set.");
           }
-          return this.routeState.getState({}, {
+          return this.routeQueryable.getQuery({}, {
             inclDefaults: true
           });
         };
@@ -120,32 +120,32 @@
 
         /**
          * Redirect to current route with new query params.
-         * @param {Object} state to build URL query params with.
+         * @param {Object} query to build URL query params with.
          */
 
-        Routing.prototype.setBrowserState = function(state, options) {
-          if (state == null) {
-            state = {};
+        Routing.prototype.setBrowserQuery = function(query, options) {
+          if (query == null) {
+            query = {};
           }
-          if (!this.routeState) {
-            throw new Error("Can't set browser state since @routeState isn't set.");
+          if (!this.routeQueryable) {
+            throw new Error("Can't set browser query since @routeQueryable isn't set.");
           }
           if (!this.routeName) {
-            throw new Error("Can't set browser state since @routeName isn't set.");
+            throw new Error("Can't set browser query since @routeName isn't set.");
           }
-          this.muteStateChangeEvent = true;
+          this.muteQueryChangeEvent = true;
           return utils.redirectTo(this.routeName, this.routeParams, _.extend({}, options, {
-            query: this.routeState.getState(state)
+            query: this.routeQueryable.getQuery(query)
           }));
         };
 
 
         /**
-         * Override this method to add your logic upon browser state change.
-         * @param  {Object} state current browser state from URL query params.
+         * Override this method to add your logic upon browser query change.
+         * @param  {Object} query   current browser query from URL query params.
          */
 
-        Routing.prototype.onBrowserStateChange = function(state) {};
+        Routing.prototype.onBrowserQueryChange = function(query) {};
 
         Routing.prototype.dispose = function() {
           var ref1;
@@ -154,7 +154,7 @@
               return delete _this[key];
             };
           })(this));
-          if ((ref1 = this.routeState) != null) {
+          if ((ref1 = this.routeQueryable) != null) {
             if (typeof ref1.dispose === "function") {
               ref1.dispose();
             }

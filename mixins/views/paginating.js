@@ -48,8 +48,8 @@
         Paginating.prototype.initialize = function() {
           var ref, ref1;
           helper.assertCollectionView(this);
-          if (!_.isFunction((ref = this.collection) != null ? ref.getState : void 0)) {
-            throw new Error('This view should have a collection with getState() method. Most probably with Paginated mixin applied.');
+          if (!_.isFunction((ref = this.collection) != null ? ref.getQuery : void 0)) {
+            throw new Error('This view should have a collection with getQuery() method. Most probably with Paginated mixin applied.');
           }
           if (!_.isFunction((ref1 = this.collection) != null ? ref1.isSyncing : void 0)) {
             throw new Error('This view should have a collection with isSyncing() method. Most probably with ActiveSyncMachine mixin applied.');
@@ -112,14 +112,14 @@
         };
 
         Paginating.prototype.getPageInfo = function() {
-          var infinite, info, page, perPage, state;
+          var infinite, info, page, perPage, query;
           infinite = this.collection.infinite;
-          state = this.collection.getState({}, {
+          query = this.collection.getQuery({}, {
             inclDefaults: true,
             usePrefix: false
           });
-          perPage = parseInt(state.per_page);
-          page = infinite ? state.page : parseInt(state.page);
+          perPage = parseInt(query.per_page);
+          page = infinite ? query.page : parseInt(query.page);
           info = {
             viewId: this.cid,
             count: this.collection.count,
@@ -138,12 +138,12 @@
             info.next = page < info.pages ? page + 1 : 0;
             info.range = this.getRangeString(page, perPage, info);
           }
-          info.nextState = info.next ? this.collection.getState({
+          info.nextQuery = info.next ? this.collection.getQuery({
             page: info.next
-          }) : this.collection.getState();
-          info.prevState = info.prev ? this.collection.getState({
+          }) : this.collection.getQuery();
+          info.prevQuery = info.prev ? this.collection.getQuery({
             page: info.prev
-          }) : this.collection.getState();
+          }) : this.collection.getQuery();
           info.routeName = this.routeName;
           info.routeParams = this.routeParams;
           return info;

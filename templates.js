@@ -6,7 +6,7 @@ Handlebars.registerPartial("pagination", Handlebars.template({"1":function(conta
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3=container.escapeExpression;
 
   return "    <a href=\""
-    + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.prevState : depth0),{"name":"url","hash":{},"data":data}))
+    + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.prevQuery : depth0),{"name":"url","hash":{},"data":data}))
     + "\"\n       class=\"prev-page "
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(4, data, 0),"data":data})) != null ? stack1 : "")
     + "\">\n      "
@@ -14,7 +14,7 @@ Handlebars.registerPartial("pagination", Handlebars.template({"1":function(conta
     + "\n    </a>\n    <strong>"
     + alias3(((helper = (helper = helpers.range || (depth0 != null ? depth0.range : depth0)) != null ? helper : alias2),(typeof helper === "function" ? helper.call(alias1,{"name":"range","hash":{},"data":data}) : helper)))
     + "</strong>\n    <a href=\""
-    + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextState : depth0),{"name":"url","hash":{},"data":data}))
+    + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextQuery : depth0),{"name":"url","hash":{},"data":data}))
     + "\"\n       class=\"next-page "
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
     + "\">\n      "
@@ -60,7 +60,7 @@ Handlebars.registerPartial("sortTableHeader", Handlebars.template({"1":function(
     + " "
     + alias4(((helper = (helper = helpers.viewId || (depth0 != null ? depth0.viewId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"viewId","hash":{},"data":data}) : helper)))
     + "\">\n    <a href=\""
-    + alias4((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextState : depth0),{"name":"url","hash":{},"data":data}))
+    + alias4((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextQuery : depth0),{"name":"url","hash":{},"data":data}))
     + "\" class=\""
     + alias4(((helper = (helper = helpers.order || (depth0 != null ? depth0.order : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"order","hash":{},"data":data}) : helper)))
     + "\">\n      <span>"

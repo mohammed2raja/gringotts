@@ -60,8 +60,8 @@
           if (!this.sortableTableHeaders) {
             throw new Error('The sortableTableHeaders should be set for this view.');
           }
-          if (!_.isFunction((ref = this.collection) != null ? ref.getState : void 0)) {
-            throw new Error('This view should have collection with getState() method. Most probably with Sorted mixin applied.');
+          if (!_.isFunction((ref = this.collection) != null ? ref.getQuery : void 0)) {
+            throw new Error('This view should have collection with getQuery() method. Most probably with Sorted mixin applied.');
           }
           return Sorting.__super__.initialize.apply(this, arguments);
         };
@@ -85,18 +85,18 @@
         };
 
         Sorting.prototype.getSortInfo = function() {
-          var state;
-          state = this.collection.getState({}, {
+          var query;
+          query = this.collection.getQuery({}, {
             inclDefaults: true,
             usePrefix: false
           });
-          if (!state.sort_by) {
+          if (!query.sort_by) {
             throw new Error('Please define a sort_by attribute within DEFAULTS');
           }
           return _.transform(this.sortableTableHeaders, (function(_this) {
             return function(result, title, column) {
               var nextOrder, order;
-              order = column === state.sort_by ? state.order : '';
+              order = column === query.sort_by ? query.order : '';
               nextOrder = order === 'asc' ? 'desc' : 'asc';
               result[column] = {
                 viewId: _this.cid,
@@ -105,7 +105,7 @@
                 order: order,
                 routeName: _this.routeName,
                 routeParams: _this.routeParams,
-                nextState: _this.collection.getState({
+                nextQuery: _this.collection.getQuery({
                   order: nextOrder,
                   sort_by: column
                 })
@@ -121,12 +121,12 @@
          */
 
         Sorting.prototype.highlightColumns = function() {
-          var idx, state;
-          state = this.collection.getState({}, {
+          var idx, query;
+          query = this.collection.getQuery({}, {
             inclDefaults: true,
             usePrefix: false
           });
-          idx = this.$("th[data-sort=" + state.sort_by + "]").index();
+          idx = this.$("th[data-sort=" + query.sort_by + "]").index();
           return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not('[colspan]').addClass('highlighted');
         };
 

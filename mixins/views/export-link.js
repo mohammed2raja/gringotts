@@ -25,19 +25,19 @@
         /**
          * Generates a link to export items from the collection bypassing pagination
          * parameters. The mixin should be applied to views that
-         * have collection property. Collection should have getState() method.
+         * have collection property. Collection should have getQuery() method.
          * @param  {String} baseUrl - to build export url
          * @return {String}
          */
 
         ExportLink.prototype.exportLink = function(baseUrl) {
-          var state;
-          state = _.clone(this.collection.getState({}, {
+          var query;
+          query = _.clone(this.collection.getQuery({}, {
             inclDefaults: true
           }));
-          delete state.page;
-          delete state.per_page;
-          return this.collection.url(baseUrl, state);
+          delete query.page;
+          delete query.per_page;
+          return this.collection.url(baseUrl, query);
         };
 
         return ExportLink;

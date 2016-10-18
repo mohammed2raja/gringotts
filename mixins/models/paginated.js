@@ -3,17 +3,17 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ForcedReset, StatefulUrlParams, SyncKey, helper, utils;
+    var ForcedReset, Queryable, SyncKey, helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
     ForcedReset = require('./forced-reset');
-    StatefulUrlParams = require('./stateful-url-params');
+    Queryable = require('./queryable');
     SyncKey = require('./sync-key');
 
     /**
-     * Adds pagination support to a Collection. It relies on StatefulUrlParams
-     * mixin to persist pagination state and add to url query params on every
-     * sync action.
+     * Adds pagination support to a Collection. It relies on Queryable
+     * mixin to persist pagination query state and add it to url query params
+     * on every sync action.
      * @param  {Collection} base superclass
      */
     return function(base) {
@@ -59,7 +59,7 @@
 
         return Paginated;
 
-      })(utils.mix(base)["with"](StatefulUrlParams, ForcedReset, SyncKey));
+      })(utils.mix(base)["with"](Queryable, ForcedReset, SyncKey));
     };
   });
 
