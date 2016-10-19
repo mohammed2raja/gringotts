@@ -249,7 +249,7 @@ define (require) ->
 
       it 'should override url with custom rootUrl', ->
         resultUrl = collection.url 'sneaky/url'
-        expect(resultUrl.startsWith 'sneaky/url').to.be.true
+        expect(resultUrl.indexOf 'sneaky/url').to.equal 0
         expect(resultUrl).to.have.string 'coo=hoo'
 
       it 'should override url with custom query', ->
