@@ -74,9 +74,12 @@ define (require) ->
 
   ###*
    * Setups global error listeners.
+   * @param  {Function} customHandler   a custom handler to call for any error.
   ###
-  setupErrorHandling = ->
-    $(document).ajaxError (event, $xhr, options) -> handle $xhr, options
+  setupErrorHandling = (customHandler) ->
+    $(document).ajaxError (event, $xhr, options) ->
+      handle $xhr, options
+      customHandler? $xhr, options
 
   ###*
    * This is meant to be used in the application bootstrapping code such as

@@ -16,6 +16,7 @@ define (require) ->
       publishEvent = null
       originalBroker = null
       i18n = null
+      customHandler = null
 
       beforeEach ->
         sandbox.spy utils, 'parseJSON'
@@ -27,7 +28,7 @@ define (require) ->
         originalBroker = Chaplin.EventBroker
         Chaplin.EventBroker = {publishEvent}
         ((window.I18n = {}).t = (text) -> text) if i18n
-        errors.setupErrorHandling()
+        errors.setupErrorHandling customHandler
 
       afterEach ->
         $(document).off 'ajaxError'
@@ -208,3 +209,17 @@ define (require) ->
 
             it 'should not send error notification', ->
               expect(publishEvent).to.have.not.been.calledOnce
+
+        context 'when custom handler is set', ->
+          before ->
+            status = 500
+            errorHandled = true
+            customHandler = sinon.spy()
+
+          after ->
+            status = null
+            errorHandled = null
+            customHandler = null
+
+          it 'should be called no matter what', ->
+            expect(customHandler).to.have.been.calledOnce
