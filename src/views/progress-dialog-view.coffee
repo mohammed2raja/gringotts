@@ -51,23 +51,28 @@ define (require) ->
       _.defaultsDeep this,
         default:
           buttons:
-            [{text: I18n?.t('buttons.OK') or 'OK', className: 'btn-primary'}]
+            [{
+              text: I18n?.t('buttons.OK') or 'OK',
+              className: 'btn-primary confirm-button'
+            }]
         error:
           title:
             I18n?.t('error.did_not_work') or
               "Hmm. That didn't seem to work. Try again?"
-          buttons: _([
-            {text: I18n?.t('buttons.cancel') or 'Cancel'
-            className: 'btn-link'}]).concat(
-              # stealing action button's style and click handler to try again
-              _.extend (_.clone _.first _.filter @default?.buttons,
-                  (b) -> b.click),
-                text: I18n?.t('buttons.try_again') or 'Try again').value()
+          buttons: [
+            # stealing action button's style and click handler to try again
+            _.extend (_.clone _.first _.filter @default?.buttons,
+                (b) -> b.click),
+              text: I18n?.t('buttons.try_again') or 'Try again'
+          ]
         success:
           # using a template with check icon
           html: => templates['progress-success'] @getTemplateData()
           buttons:
-            [{text:I18n?.t('buttons.Okay') or 'Okay', className: 'btn-primary'}]
+            [{
+              text:I18n?.t('buttons.Okay') or 'Okay',
+              className: 'btn-primary confirm-button'
+            }]
       # link hbs templates to template data
       STATES.forEach (s) =>
         if @[s] and _.isFunction @[s].text
