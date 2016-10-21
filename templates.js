@@ -75,7 +75,7 @@ Handlebars.registerPartial("sortTableHeader", Handlebars.template({"1":function(
 this["Handlebars"]["dialog"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n          <span aria-hidden=\"true\">&times;</span>\n        </button>\n        <h4 class=\"modal-title\">"
+  return "      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close cancel-button\" data-dismiss=\"modal\" aria-label=\"Close\">\n          <span aria-hidden=\"true\">&times;</span>\n        </button>\n        <h4 class=\"modal-title\">"
     + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"title","hash":{},"data":data}) : helper)))
     + "</h4>\n      </div>\n";
 },"3":function(container,depth0,helpers,partials,data) {
@@ -120,7 +120,7 @@ this["Handlebars"]["progress-dialog"] = Handlebars.template({"1":function(contai
 },"2":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n        <span aria-hidden=\"true\">&times;</span>\n      </button>\n      <h4 class=\"modal-title\">"
+  return "    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close close-button\" data-dismiss=\"modal\" aria-label=\"Close\">\n        <span aria-hidden=\"true\">&times;</span>\n      </button>\n      <h4 class=\"modal-title\">"
     + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"title","hash":{},"data":data}) : helper)))
     + "</h4>\n    </div>\n";
 },"4":function(container,depth0,helpers,partials,data) {

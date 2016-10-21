@@ -98,22 +98,19 @@
             buttons: [
               {
                 text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.OK') : void 0) || 'OK',
-                className: 'btn-primary'
+                className: 'btn-primary confirm-button'
               }
             ]
           },
           error: {
             title: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.did_not_work') : void 0) || "Hmm. That didn't seem to work. Try again?",
-            buttons: _([
-              {
-                text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.cancel') : void 0) || 'Cancel',
-                className: 'btn-link'
-              }
-            ]).concat(_.extend(_.clone(_.first(_.filter((ref = this["default"]) != null ? ref.buttons : void 0, function(b) {
-              return b.click;
-            }))), {
-              text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.try_again') : void 0) || 'Try again'
-            })).value()
+            buttons: [
+              _.extend(_.clone(_.first(_.filter((ref = this["default"]) != null ? ref.buttons : void 0, function(b) {
+                return b.click;
+              }))), {
+                text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.try_again') : void 0) || 'Try again'
+              })
+            ]
           },
           success: {
             html: (function(_this) {
@@ -124,7 +121,7 @@
             buttons: [
               {
                 text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('buttons.Okay') : void 0) || 'Okay',
-                className: 'btn-primary'
+                className: 'btn-primary confirm-button'
               }
             ]
           }

@@ -15,7 +15,6 @@
       bootstrap_collapse: '../vendor/bower/bootstrap/js/collapse',
       bootstrap_dropdown: '../vendor/bower/bootstrap/js/dropdown',
       bootstrap_modal: '../vendor/bower/bootstrap/js/modal',
-      bootstrap_select: '../vendor/bower/bootstrap-select/dist/js/bootstrap-select',
       bootstrap_tab: '../vendor/bower/bootstrap/js/tab',
       bootstrap_tooltip: '../vendor/bower/bootstrap/js/tooltip',
       bootstrap_transition: '../vendor/bower/bootstrap/js/transition'
@@ -36,9 +35,6 @@
       bootstrap_modal: {
         deps: ['jquery']
       },
-      bootstrap_select: {
-        deps: ['jquery']
-      },
       bootstrap_tooltip: {
         deps: ['jquery']
       },
@@ -50,9 +46,6 @@
       },
       backbone_validation: {
         deps: ['backbone']
-      },
-      'ext/bootstrap-select': {
-        deps: ['bootstrap_select']
       }
     }
   });
