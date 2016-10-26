@@ -4,7 +4,9 @@ define (require) ->
   swissAjax = require 'lib/swiss-ajax'
   Queryable = require 'mixins/models/queryable'
 
-  class MockCollection extends Queryable Chaplin.Collection
+  class BaseCollection extends Chaplin.Collection
+
+  class MockCollection extends Queryable BaseCollection
     DEFAULTS: _.extend {}, @::DEFAULTS, foo: 'moo', boo: 'goo'
     urlRoot: '/test'
 
@@ -17,6 +19,7 @@ define (require) ->
   describe 'Queryable mixin', ->
     sandbox = null
     collection = null
+    url = null
 
     beforeEach ->
       sandbox = sinon.sandbox.create useFakeServer: true
@@ -279,3 +282,41 @@ define (require) ->
             request = _.first sandbox.server.requests
             expecting = ['/boo', '?', 'a=b']
             testRequest request, expecting
+
+    context 'when base class has string url', ->
+      before ->
+        BaseCollection::url = '/basetest'
+        MockCollection::urlRoot = null
+
+      after ->
+        delete BaseCollection::url
+        MockCollection::urlRoot = '/test'
+
+      beforeEach ->
+        collection.setQuery 'coo=hoo'
+        collection.fetch()
+        sandbox.server.respond()
+
+      it 'should fetch from the server with proper url', ->
+        expecting = ['/basetest', '?', 'foo=moo', 'boo=goo', 'coo=hoo']
+        request = _.last sandbox.server.requests
+        testRequest request, expecting
+
+    context 'when base class has func url', ->
+      before ->
+        BaseCollection::url = -> '/basetest'
+        MockCollection::urlRoot = null
+
+      after ->
+        delete BaseCollection::url
+        MockCollection::urlRoot = '/test'
+
+      beforeEach ->
+        collection.setQuery 'coo=hoo'
+        collection.fetch()
+        sandbox.server.respond()
+
+      it 'should fetch from the server with proper url', ->
+        expecting = ['/basetest', '?', 'foo=moo', 'boo=goo', 'coo=hoo']
+        request = _.last sandbox.server.requests
+        testRequest request, expecting

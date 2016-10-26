@@ -158,19 +158,21 @@ define (require) ->
 
     ###*
      * Incorporate the collection query.
-     * @param   {String} urlRoot optional urlRoot to calculate url, if it's
-     *                           not set this.urlRoot will be used.
+     * @param {String} base optional     base to calculate url, if it's
+     *                                   not set this.urlRoot or super.url
+     *                                   will be used.
+     * @param {String|Object} query
      * @returns {String}
     ###
-    url: (urlRoot=@urlRoot, query) ->
-      throw new Error 'Please define a urlRoot
-        when implementing a collection' unless urlRoot
+    url: (base, query) ->
+      base = @urlRoot or Queryable.__super__.url unless base
+      throw new Error 'Please define url or urlRoot
+        when implementing a queryable model or collection' unless base
+      base = if _.isFunction(base) then base.apply(this) else base
       query = @getQuery {}, inclDefaults: yes, usePrefix: no unless query
       # convert from local query keys to server query keys
       query = _.mapKeys _.omit(query, @ignoreKeys), (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
-      # format the url for the ajax call
-      base = if _.isFunction(urlRoot) then urlRoot.apply(this) else urlRoot
       querystring = utils.querystring.stringify query
       @urlWithQuery base, querystring
 

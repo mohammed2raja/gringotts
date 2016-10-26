@@ -67,7 +67,7 @@ define (require) ->
     getBrowserQuery: ->
       unless @routeQueryable
         throw new Error "Can't get query since @routeQueryable isn't set."
-      @routeQueryable.getQuery {}, inclDefaults: yes
+      @routeQueryable.getQuery {}, inclDefaults: yes, usePrefix: no
 
     ###*
      * Redirect to current route with new query params.

@@ -90,7 +90,8 @@ define (require) ->
         view = new MockView {
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeQueryable: getQuery: (query) -> _.extend {a: 1, b: 2}, query
+          routeQueryable: getQuery: sinon.spy (query) -> _.extend {a: 1, b: 2},
+            query
         }
 
         afterEach ->
@@ -99,6 +100,8 @@ define (require) ->
       it 'should return query', ->
         query = view.getBrowserQuery()
         expect(query).to.eql a: 1, b: 2
+        expect(view.routeQueryable.getQuery).to.be.calledWith {},
+          inclDefaults: yes, usePrefix: no
 
       context 'on set', ->
         options = null
