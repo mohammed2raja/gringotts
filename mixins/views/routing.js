@@ -113,7 +113,8 @@
             throw new Error("Can't get query since @routeQueryable isn't set.");
           }
           return this.routeQueryable.getQuery({}, {
-            inclDefaults: true
+            inclDefaults: true,
+            usePrefix: false
           });
         };
 
