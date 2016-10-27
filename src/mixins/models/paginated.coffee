@@ -28,7 +28,6 @@ define (require) ->
     initialize: ->
       helper.assertCollection this
       super
-      @on 'remove', -> @count = Math.max 0, (@count or 1) - 1
 
     parse: (resp) ->
       result = super

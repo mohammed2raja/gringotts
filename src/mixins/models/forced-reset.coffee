@@ -15,5 +15,4 @@ define (require) ->
       super
 
     fetch: (options) ->
-      options = _.extend {}, options, reset: true
       super(options)?.fail => @reset()

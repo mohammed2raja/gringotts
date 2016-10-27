@@ -62,10 +62,3 @@ define (require) ->
 
         it 'should read next page id', ->
           expect(collection.nextPageId).to.equal 555
-
-      context 'on remove items', ->
-        beforeEach ->
-          collection.remove _.first collection.models
-
-        it 'should update count', ->
-          expect(collection.count).to.equal 2
