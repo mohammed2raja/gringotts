@@ -30,9 +30,6 @@
 
         ForcedReset.prototype.fetch = function(options) {
           var ref;
-          options = _.extend({}, options, {
-            reset: true
-          });
           return (ref = ForcedReset.__super__.fetch.call(this, options)) != null ? ref.fail((function(_this) {
             return function() {
               return _this.reset();

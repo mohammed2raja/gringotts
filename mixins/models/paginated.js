@@ -42,10 +42,7 @@
 
         Paginated.prototype.initialize = function() {
           helper.assertCollection(this);
-          Paginated.__super__.initialize.apply(this, arguments);
-          return this.on('remove', function() {
-            return this.count = Math.max(0, (this.count || 1) - 1);
-          });
+          return Paginated.__super__.initialize.apply(this, arguments);
         };
 
         Paginated.prototype.parse = function(resp) {
