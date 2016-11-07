@@ -120,16 +120,17 @@ define (require) ->
     ###*
      * Applies query params and fetch new data if params changed
      * (and not part of ignored list) or if this is a first time fetching.
-     * @param  {String|Object} query Query params for the new query
+     * @param  {String|Object} query    Query params for the new query.
+     * @param  {Object}        options  Set of options for fetch method.
      * @return {$.Deferred}
     ###
-    fetchWithQuery: (query) ->
+    fetchWithQuery: (query, options) ->
       changedKeys = @setQuery query
       queryChanged = changedKeys and
         (not @ignoreKeys or
           not _.all changedKeys, (key) => @ignoreKeys.indexOf(key) >= 0)
       if queryChanged or @isUnsynced()
-        @fetch()
+        @fetch options
       else
         $.Deferred().resolve().promise()
 

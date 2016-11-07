@@ -13,6 +13,16 @@ define (require) ->
   #coffeelint: enable=max_line_length
   _.extend {}, Chaplin.utils,
 
+    ###*
+     * Keyboard Keys Constants
+    ###
+    keys:
+      DELETE: 8
+      ENTER: 13
+      ESC: 27
+      UP: 38
+      DOWN: 40
+
     openURL: (path) ->
       window.open path
 

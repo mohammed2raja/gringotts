@@ -21,3 +21,13 @@ define (require) ->
           .fail ($xhr) -> $xhr.errorHandled = true if $xhr.status is 0
           .abort()
       @currentXHR = if $xhr then $xhr.always => delete @currentXHR
+
+    sync: (method, model, options={}) ->
+      error = options.error
+      options.error = ($xhr) ->
+        # cancel default error handler for abort errors
+        if $xhr.statusText is 'abort'
+          $xhr.errorHandled = true
+        else
+          error?.apply this, arguments
+      super

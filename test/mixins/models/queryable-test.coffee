@@ -163,7 +163,7 @@ define (require) ->
         collection.ignoreKeys = ['coo']
         sandbox.stub collection, 'fetch'
 
-      context 'when query changed with different keys', ->
+      context 'with query that has different keys', ->
         beforeEach ->
           collection.fetchWithQuery goo: 'aaa', coo: 'hoo'
 
@@ -173,7 +173,7 @@ define (require) ->
         it 'should fetch collection', ->
           expect(collection.fetch).to.have.been.calledOnce
 
-      context 'when query changed only with ignored keys', ->
+      context 'with query that has only ignored keys', ->
         beforeEach ->
           collection.fetchWithQuery coo: 'noo'
 
@@ -189,6 +189,16 @@ define (require) ->
 
           it 'should fetch collection', ->
             expect(collection.fetch).to.have.been.calledOnce
+
+      context 'with query and options', ->
+        beforeEach ->
+          collection.fetchWithQuery {goo: 'aaa'}, {reset: true}
+
+        it 'should set query', ->
+          expect(collection.getQuery()).to.eql goo: 'aaa'
+
+        it 'should fetch collection with options', ->
+          expect(collection.fetch).to.have.been.calledWith reset: true
 
     context 'with default values', ->
       beforeEach ->

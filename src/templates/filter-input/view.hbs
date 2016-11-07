@@ -1,0 +1,20 @@
+<span class="list-item loading" style="display: none">{{loadingText}}</span>
+<span class="list-item service-error">{{errorText}}</span>
+<span class="dropdown-control">
+  <span class="selected-group"></span>
+  <span class="dropdown">
+    <input placeholder="{{placeholder}}" data-toggle="dropdown"
+        {{#if disabled}}disabled{{/if}}  />
+    <ul class="dropdown-menu dropdown-groups">
+      <li class="loading" style="display: none"><label>{{loadingText}}</label></li>
+      <li class="empty"><label>{{emptyText}}</label></li>
+      <li class="service-error"><label>{{errorText}}</label></li>
+    </ul>
+    <ul class="dropdown-menu dropdown-items hidden">
+      <li class="loading" style="display: none"><label>{{loadingText}}</label></li>
+      <li class="empty"><label>{{emptyText}}</label></li>
+      <li class="service-error"><label>{{errorText}}</label></li>
+    </ul>
+  </span>
+</span>
+<button type="button" class="close remove-all-button">&times;</button>

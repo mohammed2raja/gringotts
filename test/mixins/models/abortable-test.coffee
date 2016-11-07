@@ -3,21 +3,24 @@ define (require) ->
   Abortable = require 'mixins/models/abortable'
 
   class MockModel extends Abortable Chaplin.Model
+    url: '/abc'
 
   describe 'Abortable', ->
-    server = null
+    sandbox = null
     model = null
+    errorSpy = null
     xhr = null
+    statusText = null
 
     beforeEach (done) ->
-      server = sinon.fakeServer.create()
+      sandbox = sinon.sandbox.create useFakeServer: yes
+      sandbox.spy Chaplin.Model::, 'sync'
       model = new MockModel()
-      model.url = 'abc'
-      xhr = model.fetch()
+      xhr = model.fetch error: (errorSpy = sinon.spy())
       done()
 
     afterEach ->
-      server.restore()
+      sandbox.restore()
       model.dispose()
 
     it 'should set the currentXHR property', ->
@@ -25,16 +28,40 @@ define (require) ->
 
     context 'on finish request', ->
       beforeEach ->
-        server.respond()
+        sandbox.server.respond()
 
       it 'should delete currentXHR property', ->
         expect(model.currentXHR).to.be.undefined
 
     context 'on second fetch', ->
       beforeEach (done) ->
-        sinon.spy model.currentXHR, 'abort'
+        sandbox.spy model.currentXHR, 'abort'
         model.fetch()
         done()
 
       it 'should abort the initial request', ->
         expect(model.currentXHR.abort).to.have.been.calledOne
+
+      it 'should set xhr as error handled', ->
+        expect(xhr.errorHandled).to.be.true
+
+    context 'on error', ->
+      beforeEach ->
+        options = Chaplin.Model::sync.lastCall.args[2]
+        options.error (xhr = statusText: statusText or 'error')
+
+      it 'should call original error handler', ->
+        expect(errorSpy).to.have.been.calledOnce
+
+      it 'should not set xhr as error handled', ->
+        expect(xhr.errorHandled).to.be.undefined
+
+      context 'on xhr abort', ->
+        before ->
+          statusText = 'abort'
+
+        it 'should not call original error handler', ->
+          expect(errorSpy).to.not.have.been.calledOnce
+
+        it 'should set xhr as error handled', ->
+          expect(xhr.errorHandled).to.be.true
