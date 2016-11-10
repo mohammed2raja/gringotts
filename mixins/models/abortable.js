@@ -44,6 +44,22 @@
           })(this)) : void 0;
         };
 
+        Abortable.prototype.sync = function(method, model, options) {
+          var error;
+          if (options == null) {
+            options = {};
+          }
+          error = options.error;
+          options.error = function($xhr) {
+            if ($xhr.statusText === 'abort') {
+              return $xhr.errorHandled = true;
+            } else {
+              return error != null ? error.apply(this, arguments) : void 0;
+            }
+          };
+          return Abortable.__super__.sync.apply(this, arguments);
+        };
+
         return Abortable;
 
       })(utils.mix(base)["with"](ActiveSyncMachine));

@@ -178,11 +178,12 @@
         /**
          * Applies query params and fetch new data if params changed
          * (and not part of ignored list) or if this is a first time fetching.
-         * @param  {String|Object} query Query params for the new query
+         * @param  {String|Object} query    Query params for the new query.
+         * @param  {Object}        options  Set of options for fetch method.
          * @return {$.Deferred}
          */
 
-        Queryable.prototype.fetchWithQuery = function(query) {
+        Queryable.prototype.fetchWithQuery = function(query, options) {
           var changedKeys, queryChanged;
           changedKeys = this.setQuery(query);
           queryChanged = changedKeys && (!this.ignoreKeys || !_.all(changedKeys, (function(_this) {
@@ -191,7 +192,7 @@
             };
           })(this)));
           if (queryChanged || this.isUnsynced()) {
-            return this.fetch();
+            return this.fetch(options);
           } else {
             return $.Deferred().resolve().promise();
           }

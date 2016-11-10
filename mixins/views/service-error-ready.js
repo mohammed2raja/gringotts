@@ -19,11 +19,20 @@
         ServiceErrorReady.prototype.errorSelector = '.service-error';
 
         ServiceErrorReady.prototype.listen = {
-          'service-unavailable collection': function() {
-            return this.$(this.errorSelector).show();
+          'unsynced collection': function() {
+            if (!this.disposed) {
+              return this.$(this.errorSelector).show();
+            }
           },
-          'syncStateChange collection': function() {
-            return this.$(this.errorSelector).hide();
+          'syncing collection': function() {
+            if (!this.disposed) {
+              return this.$(this.errorSelector).hide();
+            }
+          },
+          'synced collection': function() {
+            if (!this.disposed) {
+              return this.$(this.errorSelector).hide();
+            }
           }
         };
 
