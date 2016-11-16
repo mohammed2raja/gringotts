@@ -38,13 +38,12 @@ define (require) ->
       collection = new MockPaginatedCollection()
       collection.infinite = infinite
       view = new MockPaginatingView {routeName: 'test', collection}
-      collection.setQuery {}
-      collection.fetch()
-      sandbox.server.respondWith [200, {}, JSON.stringify({
+      collection.fetchWithQuery {}
+      sandbox.server.respondWith [200, {}, JSON.stringify {
         next_page_id: 'abcdef'
         count: 101
         itemsList: ({} for i in [0..101])
-      })]
+      }]
       sandbox.server.respond()
 
     afterEach ->
@@ -72,8 +71,7 @@ define (require) ->
 
     context 'changing to next page', ->
       beforeEach ->
-        collection.setQuery page: 3
-        collection.fetch()
+        collection.fetchWithQuery page: 3
         sandbox.server.respond()
 
       it 'should render links correctly', ->
@@ -89,8 +87,7 @@ define (require) ->
 
     context 'changing to last page', ->
       beforeEach ->
-        collection.setQuery page: 11
-        collection.fetch()
+        collection.fetchWithQuery page: 11
         sandbox.server.respond()
 
       it 'should render links correctly', ->
@@ -123,22 +120,27 @@ define (require) ->
       it 'should render range string', ->
         expect(view.$ '.pagination-controls strong').to.have.text ''
 
-    context 'loading indicator start syncing', ->
-      beforeEach ->
-        collection.beginSync()
+    context 'on fetching start', ->
+      beforeEach (done) ->
+        collection.fetchWithQuery page: 2
+        done()
 
       it 'should show loading', ->
         expect(view.$loading).to.have.css 'display', 'table-row'
 
-      it 'should hide all items', ->
-        expect(view.$ '.test-item').to.have.css 'display', 'none'
+      it 'should remove all items', ->
+        expect(view.$ '.test-item').to.not.exist
 
-      context 'and then finished', ->
+      context 'on fetch finish', ->
         beforeEach ->
-          collection.finishSync()
+          sandbox.server.respondWith [200, {}, JSON.stringify {
+            count: 101
+            itemsList: ({} for i in [0..10])
+          }]
+          sandbox.server.respond()
 
         it 'should hide loading', ->
           expect(view.$loading).to.have.css 'display', 'none'
 
-        it 'should hide all items', ->
-          expect(view.$ '.test-item').to.have.css 'display', 'table-row'
+        it 'should have new items', ->
+          expect(view.$ '.test-item').to.exist

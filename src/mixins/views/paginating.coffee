@@ -19,21 +19,18 @@ define (require) ->
     paginationPartial: 'pagination'
 
     listen:
-      # Re-render all paginating partials
-      'request collection': -> @renderPaginatingControls()
-      'sync collection': -> @renderPaginatingControls()
-      'sort collection': -> @renderPaginatingControls()
+      'sync collection': ->
+        # collection count could be updated
+        @renderPaginatingControls()
 
     initialize: ->
       helper.assertCollectionView this
-      unless _.isFunction @collection?.getQuery
-        throw new Error 'This view should have a collection with
-          getQuery() method. Most probably with Paginated mixin applied.'
-      unless _.isFunction @collection?.isSyncing
-        throw new Error 'This view should have a collection with
-          isSyncing() method. Most probably with ActiveSyncMachine
-          mixin applied.'
       super
+      unless @routeQueryable
+        throw new Error 'This view should have a collection with
+          applied Queryable mixin.'
+      @listenTo @routeQueryable, 'queryChange', (info) ->
+        @renderPaginatingControls()
 
     ###*
      * Add the pageInfo context into the view template.
@@ -47,16 +44,6 @@ define (require) ->
       unless @routeName
         throw new Error "Can't render view when routeName isn't set"
       super
-
-    ###*
-     * Overriding chaplin's toggleLoadingIndicator to
-     * remove the collection length requirement.
-    ###
-    toggleLoadingIndicator: ->
-      visible = @collection.isSyncing()
-      @$('tbody > tr').not(@loadingSelector).not(@fallbackSelector)
-        .not(@errorSelector).toggle !visible
-      @$loading.toggle visible
 
     getStats: (min, max, info) ->
       if I18n?
@@ -76,7 +63,7 @@ define (require) ->
     # setup what the pagination template is expecting
     getPageInfo: ->
       infinite = @collection.infinite
-      query = @collection.getQuery {}, inclDefaults: yes, usePrefix: no
+      query = @getBrowserQuery()
       perPage = parseInt query.per_page
       page = if infinite then query.page else parseInt query.page
       info =
@@ -98,11 +85,11 @@ define (require) ->
         info.range = @getRangeString page, perPage, info
 
       info.nextQuery =
-        if info.next then @collection.getQuery page: info.next
-        else @collection.getQuery()
+        if info.next then @routeQueryable.getQuery page: info.next
+        else @routeQueryable.getQuery()
       info.prevQuery =
-        if info.prev then @collection.getQuery page: info.prev
-        else @collection.getQuery()
+        if info.prev then @routeQueryable.getQuery page: info.prev
+        else @routeQueryable.getQuery()
 
       info.routeName = @routeName
       info.routeParams = @routeParams

@@ -112,7 +112,7 @@ define (require) ->
       diff = @queryDiff @query, newQuery
       if diff.length
         @query = newQuery
-        @trigger 'queryChange', newQuery, this
+        @trigger 'queryChange', {@query, diff}, this
         diff
       else
         null
@@ -215,8 +215,8 @@ define (require) ->
 
       constructor: (queryable) ->
         @getQuery = _.bind queryable.getQuery, queryable
-        @listenTo queryable, 'queryChange', (query) =>
-          @trigger 'queryChange', query, this
+        @listenTo queryable, 'queryChange', (info) =>
+          @trigger 'queryChange', info, this
 
       dispose: ->
         delete @getQuery

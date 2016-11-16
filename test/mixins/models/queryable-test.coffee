@@ -51,7 +51,9 @@ define (require) ->
           collection.setQuery x: 1, y: 2
 
         it 'should re-trigger even on proxy', ->
-          expect(eventSpy).to.have.been.calledWith x: 1, y: 2
+          expect(eventSpy).to.have.been.calledWith
+            query: x: 1, y: 2
+            diff: ['a', 'b', 'x', 'y']
 
         context 'when disposed', ->
           beforeEach ->
@@ -59,7 +61,7 @@ define (require) ->
             collection.setQuery w: 1, e: 2
 
           it 'should not re-trigger collection events', ->
-            expect(eventSpy).to.have.not.been.calledWith w: 1, e: 2
+            expect(eventSpy).to.have.not.been.calledWith query: w: 1, e: 2
 
     context 'setting empty query', ->
       difference = null
@@ -138,7 +140,10 @@ define (require) ->
 
       it 'should raise queryChange event', ->
         expect(spy).to.have.been.calledOnce
-        expect(spy).to.have.been.calledWith a: 'b', c: 'd', collection
+        expect(spy).to.have.been.calledWith
+          query: a: 'b', c: 'd'
+          diff: ['a', 'c'],
+          collection
 
       context 'setting the same query again', ->
         beforeEach ->
@@ -153,7 +158,10 @@ define (require) ->
 
         it 'should raise queryChange event', ->
           expect(spy).to.have.been.calledTwice
-          expect(spy).to.have.been.calledWith {}, collection
+          expect(spy).to.have.been.calledWith
+            query: {}
+            diff: ['a', 'c'],
+            collection
 
     context 'fetchWithQuery method', ->
       isUnsynced = null

@@ -24,9 +24,9 @@ define (require) ->
       unless @routeQueryable
         @routeQueryable = (@collection or @model)?.proxyQueryable?()
       if @routeQueryable?.trigger
-        @listenTo @routeQueryable, 'queryChange', (query) ->
+        @listenTo @routeQueryable, 'queryChange', (info) ->
           unless @muteQueryChangeEvent
-            @onBrowserQueryChange query
+            @onBrowserQueryChange info.query, info.diff
           else
             delete @muteQueryChangeEvent
 
@@ -86,11 +86,12 @@ define (require) ->
     ###*
      * Override this method to add your logic upon browser query change.
      * @param  {Object} query   current browser query from URL query params.
+     * @param  {Object} diff    difference object from previous query.
     ###
-    onBrowserQueryChange: (query) ->
+    onBrowserQueryChange: (query, diff) ->
 
     dispose: ->
+      @routeQueryable?.dispose?()
       @ROUTING_OPTIONS.forEach (key) =>
         delete @[key]
-      @routeQueryable?.dispose?()
       super

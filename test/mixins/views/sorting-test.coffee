@@ -1,6 +1,7 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
+  ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   Sorted = require 'mixins/models/sorted'
   Sorting = require 'mixins/views/sorting'
   StringTemplatable = require 'mixins/views/string-templatable'
@@ -10,16 +11,18 @@ define (require) ->
     className: 'test-item'
     getTemplateFunction: -> -> '<td><td><td>'
 
-  class MockCollection extends Sorted Chaplin.Collection
+  class MockCollection extends utils.mix Chaplin.Collection
+      .with Sorted, ActiveSyncMachine
     urlRoot: '/test'
     DEFAULTS: _.extend {}, @::DEFAULTS, sort_by: 'attr_a'
 
   class MockSortingView extends utils.mix(Chaplin.CollectionView)
       .with StringTemplatable, Sorting
+    loadingSelector: '.loading'
     itemView: MockItemView
+    listSelector: 'tbody'
     template: 'sorting-test'
     templatePath: 'test/templates'
-    listSelector: 'tbody'
     sortableTableHeaders:
       attr_a: 'Attribute A'
       attr_b: 'Attribute B'
@@ -35,8 +38,7 @@ define (require) ->
         "#{path}?#{utils.querystring.stringify query}"
       collection = new MockCollection()
       view = new MockSortingView _.extend {routeName: 'test', collection}
-      collection.setQuery {}
-      collection.fetch()
+      collection.fetchWithQuery {}
       sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
       sandbox.server.respond()
 
@@ -68,10 +70,9 @@ define (require) ->
       expect(view.$ 'td:nth-child(2)').to.not.have.class 'highlighted'
 
     context 'changing sorting order', ->
-      beforeEach ->
-        collection.setQuery order: 'asc', sort_by: 'attr_b'
-        collection.fetch()
-        sandbox.server.respond()
+      beforeEach (done) ->
+        collection.fetchWithQuery order: 'asc', sort_by: 'attr_b'
+        done()
 
       it 'should render links correctly', ->
         $link_a = view.$ 'th[data-sort=attr_a] a'
@@ -83,3 +84,20 @@ define (require) ->
 
       it 'should apply custom classes', ->
         expect(view.$ 'th[data-sort=attr_b]').to.have.class('foo')
+
+      it 'should show loading', ->
+        expect(view.$loading).to.have.css 'display', 'table-row'
+
+      it 'should remove all items', ->
+        expect(view.$ '.test-item').to.not.exist
+
+      context 'on fetch finish', ->
+        beforeEach ->
+          sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
+          sandbox.server.respond()
+
+        it 'should hide loading', ->
+          expect(view.$loading).to.have.css 'display', 'none'
+
+        it 'should have new items', ->
+          expect(view.$ '.test-item').to.exist

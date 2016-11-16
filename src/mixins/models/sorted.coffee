@@ -20,3 +20,7 @@ define (require) ->
     initialize: ->
       helper.assertCollection this
       super
+
+    fetch: ->
+      @reset() # remove existing items
+      super

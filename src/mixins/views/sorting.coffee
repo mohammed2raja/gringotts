@@ -25,20 +25,16 @@ define (require) ->
     ###
     sortableTableHeaders: null
 
-    listen:
-      # Re-render all sorting partials
-      'request collection': -> @renderSortingControls()
-      'sync collection': -> @renderSortingControls()
-      'sort collection': -> @renderSortingControls()
-
     initialize: ->
       helper.assertCollectionView this
       unless @sortableTableHeaders
         throw new Error 'The sortableTableHeaders should be set for this view.'
-      unless _.isFunction @collection?.getQuery
-        throw new Error 'This view should have collection with
-          getQuery() method. Most probably with Sorted mixin applied.'
       super
+      unless @routeQueryable
+        throw new Error 'This view should have a collection with
+          applied Queryable mixin.'
+      @listenTo @routeQueryable, 'queryChange', (info) ->
+        @renderSortingControls()
 
     getTemplateData: ->
       _.extend super, sortInfo: @getSortInfo()
@@ -53,7 +49,7 @@ define (require) ->
       @highlightColumns()
 
     getSortInfo: ->
-      query = @collection.getQuery {}, inclDefaults: yes, usePrefix: no
+      query = @getBrowserQuery()
       if !query.sort_by
         throw new Error 'Please define a sort_by attribute within DEFAULTS'
       _.transform @sortableTableHeaders, (result, title, column) =>
@@ -66,7 +62,7 @@ define (require) ->
           order: order
           routeName: @routeName
           routeParams: @routeParams
-          nextQuery: @collection.getQuery order: nextOrder, sort_by: column
+          nextQuery: @routeQueryable.getQuery order: nextOrder, sort_by: column
         result
       , {}
 
@@ -74,7 +70,7 @@ define (require) ->
      * Highlights with a css class currently sorted table column.
     ###
     highlightColumns: ->
-      query = @collection.getQuery {}, inclDefaults: yes, usePrefix: no
+      query = @getBrowserQuery()
       idx = @$("th[data-sort=#{query.sort_by}]").index()
       @$("#{@listSelector} #{@itemView::tagName} td")
         .removeClass 'highlighted'

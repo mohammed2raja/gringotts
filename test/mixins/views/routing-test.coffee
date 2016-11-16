@@ -9,9 +9,10 @@ define (require) ->
   class MockCollectionView extends Routing Chaplin.CollectionView
     itemView: Chaplin.View
 
-    onBrowserQueryChange: (query) ->
+    onBrowserQueryChange: (query, diff) ->
       super
       @gotBrowserQuery = query
+      @gotBrowserQueryDiff = diff
 
   describe 'Routing', ->
     sandbox = null
@@ -86,22 +87,33 @@ define (require) ->
         expect(childView.routeQueryable).to.eql {}
 
     context 'browser query', ->
+      routeQueryable = null
+
       beforeEach ->
+        routeQueryable =
+          getQuery: sinon.spy (query) -> _.extend {a: 1, b: 2}, query
+          dispose: sinon.spy()
         view = new MockView {
           routeName: 'that-route'
           routeParams: 'those-params'
-          routeQueryable: getQuery: sinon.spy (query) -> _.extend {a: 1, b: 2},
-            query
+          routeQueryable
         }
 
-        afterEach ->
-          view.dispose()
+      afterEach ->
+        view.dispose()
 
       it 'should return query', ->
         query = view.getBrowserQuery()
         expect(query).to.eql a: 1, b: 2
         expect(view.routeQueryable.getQuery).to.be.calledWith {},
           inclDefaults: yes, usePrefix: no
+
+      context 'on dispose', ->
+        beforeEach ->
+          view.dispose()
+
+        it 'should dispose routeQueryable proxy', ->
+          expect(routeQueryable.dispose).to.have.been.calledOnce
 
       context 'on set', ->
         options = null
@@ -150,15 +162,19 @@ define (require) ->
 
       context 'on proxy queryChange', ->
         beforeEach ->
-          proxy.trigger 'queryChange', x: 1, y: 2
+          proxy.trigger 'queryChange',
+            query: x: 1, y: 2
+            diff: ['a', 'b', 'x', 'y']
 
         it 'should call virtual method onBrowserQueryChange', ->
           expect(view.gotBrowserQuery).to.eql x: 1, y: 2
+          expect(view.gotBrowserQueryDiff).to.eql ['a', 'b', 'x', 'y']
 
       context 'on browser query set', ->
         beforeEach ->
           view.setBrowserQuery c: 3 # assuming that own sets mute 'queryChange'
-          proxy.trigger 'queryChange', q: 1, w: 2
+          proxy.trigger 'queryChange', query: q: 1, w: 2
 
         it 'should not call virtual method onBrowserQueryChange', ->
           expect(view.gotBrowserQuery).to.be.undefined
+          expect(view.gotBrowserQueryDiff).to.be.undefined

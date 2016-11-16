@@ -29,6 +29,10 @@ define (require) ->
       helper.assertCollection this
       super
 
+    fetch: ->
+      @reset() # remove existing items
+      super
+
     parse: (resp) ->
       result = super
       @nextPageId = resp.next_page_id if @infinite
