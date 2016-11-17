@@ -34,27 +34,20 @@
         Paginating.prototype.paginationPartial = 'pagination';
 
         Paginating.prototype.listen = {
-          'request collection': function() {
-            return this.renderPaginatingControls();
-          },
           'sync collection': function() {
-            return this.renderPaginatingControls();
-          },
-          'sort collection': function() {
             return this.renderPaginatingControls();
           }
         };
 
         Paginating.prototype.initialize = function() {
-          var ref, ref1;
           helper.assertCollectionView(this);
-          if (!_.isFunction((ref = this.collection) != null ? ref.getQuery : void 0)) {
-            throw new Error('This view should have a collection with getQuery() method. Most probably with Paginated mixin applied.');
+          Paginating.__super__.initialize.apply(this, arguments);
+          if (!this.routeQueryable) {
+            throw new Error('This view should have a collection with applied Queryable mixin.');
           }
-          if (!_.isFunction((ref1 = this.collection) != null ? ref1.isSyncing : void 0)) {
-            throw new Error('This view should have a collection with isSyncing() method. Most probably with ActiveSyncMachine mixin applied.');
-          }
-          return Paginating.__super__.initialize.apply(this, arguments);
+          return this.listenTo(this.routeQueryable, 'queryChange', function(info) {
+            return this.renderPaginatingControls();
+          });
         };
 
 
@@ -75,19 +68,6 @@
             throw new Error("Can't render view when routeName isn't set");
           }
           return Paginating.__super__.render.apply(this, arguments);
-        };
-
-
-        /**
-         * Overriding chaplin's toggleLoadingIndicator to
-         * remove the collection length requirement.
-         */
-
-        Paginating.prototype.toggleLoadingIndicator = function() {
-          var visible;
-          visible = this.collection.isSyncing();
-          this.$('tbody > tr').not(this.loadingSelector).not(this.fallbackSelector).not(this.errorSelector).toggle(!visible);
-          return this.$loading.toggle(visible);
         };
 
         Paginating.prototype.getStats = function(min, max, info) {
@@ -114,10 +94,7 @@
         Paginating.prototype.getPageInfo = function() {
           var infinite, info, page, perPage, query;
           infinite = this.collection.infinite;
-          query = this.collection.getQuery({}, {
-            inclDefaults: true,
-            usePrefix: false
-          });
+          query = this.getBrowserQuery();
           perPage = parseInt(query.per_page);
           page = infinite ? query.page : parseInt(query.page);
           info = {
@@ -138,12 +115,12 @@
             info.next = page < info.pages ? page + 1 : 0;
             info.range = this.getRangeString(page, perPage, info);
           }
-          info.nextQuery = info.next ? this.collection.getQuery({
+          info.nextQuery = info.next ? this.routeQueryable.getQuery({
             page: info.next
-          }) : this.collection.getQuery();
-          info.prevQuery = info.prev ? this.collection.getQuery({
+          }) : this.routeQueryable.getQuery();
+          info.prevQuery = info.prev ? this.routeQueryable.getQuery({
             page: info.prev
-          }) : this.collection.getQuery();
+          }) : this.routeQueryable.getQuery();
           info.routeName = this.routeName;
           info.routeParams = this.routeParams;
           return info;

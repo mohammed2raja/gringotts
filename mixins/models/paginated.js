@@ -45,6 +45,11 @@
           return Paginated.__super__.initialize.apply(this, arguments);
         };
 
+        Paginated.prototype.fetch = function() {
+          this.reset();
+          return Paginated.__super__.fetch.apply(this, arguments);
+        };
+
         Paginated.prototype.parse = function(resp) {
           var result;
           result = Paginated.__super__.parse.apply(this, arguments);

@@ -167,7 +167,10 @@
           diff = this.queryDiff(this.query, newQuery);
           if (diff.length) {
             this.query = newQuery;
-            this.trigger('queryChange', newQuery, this);
+            this.trigger('queryChange', {
+              query: this.query,
+              diff: diff
+            }, this);
             return diff;
           } else {
             return null;
@@ -328,8 +331,8 @@
           function QueryableProxy(queryable) {
             this.getQuery = _.bind(queryable.getQuery, queryable);
             this.listenTo(queryable, 'queryChange', (function(_this) {
-              return function(query) {
-                return _this.trigger('queryChange', query, _this);
+              return function(info) {
+                return _this.trigger('queryChange', info, _this);
               };
             })(this));
           }

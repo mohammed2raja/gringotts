@@ -36,6 +36,11 @@
           return Sorted.__super__.initialize.apply(this, arguments);
         };
 
+        Sorted.prototype.fetch = function() {
+          this.reset();
+          return Sorted.__super__.fetch.apply(this, arguments);
+        };
+
         return Sorted;
 
       })(utils.mix(base)["with"](Queryable, ForcedReset));

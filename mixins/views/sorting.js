@@ -42,28 +42,18 @@
 
         Sorting.prototype.sortableTableHeaders = null;
 
-        Sorting.prototype.listen = {
-          'request collection': function() {
-            return this.renderSortingControls();
-          },
-          'sync collection': function() {
-            return this.renderSortingControls();
-          },
-          'sort collection': function() {
-            return this.renderSortingControls();
-          }
-        };
-
         Sorting.prototype.initialize = function() {
-          var ref;
           helper.assertCollectionView(this);
           if (!this.sortableTableHeaders) {
             throw new Error('The sortableTableHeaders should be set for this view.');
           }
-          if (!_.isFunction((ref = this.collection) != null ? ref.getQuery : void 0)) {
-            throw new Error('This view should have collection with getQuery() method. Most probably with Sorted mixin applied.');
+          Sorting.__super__.initialize.apply(this, arguments);
+          if (!this.routeQueryable) {
+            throw new Error('This view should have a collection with applied Queryable mixin.');
           }
-          return Sorting.__super__.initialize.apply(this, arguments);
+          return this.listenTo(this.routeQueryable, 'queryChange', function(info) {
+            return this.renderSortingControls();
+          });
         };
 
         Sorting.prototype.getTemplateData = function() {
@@ -86,10 +76,7 @@
 
         Sorting.prototype.getSortInfo = function() {
           var query;
-          query = this.collection.getQuery({}, {
-            inclDefaults: true,
-            usePrefix: false
-          });
+          query = this.getBrowserQuery();
           if (!query.sort_by) {
             throw new Error('Please define a sort_by attribute within DEFAULTS');
           }
@@ -105,7 +92,7 @@
                 order: order,
                 routeName: _this.routeName,
                 routeParams: _this.routeParams,
-                nextQuery: _this.collection.getQuery({
+                nextQuery: _this.routeQueryable.getQuery({
                   order: nextOrder,
                   sort_by: column
                 })
@@ -122,10 +109,7 @@
 
         Sorting.prototype.highlightColumns = function() {
           var idx, query;
-          query = this.collection.getQuery({}, {
-            inclDefaults: true,
-            usePrefix: false
-          });
+          query = this.getBrowserQuery();
           idx = this.$("th[data-sort=" + query.sort_by + "]").index();
           return this.$(this.listSelector + " " + this.itemView.prototype.tagName + " td").removeClass('highlighted').filter(":nth-child(" + (idx + 1) + ")").not('[colspan]').addClass('highlighted');
         };
