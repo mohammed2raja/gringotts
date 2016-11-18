@@ -213,15 +213,20 @@ define (require) ->
     class QueryableProxy
       _.extend @prototype, Backbone.Events
 
+      disposed: false
+
       constructor: (queryable) ->
         @getQuery = _.bind queryable.getQuery, queryable
-        @listenTo queryable, 'queryChange', (info) =>
+        @listenTo queryable, 'queryChange', (info) ->
           @trigger 'queryChange', info, this
+        @listenTo queryable, 'dispose', -> @dispose()
 
       dispose: ->
         delete @getQuery
         @stopListening()
         @off()
+        @disposed = yes
+        Object.freeze? this
 
     ###*
      * A simple proxy object with only getQuery method to pass around.

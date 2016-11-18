@@ -36,9 +36,7 @@ define (require) ->
      * @return {View}
     ###
     initItemView: ->
-      view = super
-      @ROUTING_OPTIONS.forEach (key) => view[key] = @[key]
-      view
+      _.extend super, @routeOpts()
 
     getTemplateData: ->
       _.extend super, {@routeName, @routeParams}
@@ -91,7 +89,6 @@ define (require) ->
     onBrowserQueryChange: (query, diff) ->
 
     dispose: ->
-      @routeQueryable?.dispose?()
       @ROUTING_OPTIONS.forEach (key) =>
         delete @[key]
       super

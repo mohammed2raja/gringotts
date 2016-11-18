@@ -108,13 +108,6 @@ define (require) ->
         expect(view.routeQueryable.getQuery).to.be.calledWith {},
           inclDefaults: yes, usePrefix: no
 
-      context 'on dispose', ->
-        beforeEach ->
-          view.dispose()
-
-        it 'should dispose routeQueryable proxy', ->
-          expect(routeQueryable.dispose).to.have.been.calledOnce
-
       context 'on set', ->
         options = null
 

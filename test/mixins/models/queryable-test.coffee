@@ -6,7 +6,7 @@ define (require) ->
 
   class BaseCollection extends Chaplin.Collection
 
-  class MockCollection extends Queryable BaseCollection
+  class CollectionMock extends Queryable BaseCollection
     DEFAULTS: _.extend {}, @::DEFAULTS, foo: 'moo', boo: 'goo'
     urlRoot: '/test'
 
@@ -23,14 +23,14 @@ define (require) ->
 
     beforeEach ->
       sandbox = sinon.sandbox.create useFakeServer: true
-      collection = new MockCollection()
+      collection = new CollectionMock()
 
     afterEach ->
       sandbox.restore()
       collection.dispose()
 
     it 'should be initialized', ->
-      expect(collection).to.be.instanceOf MockCollection
+      expect(collection).to.be.instanceOf CollectionMock
       expect(collection.query).to.be.eql {}
 
     context 'proxyQueryable', ->
@@ -54,6 +54,13 @@ define (require) ->
           expect(eventSpy).to.have.been.calledWith
             query: x: 1, y: 2
             diff: ['a', 'b', 'x', 'y']
+
+        context 'on source collection disposing', ->
+          beforeEach ->
+            collection.dispose()
+
+          it 'should dispose proxy', ->
+            expect(proxyQueryable.disposed).to.be.true
 
         context 'when disposed', ->
           beforeEach ->
@@ -210,7 +217,7 @@ define (require) ->
 
     context 'with default values', ->
       beforeEach ->
-        collection.DEFAULTS = _.extend {}, MockCollection::DEFAULTS
+        collection.DEFAULTS = _.extend {}, CollectionMock::DEFAULTS
           , some_value: 5
         collection.setQuery other_value: 'a'
 
@@ -304,11 +311,11 @@ define (require) ->
     context 'when base class has string url', ->
       before ->
         BaseCollection::url = '/basetest'
-        MockCollection::urlRoot = null
+        CollectionMock::urlRoot = null
 
       after ->
         delete BaseCollection::url
-        MockCollection::urlRoot = '/test'
+        CollectionMock::urlRoot = '/test'
 
       beforeEach ->
         collection.setQuery 'coo=hoo'
@@ -323,11 +330,11 @@ define (require) ->
     context 'when base class has func url', ->
       before ->
         BaseCollection::url = -> '/basetest'
-        MockCollection::urlRoot = null
+        CollectionMock::urlRoot = null
 
       after ->
         delete BaseCollection::url
-        MockCollection::urlRoot = '/test'
+        CollectionMock::urlRoot = '/test'
 
       beforeEach ->
         collection.setQuery 'coo=hoo'
