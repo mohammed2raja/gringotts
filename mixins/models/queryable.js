@@ -328,19 +328,24 @@
         QueryableProxy = (function() {
           _.extend(QueryableProxy.prototype, Backbone.Events);
 
+          QueryableProxy.prototype.disposed = false;
+
           function QueryableProxy(queryable) {
             this.getQuery = _.bind(queryable.getQuery, queryable);
-            this.listenTo(queryable, 'queryChange', (function(_this) {
-              return function(info) {
-                return _this.trigger('queryChange', info, _this);
-              };
-            })(this));
+            this.listenTo(queryable, 'queryChange', function(info) {
+              return this.trigger('queryChange', info, this);
+            });
+            this.listenTo(queryable, 'dispose', function() {
+              return this.dispose();
+            });
           }
 
           QueryableProxy.prototype.dispose = function() {
             delete this.getQuery;
             this.stopListening();
-            return this.off();
+            this.off();
+            this.disposed = true;
+            return typeof Object.freeze === "function" ? Object.freeze(this) : void 0;
           };
 
           return QueryableProxy;

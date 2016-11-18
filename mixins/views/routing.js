@@ -60,14 +60,7 @@
          */
 
         Routing.prototype.initItemView = function() {
-          var view;
-          view = Routing.__super__.initItemView.apply(this, arguments);
-          this.ROUTING_OPTIONS.forEach((function(_this) {
-            return function(key) {
-              return view[key] = _this[key];
-            };
-          })(this));
-          return view;
+          return _.extend(Routing.__super__.initItemView.apply(this, arguments), this.routeOpts());
         };
 
         Routing.prototype.getTemplateData = function() {
@@ -150,12 +143,6 @@
         Routing.prototype.onBrowserQueryChange = function(query, diff) {};
 
         Routing.prototype.dispose = function() {
-          var ref1;
-          if ((ref1 = this.routeQueryable) != null) {
-            if (typeof ref1.dispose === "function") {
-              ref1.dispose();
-            }
-          }
           this.ROUTING_OPTIONS.forEach((function(_this) {
             return function(key) {
               return delete _this[key];
