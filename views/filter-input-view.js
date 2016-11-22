@@ -336,6 +336,9 @@
 
       FilterInputView.prototype.filterDropdownItems = function() {
         var dropdown, filter, query, regexp;
+        if (this.disposed) {
+          return;
+        }
         if (query = this.$('input').val()) {
           regexp = new RegExp(query, 'gi');
           filter = function(item) {
