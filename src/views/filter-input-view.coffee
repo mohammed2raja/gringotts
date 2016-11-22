@@ -198,6 +198,7 @@ define (require) ->
       @filterDropdownItems()
 
     filterDropdownItems: ->
+      return if @disposed
       if query = @$('input').val()
         regexp = new RegExp query, 'gi'
         filter = (item) -> regexp.test item.get 'name'
