@@ -3,21 +3,18 @@ define (require) ->
   View = require './view'
 
   ###*
-   * View for bootstrap modals
+   * Base View for bootstrap modals.
+   * The instance of this modal view should be always added into 'subviews' of
+   * the parent host Chaplin.View that initiates modal creation.
+   * This will guarantee that modal view is disposed when host view is disposed.
   ###
   class ModalView extends Classy View
     classyName: 'modal fade'
     attributes:
       role: 'dialog'
     events:
-      # Globally prevent scrolling of page when modal is displayed.
-      'shown.bs.modal': ->
-        $('body').addClass 'no-scroll'
-      'hidden.bs.modal': ->
-        $('body').removeClass 'no-scroll'
-        @hidden = true
-        # dispose responsibility is on model's holder
-        @dispose() if @disposeRequested or not (@model or @collection)
+      'shown.bs.modal': -> @onShown()
+      'hidden.bs.modal': -> @onHidden()
 
     attach: (opts) ->
       super
@@ -26,7 +23,20 @@ define (require) ->
     hide: ->
       @$el.modal 'hide' if @$el and @$el.hasClass 'in'
 
+    onShown: ->
+      @modalVisible = yes
+      # Globally prevent scrolling of page when modal is displayed
+      $('body').addClass 'no-scroll'
+      @trigger 'shown'
+
+    onHidden: ->
+      @modalVisible = no
+      $('body').removeClass 'no-scroll'
+      @trigger 'hidden'
+
     dispose: ->
-      @hide()
-      super if @hidden # wait untils BS animations over
-      @disposeRequested = true
+      if @modalVisible
+        @once 'hidden', -> super
+        @hide()
+      else
+        super

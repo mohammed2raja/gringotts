@@ -6,10 +6,10 @@ define (require) ->
     template: 'dialog'
     title: null
     text: null
-    buttons: [{
+    buttons: [
       text: I18n?.t('buttons.OK') or 'OK',
       className: 'btn-primary confirm-button'
-    }]
+    ]
     optionNames: @::optionNames.concat [
       'title', 'text', 'buttons'
     ]

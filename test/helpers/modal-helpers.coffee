@@ -1,6 +1,6 @@
 define (require) ->
-  stubModal: (ctx) ->
-    sinon.stub $.fn, 'modal', (cmd) ->
+  stubModal: (sandbox, ctx) ->
+    sandbox.stub $.fn, 'modal', (cmd) ->
       if cmd is undefined
         @addClass('in').trigger if ctx().transition then 'show.bs.modal'
         else 'shown.bs.modal'

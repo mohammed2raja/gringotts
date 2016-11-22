@@ -41,7 +41,6 @@ define (require) ->
         @$stateView().removeClass 'fade' # to enable BS animation
       'hidden.bs.modal': ->
         if @state is 'success' then @onDone?() else @onCancel?()
-        @dispose()
 
     initialize: ->
       super
@@ -50,15 +49,14 @@ define (require) ->
       # set a few essential defaults for basic dialog use cases
       _.defaultsDeep this,
         default:
-          buttons:
-            [{
-              text: I18n?.t('buttons.OK') or 'OK',
-              className: 'btn-primary confirm-button'
-            }]
+          buttons: [
+            text: I18n?.t('buttons.OK') or 'OK',
+            className: 'btn-primary confirm-button'
+          ]
         error:
-          title:
-            I18n?.t('error.did_not_work') or
-              "Hmm. That didn't seem to work. Try again?"
+          title: I18n?.t('error.try_again') or 'Try again?'
+          text: I18n?.t('error.did_not_work') or "Hmm. That didn't
+            seem to work."
           buttons: [
             # stealing action button's style and click handler to try again
             _.extend (_.clone _.first _.filter @default?.buttons,
@@ -68,11 +66,10 @@ define (require) ->
         success:
           # using a template with check icon
           html: => templates['progress-success'] @getTemplateData()
-          buttons:
-            [{
-              text:I18n?.t('buttons.Okay') or 'Okay',
-              className: 'btn-primary confirm-button'
-            }]
+          buttons: [
+            text: I18n?.t('buttons.Okay') or 'Okay',
+            className: 'btn-primary confirm-button'
+          ]
       # link hbs templates to template data
       STATES.forEach (s) =>
         if @[s] and _.isFunction @[s].text
@@ -120,7 +117,7 @@ define (require) ->
       @$('.loading').toggleClass 'in', loading
 
     $stateView: (state=@state) ->
-      @$(".#{state}-view")
+      @$(".#{state}-state-view")
 
     progressState: ->
       if @model.isSyncing() and @progress then 'progress' else 'default'

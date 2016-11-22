@@ -8,6 +8,7 @@ define (require) ->
   class MockModel extends ActiveSyncMachine Chaplin.Model
 
   describe 'ProgressDialogView', ->
+    sandbox = null
     view = null
     viewConfig = null
     model = null
@@ -17,33 +18,35 @@ define (require) ->
     transition = null
 
     beforeEach ->
-      modalHelpers.stubModal -> {transition}
+      sandbox = sinon.sandbox.create()
+      modalHelpers.stubModal sandbox, -> {transition}
       onDone = sinon.spy()
       onCancel = sinon.spy()
       model = new MockModel()
       model.beginSync() if syncing
-      view = new ProgressDialogView _.extend {model, onDone, onCancel},
-        viewConfig
+      config = _.extend {model, onDone, onCancel}, _.cloneDeep viewConfig
+      view = new ProgressDialogView config
 
     afterEach ->
-      try view.dispose()
-      $.fn.modal.restore()
+      sandbox.restore()
       model.dispose()
+      view.dispose()
 
     it 'should be initialized', ->
       expect(view).to.be.instanceOf ProgressDialogView
       expect(view.default.buttons).to.
         include text: 'OK', className: 'btn-primary confirm-button'
-      expect(view.error.title).to.eq "Hmm. That didn't seem to work. Try again?"
+      expect(view.error.title).to.equal 'Try again?'
+      expect(view.error.text).to.equal "Hmm. That didn't seem to work."
       expect(view.success.html()).to.contain 'icon-misc-sign-check'
       expect(view.success.buttons).to.
         include text: 'Okay', className: 'btn-primary confirm-button'
 
     it 'should have default view with proper classes', ->
-      expect(view.$ '.default-view').to.have.class 'fade in'
+      expect(view.$ '.default-state-view').to.have.class 'fade in'
 
     it 'should have default state button', ->
-      expect(view.$ '.default-view .modal-footer .btn').to.exist
+      expect(view.$ '.default-state-view .modal-footer .btn').to.exist
 
     context 'with animations', ->
       before ->
@@ -53,31 +56,28 @@ define (require) ->
         transition = null
 
       it 'should have default view without fade class', ->
-        expect(view.$ '.default-view').to.not.have.class 'fade'
+        expect(view.$ '.default-state-view').to.not.have.class 'fade'
 
       context 'on animation over', ->
         beforeEach ->
           view.$el.trigger 'shown.bs.modal'
 
         it 'should have default view with fade class', ->
-          expect(view.$ '.default-view').to.have.class 'fade'
+          expect(view.$ '.default-state-view').to.have.class 'fade'
 
       context 'on hiding', ->
         beforeEach ->
-          view.$el.modal 'hide'
+          view.hide()
 
         it 'should have default view without fade class', ->
-          expect(view.$ '.default-view').to.not.have.class 'fade'
+          expect(view.$ '.default-state-view').to.not.have.class 'fade'
 
     context 'on closing dialog', ->
       beforeEach ->
-        view.$el.modal 'hide'
+        view.hide()
 
       it 'should call onCancel handler', ->
         expect(onCancel).to.have.been.calledOnce
-
-      it 'should be disposed', ->
-        expect(view.disposed).to.be.true
 
     context 'on model syncing', ->
       beforeEach ->
@@ -88,7 +88,7 @@ define (require) ->
 
       it 'should not switch to progress state', ->
         expect(view.state).to.equal 'default'
-        expect(view.$ '.progress-view').to.not.have.class 'in'
+        expect(view.$ '.progress-state-view').to.not.have.class 'in'
 
       context 'on model error', ->
         xhr = null
@@ -102,7 +102,7 @@ define (require) ->
 
         it 'should switch to error state', ->
           expect(view.state).to.equal 'error'
-          expect(view.$ '.error-view').to.have.class 'in'
+          expect(view.$ '.error-state-view').to.have.class 'in'
 
         it 'should handle xhr error', ->
           expect(xhr.errorHandled).to.be.true
@@ -123,7 +123,7 @@ define (require) ->
 
         it 'should switch to success state', ->
           expect(view.state).to.equal 'success'
-          expect(view.$ '.success-view').to.have.class 'in'
+          expect(view.$ '.success-state-view').to.have.class 'in'
 
         context 'on closing dialog', ->
           beforeEach ->
@@ -167,6 +167,9 @@ define (require) ->
             title: 'Hooray'
             text: 'It was done!'
 
+      after ->
+        viewConfig = null
+
       beforeEach ->
         actionSpy = sinon.spy()
         tryAgainSpy = sinon.spy()
@@ -174,16 +177,18 @@ define (require) ->
         view.error.buttons[0].click = tryAgainSpy
 
       it 'should show correct default state', ->
-        expect(view.$ '.default-view').to.exist
-        expect(view.$ '.default-view .close').to.exist
-        expect(view.$ '.default-view .modal-title').to.have.text 'Doing This!'
-        expect(view.$ '.default-view .modal-body p')
+        expect(view.$ '.default-state-view').to.exist
+        expect(view.$ '.default-state-view .close').to.exist
+        expect(view.$ '.default-state-view .modal-title').to.have
+          .text 'Doing This!'
+        expect(view.$ '.default-state-view .modal-body p')
           .to.have.text 'Do you want to do it?'
-        expect(view.$ '.default-view .modal-footer .btn-primary').to.exist
+        expect(view.$ '.default-state-view .modal-footer .btn-primary').to.exist
 
       context 'on action button click', ->
         beforeEach ->
-          view.$('.default-view .modal-footer .btn-primary').trigger 'click'
+          button = view.$ '.default-state-view .modal-footer .btn-primary'
+          button.trigger 'click'
 
         it 'should invoke click handler', ->
           expect(actionSpy).to.have.been.calledWith sinon.match.object
@@ -193,27 +198,29 @@ define (require) ->
           model.beginSync()
 
         it 'should show correct progress state', ->
-          expect(view.$ '.progress-view.fade.in').to.exist
-          expect(view.$ '.progress-view .modal-title')
+          expect(view.$ '.progress-state-view.fade.in').to.exist
+          expect(view.$ '.progress-state-view .modal-title')
             .to.have.text 'Doing it right now'
-          expect(view.$ '.progress-view .modal-body p')
+          expect(view.$ '.progress-state-view .modal-body p')
             .to.have.text 'It is taking time'
-          expect(view.$ '.progress-view .modal-body .progress-pulse').to.exist
+          expect(view.$ '.progress-state-view .modal-body .progress-pulse').to
+            .exist
 
         context 'on model error', ->
           beforeEach ->
             model.trigger 'error', model, {}
 
           it 'should show correct success state', ->
-            expect(view.$ '.error-view.fade.in').to.exist
-            expect(view.$ '.error-view .modal-title')
+            expect(view.$ '.error-state-view.fade.in').to.exist
+            expect(view.$ '.error-state-view .modal-title')
               .to.have.text 'Could not do it!'
-            expect(view.$ '.error-view .modal-body p')
+            expect(view.$ '.error-state-view .modal-body p')
               .to.have.text 'So sorry, did not work out'
 
           context 'on try again button click', ->
             beforeEach ->
-              view.$('.error-view .modal-footer .btn-primary').trigger 'click'
+              button = view.$ '.error-state-view .modal-footer .btn-primary'
+              button.trigger 'click'
 
             it 'should invoke click handler', ->
               expect(tryAgainSpy).to.have.been.calledWith sinon.match.object
@@ -223,10 +230,10 @@ define (require) ->
             model.finishSync()
 
           it 'should show correct success state', ->
-            expect(view.$ '.success-view.fade.in').to.exist
-            expect(view.$ '.success-view .modal-title')
+            expect(view.$ '.success-state-view.fade.in').to.exist
+            expect(view.$ '.success-state-view .modal-title')
               .to.have.text 'Hooray'
-            expect(view.$ '.success-view .modal-body h1')
+            expect(view.$ '.success-state-view .modal-body h1')
               .to.have.text 'It was done!'
 
       context 'with syncing model', ->
@@ -240,7 +247,7 @@ define (require) ->
           expect(view.state).to.equal 'progress'
 
         it 'should have progress state without fade', ->
-          expect(view.$ '.progress-view').to.have.class 'fade in'
+          expect(view.$ '.progress-state-view').to.have.class 'fade in'
 
     context 'with custom template states', ->
       before ->
@@ -251,9 +258,12 @@ define (require) ->
           error: text: html
           success: text: html
 
+      after ->
+        viewConfig = null
+
       it 'should have propert rendered states', ->
         title = 'Epic Header'
         text = 'Cool custom state'
         ['default', 'progress', 'error', 'success'].forEach (s) ->
-          expect(view.$ ".#{s}-view .modal-body h1").to.have.text title
-          expect(view.$ ".#{s}-view .modal-body p").to.have.text text
+          expect(view.$ ".#{s}-state-view .modal-body h1").to.have.text title
+          expect(view.$ ".#{s}-state-view .modal-body p").to.have.text text
