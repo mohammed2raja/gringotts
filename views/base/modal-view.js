@@ -8,7 +8,10 @@
     View = require('./view');
 
     /**
-     * View for bootstrap modals
+     * Base View for bootstrap modals.
+     * The instance of this modal view should be always added into 'subviews' of
+     * the parent host Chaplin.View that initiates modal creation.
+     * This will guarantee that modal view is disposed when host view is disposed.
      */
     return ModalView = (function(superClass) {
       extend(ModalView, superClass);
@@ -25,14 +28,10 @@
 
       ModalView.prototype.events = {
         'shown.bs.modal': function() {
-          return $('body').addClass('no-scroll');
+          return this.onShown();
         },
         'hidden.bs.modal': function() {
-          $('body').removeClass('no-scroll');
-          this.hidden = true;
-          if (this.disposeRequested || !(this.model || this.collection)) {
-            return this.dispose();
-          }
+          return this.onHidden();
         }
       };
 
@@ -47,12 +46,27 @@
         }
       };
 
+      ModalView.prototype.onShown = function() {
+        this.modalVisible = true;
+        $('body').addClass('no-scroll');
+        return this.trigger('shown');
+      };
+
+      ModalView.prototype.onHidden = function() {
+        this.modalVisible = false;
+        $('body').removeClass('no-scroll');
+        return this.trigger('hidden');
+      };
+
       ModalView.prototype.dispose = function() {
-        this.hide();
-        if (this.hidden) {
-          ModalView.__super__.dispose.apply(this, arguments);
+        if (this.modalVisible) {
+          this.once('hidden', function() {
+            return ModalView.__super__.dispose.apply(this, arguments);
+          });
+          return this.hide();
+        } else {
+          return ModalView.__super__.dispose.apply(this, arguments);
         }
-        return this.disposeRequested = true;
       };
 
       return ModalView;

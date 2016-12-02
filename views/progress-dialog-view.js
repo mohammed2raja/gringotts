@@ -75,15 +75,10 @@
         },
         'hidden.bs.modal': function() {
           if (this.state === 'success') {
-            if (typeof this.onDone === "function") {
-              this.onDone();
-            }
+            return typeof this.onDone === "function" ? this.onDone() : void 0;
           } else {
-            if (typeof this.onCancel === "function") {
-              this.onCancel();
-            }
+            return typeof this.onCancel === "function" ? this.onCancel() : void 0;
           }
-          return this.dispose();
         }
       };
 
@@ -103,7 +98,8 @@
             ]
           },
           error: {
-            title: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.did_not_work') : void 0) || "Hmm. That didn't seem to work. Try again?",
+            title: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.try_again') : void 0) || 'Try again?',
+            text: (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.did_not_work') : void 0) || "Hmm. That didn't seem to work.",
             buttons: [
               _.extend(_.clone(_.first(_.filter((ref = this["default"]) != null ? ref.buttons : void 0, function(b) {
                 return b.click;
@@ -205,7 +201,7 @@
         if (state == null) {
           state = this.state;
         }
-        return this.$("." + state + "-view");
+        return this.$("." + state + "-state-view");
       };
 
       ProgressDialogView.prototype.progressState = function() {
