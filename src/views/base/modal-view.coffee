@@ -20,7 +20,15 @@ define (require) ->
       super
       @$el.modal opts
 
+    show: ->
+      return if @disposed
+      @delegateEvents()
+      @delegateListeners()
+      @render()
+      @attach()
+
     hide: ->
+      return if @disposed
       @$el.modal 'hide' if @$el and @$el.hasClass 'in'
 
     onShown: ->
@@ -33,6 +41,7 @@ define (require) ->
       @modalVisible = no
       $('body').removeClass 'no-scroll'
       @trigger 'hidden'
+      @remove() unless @disposed
 
     dispose: ->
       if @modalVisible

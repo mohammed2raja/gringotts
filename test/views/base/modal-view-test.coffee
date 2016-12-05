@@ -52,6 +52,13 @@ define (require) ->
         it 'should trigger hidden event', ->
           expect(hiddenSpy).to.have.been.calledOnce
 
+        context 'and then show again', ->
+          beforeEach ->
+            view.show()
+
+          it 'should trigger shown event', ->
+            expect(shownSpy).to.have.been.calledTwice
+
       context 'on disposing', ->
         beforeEach ->
           transition = true
