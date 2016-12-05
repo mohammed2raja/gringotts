@@ -40,7 +40,20 @@
         return this.$el.modal(opts);
       };
 
+      ModalView.prototype.show = function() {
+        if (this.disposed) {
+          return;
+        }
+        this.delegateEvents();
+        this.delegateListeners();
+        this.render();
+        return this.attach();
+      };
+
       ModalView.prototype.hide = function() {
+        if (this.disposed) {
+          return;
+        }
         if (this.$el && this.$el.hasClass('in')) {
           return this.$el.modal('hide');
         }
@@ -55,7 +68,10 @@
       ModalView.prototype.onHidden = function() {
         this.modalVisible = false;
         $('body').removeClass('no-scroll');
-        return this.trigger('hidden');
+        this.trigger('hidden');
+        if (!this.disposed) {
+          return this.remove();
+        }
       };
 
       ModalView.prototype.dispose = function() {
