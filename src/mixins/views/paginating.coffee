@@ -85,10 +85,10 @@ define (require) ->
         info.range = @getRangeString page, perPage, info
 
       info.nextQuery =
-        if info.next then @routeQueryable.getQuery page: info.next
+        if info.next then @routeQueryable.getQuery overrides: page: info.next
         else @routeQueryable.getQuery()
       info.prevQuery =
-        if info.prev then @routeQueryable.getQuery page: info.prev
+        if info.prev then @routeQueryable.getQuery overrides: page: info.prev
         else @routeQueryable.getQuery()
 
       info.routeName = @routeName

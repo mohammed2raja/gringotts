@@ -65,7 +65,7 @@ define (require) ->
     getBrowserQuery: ->
       unless @routeQueryable
         throw new Error "Can't get query since @routeQueryable isn't set."
-      @routeQueryable.getQuery {}, inclDefaults: yes, usePrefix: no
+      @routeQueryable.getQuery inclDefaults: yes, usePrefix: no
 
     ###*
      * Redirect to current route with new query params.
@@ -79,7 +79,7 @@ define (require) ->
         throw new Error "Can't set browser query since @routeName isn't set."
       @muteQueryChangeEvent = true # we don't want handle our own query change
       utils.redirectTo @routeName, @routeParams,
-        _.extend {}, options, query: @routeQueryable.getQuery query
+        _.extend {}, options, query: @routeQueryable.getQuery overrides: query
 
     ###*
      * Override this method to add your logic upon browser query change.

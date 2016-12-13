@@ -1,6 +1,5 @@
 define (require) ->
   Chaplin = require 'chaplin'
-  utils = require 'lib/utils'
   ServiceErrorHandled = require 'mixins/models/service-error-handled'
 
   class MockCollection extends ServiceErrorHandled Chaplin.Collection
@@ -8,26 +7,23 @@ define (require) ->
   describe 'ServiceErrorHandled', ->
     sandbox = null
     collection = null
-    errorSpy = null
-    xhr = null
+    failHandler = null
 
     beforeEach ->
       sandbox = sinon.sandbox.create()
       collection = new MockCollection()
-      sandbox.stub Chaplin.Collection::, 'sync'
-      collection.fetch error: (errorSpy = sinon.spy())
+      sandbox.stub collection, 'sync', -> fail: (fn) -> failHandler = fn
+      collection.fetch()
 
     afterEach ->
       sandbox.restore()
       collection.dispose()
 
     context 'on error', ->
-      beforeEach ->
-        options = Chaplin.Collection::sync.lastCall.args[2]
-        options.error (xhr = statusText: 'error')
+      xhr = null
 
-      it 'should call original error handler', ->
-        expect(errorSpy).to.have.been.calledOnce
+      beforeEach ->
+        failHandler xhr = {}
 
       it 'should set xhr as errorHandled', ->
         expect(xhr.errorHandled).to.be.true

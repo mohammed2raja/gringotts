@@ -14,5 +14,5 @@ define (require) ->
       helper.assertNotModel this
       super
 
-    fetch: (options) ->
-      super(options)?.fail => @reset()
+    fetch: ->
+      super?.fail => @reset()

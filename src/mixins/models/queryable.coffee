@@ -61,15 +61,15 @@ define (require) ->
 
     ###*
      * Generates a query hash from the current query and given overrides.
-     * @param  {Object} overrides={} Optional overrides
      * @param  {Object} opts={}      inclDefaults - adds default query
      *                               values into result, it is false by default.
      *                               usePrefix - adds prefix string into query
      *                               property key, it is true by default.
+     *                               overrides - optional state overrides.
      * @return {Object}              Combined query
     ###
-    getQuery: (overrides={}, opts={}) ->
-      query = _.extend {}, @DEFAULTS, @query, overrides
+    getQuery: (opts={}) ->
+      query = _.extend {}, @DEFAULTS, @query, opts.overrides
       # make sure only local properties are being passed in
       unless _.isEmpty _.intersection _.keys(query)
           , _.keys @DEFAULTS_SERVER_MAP
@@ -170,7 +170,7 @@ define (require) ->
       throw new Error 'Please define url or urlRoot
         when implementing a queryable model or collection' unless base
       base = if _.isFunction(base) then base.apply(this) else base
-      query = @getQuery {}, inclDefaults: yes, usePrefix: no unless query
+      query = @getQuery inclDefaults: yes, usePrefix: no unless query
       # convert from local query keys to server query keys
       query = _.mapKeys _.omit(query, @ignoreKeys), (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key

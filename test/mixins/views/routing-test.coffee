@@ -91,7 +91,7 @@ define (require) ->
 
       beforeEach ->
         routeQueryable =
-          getQuery: sinon.spy (query) -> _.extend {a: 1, b: 2}, query
+          getQuery: sinon.spy (opts) -> _.extend a: 1, b: 2, opts.overrides
           dispose: sinon.spy()
         view = new MockView {
           routeName: 'that-route'
@@ -105,8 +105,8 @@ define (require) ->
       it 'should return query', ->
         query = view.getBrowserQuery()
         expect(query).to.eql a: 1, b: 2
-        expect(view.routeQueryable.getQuery).to.be.calledWith {},
-          inclDefaults: yes, usePrefix: no
+        expect(view.routeQueryable.getQuery).to.be
+          .calledWith inclDefaults: yes, usePrefix: no
 
       context 'on set', ->
         options = null

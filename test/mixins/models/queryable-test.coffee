@@ -38,7 +38,9 @@ define (require) ->
         collection.query = a: 1, b: 2
 
       it 'should return proper proxy', ->
-        query = collection.proxyQueryable().getQuery {c: 3}, inclDefaults: yes
+        query = collection.proxyQueryable().getQuery
+          inclDefaults: yes
+          overrides: c: 3
         expect(query).to.eql a: 1, b: 2, c: 3, foo: 'moo', boo: 'goo'
 
       context 'trigerring queryChange event on collection', ->
@@ -126,7 +128,7 @@ define (require) ->
         expect(difference).to.eql ['coo']
 
       it 'should update query properly', ->
-        expect(collection.getQuery {}, inclDefaults: yes).to
+        expect(collection.getQuery inclDefaults: yes).to
           .eql boo: 'goo', coo: 'hoo', foo: 'moo'
 
       it 'should fetch from the server with proper url', ->
@@ -226,7 +228,7 @@ define (require) ->
         expect(query).to.eql other_value: 'a'
 
       it 'should return proper query with defaults', ->
-        query = collection.getQuery {}, inclDefaults: yes
+        query = collection.getQuery inclDefaults: yes
         expect(query).to.eql other_value: 'a', some_value: 5
           , foo: 'moo', boo: 'goo'
 
@@ -253,7 +255,7 @@ define (require) ->
         query = null
 
         beforeEach ->
-          query = collection.getQuery {}, opts
+          query = collection.getQuery opts
 
         it 'should return query with prefix keys', ->
           expect(query).to.eql local_page: 20, local_per_page: 15

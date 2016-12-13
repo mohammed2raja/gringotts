@@ -2,19 +2,18 @@ define (require) ->
   helper = require '../../lib/mixin-helper'
 
   ###*
-   * Sets all XHR errors as handled, to suppress global error notification.
+   * Sets XHR errors on fetch as handled,
+   * to suppress global error notification.
+   * This mixin is useful for Collections that are being used by views
+   * with ServiceErrorReady applied.
   ###
   (superclass) -> class ServiceErrorHandled extends superclass
     helper.setTypeName @prototype, 'ServiceErrorHandled'
 
     initialize: ->
-      helper.assertModelOrCollection this
+      helper.assertCollection this
+      helper.assertNotModel this
       super
 
-    sync: (method, model, options={}) ->
-      error = options.error
-      # suppress global error handler
-      options.error = ($xhr) ->
-        $xhr.errorHandled = true
-        error?.apply this, arguments
-      super
+    fetch: ->
+      super?.fail ($xhr) -> $xhr.errorHandled = true

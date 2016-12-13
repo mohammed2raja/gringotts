@@ -62,7 +62,8 @@ define (require) ->
           order: order
           routeName: @routeName
           routeParams: @routeParams
-          nextQuery: @routeQueryable.getQuery order: nextOrder, sort_by: column
+          nextQuery: @routeQueryable.getQuery overrides:
+            order: nextOrder, sort_by: column
         result
       , {}
 

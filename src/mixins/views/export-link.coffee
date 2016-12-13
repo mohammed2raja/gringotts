@@ -16,7 +16,7 @@ define (require) ->
      * @return {String}
     ###
     exportLink: (baseUrl) ->
-      query = _.clone @collection.getQuery {}, inclDefaults: yes
+      query = _.clone @collection.getQuery inclDefaults: yes
       delete query.page
       delete query.per_page
       @collection.url baseUrl, query
