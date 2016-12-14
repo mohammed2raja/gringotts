@@ -28,9 +28,9 @@
           return ForcedReset.__super__.initialize.apply(this, arguments);
         };
 
-        ForcedReset.prototype.fetch = function(options) {
+        ForcedReset.prototype.fetch = function() {
           var ref;
-          return (ref = ForcedReset.__super__.fetch.call(this, options)) != null ? ref.fail((function(_this) {
+          return (ref = ForcedReset.__super__.fetch.apply(this, arguments)) != null ? ref.fail((function(_this) {
             return function() {
               return _this.reset();
             };

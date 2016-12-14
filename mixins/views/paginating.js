@@ -116,10 +116,14 @@
             info.range = this.getRangeString(page, perPage, info);
           }
           info.nextQuery = info.next ? this.routeQueryable.getQuery({
-            page: info.next
+            overrides: {
+              page: info.next
+            }
           }) : this.routeQueryable.getQuery();
           info.prevQuery = info.prev ? this.routeQueryable.getQuery({
-            page: info.prev
+            overrides: {
+              page: info.prev
+            }
           }) : this.routeQueryable.getQuery();
           info.routeName = this.routeName;
           info.routeParams = this.routeParams;

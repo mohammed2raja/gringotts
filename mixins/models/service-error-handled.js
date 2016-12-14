@@ -7,7 +7,10 @@
     helper = require('../../lib/mixin-helper');
 
     /**
-     * Sets all XHR errors as handled, to suppress global error notification.
+     * Sets XHR errors on fetch as handled,
+     * to suppress global error notification.
+     * This mixin is useful for Collections that are being used by views
+     * with ServiceErrorReady applied.
      */
     return function(superclass) {
       var ServiceErrorHandled;
@@ -21,21 +24,16 @@
         helper.setTypeName(ServiceErrorHandled.prototype, 'ServiceErrorHandled');
 
         ServiceErrorHandled.prototype.initialize = function() {
-          helper.assertModelOrCollection(this);
+          helper.assertCollection(this);
+          helper.assertNotModel(this);
           return ServiceErrorHandled.__super__.initialize.apply(this, arguments);
         };
 
-        ServiceErrorHandled.prototype.sync = function(method, model, options) {
-          var error;
-          if (options == null) {
-            options = {};
-          }
-          error = options.error;
-          options.error = function($xhr) {
-            $xhr.errorHandled = true;
-            return error != null ? error.apply(this, arguments) : void 0;
-          };
-          return ServiceErrorHandled.__super__.sync.apply(this, arguments);
+        ServiceErrorHandled.prototype.fetch = function() {
+          var ref;
+          return (ref = ServiceErrorHandled.__super__.fetch.apply(this, arguments)) != null ? ref.fail(function($xhr) {
+            return $xhr.errorHandled = true;
+          }) : void 0;
         };
 
         return ServiceErrorHandled;

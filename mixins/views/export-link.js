@@ -32,7 +32,7 @@
 
         ExportLink.prototype.exportLink = function(baseUrl) {
           var query;
-          query = _.clone(this.collection.getQuery({}, {
+          query = _.clone(this.collection.getQuery({
             inclDefaults: true
           }));
           delete query.page;

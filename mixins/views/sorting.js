@@ -93,8 +93,10 @@
                 routeName: _this.routeName,
                 routeParams: _this.routeParams,
                 nextQuery: _this.routeQueryable.getQuery({
-                  order: nextOrder,
-                  sort_by: column
+                  overrides: {
+                    order: nextOrder,
+                    sort_by: column
+                  }
                 })
               };
               return result;

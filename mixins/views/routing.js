@@ -105,7 +105,7 @@
           if (!this.routeQueryable) {
             throw new Error("Can't get query since @routeQueryable isn't set.");
           }
-          return this.routeQueryable.getQuery({}, {
+          return this.routeQueryable.getQuery({
             inclDefaults: true,
             usePrefix: false
           });
@@ -129,7 +129,9 @@
           }
           this.muteQueryChangeEvent = true;
           return utils.redirectTo(this.routeName, this.routeParams, _.extend({}, options, {
-            query: this.routeQueryable.getQuery(query)
+            query: this.routeQueryable.getQuery({
+              overrides: query
+            })
           }));
         };
 

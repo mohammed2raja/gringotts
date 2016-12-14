@@ -88,23 +88,20 @@
 
         /**
          * Generates a query hash from the current query and given overrides.
-         * @param  {Object} overrides={} Optional overrides
          * @param  {Object} opts={}      inclDefaults - adds default query
          *                               values into result, it is false by default.
          *                               usePrefix - adds prefix string into query
          *                               property key, it is true by default.
+         *                               overrides - optional state overrides.
          * @return {Object}              Combined query
          */
 
-        Queryable.prototype.getQuery = function(overrides, opts) {
+        Queryable.prototype.getQuery = function(opts) {
           var query;
-          if (overrides == null) {
-            overrides = {};
-          }
           if (opts == null) {
             opts = {};
           }
-          query = _.extend({}, this.DEFAULTS, this.query, overrides);
+          query = _.extend({}, this.DEFAULTS, this.query, opts.overrides);
           if (!_.isEmpty(_.intersection(_.keys(query), _.keys(this.DEFAULTS_SERVER_MAP)))) {
             throw new Error('Pass in only local query properties.');
           }
@@ -264,7 +261,7 @@
           }
           base = _.isFunction(base) ? base.apply(this) : base;
           if (!query) {
-            query = this.getQuery({}, {
+            query = this.getQuery({
               inclDefaults: true,
               usePrefix: false
             });
