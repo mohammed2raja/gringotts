@@ -31,7 +31,4 @@ define (require) ->
 
     parse: ->
       result = super
-      if @syncKey
-        @count = parseInt result.count
-        result[@syncKey]
-      else result
+      if @syncKey then result[@syncKey] else result

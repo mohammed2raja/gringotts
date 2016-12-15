@@ -31,9 +31,10 @@ define (require) ->
 
     fetch: ->
       @reset() # remove existing items
-      super
+      super?.fail => @count = 0
 
     parse: (resp) ->
       result = super
+      @count = parseInt resp.count
       @nextPageId = resp.next_page_id if @infinite
       result

@@ -31,34 +31,53 @@ define (require) ->
       expect(helper.instanceWithMixin collection, ForcedReset).to.be.true
 
     context 'fetching', ->
-      infinite = false
+      infinite = null
+      response = null
 
       beforeEach ->
+        collection.count = 500
         collection.infinite = infinite
         collection.fetch()
-        sandbox.server.respondWith [200, {}, JSON.stringify {
-          count: 3
-          someItems: [{}, {}, {}]
-          next_page_id: 555
-        }]
+        sandbox.server.respondWith response
         sandbox.server.respond()
 
-      it 'should query the server with the default query params', ->
-        request = _.last sandbox.server.requests
-        _.each ['page=1', 'per_page=30'], (i) ->
-          expect(request.url).to.contain i
-
-      it 'should parse response correctly', ->
-        expect(collection.count).to.equal 3
-        expect(collection.length).to.equal 3
-        expect(collection.nextPageId).to.be.undefined
-
-      context 'when pagination is infinite', ->
+      context 'on done', ->
         before ->
-          infinite = true
+          response = [200, {}, JSON.stringify {
+            count: 3
+            someItems: [{}, {}, {}]
+            next_page_id: 555
+          }]
 
         after ->
-          infinite = false
+          response = null
 
-        it 'should read next page id', ->
-          expect(collection.nextPageId).to.equal 555
+        it 'should query the server with the default query params', ->
+          request = _.last sandbox.server.requests
+          _.each ['page=1', 'per_page=30'], (i) ->
+            expect(request.url).to.contain i
+
+        it 'should parse response correctly', ->
+          expect(collection.count).to.equal 3
+          expect(collection.length).to.equal 3
+          expect(collection.nextPageId).to.be.undefined
+
+        context 'when pagination is infinite', ->
+          before ->
+            infinite = true
+
+          after ->
+            infinite = false
+
+          it 'should read next page id', ->
+            expect(collection.nextPageId).to.equal 555
+
+      context 'on fail', ->
+        before ->
+          response = [500, {}, JSON.stringify {}]
+
+        after ->
+          response = null
+
+        it 'should reset count to 0', ->
+          expect(collection.count).to.equal 0

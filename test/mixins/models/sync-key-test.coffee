@@ -16,7 +16,6 @@ define (require) ->
       collection = new MockSyncKeyCollection()
       collection.fetch()
       sandbox.server.respondWith [200, {}, JSON.stringify {
-        count: 3
         someItems: [{}, {}, {}]
       }]
       sandbox.server.respond()
@@ -30,5 +29,4 @@ define (require) ->
       expect(collection).to.be.instanceOf MockSyncKeyCollection
 
     it 'should parse response correctly', ->
-      expect(collection.count).to.equal 3
       expect(collection.length).to.equal 3
