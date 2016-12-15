@@ -46,13 +46,19 @@
         };
 
         Paginated.prototype.fetch = function() {
+          var ref;
           this.reset();
-          return Paginated.__super__.fetch.apply(this, arguments);
+          return (ref = Paginated.__super__.fetch.apply(this, arguments)) != null ? ref.fail((function(_this) {
+            return function() {
+              return _this.count = 0;
+            };
+          })(this)) : void 0;
         };
 
         Paginated.prototype.parse = function(resp) {
           var result;
           result = Paginated.__super__.parse.apply(this, arguments);
+          this.count = parseInt(resp.count);
           if (this.infinite) {
             this.nextPageId = resp.next_page_id;
           }

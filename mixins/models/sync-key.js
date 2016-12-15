@@ -49,7 +49,6 @@
           var result;
           result = SyncKey.__super__.parse.apply(this, arguments);
           if (this.syncKey) {
-            this.count = parseInt(result.count);
             return result[this.syncKey];
           } else {
             return result;
