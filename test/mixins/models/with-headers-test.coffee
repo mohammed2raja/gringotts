@@ -13,8 +13,12 @@ define (require) ->
     url: '/foo/url'
     originalHeaders: @::HEADERS
     HEADERS: ->
-      @resolveHeaders(@originalHeaders).then (headers) ->
-        _.extend {}, headers, 'X-BOO-ID': '300'
+      @mockDeferred.then =>
+        @resolveHeaders(@originalHeaders).then (headers) ->
+          _.extend {}, headers, 'X-BOO-ID': '300'
+
+    constructor: ->
+      @mockDeferred = $.Deferred()
 
   describe 'WithHeaders mixin', ->
     model = null
@@ -29,10 +33,10 @@ define (require) ->
     context 'with default configuration', ->
       $xhr = null
 
-      beforeEach ->
+      beforeEach (done) ->
         model = new MockModel()
         $xhr = model.fetch()
-        return # to avoid passing Deferred to mocha runner
+        done()
 
       afterEach ->
         model.dispose()
@@ -47,18 +51,18 @@ define (require) ->
         expect(_.last(server.requests).method).to.be.equal 'POST'
 
       context 'aborting request', ->
-        beforeEach ->
+        beforeEach (done) ->
           $xhr.abort()
-          return # to avoid passing Deferred to mocha runner
+          done()
 
         it 'should abort fetch request', ->
           expect(_.last(server.requests).aborted).to.be.equal true
 
     context 'with simple custom configuration', ->
-      beforeEach ->
+      beforeEach (done) ->
         model = new CustomSimpleMockModel()
         model.fetch()
-        return # to avoid passing Deferred to mocha runner
+        done()
 
       afterEach ->
         model.dispose()
@@ -69,14 +73,28 @@ define (require) ->
 
 
     context 'with complex custom (using function) configuration', ->
-      beforeEach ->
+      beforeEach (done) ->
         model = new CustomFuncMockModel()
         model.fetch()
-        return # to avoid passing Deferred to mocha runner
+        done()
 
       afterEach ->
         model.dispose()
 
-      it 'should apply headers to ajax request', ->
-        headers = _.last(server.requests).requestHeaders
-        expect(headers).to.have.property 'X-BOO-ID', '300'
+      context 'when mock request is complete', ->
+        beforeEach (done) ->
+          model.mockDeferred.resolve().done()
+          done()
+
+        it 'should apply headers to ajax request', ->
+          headers = _.last(server.requests).requestHeaders
+          expect(headers).to.have.property 'X-BOO-ID', '300'
+
+      context 'when mock request is complete but model is disposed', ->
+        beforeEach (done) ->
+          model.dispose()
+          model.mockDeferred.resolve().done()
+          done()
+
+        it 'should not make server requests', ->
+          expect(server.requests).to.have.length 0

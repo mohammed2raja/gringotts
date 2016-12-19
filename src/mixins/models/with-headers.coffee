@@ -37,7 +37,8 @@ define (require) ->
     sync: (method, model, options) ->
       $xhr = null
       deferred = @resolveHeaders(@HEADERS).then (headers) =>
-        $xhr = super method, model, @extendWithHeaders options, headers
+        unless @disposed
+          $xhr = super method, model, @extendWithHeaders options, headers
       deferred.abort = -> $xhr?.abort() # compatibility with ajax deferred
       deferred
 
