@@ -57,7 +57,7 @@ module.exports = (grunt) ->
     copy:
       test:
         src: [
-          'test/index.html'
+          'test/*.html'
         ]
         dest: 'public/'
 
@@ -70,13 +70,13 @@ module.exports = (grunt) ->
         moduleThreshold : 60
         modulePattern : './src/(.*?)/'
       test:
-        src: 'public/test/index.html'
+        src: 'public/test/index-phantomjs.html'
       report_spec:
-        src: 'public/test/index.html'
+        src: 'public/test/index-phantomjs.html'
         options:
           reporter: 'spec'
       report_xunit:
-        src: 'public/test/index.html'
+        src: 'public/test/index-phantomjs.html'
         options:
           reporter: 'XUnit'
           reporterOptions: output: 'test-results.xml'

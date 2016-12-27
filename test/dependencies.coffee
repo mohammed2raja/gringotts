@@ -1,8 +1,9 @@
-# Shared dependencies needed for the app and tests.
 require [
+  'jquery'
   'handlebars'
   'lib/view-helper'
   'templates'
+  'test/templates'
   'bootstrap_button'
   'bootstrap_collapse'
   'bootstrap_dropdown'

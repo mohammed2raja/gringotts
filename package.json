@@ -60,7 +60,7 @@
     "grunt-force-task": "2.0.0",
     "grunt-gh-pages": "2.0.0",
     "grunt-htmlhint": "0.9.13",
-    "grunt-mocha-blanket": "0.6.5",
+    "grunt-mocha-blanket": "0.6.8",
     "grunt-newer": "1.2.0",
     "grunt-notify": "0.4.5",
     "grunt-shell": "2.1.0",
@@ -68,7 +68,7 @@
     "grunt-verbosity": "1.0.1",
     "grunt": "1.0.1",
     "load-grunt-tasks": "3.5.2",
-    "mocha": "2.3.4",
+    "mocha": "3.2.0",
     "sinon-chai": "2.8.0",
     "sinon": "1.17.6"
   },
