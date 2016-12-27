@@ -20,13 +20,11 @@ For more information, see the [docs](http://hackers.lookout.com/gringotts/).
 
 ### Installation
 
-If you've never installed or used `npm` or `bower`, you can skip the associated `cache` commands.
+If you've never installed or used `npm`, you can skip the associated `cache` commands.
 
 ```
 npm cache clear
 npm install
-npm run bower cache clean
-npm run bower install
 ```
 
 ### Testing the project

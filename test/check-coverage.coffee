@@ -2,7 +2,7 @@
 if window.PHANTOMJS or window.location.search.indexOf('cov=true') >= 0
   # Synchronously get Blanket.
   request = new XMLHttpRequest()
-  request.open 'GET', '../vendor/bower/blanket/dist/qunit/blanket.js', no
+  request.open 'GET', '../node_modules/blanket/dist/qunit/blanket.js', no
   request.send()
 
   script = document.createElement 'script'

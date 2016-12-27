@@ -7,10 +7,10 @@ require {baseUrl: '../src'}, ['config'], ->
   ], ->
     require.config
       paths:
-        chai: '../vendor/bower/chai/chai'
-        'chai-jquery': '../vendor/bower/chai-jquery/chai-jquery'
-        sinon: '../vendor/bower/sinon/index'
-        'sinon-chai': '../vendor/bower/sinon-chai/lib/sinon-chai'
+        chai: '../node_modules/chai/chai'
+        'chai-jquery': '../node_modules/chai-jquery/chai-jquery'
+        sinon: '../node_modules/sinon/pkg/sinon'
+        'sinon-chai': '../node_modules/sinon-chai/lib/sinon-chai'
       shim:
         'chai-jquery': ['jquery', 'chai']
         'sinon-chai': ['sinon', 'chai']

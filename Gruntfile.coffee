@@ -58,19 +58,8 @@ module.exports = (grunt) ->
       test:
         src: [
           'test/index.html'
-          'vendor/**/mocha.css'
-          'node_modules/grunt-mocha-blanket/**/support/*.js'
         ]
         dest: 'public/'
-      assets:
-        files: [
-          # Vendor source files.
-          src: [
-            'vendor/**/*.js'
-            '!vendor/**/{doc,example,lang,test}*/**'
-          ]
-          dest: 'public/'
-        ]
 
     blanket_mocha:
       options:
@@ -92,17 +81,7 @@ module.exports = (grunt) ->
           reporter: 'XUnit'
           reporterOptions: output: 'test-results.xml'
 
-    'citare-scriptum':
-      options:
-        out: 'public/docs/'
-        'repository-url': 'https://github.com/lookout/gringotts'
-      coffee: ['src/**/*.coffee', '*.md']
-
     'gh-pages':
-      docs:
-        options:
-          base: 'public/docs'
-        src: ['**']
       release:
         options:
           base: 'public/src'
@@ -119,7 +98,7 @@ module.exports = (grunt) ->
         # Tag will be created via gh-pages:release
         createTag: no
         commitFiles: '<%= bump.options.files %>'
-        files: ['package.json', 'bower.json']
+        files: ['package.json']
         pushTo: 'origin'
         updateConfigs: ['pkg']
 
@@ -152,11 +131,11 @@ module.exports = (grunt) ->
         stdout: yes
       specs:
         command: 'find test -regex ".*-test\.coffee" > public/testSpecs.txt'
+      link:
+        command: 'cd public; ln -sf ../node_modules node_modules'
       # Keep copy task clean.
       release:
-        command: 'cp bower.json public/src/'
-      bower:
-        command: 'bower install'
+        command: 'cp package.json public/src/'
       localBuild:
         command: ->
           buildPath = grunt.option 'target'
@@ -201,17 +180,11 @@ module.exports = (grunt) ->
 
   # Create aliased tasks.
   grunt.registerTask 'default', [
-    'shell:bower'
     'build'
     'force:lint'
     'connect'
     'test'
     'watch'
-  ]
-
-  grunt.registerTask 'docs', [
-    'citare-scriptum'
-    'gh-pages:docs'
   ]
 
   grunt.registerTask 'test', [
@@ -221,6 +194,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'test-ci', [
     'compile'
     'copy'
+    'shell:link'
     'lint'
     'force:blanket_mocha:report_spec'
     'blanket_mocha:report_xunit'
@@ -255,9 +229,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'build', [
     'clean'
-    'citare-scriptum'
     'compile'
     'copy'
+    'shell:link'
   ]
 
   ###*
