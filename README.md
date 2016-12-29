@@ -24,14 +24,15 @@ If you've never installed or used `npm`, you can skip the associated `cache` com
 
 ```
 npm cache clear
+npm install grunt-cli -g
 npm install
 ```
 
 ### Testing the project
 
-If you start `npm run grunt`, then the specs will run automatically when `.coffee` files are saved.
+If you start `grunt`, then the specs will run automatically when `.coffee` files are saved.
 
-Alternatively, you can run `npm run grunt test` which will run the specs via PhantomJS and generate code coverage reports.
+Alternatively, you can run `grunt test` which will run the specs via PhantomJS and generate code coverage reports.
 
 Visit [localhost:8000](http://localhost:8000) to debug the tests in a browser.
 
@@ -41,8 +42,6 @@ You can view docs locally at [localhost:8000/docs/](http://localhost:8000/docs/)
 
 ### Pushing changes
 
-After making a change, please remember to update the docs with `npm run grunt docs`.
-
-Also, make sure to publish a new version tag with `npm run grunt release` so projects can retrieve the change.
+Make sure to publish a new version tag with `grunt release` so projects can retrieve the change.
 The `release` task takes the same options as the `bump` task (`release:minor`, `release:major`) and defaults to a patch release.
-To release a specific version the `npm run grunt -- release --setversion=x.x.x` command should be used.
+To release a specific version the `grunt release --setversion=x.x.x` command should be used.
