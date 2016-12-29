@@ -2,22 +2,22 @@
   require.config({
     baseUrl: '../src',
     paths: {
-      backbone: '../vendor/bower/backbone/backbone',
-      chaplin: '../vendor/bower/chaplin/chaplin',
-      handlebars: '../vendor/bower/handlebars/handlebars.runtime',
-      moment: '../vendor/bower/moment/moment',
-      underscore: '../vendor/bower/lodash/lodash',
-      jquery: '../vendor/bower/jquery/dist/jquery',
-      url_join: '../vendor/bower/url-join/lib/url-join',
-      stickit: '../vendor/bower/backbone.stickit/backbone.stickit',
-      backbone_validation: '../vendor/bower/backbone-validation/dist/backbone-validation-amd',
-      bootstrap_button: '../vendor/bower/bootstrap/js/button',
-      bootstrap_collapse: '../vendor/bower/bootstrap/js/collapse',
-      bootstrap_dropdown: '../vendor/bower/bootstrap/js/dropdown',
-      bootstrap_modal: '../vendor/bower/bootstrap/js/modal',
-      bootstrap_tab: '../vendor/bower/bootstrap/js/tab',
-      bootstrap_tooltip: '../vendor/bower/bootstrap/js/tooltip',
-      bootstrap_transition: '../vendor/bower/bootstrap/js/transition'
+      backbone: '../node_modules/backbone/backbone',
+      chaplin: '../node_modules/chaplin/chaplin',
+      handlebars: '../node_modules/handlebars/dist/handlebars.runtime',
+      moment: '../node_modules/moment/moment',
+      underscore: '../node_modules/lodash/index',
+      jquery: '../node_modules/jquery/dist/jquery',
+      url_join: '../node_modules/url-join/lib/url-join',
+      stickit: '../node_modules/backbone.stickit/backbone.stickit',
+      backbone_validation: '../node_modules/backbone-validation/dist/backbone-validation-amd',
+      bootstrap_button: '../node_modules/bootstrap/js/button',
+      bootstrap_collapse: '../node_modules/bootstrap/js/collapse',
+      bootstrap_dropdown: '../node_modules/bootstrap/js/dropdown',
+      bootstrap_modal: '../node_modules/bootstrap/js/modal',
+      bootstrap_tab: '../node_modules/bootstrap/js/tab',
+      bootstrap_tooltip: '../node_modules/bootstrap/js/tooltip',
+      bootstrap_transition: '../node_modules/bootstrap/js/transition'
     },
     shim: {
       handlebars: {

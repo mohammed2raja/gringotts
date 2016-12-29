@@ -61,7 +61,9 @@
           $xhr = null;
           deferred = this.resolveHeaders(this.HEADERS).then((function(_this) {
             return function(headers) {
-              return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
+              if (!_this.disposed) {
+                return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
+              }
             };
           })(this));
           deferred.abort = function() {
