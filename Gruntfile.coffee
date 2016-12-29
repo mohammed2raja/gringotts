@@ -134,8 +134,10 @@ module.exports = (grunt) ->
       link:
         command: 'cd public; ln -sf ../node_modules node_modules'
       # Keep copy task clean.
-      release:
+      'copy-package':
         command: 'cp package.json public/src/'
+      'publish':
+        command: 'npm publish public/src'
       localBuild:
         command: ->
           buildPath = grunt.option 'target'
@@ -204,9 +206,10 @@ module.exports = (grunt) ->
     version = ":#{version}" if version
     grunt.task.run [
       "bump-only#{version}"
-      'shell:release'
+      'shell:copy-package'
       'gh-pages:release'
       'bump-commit'
+      'shell:publish'
     ]
 
   grunt.registerTask 'compile', [
