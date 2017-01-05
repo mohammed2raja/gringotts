@@ -20,7 +20,8 @@ define (require) ->
           # muting the ajax error raised during abort
           .fail ($xhr) -> $xhr.errorHandled = true if $xhr.status is 0
           .abort()
-      @currentXHR = if $xhr then $xhr.always => delete @currentXHR
+      @currentXHR = if $xhr then $xhr.always =>
+        delete @currentXHR if @currentXHR is $xhr
 
     sync: (method, model, options={}) ->
       error = options.error

@@ -32,25 +32,21 @@ define (require) ->
 
     context 'fetching', ->
       infinite = null
-      response = null
+      $xhr = null
 
       beforeEach ->
         collection.count = 500
         collection.infinite = infinite
-        collection.fetch()
-        sandbox.server.respondWith response
-        sandbox.server.respond()
+        $xhr = collection.fetch()
+        return
 
       context 'on done', ->
-        before ->
-          response = [200, {}, JSON.stringify {
+        beforeEach ->
+          sandbox.server.respondWith JSON.stringify
             count: 3
             someItems: [{}, {}, {}]
             next_page_id: 555
-          }]
-
-        after ->
-          response = null
+          sandbox.server.respond()
 
         it 'should query the server with the default query params', ->
           request = _.last sandbox.server.requests
@@ -73,11 +69,17 @@ define (require) ->
             expect(collection.nextPageId).to.equal 555
 
       context 'on fail', ->
-        before ->
-          response = [500, {}, JSON.stringify {}]
-
-        after ->
-          response = null
+        beforeEach ->
+          sandbox.server.respondWith [500, {}, '{}']
+          sandbox.server.respond()
 
         it 'should reset count to 0', ->
           expect(collection.count).to.equal 0
+
+      context 'on abort', ->
+        beforeEach ->
+          $xhr.abort()
+          return
+
+        it 'should not reset count', ->
+          expect(collection.count).to.equal 500

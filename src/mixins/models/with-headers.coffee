@@ -56,7 +56,7 @@ define (require) ->
       sourceHeaders =
         if _.isFunction headers
         then headers.apply(this) else headers
-      $.when(sourceHeaders)
+      $.when sourceHeaders
 
     ###*
      * Extends the Backbone ajax options with headers hash object.

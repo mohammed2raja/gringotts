@@ -70,9 +70,9 @@ define (require) ->
       expect(view.$ 'td:nth-child(2)').to.not.have.class 'highlighted'
 
     context 'changing sorting order', ->
-      beforeEach (done) ->
+      beforeEach ->
         collection.fetchWithQuery order: 'asc', sort_by: 'attr_b'
-        done()
+        return
 
       it 'should render links correctly', ->
         $link_a = view.$ 'th[data-sort=attr_a] a'
@@ -86,7 +86,7 @@ define (require) ->
         expect(view.$ 'th[data-sort=attr_b]').to.have.class('foo')
 
       it 'should show loading', ->
-        expect(view.$loading).to.have.css 'display', 'table-row'
+        expect(view.$loading).to.not.have.css 'display', 'none'
 
       it 'should remove all items', ->
         expect(view.$ '.test-item').to.not.exist

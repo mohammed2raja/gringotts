@@ -11,7 +11,7 @@ define (require) ->
     customOpts = null
     saveDeferred = null
 
-    beforeEach (done) ->
+    beforeEach ->
       view = new MockView()
       sinon.stub view, 'publishEvent'
       model = new Chaplin.Model()
@@ -29,7 +29,7 @@ define (require) ->
           attr: sinon.spy()
       }
       view.genericSave opts
-      done()
+      return
 
     afterEach ->
       model.save.restore()
@@ -126,10 +126,10 @@ define (require) ->
           opts.saveMessage, sinon.match.has 'model', opts.model
 
       context 'on notification success', ->
-        beforeEach (done) ->
+        beforeEach ->
           callOpts = view.publishEvent.getCall(0).args[2]
           callOpts.success()
-          done()
+          return
 
         it 'should call save', ->
           expect(model.save).to.have.been

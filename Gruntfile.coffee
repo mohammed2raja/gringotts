@@ -152,6 +152,9 @@ module.exports = (grunt) ->
           port: 8000
           useAvailablePort: true
 
+    checkDependencies:
+      this: {}
+
     # Only run tasks on modified files.
     watch:
       options:
@@ -182,6 +185,7 @@ module.exports = (grunt) ->
 
   # Create aliased tasks.
   grunt.registerTask 'default', [
+    'checkDependencies'
     'build'
     'force:lint'
     'connect'
@@ -194,9 +198,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'test-ci', [
-    'compile'
-    'copy'
-    'shell:link'
+    'build'
     'lint'
     'force:blanket_mocha:report_spec'
     'blanket_mocha:report_xunit'

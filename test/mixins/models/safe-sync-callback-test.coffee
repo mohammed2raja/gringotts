@@ -2,10 +2,9 @@ define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
   SafeSyncCallback = require 'mixins/models/safe-sync-callback'
-  ActiveSyncMachine = require 'mixins/models/active-sync-machine'
 
-  class MockCollection extends utils.mix Chaplin.Collection
-      .with ActiveSyncMachine, SafeSyncCallback
+  class CollectionMock extends SafeSyncCallback Chaplin.Collection
+    url: 'abc'
 
   describe 'SafeSyncCallback', ->
     server = null
@@ -13,129 +12,102 @@ define (require) ->
 
     beforeEach ->
       server = sinon.fakeServer.create()
-      collection = new MockCollection()
-      collection.url = 'abc'
-      collection.syncKey = 'pokemon'
+      collection = new CollectionMock()
 
     afterEach ->
       server.restore()
       collection.dispose()
 
-    it 'should not error without options', ->
-      try
-        collection.sync 'read', collection
-      catch error
-        error = yes
+    it 'should not fail sync without options', ->
+      expect(-> collection.sync 'read', collection).to.not.throw Error
 
-      expect(error).not.to.exist
+    context 'sync with a callback in options', ->
+      expectCallback = (key, response) ->
+        context key, ->
+          customContext = null
+          callback = null
+          disposed = null
 
-    describe 'for options callback', ->
-      collection = null
-      status = null
-      dispose = null
-      opts = null
-      callback = null
-      spyCallback = null
-      spyDone = null
-      spyFail = null
-      spyAlways = null
+          beforeEach ->
+            options = context: customContext
+            options[key] = callback = sinon.spy()
+            collection.fetch options
+            collection.dispose() if disposed
+            server.respondWith response
+            server.respond()
 
-      promiseSpy = (status) ->
-        if status is 'success'
-          spyDone
-        else if status is 'error'
-          spyFail
-        else if status is 'complete'
-          spyAlways
+          it 'should invoke callback', ->
+            expect(callback).to.be.calledOnce
 
-      afterDispose = (status) ->
-        describe 'after dispose', ->
-          before ->
-            dispose = yes
+          context 'if disposed', ->
+            before ->
+              disposed = yes
 
-          after ->
-            dispose = null
+            after ->
+              disposed = null
 
-          it "should not invoke the #{status} method", ->
-            expect(spyCallback).not.to.be.called
+            it 'should not invoke callback', ->
+              expect(callback).to.not.be.calledOnce
 
-          it "should not invoke the #{status} promise handler", ->
-            expect(promiseSpy status).not.to.be.called
+          context 'with context', ->
+            before ->
+              customContext = {}
 
-      invokesCallback = (status) ->
-        it "should invoke the #{status} method", ->
-          expect(spyCallback).to.be.calledOnce
+            after ->
+              customContext = null
 
-        it "should invoke the #{status} promise handler", ->
-          expect(promiseSpy status).to.be.calledOnce
+            it 'should invoke callback with custom context', ->
+              expect(callback).to.be.calledOn customContext
 
-      beforeEach ->
-        spyCallback ||= sinon.spy()
-        (opts ||= {})[callback] = spyCallback
-        spyDone = sinon.spy()
-        spyFail = sinon.spy()
-        spyAlways = sinon.spy()
-        collection.fetch(opts).done(spyDone).fail(spyFail).always(spyAlways)
-        status ||= 200
-        collection.dispose() if dispose
-        server.respondWith [status, {}, '{"count": 150, "pokemon": []}']
-        server.respond()
+      expectCallback 'success', '[]'
+      expectCallback 'error', [500, {}, '{}']
+      expectCallback 'complete', '[]'
 
-      afterEach ->
-        spyCallback = null
-        spyDone = null
-        spyFail = null
-        spyAlways = null
+    context 'sync with a promise callback', ->
+      expectCallback = (key, response) ->
+        context key, ->
+          promise = null
+          callback = null
+          disposed = null
 
-      context 'success', ->
-        before ->
-          callback = 'success'
+          beforeEach ->
+            # force reject of promise to keep mocha going
+            sinon.stub collection, 'safeSyncDeadPromise', ->
+              $.Deferred().reject(status: 1000, 'fake', 'fake').promise()
+            promise = collection.fetch()
+            promise[key] callback = sinon.spy()
+            collection.dispose() if disposed
+            server.respondWith response
+            server.respond()
+            promise.catch ->
 
-        invokesCallback 'success'
-        afterDispose 'success'
+          it 'should invoke callback', ->
+            expect(callback).to.be.calledOnce
 
-      context 'error', ->
-        before ->
-          callback = 'error'
-          status = 404
-        after ->
-          status = null
+          context 'if disposed', ->
+            before ->
+              disposed = yes
 
-        invokesCallback 'error'
-        afterDispose 'error'
+            after ->
+              disposed = null
 
-      context 'complete', ->
-        before ->
-          callback = 'complete'
+            it 'should not invoke callback', ->
+              if key in ['done', 'then']
+                expect(callback).to.not.be.calledOnce
+              else
+                expect(callback).to.be.calledWith \
+                  sinon.match.has 'status', 1000
 
-        invokesCallback 'complete'
-        afterDispose 'complete'
-
-        # Backbone `error` and `success` handlers
-        # don't use `context` properly.
-        context 'with context', ->
-          ctxCallback = null
-
-          before ->
-            ctxCallback = sinon.spy()
-            context = {a: ctxCallback}
-            spyCallback = -> @a()
-            opts = {context}
-          after ->
-            opts = null
-            spyCallback = null
-            ctxCallback = null
-
-          it 'should invoke the callback with the correct context', ->
-            expect(ctxCallback).to.be.called
+      expectCallback 'done', '[]'
+      expectCallback 'fail', [500, {}, '{}']
+      expectCallback 'always', '[]'
+      expectCallback 'then', '[]'
+      expectCallback 'catch', [500, {}, '{}']
 
     context 'aborting request', ->
-      $xhr = null
-
       beforeEach ->
-        $xhr = collection.fetch()
-        $xhr.abort()
-        return # to avoid passing Deferred to mocha runner
+        collection.fetch().abort()
+        return
 
       it 'should abort fetch request', ->
-        expect(_.last(server.requests).aborted).to.be.equal true
+        expect(_.last server.requests).to.have.property 'aborted', true

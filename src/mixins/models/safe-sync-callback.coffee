@@ -1,8 +1,10 @@
 define (require) ->
   helper = require '../../lib/mixin-helper'
 
-  # This mixin prevent errors when sync/fetch callback executes after
-  # route change when model is disposed. It should be called in sync method.
+  ###*
+   * This mixin prevent errors when sync/fetch callback executes after
+   # route change when model is disposed.
+  ###
   (superclass) -> class SafeSyncCallback extends superclass
     helper.setTypeName @prototype, 'SafeSyncCallback'
 
@@ -11,12 +13,14 @@ define (require) ->
       super
 
     sync: ->
-      @safeSyncCallback.apply this, arguments
-      @safeDeferred super
+      @safeSyncHashCallbacks.apply this, arguments
+      @safeSyncPromiseCallbacks super
 
-    # Piggies back off the AJAX option hash which the Backbone
-    # server methods (such as `fetch` and `save`) use.
-    safeSyncCallback: (method, model, options) ->
+    ###*
+     * Piggies back off the AJAX option hash which the Backbone
+     # server methods (such as `fetch` and `save`) use.
+    ###
+    safeSyncHashCallbacks: (method, model, options) ->
       return unless options
       _.each ['success', 'error', 'complete'], (cb) =>
         callback = options[cb]
@@ -26,15 +30,23 @@ define (require) ->
             # Check disposal at time of use.
             callback.apply ctx, arguments unless @disposed
 
-    # Filters deferred calbacks and cancels chain if model is disposed
-    safeDeferred: ($xhr) ->
+    ###*
+     * Filters deferred calbacks and cancels chain if model is disposed.
+    ###
+    safeSyncPromiseCallbacks: ($xhr) ->
       return unless $xhr
       filter = =>
         if @disposed
           $xhr.errorHandled = true # suppress all error notifications
-          $.Deferred()
+          @safeSyncDeadPromise()
         else $xhr
       # doneFilter, failFilter, progressFilter
       deferred = $xhr.then(filter, filter, filter).promise()
       deferred.abort = -> $xhr.abort() # compatibility with ajax deferred
       deferred
+
+    ###*
+     * A promise that never resolved, so niether of callbacks is called.
+    ###
+    safeSyncDeadPromise: ->
+      $.Deferred().promise()

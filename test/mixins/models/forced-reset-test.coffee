@@ -9,11 +9,11 @@ define (require) ->
     sandbox = null
     collection = null
 
-    beforeEach (done) ->
+    beforeEach ->
       sandbox = sinon.sandbox.create useFakeServer: true
       collection = new MockCollection [{}, {}, {}]
       collection.fetch()
-      done()
+      return
 
     afterEach ->
       sandbox.restore()

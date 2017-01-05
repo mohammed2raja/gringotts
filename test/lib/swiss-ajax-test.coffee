@@ -46,9 +46,10 @@ define (require) ->
       context "with url of #{urlType} type", ->
         beforeEach ->
           model = new factory["#{urlType}"]()
-          model.fetch()
+          promise = model.fetch()
           server.respondWith JSON.stringify {key: 'value'}
           server.respond()
+          promise
 
         it 'should make one call', ->
           expect(server.requests.length).to.equal 1
@@ -60,10 +61,12 @@ define (require) ->
     urlTypes = ['Array', 'Hash']
     urlTypes.forEach (urlType) ->
       context "with url of #{urlType} type", ->
+        promise = null
+
         beforeEach ->
           model = new factory["#{urlType}"]()
-          model.fetch()
-          return # to avoid passing Deferred to mocha
+          promise = model.fetch()
+          return
 
         context 'on request success', ->
           beforeEach ->
@@ -71,6 +74,7 @@ define (require) ->
             server.respondWith '/boo', JSON.stringify {keyB: 'valueB'}
             server.respondWith '/coo', JSON.stringify {keyC: 'valueC'}
             server.respond()
+            promise.catch ->
 
           it 'should make all calls', ->
             expect(server.requests.length).to.equal 3
@@ -93,6 +97,7 @@ define (require) ->
             server.respondWith '/boo', [500, {}, '{}']
             server.respondWith '/coo', [404, {}, '{}']
             server.respond()
+            promise.catch ->
 
           it 'should trigger all errors', ->
             expect(errorHandler).to.have.been.calledTwice

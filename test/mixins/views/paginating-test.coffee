@@ -126,7 +126,7 @@ define (require) ->
         done()
 
       it 'should show loading', ->
-        expect(view.$loading).to.have.css 'display', 'table-row'
+        expect(view.$loading).to.not.have.css 'display', 'none'
 
       it 'should remove all items', ->
         expect(view.$ '.test-item').to.not.exist
