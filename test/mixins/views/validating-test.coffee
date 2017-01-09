@@ -5,7 +5,7 @@ define (require) ->
   Validating = require 'mixins/views/validating'
   StringTemplatable = require 'mixins/views/string-templatable'
 
-  class MockModel extends Validatable Chaplin.Model
+  class ModelMock extends Validatable Chaplin.Model
     validation:
       name:
         required: true
@@ -14,7 +14,7 @@ define (require) ->
         required: true
         pattern: 'email'
 
-  class MockView extends Validating StringTemplatable Chaplin.View
+  class ViewMock extends Validating StringTemplatable Chaplin.View
     autoRender: yes
     template: 'validating-test'
     templatePath: 'test/templates'
@@ -31,8 +31,8 @@ define (require) ->
     model = null
 
     beforeEach ->
-      model = new MockModel()
-      view = new MockView {model}
+      model = new ModelMock()
+      view = new ViewMock {model}
 
     afterEach ->
       view.dispose()

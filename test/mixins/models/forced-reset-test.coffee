@@ -2,17 +2,21 @@ define (require) ->
   Chaplin = require 'chaplin'
   ForcedReset = require 'mixins/models/forced-reset'
 
-  class MockCollection extends ForcedReset Chaplin.Collection
+  class CollectionMock extends ForcedReset Chaplin.Collection
     url: '/test'
 
   describe 'ForcedReset', ->
     sandbox = null
     collection = null
+    promise = null
+    catchSpy = null
 
     beforeEach ->
       sandbox = sinon.sandbox.create useFakeServer: true
-      collection = new MockCollection [{}, {}, {}]
-      collection.fetch()
+      sandbox.server.respondWith [500, {}, '{}']
+      sandbox.server.autoRespond = yes
+      collection = new CollectionMock [{}, {}, {}]
+      promise = collection.fetch().catch catchSpy = sinon.spy()
       return
 
     afterEach ->
@@ -24,8 +28,10 @@ define (require) ->
 
     context 'on fetch fail', ->
       beforeEach ->
-        sandbox.server.respondWith [500, {}, '{}']
-        sandbox.server.respond()
+        promise
 
       it 'should reset all existing items', ->
         expect(collection.length).to.equal 0
+
+      it 'should pass error down the chain', ->
+        expect(catchSpy).to.have.been.calledOnce

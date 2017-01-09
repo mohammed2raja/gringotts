@@ -1,12 +1,14 @@
 define (require) ->
+  utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
+  SafeSyncCallback = require '../../mixins/models/safe-sync-callback'
 
   ###*
    * An extensible mixin to intercept Model's syncing operation and adding
    * the required HTTP Headers to the XHR request.
    * @param  {Model|Collection} superclass Any Backbone Model or Collection.
   ###
-  (superclass) -> class WithHeaders extends superclass
+  (base) -> class WithHeaders extends utils.mix(base).with SafeSyncCallback
     helper.setTypeName @prototype, 'WithHeaders'
 
     ###*
@@ -36,11 +38,12 @@ define (require) ->
     ###
     sync: (method, model, options) ->
       $xhr = null
-      deferred = @resolveHeaders(@HEADERS).then (headers) =>
-        unless @disposed
-          $xhr = super method, model, @extendWithHeaders options, headers
-      deferred.abort = -> $xhr?.abort() # compatibility with ajax deferred
-      deferred
+      promise = @resolveHeaders(@HEADERS).then (headers) =>
+        $xhr = super method, model, @extendWithHeaders options, headers
+      promise.abort = ->
+        $xhr?.abort() # compatibility with ajax deferred
+        promise
+      promise
 
     ###*
      * Resolves headers actual value. Since headers maybe be a function then
@@ -56,7 +59,7 @@ define (require) ->
       sourceHeaders =
         if _.isFunction headers
         then headers.apply(this) else headers
-      $.when sourceHeaders
+      utils.disposable $.when(sourceHeaders), => @disposed
 
     ###*
      * Extends the Backbone ajax options with headers hash object.

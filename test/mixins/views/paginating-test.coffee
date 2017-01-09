@@ -6,21 +6,21 @@ define (require) ->
   Paginating = require 'mixins/views/paginating'
   StringTemplatable = require 'mixins/views/string-templatable'
 
-  class MockItemView extends Chaplin.View
+  class ItemViewMock extends Chaplin.View
     tagName: 'tr'
     className: 'test-item'
     getTemplateFunction: -> -> '<td><td><td>'
 
-  class MockPaginatedCollection extends utils.mix Chaplin.Collection
+  class PaginatedCollectionMock extends utils.mix Chaplin.Collection
       .with Paginated, ActiveSyncMachine
     DEFAULTS: _.extend {}, @::DEFAULTS, per_page: 10
     urlRoot: '/test'
     syncKey: 'itemsList'
 
-  class MockPaginatingView extends utils.mix(Chaplin.CollectionView)
+  class PaginatingViewMock extends utils.mix(Chaplin.CollectionView)
       .with StringTemplatable, Paginating
     loadingSelector: '.loading'
-    itemView: MockItemView
+    itemView: ItemViewMock
     listSelector: 'tbody'
     template: 'paginating-test'
     templatePath: 'test/templates'
@@ -35,9 +35,9 @@ define (require) ->
       sandbox = sinon.sandbox.create useFakeServer: true
       sandbox.stub utils, 'reverse', (path, params, query) ->
         "#{path}?#{utils.querystring.stringify query}"
-      collection = new MockPaginatedCollection()
+      collection = new PaginatedCollectionMock()
       collection.infinite = infinite
-      view = new MockPaginatingView {routeName: 'test', collection}
+      view = new PaginatingViewMock {routeName: 'test', collection}
       collection.fetchWithQuery {}
       sandbox.server.respondWith [200, {}, JSON.stringify {
         next_page_id: 'abcdef'
@@ -52,7 +52,7 @@ define (require) ->
       view.dispose()
 
     it 'should be instantiated', ->
-      expect(view).to.be.an.instanceOf MockPaginatingView
+      expect(view).to.be.an.instanceOf PaginatingViewMock
 
     it 'should render pagination controls', ->
       expect(view.$ '.pagination-controls').to.exist.and

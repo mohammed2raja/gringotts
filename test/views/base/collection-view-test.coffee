@@ -2,12 +2,12 @@ define (require) ->
   Chaplin = require 'chaplin'
   CollectionView = require 'views/base/collection-view'
 
-  class MockItemView extends Chaplin.View
+  class ItemViewMock extends Chaplin.View
     className: 'test-item'
     getTemplateFunction: -> -> '<span>'
 
-  class MockCollectionView extends CollectionView
-    itemView: MockItemView
+  class CollectionViewMock extends CollectionView
+    itemView: ItemViewMock
 
   describe 'CollectionView', ->
     collection = null
@@ -21,7 +21,7 @@ define (require) ->
         new Chaplin.Model()
       ]
       collection = new Chaplin.Collection models
-      view = new MockCollectionView {collection}
+      view = new CollectionViewMock {collection}
 
     afterEach ->
       collection.dispose()

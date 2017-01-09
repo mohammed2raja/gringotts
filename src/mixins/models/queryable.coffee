@@ -132,7 +132,7 @@ define (require) ->
       if queryChanged or @isUnsynced()
         @fetch options
       else
-        $.Deferred().resolve().promise()
+        $.Deferred().resolve()
 
     ###*
      * Strips the query from all undefined or default values

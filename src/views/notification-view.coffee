@@ -77,18 +77,14 @@ define (require) ->
     # `success` callback.
     render: ->
       super
-
       opts = @model.get('opts') or {}
       # Limit undo to current change.
       if opts.undo
         # Only one action may be undone at any given time.
         $(@undoSelector).remove()
         opts.link = @getUndoElement()
-
       @$el.append opts.link if opts.link
-
-      opts.deferred?.done => @dismiss()
-
+      opts.deferred?.then => @dismiss()
       unless opts.sticky
         # Allow instance to specify timeout.
         timeout = opts.reqTimeout or @reqTimeout
@@ -101,12 +97,10 @@ define (require) ->
     # Hooks up actions on the notification.
     attach: ->
       super
-
       @delegate 'click', '.close', (e) ->
         e.preventDefault()
         e.stopPropagation()
         @dismiss()
-
       # Commit to request when model is disposed.
       opts = @model.get('opts') or {}
       if opts.model
@@ -114,7 +108,6 @@ define (require) ->
           window.clearTimeout notificationTimeout
           opts.success?()
           @dismiss()
-
       # This will overwrite other click handlers given in opts.
       if opts.undo
         opts.click =
@@ -124,10 +117,8 @@ define (require) ->
             window.clearTimeout notificationTimeout
             opts.undo()
             @dismiss()
-
       # You can pass in a selector and handler for a click event
       @delegate 'click', opts.click.selector, opts.click.handler if opts.click
-
       # Add specified classes on an instance basis.
       classes = opts.classes or 'alert-success'
       @$el.addClass classes

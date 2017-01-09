@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   ActiveSyncMachine = require 'mixins/models/active-sync-machine'
 
-  class MockCollection extends ActiveSyncMachine Chaplin.Collection
+  class CollectionMock extends ActiveSyncMachine Chaplin.Collection
 
   describe 'ActiveSyncMachine', ->
     collection = null
@@ -62,7 +62,7 @@ define (require) ->
               expect(target.unsync).to.be.calledOnce
 
     beforeEach ->
-      collection = new MockCollection()
+      collection = new CollectionMock()
       sinon.spy collection, 'beginSync'
       sinon.spy collection, 'finishSync'
       sinon.spy collection, 'unsync'
@@ -93,7 +93,7 @@ define (require) ->
       another = null
 
       beforeEach ->
-        another = new MockCollection()
+        another = new CollectionMock()
         collection.linkSyncMachineTo another
 
       expectSyncMachineReactToSyncMachine (-> collection), (-> another)
@@ -113,7 +113,7 @@ define (require) ->
       another = null
 
       beforeEach ->
-        another = new MockCollection()
+        another = new CollectionMock()
         another.beginSync()
         collection.linkSyncMachineTo another
 

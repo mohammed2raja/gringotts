@@ -3,14 +3,14 @@ define (require) ->
   utils = require 'lib/utils'
   ExportLink = require 'mixins/views/export-link'
 
-  class MockCollectionView extends ExportLink Chaplin.CollectionView
+  class CollectionViewMock extends ExportLink Chaplin.CollectionView
 
   describe 'ExportLink', ->
     view = null
     query = null
 
     beforeEach ->
-      view = new MockCollectionView {
+      view = new CollectionViewMock {
         collection:
           models: []
           getQuery: -> _.extend {sort_by: 'swag'}, query

@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   StringTemplatable = require 'mixins/views/string-templatable'
 
-  class MockView extends StringTemplatable Chaplin.View
+  class ViewMock extends StringTemplatable Chaplin.View
     template: 'VERSION'
     templatePath: 'backbone'
 
@@ -11,7 +11,7 @@ define (require) ->
     template = null
 
     beforeEach ->
-      view = new MockView()
+      view = new ViewMock()
       sinon.spy view, 'getTemplateFunction'
       template = view.getTemplateFunction()
 

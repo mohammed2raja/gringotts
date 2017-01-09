@@ -6,13 +6,14 @@ define (require) ->
     options = _.first arguments
     $.when.apply $, options.url.map (url) ->
       backboneAjax _.merge _.omit(options, ['url', 'success']), {url}
-    .done ->
+    .then ->
       resp =
         if options.url.length > 1
           _.slice(arguments).map (arg) -> _.first arg
         else
           _.first arguments
       options.success? resp
+      resp
 
   ajaxForHash = ->
     options = _.first arguments
@@ -21,12 +22,13 @@ define (require) ->
     , []
     $.when.apply $, pairs.map (pair) ->
       backboneAjax _.merge _.omit(options, ['url', 'success']), url: pair.url
-    .done ->
+    .then ->
       resp = _.slice(arguments).reduce (memo, arg, i) ->
         memo[pairs[i].key] = _.first arg
         memo
       , {}
       options.success? resp
+      resp
 
   ajax = ->
     options = _.first arguments

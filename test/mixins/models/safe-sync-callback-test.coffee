@@ -63,51 +63,10 @@ define (require) ->
       expectCallback 'error', [500, {}, '{}']
       expectCallback 'complete', '[]'
 
-    context 'sync with a promise callback', ->
-      expectCallback = (key, response) ->
-        context key, ->
-          promise = null
-          callback = null
-          disposed = null
-
-          beforeEach ->
-            # force reject of promise to keep mocha going
-            sinon.stub collection, 'safeSyncDeadPromise', ->
-              $.Deferred().reject(status: 1000, 'fake', 'fake').promise()
-            promise = collection.fetch()
-            promise[key] callback = sinon.spy()
-            collection.dispose() if disposed
-            server.respondWith response
-            server.respond()
-            promise.catch ->
-
-          it 'should invoke callback', ->
-            expect(callback).to.be.calledOnce
-
-          context 'if disposed', ->
-            before ->
-              disposed = yes
-
-            after ->
-              disposed = null
-
-            it 'should not invoke callback', ->
-              if key in ['done', 'then']
-                expect(callback).to.not.be.calledOnce
-              else
-                expect(callback).to.be.calledWith \
-                  sinon.match.has 'status', 1000
-
-      expectCallback 'done', '[]'
-      expectCallback 'fail', [500, {}, '{}']
-      expectCallback 'always', '[]'
-      expectCallback 'then', '[]'
-      expectCallback 'catch', [500, {}, '{}']
-
     context 'aborting request', ->
       beforeEach ->
-        collection.fetch().abort()
-        return
+        collection.fetch().abort().catch ($xhr) ->
+          $xhr unless $xhr.statusText is 'abort' # expected
 
       it 'should abort fetch request', ->
         expect(_.last server.requests).to.have.property 'aborted', true

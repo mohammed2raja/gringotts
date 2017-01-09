@@ -1,11 +1,12 @@
 define (require) ->
   Chaplin = require 'chaplin'
   modalHelpers = require 'test/helpers/modal-helpers'
+  ErrorHandled = require 'mixins/models/error-handled'
   ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   ProgressDialogView = require 'views/progress-dialog-view'
   templates = require 'test/templates'
 
-  class MockModel extends ActiveSyncMachine Chaplin.Model
+  class ModelMock extends ActiveSyncMachine ErrorHandled Chaplin.Model
 
   describe 'ProgressDialogView', ->
     sandbox = null
@@ -22,7 +23,7 @@ define (require) ->
       modalHelpers.stubModal sandbox, -> {transition}
       onDone = sinon.spy()
       onCancel = sinon.spy()
-      model = new MockModel()
+      model = new ModelMock()
       model.beginSync() if syncing
       config = _.extend {model, onDone, onCancel}, _.cloneDeep viewConfig
       view = new ProgressDialogView config
@@ -90,12 +91,9 @@ define (require) ->
         expect(view.state).to.equal 'default'
         expect(view.$ '.progress-state-view').to.not.have.class 'in'
 
-      context 'on model error', ->
-        xhr = null
-
+      context 'on model unsynced', ->
         beforeEach ->
-          xhr = {}
-          model.trigger 'error', model, xhr
+          model.unsync()
 
         it 'should hide loading progress', ->
           expect(view.$ '.progress-pulse.loading.fade.in').to.not.exist
@@ -103,9 +101,6 @@ define (require) ->
         it 'should switch to error state', ->
           expect(view.state).to.equal 'error'
           expect(view.$ '.error-state-view').to.have.class 'in'
-
-        it 'should handle xhr error', ->
-          expect(xhr.errorHandled).to.be.true
 
         context 'on closing dialog', ->
           beforeEach ->
@@ -208,7 +203,7 @@ define (require) ->
 
         context 'on model error', ->
           beforeEach ->
-            model.trigger 'error', model, {}
+            model.handleError {}
 
           it 'should show correct success state', ->
             expect(view.$ '.error-state-view.fade.in').to.exist

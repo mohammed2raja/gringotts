@@ -3,7 +3,7 @@ define (require) ->
   StateBindable = require 'mixins/views/state-bindable'
   StringTemplatable = require 'mixins/views/string-templatable'
 
-  class MockView extends StateBindable StringTemplatable Chaplin.View
+  class ViewMock extends StateBindable StringTemplatable Chaplin.View
     autoRender: yes
     template: 'state-bindable-test'
     templatePath: 'test/templates'
@@ -40,9 +40,9 @@ define (require) ->
 
     context 'configs set directly', ->
       beforeEach ->
-        MockView::initialState = initialState
-        MockView::stateBindings = stateBindings
-        view = new MockView()
+        ViewMock::initialState = initialState
+        ViewMock::stateBindings = stateBindings
+        view = new ViewMock()
 
       afterEach ->
         view.dispose()
@@ -51,9 +51,9 @@ define (require) ->
 
     context 'configs set though function', ->
       beforeEach ->
-        MockView::initialState = -> initialState
-        MockView::stateBindings = -> stateBindings
-        view = new MockView()
+        ViewMock::initialState = -> initialState
+        ViewMock::stateBindings = -> stateBindings
+        view = new ViewMock()
 
       afterEach ->
         view.dispose()

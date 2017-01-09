@@ -6,7 +6,7 @@ define (require) ->
   ForcedReset = require 'mixins/models/forced-reset'
   Queryable = require 'mixins/models/queryable'
 
-  class MockPaginatedCollection extends Paginated Chaplin.Collection
+  class PaginatedCollectionMock extends Paginated Chaplin.Collection
     syncKey: 'someItems'
     urlRoot: '/test'
 
@@ -16,29 +16,32 @@ define (require) ->
 
     beforeEach ->
       sandbox = sinon.sandbox.create useFakeServer: yes
-      collection = new MockPaginatedCollection()
+      collection = new PaginatedCollectionMock [{}, {}, {}]
 
     afterEach ->
       sandbox.restore()
       collection.dispose()
-
-    it 'should be instantiated', ->
-      expect(collection).to.be.instanceOf MockPaginatedCollection
 
     it 'should have proper mixins applied', ->
       expect(helper.instanceWithMixin collection, Queryable).to.be.true
       expect(helper.instanceWithMixin collection, SyncKey).to.be.true
       expect(helper.instanceWithMixin collection, ForcedReset).to.be.true
 
+    it 'should have initial models', ->
+      expect(collection.models).to.be.a.lengthOf 3
+
     context 'fetching', ->
       infinite = null
-      $xhr = null
+      promise = null
 
       beforeEach ->
-        collection.count = 500
+        collection.count = 1000
         collection.infinite = infinite
-        $xhr = collection.fetch()
+        promise = collection.fetch()
         return
+
+      it 'should reset models', ->
+        expect(collection.models).to.be.a.lengthOf 0
 
       context 'on done', ->
         beforeEach ->
@@ -47,6 +50,7 @@ define (require) ->
             someItems: [{}, {}, {}]
             next_page_id: 555
           sandbox.server.respond()
+          promise
 
         it 'should query the server with the default query params', ->
           request = _.last sandbox.server.requests
@@ -69,17 +73,23 @@ define (require) ->
             expect(collection.nextPageId).to.equal 555
 
       context 'on fail', ->
+        catchSpy = null
+
         beforeEach ->
           sandbox.server.respondWith [500, {}, '{}']
           sandbox.server.respond()
+          promise.catch catchSpy = sinon.spy()
 
         it 'should reset count to 0', ->
           expect(collection.count).to.equal 0
 
+        it 'should pass error down the chain', ->
+          expect(catchSpy).to.have.been.calledOnce
+
       context 'on abort', ->
         beforeEach ->
-          $xhr.abort()
-          return
+          promise.abort().catch ($xhr) ->
+            $xhr unless $xhr.statusText is 'abort'
 
         it 'should not reset count', ->
-          expect(collection.count).to.equal 500
+          expect(collection.count).to.equal 1000

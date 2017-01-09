@@ -1,8 +1,10 @@
 define (require) ->
   Chaplin = require 'chaplin'
+  deadDeferred = require 'lib/dead-deferred'
+  utils = require 'lib/utils'
   WithHeaders = require 'mixins/models/with-headers'
 
-  class MockModel extends WithHeaders Chaplin.Model
+  class ModelMock extends WithHeaders Chaplin.Model
     url: '/foo/url'
 
   class CustomSimpleMockModel extends WithHeaders Chaplin.Model
@@ -21,63 +23,80 @@ define (require) ->
       @mockDeferred = $.Deferred()
 
   describe 'WithHeaders mixin', ->
+    sandbox = null
     model = null
-    server = null
+    noautoRespond = null
 
     beforeEach ->
-      server = sinon.fakeServer.create()
+      sandbox = sinon.sandbox.create useFakeServer: yes
+      sandbox.server.respondWith '{}'
+      sandbox.server.autoRespond = yes unless noautoRespond
 
     afterEach ->
-      server.restore()
+      sandbox.restore()
 
     context 'with default configuration', ->
-      $xhr = null
+      withoutCredentials = null
 
-      beforeEach (done) ->
-        model = new MockModel()
-        $xhr = model.fetch()
-        _.defer done
+      beforeEach ->
+        model = new ModelMock()
+        model.withCredentials = false if withoutCredentials
 
       afterEach ->
         model.dispose()
 
-      it 'should apply headers to ajax request', ->
-        request = _.last(server.requests)
-        headers = request.requestHeaders
-        expect(headers).to.have.property 'Content-Type', 'application/json'
-        expect(headers).to.have.property 'Accept', 'application/json'
-        expect(request).to.have.property 'withCredentials', true
-
-      context 'without credentials', ->
-        beforeEach (done) ->
-          model.withCredentials = false
+      context 'fetch', ->
+        beforeEach ->
           model.fetch()
-          _.defer done
 
-        it 'should have request with proper xhrFields', ->
-          request = _.last server.requests
-          expect(request).to.have.property 'withCredentials', false
+        it 'should apply headers to ajax request', ->
+          request = _.last sandbox.server.requests
+          headers = request.requestHeaders
+          expect(headers).to.have.property 'Content-Type', 'application/json'
+          expect(headers).to.have.property 'Accept', 'application/json'
+          expect(request).to.have.property 'withCredentials', true
 
-      context 'syncing without options', ->
-        beforeEach (done) ->
+        context 'without credentials', ->
+          before ->
+            withoutCredentials = yes
+
+          after ->
+            withoutCredentials = null
+
+          it 'should have request with proper xhrFields', ->
+            request = _.last sandbox.server.requests
+            expect(request).to.have.property 'withCredentials', false
+
+      context 'sync without options', ->
+        beforeEach  ->
           model.sync 'create', model
-          _.defer done
 
         it 'should sync without options too', ->
-          expect(_.last server.requests).to.have.property 'method', 'POST'
+          expect(_.last sandbox.server.requests).to.have
+            .property 'method', 'POST'
 
-      context 'aborting request', ->
-        beforeEach ->
-          $xhr.abort()
-          return
+      context 'abort request', ->
+        before ->
+          noautoRespond = yes
+
+        after ->
+          noautoRespond = null
+
+        beforeEach (done) ->
+          promise = model.fetch()
+          utils.waitUntil
+            condition: -> sandbox.server.requests.length > 0
+            then: ->
+              promise.abort().catch ($xhr) ->
+                $xhr unless $xhr.statusText is 'abort'
+              done()
 
         it 'should abort fetch request', ->
-          expect(_.last server.requests).to.have.property 'aborted', true
+          expect(_.last sandbox.server.requests).to.have
+            .property 'aborted', true
 
     context 'with simple custom configuration', ->
       beforeEach ->
-        server.respondWith '{}'
-        server.autoRespond = yes
         model = new CustomSimpleMockModel()
         model.fetch()
 
@@ -85,15 +104,13 @@ define (require) ->
         model.dispose()
 
       it 'should apply headers to ajax request', ->
-        headers = _.last(server.requests).requestHeaders
+        headers = _.last(sandbox.server.requests).requestHeaders
         expect(headers).to.have.property 'X-FOO-ID', '700'
 
     context 'with complex custom (using function) configuration', ->
       promise = null
 
       beforeEach ->
-        server.respondWith '{}'
-        server.autoRespond = yes
         model = new CustomFuncMockModel()
         promise = model.fetch()
         return
@@ -107,14 +124,16 @@ define (require) ->
           promise
 
         it 'should apply headers to ajax request', ->
-          headers = _.last(server.requests).requestHeaders
+          headers = _.last(sandbox.server.requests).requestHeaders
           expect(headers).to.have.property 'X-BOO-ID', '300'
 
       context 'when mock request is complete but model is disposed', ->
         beforeEach  ->
+          sandbox.stub deadDeferred, 'create', ->
+            $.Deferred().reject 'disposed'
           model.dispose()
           model.mockDeferred.resolve()
-          promise
+          promise.catch (err) -> err unless err is 'disposed'
 
         it 'should not make server requests', ->
-          expect(server.requests).to.have.length 0
+          expect(sandbox.server.requests).to.have.length 0

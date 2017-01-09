@@ -2,7 +2,7 @@ define (require) ->
   Chaplin = require 'chaplin'
   Classy = require 'mixins/views/classy'
 
-  class MockView extends Classy Chaplin.View
+  class ViewMock extends Classy Chaplin.View
     classyName: 'sweety'
     getTemplateFunction: -> -> ''
 
@@ -12,9 +12,9 @@ define (require) ->
     complexClass = null
 
     beforeEach ->
-      MockView::className = className if className
-      MockView::classyName = complexClass if complexClass
-      view = new MockView()
+      ViewMock::className = className if className
+      ViewMock::classyName = complexClass if complexClass
+      view = new ViewMock()
       view.render()
 
     afterEach ->

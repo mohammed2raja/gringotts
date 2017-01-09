@@ -2,21 +2,26 @@ define (require) ->
   Chaplin = require 'chaplin'
   GenericSave = require 'mixins/views/generic-save'
 
-  class MockView extends GenericSave Chaplin.View
+  class ViewMock extends GenericSave Chaplin.View
 
   describe 'GenericSave', ->
+    sandbox = null
     view = null
     model = null
+    response = null
     opts = null
     customOpts = null
-    saveDeferred = null
 
     beforeEach ->
-      view = new MockView()
-      sinon.stub view, 'publishEvent'
+      sandbox = sinon.sandbox.create useFakeServer: yes
+      sandbox.server.respondWith response or '{}'
+      sandbox.server.autoRespond = yes
+      view = new ViewMock()
+      sandbox.stub view, 'publishEvent'
+      sandbox.stub view, 'handleError'
       model = new Chaplin.Model()
-      saveDeferred = $.Deferred()
-      sinon.stub model, 'save', -> saveDeferred
+      model.url = '/foo'
+      sandbox.spy model, 'save'
       opts = _.extend {}, customOpts, {
         model
         saveMessage: 'Model saved'
@@ -29,12 +34,10 @@ define (require) ->
           attr: sinon.spy()
       }
       view.genericSave opts
-      return
 
     afterEach ->
-      model.save.restore()
+      sandbox.restore()
       model.dispose()
-      view.publishEvent.restore()
       view.dispose()
 
     expectRevertChanges = ->
@@ -46,77 +49,71 @@ define (require) ->
         .calledWith opts.attribute, opts.value
 
     context 'with custom options', ->
-      before -> customOpts = patch: yes
-      after -> customOpts = null
+      before ->
+        customOpts = patch: yes
+
+      after ->
+        customOpts = null
 
       it 'should call save with options', ->
         expect(model.save).to.have.been.calledWith opts.attribute,
           opts.value, sinon.match.has 'patch', yes
 
     context 'with sent validation on', ->
-      before -> customOpts = validate: yes
-      after -> customOpts = null
+      before ->
+        customOpts = validate: yes
 
-      it 'should not send notification', ->
-        expect(view.publishEvent).to.have.not.been.called
+      after ->
+        customOpts = null
 
       it 'should call save without validation', ->
         expect(model.save).to.have.been.calledWith opts.attribute,
           opts.value, sinon.match.has 'validate', no
 
-    context 'on save success', ->
-      beforeEach ->
-        saveDeferred.resolve()
-
-      it 'should send notification', ->
-        expect(view.publishEvent).to.have.been
-          .calledWith 'notify', opts.saveMessage
+    it 'should send notification', ->
+      expect(view.publishEvent).to.have.been
+        .calledWith 'notify', opts.saveMessage
 
     context 'on save error', ->
-      xhr = null
-      status = undefined
-      responseText = undefined
-
-      beforeEach ->
-        xhr = {status, responseText}
-        saveDeferred.reject xhr
-        return {} # avoid passing error promise to mocha
-
-      it 'should revert changes', ->
-        expectRevertChanges()
-
-      it 'should not handle error', ->
-        expect(xhr.errorHandled).to.be.undefined
-
       context 'with a correct validation info', ->
         before ->
-          status = 406
-          responseText = JSON.stringify errors: name: 'Invalid Value'
+          response = [406, {}, JSON.stringify errors: name: 'Invalid Value']
+
         after ->
-          status = undefined
-          responseText = undefined
+          response = null
+
+        it 'should revert changes', ->
+          expectRevertChanges()
 
         it 'should send error notification', ->
           expect(view.publishEvent).to.have.been.calledWith 'notify',
             'Invalid Value', sinon.match.has 'classes', 'alert-danger'
 
-        it 'should handle error', ->
-          expect(xhr.errorHandled).to.be.true
+        it 'should not handle error', ->
+          expect(view.handleError).to.not.have.been.calledOnce
 
       context 'with an incomplete validation info', ->
         before ->
-          status = 406
-          responseText = ''
-        after ->
-          status = undefined
-          responseText = undefined
+          response = [406, {}, '']
 
-        it 'should not handle error', ->
-          expect(xhr.errorHandled).to.be.undefined
+        after ->
+          response = null
+
+        it 'should revert changes', ->
+          expectRevertChanges()
+
+        it 'should not send error notification', ->
+          expect(view.publishEvent).to.have.not.been.calledOnce
+
+        it 'should handle error', ->
+          expect(view.handleError).to.have.been.calledOnce
 
     context 'with delayed save', ->
-      before -> customOpts = delayedSave: yes
-      after -> customOpts = null
+      before ->
+        customOpts = delayedSave: yes
+
+      after ->
+        customOpts = null
 
       it 'should not call save', ->
         expect(model.save).to.have.not.been.called
@@ -129,16 +126,17 @@ define (require) ->
         beforeEach ->
           callOpts = view.publishEvent.getCall(0).args[2]
           callOpts.success()
-          return
 
         it 'should call save', ->
           expect(model.save).to.have.been
             .calledWith opts.attribute, opts.value
 
         context 'on save error', ->
-          beforeEach ->
-            saveDeferred.reject()
-            return {} # avoid passing error promise to mocha
+          before ->
+            response = [500, {}, '']
+
+          after ->
+            response = null
 
           it 'should revert changes', ->
             expectRevertChanges()
@@ -147,6 +145,7 @@ define (require) ->
           before ->
             customOpts.patch = yes
             customOpts.validate = yes
+
           after ->
             customOpts.patch = null
             customOpts.validate = null

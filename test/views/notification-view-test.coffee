@@ -3,15 +3,16 @@ define (require) ->
   NotificationView = require 'views/notification-view'
 
   describe 'NotificationView', ->
-    clock = null
+    sandbox = null
     success = null
     undo = null
     model = null
     view = null
     undoSelector = null
+    useFakeTimers = yes
 
     beforeEach ->
-      clock = sinon.useFakeTimers()
+      sandbox = sinon.sandbox.create {useFakeTimers}
       success = sinon.spy()
       undo = sinon.spy()
       opts = {success, undo, model: new Chaplin.Model()}
@@ -24,12 +25,12 @@ define (require) ->
       sinon.spy view, 'dismiss'
 
     afterEach ->
+      sandbox.restore()
       view.dispose()
       model.dispose()
-      clock.restore()
 
     it 'should dismiss itself after a few seconds', ->
-      clock.tick 4500
+      sandbox.clock.tick 4500
       expect(view.dismiss).to.have.been.called
       expect(success).to.have.been.called
 
@@ -83,14 +84,14 @@ define (require) ->
     it 'should allow the timeout to be changed', ->
       view.reqTimeout = 888
       view.render()
-      clock.tick 888
+      sandbox.clock.tick 888
       expect(success).to.have.been.called
       expect(model.timeout).to.exist
 
     it 'should allow instances to change the timeout', ->
       model.set 'opts', reqTimeout: 101
       view.render()
-      clock.tick 101
+      sandbox.clock.tick 101
       expect(view.dismiss).to.have.been.calledOnce
 
     context 'should allow the undo selector to be changed', ->
@@ -123,7 +124,7 @@ define (require) ->
         expect(undo).to.have.been.called
 
       it 'does not call the success method', ->
-        clock.tick 4500
+        sandbox.clock.tick 4500
         expect(success).not.to.be.called
 
     context 'on dismiss', ->
@@ -152,12 +153,19 @@ define (require) ->
         view.$el = $el
 
     context 'with a deferred (like an AJAX request)', ->
+      before ->
+        useFakeTimers = null
+
+      after ->
+        useFakeTimers = yes
+
       beforeEach ->
-        model.set 'opts', deferred: new $.Deferred()
+        deferred = $.Deferred()
+        model.set 'opts', {deferred}
         view.render()
+        deferred.resolve()
 
       it 'should dismiss when it succeeds', ->
-        model.get('opts').deferred.resolve()
         expect(view.dismiss).to.have.been.called
 
     context 'with an arbitrary click handler', ->

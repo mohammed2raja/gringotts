@@ -3,14 +3,14 @@ define (require) ->
   ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   ServiceErrorReady = require 'mixins/views/service-error-ready'
 
-  class MockCollectionView extends ServiceErrorReady Chaplin.CollectionView
+  class CollectionViewMock extends ServiceErrorReady Chaplin.CollectionView
     getTemplateFunction: ->
       -> '''
         <div class="service-error" style="display: none;"></div>
         <div class="error" style="display: none;"></div>
       '''
 
-  class MockCollection extends ActiveSyncMachine Chaplin.Collection
+  class CollectionMock extends ActiveSyncMachine Chaplin.Collection
 
   describe 'ServiceErrorReady', ->
     view = null
@@ -39,8 +39,8 @@ define (require) ->
           expect(view.$ selector).to.have.css 'display', 'none'
 
     beforeEach ->
-      collection = new MockCollection()
-      view = new MockCollectionView {collection}
+      collection = new CollectionMock()
+      view = new CollectionViewMock {collection}
 
     afterEach ->
       view.dispose()
@@ -50,9 +50,9 @@ define (require) ->
 
     context 'with error selector', ->
       before ->
-        MockCollectionView::errorSelector = '.error'
+        CollectionViewMock::errorSelector = '.error'
 
       after ->
-        delete MockCollectionView::errorSelector
+        delete CollectionViewMock::errorSelector
 
       serviceAssertions '.error'

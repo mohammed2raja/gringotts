@@ -31,7 +31,9 @@ define (require) ->
 
     fetch: ->
       @reset() # remove existing items
-      super?.fail ($xhr) => @count = 0 unless $xhr.statusText is 'abort'
+      utils.abortable super, catch: ($xhr) =>
+        @count = 0 unless $xhr.statusText is 'abort'
+        $xhr
 
     parse: (resp) ->
       result = super

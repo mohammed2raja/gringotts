@@ -6,20 +6,20 @@ define (require) ->
   Sorting = require 'mixins/views/sorting'
   StringTemplatable = require 'mixins/views/string-templatable'
 
-  class MockItemView extends Chaplin.View
+  class ItemViewMock extends Chaplin.View
     tagName: 'tr'
     className: 'test-item'
     getTemplateFunction: -> -> '<td><td><td>'
 
-  class MockCollection extends utils.mix Chaplin.Collection
+  class CollectionMock extends utils.mix Chaplin.Collection
       .with Sorted, ActiveSyncMachine
     urlRoot: '/test'
     DEFAULTS: _.extend {}, @::DEFAULTS, sort_by: 'attr_a'
 
-  class MockSortingView extends utils.mix(Chaplin.CollectionView)
+  class SortingViewMock extends utils.mix(Chaplin.CollectionView)
       .with StringTemplatable, Sorting
     loadingSelector: '.loading'
-    itemView: MockItemView
+    itemView: ItemViewMock
     listSelector: 'tbody'
     template: 'sorting-test'
     templatePath: 'test/templates'
@@ -36,8 +36,8 @@ define (require) ->
       sandbox = sinon.sandbox.create useFakeServer: true
       sandbox.stub utils, 'reverse', (path, params, query) ->
         "#{path}?#{utils.querystring.stringify query}"
-      collection = new MockCollection()
-      view = new MockSortingView _.extend {routeName: 'test', collection}
+      collection = new CollectionMock()
+      view = new SortingViewMock _.extend {routeName: 'test', collection}
       collection.fetchWithQuery {}
       sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
       sandbox.server.respond()

@@ -47,7 +47,7 @@ define (require) ->
         beforeEach ->
           model = new factory["#{urlType}"]()
           promise = model.fetch()
-          server.respondWith JSON.stringify {key: 'value'}
+          server.respondWith JSON.stringify key: 'value'
           server.respond()
           promise
 
@@ -70,11 +70,11 @@ define (require) ->
 
         context 'on request success', ->
           beforeEach ->
-            server.respondWith '/aoo', JSON.stringify {keyA: 'valueA'}
-            server.respondWith '/boo', JSON.stringify {keyB: 'valueB'}
-            server.respondWith '/coo', JSON.stringify {keyC: 'valueC'}
+            server.respondWith '/aoo', JSON.stringify keyA: 'valueA'
+            server.respondWith '/boo', JSON.stringify keyB: 'valueB'
+            server.respondWith '/coo', JSON.stringify keyC: 'valueC'
             server.respond()
-            promise.catch ->
+            promise
 
           it 'should make all calls', ->
             expect(server.requests.length).to.equal 3
@@ -89,6 +89,7 @@ define (require) ->
 
         context 'on request error', ->
           errorHandler = null
+          catchSpy = null
 
           beforeEach ->
             errorHandler = sinon.spy()
@@ -97,7 +98,7 @@ define (require) ->
             server.respondWith '/boo', [500, {}, '{}']
             server.respondWith '/coo', [404, {}, '{}']
             server.respond()
-            promise.catch ->
+            promise.catch catchSpy = sinon.spy()
 
           it 'should trigger all errors', ->
             expect(errorHandler).to.have.been.calledTwice
@@ -105,3 +106,6 @@ define (require) ->
               sinon.match.has 'status', 500
             expect(errorHandler).to.have.been.calledWith model,
               sinon.match.has 'status', 404
+
+          it 'should call catchSpy', ->
+            expect(catchSpy).to.have.been.calledOnce

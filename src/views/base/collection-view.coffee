@@ -3,9 +3,10 @@ define (require) ->
   utils = require 'lib/utils'
   StringTemplatable = require '../../mixins/views/string-templatable'
   ServiceErrorReady = require '../../mixins/views/service-error-ready'
+  ErrorHandling = require '../../mixins/views/error-handling'
 
   class CollectionView extends utils.mix Chaplin.CollectionView
-      .with StringTemplatable, ServiceErrorReady
+      .with StringTemplatable, ServiceErrorReady, ErrorHandling
     loadingSelector: '.loading'
     fallbackSelector: '.empty'
     useCssAnimation: yes

@@ -4,9 +4,9 @@ define (require) ->
   Chaplin = require 'chaplin'
   Routing = require 'mixins/views/routing'
 
-  class MockView extends Routing Chaplin.View
+  class ViewMock extends Routing Chaplin.View
 
-  class MockCollectionView extends Routing Chaplin.CollectionView
+  class CollectionViewMock extends Routing Chaplin.CollectionView
     itemView: Chaplin.View
 
     onBrowserQueryChange: (query, diff) ->
@@ -27,7 +27,7 @@ define (require) ->
 
     context 'view', ->
       beforeEach ->
-        view = new MockView {
+        view = new ViewMock {
           routeName: 'that-route'
           routeParams: 'those-params'
           routeQueryable: {}
@@ -69,7 +69,7 @@ define (require) ->
       beforeEach ->
         sandbox.stub Chaplin.View::, 'getTemplateFunction'
         collection = new Chaplin.Collection [1, 2, 3]
-        view = new MockCollectionView {
+        view = new CollectionViewMock {
           collection
           routeName: 'that-route'
           routeParams: 'those-params'
@@ -93,7 +93,7 @@ define (require) ->
         routeQueryable =
           getQuery: sinon.spy (opts) -> _.extend a: 1, b: 2, opts.overrides
           dispose: sinon.spy()
-        view = new MockView {
+        view = new ViewMock {
           routeName: 'that-route'
           routeParams: 'those-params'
           routeQueryable
@@ -140,7 +140,7 @@ define (require) ->
         proxy = getQuery: -> a: 1, b: 2
         _.extend proxy, Backbone.Events
         collection.proxyQueryable = -> proxy
-        view = new MockCollectionView {
+        view = new CollectionViewMock {
           collection
           routeName: 'that-route'
           routeParams: 'those-params'

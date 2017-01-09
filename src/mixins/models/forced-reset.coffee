@@ -1,12 +1,14 @@
 define (require) ->
+  utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
+  SafeSyncCallback = require './safe-sync-callback'
 
   ###*
    * Forces reseting all models in collection upon failed ajax request.
    * This is required for Sorted or Paginated collections,
    * to clear current items if new page request or new sort ajax request failed.
   ###
-  (base) -> class ForcedReset extends base
+  (base) -> class ForcedReset extends utils.mix(base).with SafeSyncCallback
     helper.setTypeName @prototype, 'ForcedReset'
 
     initialize: ->
@@ -15,4 +17,6 @@ define (require) ->
       super
 
     fetch: ->
-      super?.fail => @reset()
+      utils.abortable super, catch: ($xhr) =>
+        @reset()
+        $xhr

@@ -2,7 +2,32 @@ define (require) ->
   Chaplin = require 'chaplin'
   moment = require 'moment'
   join = require 'url_join'
+  deadDeferred = require './dead-deferred'
   MixinBuilder = require './mixin-builder'
+
+  ###*
+   * Chains handlers into an abortable promise and still keeps it abortable.
+  ###
+  abortable = (promise, handlers={}) ->
+    return unless promise
+    result = promise
+      .progress handlers.progress or handlers.all
+      .then handlers.then or handlers.all
+      .catch handlers.catch or handlers.all
+    if promise.abort
+      result.abort = ->
+        promise.abort() # compatibility with ajax deferred
+        result
+    result
+
+  ###*
+   * Filters deferred callbacks and cancels the chain if model is disposed.
+  ###
+  disposable = (promise, disposed) ->
+    abortable promise, all: ->
+      # find a promise to return, if not available take first argument
+      result = _.find(arguments, (a) -> a?.then) or _.first arguments
+      if disposed() then deadDeferred.create() else result
 
   #coffeelint: disable=max_line_length
   # Typically, a project will create their own `utils` file/object to beget
@@ -11,8 +36,7 @@ define (require) ->
   # See [Chaplin utils](https://github.com/chaplinjs/chaplin-boilerplate/blob/master/coffee/lib/coffee)
   # for an example.
   #coffeelint: enable=max_line_length
-  _.extend {}, Chaplin.utils,
-
+  _.extend {}, Chaplin.utils, {
     ###*
      * Keyboard Keys Constants
     ###
@@ -94,3 +118,13 @@ define (require) ->
      * @return {Type}            A result type with all mixins applied.
     ###
     mix: (superclass) -> new MixinBuilder superclass
+
+    waitUntil: (options) ->
+      tick = ->
+        _.defer ->
+          if options.condition() then options.then() else tick()
+      tick()
+
+    abortable
+    disposable
+ }

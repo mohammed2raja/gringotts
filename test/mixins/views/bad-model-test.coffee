@@ -3,23 +3,25 @@ define (require) ->
   utils = require 'lib/utils'
   BadModel = require 'mixins/views/bad-model'
 
-  class MockView extends BadModel Chaplin.View
+  class ViewMock extends BadModel Chaplin.View
 
   describe 'BadModel', ->
+    sandbox = null
     view = null
     model = null
 
-    triggerError = (xhr=status: 404) ->
-      model.trigger 'error', model, xhr
+    handle404Error = ->
+      view.handleBadModel status: 404
 
     beforeEach ->
-      model = new Chaplin.Model {id: 56}
-      view = new MockView {model}
-      sinon.stub utils, 'redirectTo'
-      sinon.stub view, 'publishEvent'
+      sandbox = sinon.sandbox.create()
+      model = new Chaplin.Model id: 56
+      view = new ViewMock {model}
+      sandbox.stub utils, 'redirectTo'
+      sandbox.stub view, 'publishEvent'
 
     afterEach ->
-      utils.redirectTo.restore()
+      sandbox.restore()
       view.dispose()
       model.dispose()
 
@@ -35,7 +37,7 @@ define (require) ->
 
         beforeEach ->
           xhr = status: 403
-          triggerError xhr
+          view.handle403 xhr
 
         afterEach ->
           xhr = null
@@ -52,7 +54,8 @@ define (require) ->
 
         beforeEach ->
           xhr = status: 404
-          model.trigger 'error', model, xhr
+          view.handleAny xhr
+
         afterEach ->
           xhr = null
 
@@ -60,39 +63,38 @@ define (require) ->
           defaultExpects()
 
         it 'should mark xhr as errorHandled', ->
-          expect(xhr).to.have.property('errorHandled').
-            and.equal true
+          expect(xhr).to.have.property 'errorHandled', yes
 
     it 'should redirect to the specified route', ->
       view.badModelOpts = route: '66'
-      triggerError()
+      handle404Error()
       expect(utils.redirectTo).to.be.calledWith '66'
 
     it 'should display specified message', ->
       view.badModelOpts = message: 'oops'
-      triggerError()
+      handle404Error()
       expect(view.publishEvent.lastCall.args[1]).to.be.equal 'oops'
 
     it 'should invoke message as a method if appropriate', ->
       message = sinon.spy()
       view.badModelOpts = {message}
-      triggerError()
+      handle404Error()
       expect(message).to.be.calledWith model
 
     it 'should invoke route as a method if appropriate', ->
       route = sinon.spy()
       view.badModelOpts = {route}
-      triggerError()
+      handle404Error()
       expect(route).to.be.calledWith model
 
     it 'should pass route result to redirect call', ->
       view.badModelOpts = route: -> ['name', id: 1]
-      triggerError()
+      handle404Error()
       args = utils.redirectTo.lastCall.args
       expect(args[0]).to.equal 'name'
       expect(args[1]).to.eql id: 1
 
     it 'should use default options for notify', ->
-      triggerError()
+      handle404Error()
       defaults = view.publishEvent.lastCall.args[2]
       expect(defaults.classes).to.exist

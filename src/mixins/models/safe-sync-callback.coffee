@@ -1,4 +1,5 @@
 define (require) ->
+  utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
 
   ###*
@@ -14,7 +15,7 @@ define (require) ->
 
     sync: ->
       @safeSyncHashCallbacks.apply this, arguments
-      @safeSyncPromiseCallbacks super
+      utils.disposable super, => @disposed
 
     ###*
      * Piggies back off the AJAX option hash which the Backbone
@@ -29,24 +30,3 @@ define (require) ->
           options[cb] = =>
             # Check disposal at time of use.
             callback.apply ctx, arguments unless @disposed
-
-    ###*
-     * Filters deferred calbacks and cancels chain if model is disposed.
-    ###
-    safeSyncPromiseCallbacks: ($xhr) ->
-      return unless $xhr
-      filter = =>
-        if @disposed
-          $xhr.errorHandled = true # suppress all error notifications
-          @safeSyncDeadPromise()
-        else $xhr
-      # doneFilter, failFilter, progressFilter
-      deferred = $xhr.then(filter, filter, filter).promise()
-      deferred.abort = -> $xhr.abort() # compatibility with ajax deferred
-      deferred
-
-    ###*
-     * A promise that never resolved, so niether of callbacks is called.
-    ###
-    safeSyncDeadPromise: ->
-      $.Deferred().promise()

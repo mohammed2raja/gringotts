@@ -34,11 +34,11 @@ define (require) ->
     $.ajax
       url: '../testSpecs.txt'
       dataType: 'text'
-    .done (data) ->
+    .then (data) ->
       specList = data.split '\n'
       # Remove blank line from end.
       specList.pop()
       specs = $.map specList, (spec) -> spec.replace '.coffee', ''
       require specs, -> window.mocha.run()
-    .fail ->
-      console.log 'Failure with loading spec list! ', arguments
+    .catch ($xhr) ->
+      window.console.warn 'Failure with loading spec list! ', $xhr

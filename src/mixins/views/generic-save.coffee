@@ -1,24 +1,14 @@
 define (require) ->
   utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
-
-  revertChanges = (opts, $xhr) ->
-    opts.$field?.text opts.original
-    opts.$field?.attr 'href', opts.href if opts.href
-    @makeEditable? opts unless $xhr
-
-    if $xhr?.status in [400, 406]
-      if response = utils.parseJSON $xhr.responseText
-        if message = response.error or response.errors?[opts.attribute]
-          @publishEvent 'notify', message, classes: 'alert-danger'
-          $xhr.errorHandled = true
+  ErrorHandling = require './error-handling'
 
   # This mixin adds genericSave handler method that could be used in combine
   # with editable mixin to handle save actions from editable UI input controls.
   #
   # Pass delayedSave true in options to turn on couple of secs delay before
   # saving update value on server. The notification with Undo will be shown.
-  (superclass) -> class GenericSave extends superclass
+  (base) -> class GenericSave extends utils.mix(base).with ErrorHandling
     helper.setTypeName @prototype, 'GenericSave'
 
     initialize: ->
@@ -33,12 +23,26 @@ define (require) ->
       if opts.delayedSave
         @publishEvent 'notify', opts.saveMessage,
           _.extend {}, opts,
-            success: ->
+            success: =>
               opts.model.save opts.attribute, opts.value, opts
-              .fail ($xhr) => revertChanges.call this, opts, $xhr
+                .catch ($xhr) => @genericSaveRevert opts, $xhr
+                .catch @handleError
             undo: =>
-              revertChanges.call this, opts
+              @genericSaveRevert opts
       else
         opts.model.save opts.attribute, opts.value, opts
-        .done => @publishEvent 'notify', opts.saveMessage
-        .fail ($xhr) => revertChanges.call this, opts, $xhr
+          .then => @publishEvent 'notify', opts.saveMessage
+          .catch ($xhr) => @genericSaveRevert opts, $xhr
+          .catch @handleError
+
+    genericSaveRevert: (opts, $xhr) ->
+      opts.$field?.text opts.original
+      opts.$field?.attr 'href', opts.href if opts.href
+      @makeEditable? opts unless $xhr
+      if $xhr
+        if $xhr.status in [400, 406]
+          if response = utils.parseJSON $xhr.responseText
+            if message = response.error or response.errors?[opts.attribute]
+              @notifyError message
+              return
+        $xhr

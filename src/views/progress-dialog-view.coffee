@@ -27,7 +27,7 @@ define (require) ->
     listen:
       'syncing model': -> @onSyncing()
       'synced model': -> @onSynced()
-      'error model': (model, $xhr) -> @onError $xhr
+      'unsynced model': -> @onUnsynced()
     events:
       'show.bs.modal': ->
         @$stateView().removeClass 'fade' # to enable BS animation
@@ -95,10 +95,13 @@ define (require) ->
       @setLoading off
       @switchTo 'success'
 
-    onError: ($xhr) ->
-      $xhr.errorHandled = yes
+    onUnsynced: ->
       @setLoading off
       @switchTo 'error'
+
+    handleError: (obj) ->
+      @onUnsynced()
+      @markAsHandled obj
 
     switchTo: (state) ->
       return if @state is state

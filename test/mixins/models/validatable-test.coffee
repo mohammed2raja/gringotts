@@ -3,7 +3,7 @@ define (require) ->
   patterns = require('backbone_validation').patterns
   Validatable = require 'mixins/models/validatable'
 
-  class MockModel extends Validatable Chaplin.Model
+  class ModelMock extends Validatable Chaplin.Model
     validation:
       name:
         required: true
@@ -29,7 +29,7 @@ define (require) ->
     isValid = null
 
     beforeEach ->
-      model = new MockModel()
+      model = new ModelMock()
 
     afterEach ->
       model.dispose()

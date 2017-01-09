@@ -1,9 +1,10 @@
 define (require) ->
+  utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
 
   ###*
    * Sets XHR errors on fetch as handled,
-   * to suppress global error notification.
+   * to suppress further error notification.
    * This mixin is useful for Collections that are being used by views
    * with ServiceErrorReady applied.
   ###
@@ -16,4 +17,4 @@ define (require) ->
       super
 
     fetch: ->
-      super?.fail ($xhr) -> $xhr.errorHandled = true
+      utils.abortable super, catch: ->
