@@ -3,14 +3,15 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper, utils;
+    var ActiveSyncMachine, helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
+    ActiveSyncMachine = require('./active-sync-machine');
 
     /**
      * Aborts the existing fetch request if a new one is being requested.
      */
-    return function(superclass) {
+    return function(base) {
       var Abortable;
       return Abortable = (function(superClass) {
         extend(Abortable, superClass);
@@ -27,17 +28,22 @@
         };
 
         Abortable.prototype.fetch = function() {
-          if (this.currentXHR) {
-            this.currentXHR.abort();
+          var $xhr;
+          $xhr = Abortable.__super__.fetch.apply(this, arguments);
+          if (this.currentXHR && _.isFunction(this.currentXHR.abort) && this.isSyncing()) {
+            this.currentXHR.fail(function($xhr) {
+              if ($xhr.status === 0) {
+                return $xhr.errorHandled = true;
+              }
+            }).abort();
           }
-          return this.currentXHR = utils.abortable(Abortable.__super__.fetch.apply(this, arguments), {
-            then: (function(_this) {
-              return function(r, s, $xhr) {
-                delete _this.currentXHR;
-                return $xhr;
-              };
-            })(this)
-          });
+          return this.currentXHR = $xhr ? $xhr.always((function(_this) {
+            return function() {
+              if (_this.currentXHR === $xhr) {
+                return delete _this.currentXHR;
+              }
+            };
+          })(this)) : void 0;
         };
 
         Abortable.prototype.sync = function(method, model, options) {
@@ -47,7 +53,9 @@
           }
           error = options.error;
           options.error = function($xhr) {
-            if ($xhr.statusText !== 'abort') {
+            if ($xhr.statusText === 'abort') {
+              return $xhr.errorHandled = true;
+            } else {
               return error != null ? error.apply(this, arguments) : void 0;
             }
           };
@@ -56,7 +64,7 @@
 
         return Abortable;
 
-      })(superclass);
+      })(utils.mix(base)["with"](ActiveSyncMachine));
     };
   });
 

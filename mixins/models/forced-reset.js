@@ -3,10 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var SafeSyncCallback, helper, utils;
-    utils = require('lib/utils');
+    var helper;
     helper = require('../../lib/mixin-helper');
-    SafeSyncCallback = require('./safe-sync-callback');
 
     /**
      * Forces reseting all models in collection upon failed ajax request.
@@ -31,19 +29,17 @@
         };
 
         ForcedReset.prototype.fetch = function() {
-          return utils.abortable(ForcedReset.__super__.fetch.apply(this, arguments), {
-            "catch": (function(_this) {
-              return function($xhr) {
-                _this.reset();
-                return $xhr;
-              };
-            })(this)
-          });
+          var ref;
+          return (ref = ForcedReset.__super__.fetch.apply(this, arguments)) != null ? ref.fail((function(_this) {
+            return function() {
+              return _this.reset();
+            };
+          })(this)) : void 0;
         };
 
         return ForcedReset;
 
-      })(utils.mix(base)["with"](SafeSyncCallback));
+      })(base);
     };
   });
 

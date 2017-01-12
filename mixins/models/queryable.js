@@ -194,7 +194,7 @@
           if (queryChanged || this.isUnsynced()) {
             return this.fetch(options);
           } else {
-            return $.Deferred().resolve();
+            return $.Deferred().resolve().promise();
           }
         };
 

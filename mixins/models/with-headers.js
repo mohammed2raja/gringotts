@@ -57,22 +57,19 @@
          */
 
         WithHeaders.prototype.sync = function(method, model, options) {
-          var $xhr, promise;
+          var $xhr, deferred;
           $xhr = null;
-          promise = this.resolveHeaders(this.HEADERS).then((function(_this) {
+          deferred = this.resolveHeaders(this.HEADERS).then((function(_this) {
             return function(headers) {
               if (!_this.disposed) {
                 return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
               }
             };
           })(this));
-          promise.abort = function() {
-            if ($xhr != null) {
-              $xhr.abort();
-            }
-            return promise;
+          deferred.abort = function() {
+            return $xhr != null ? $xhr.abort() : void 0;
           };
-          return promise;
+          return deferred;
         };
 
 

@@ -46,17 +46,15 @@
         };
 
         Paginated.prototype.fetch = function() {
+          var ref;
           this.reset();
-          return utils.abortable(Paginated.__super__.fetch.apply(this, arguments), {
-            "catch": (function(_this) {
-              return function($xhr) {
-                if ($xhr.statusText !== 'abort') {
-                  _this.count = 0;
-                }
-                return $xhr;
-              };
-            })(this)
-          });
+          return (ref = Paginated.__super__.fetch.apply(this, arguments)) != null ? ref.fail((function(_this) {
+            return function($xhr) {
+              if ($xhr.statusText !== 'abort') {
+                return _this.count = 0;
+              }
+            };
+          })(this)) : void 0;
         };
 
         Paginated.prototype.parse = function(resp) {

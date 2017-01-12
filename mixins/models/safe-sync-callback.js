@@ -3,8 +3,7 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper, utils;
-    utils = require('lib/utils');
+    var helper;
     helper = require('../../lib/mixin-helper');
 
     /**
@@ -64,21 +63,25 @@
          */
 
         SafeSyncCallback.prototype.safeSyncPromiseCallbacks = function($xhr) {
-          return utils.abortable($xhr, {
-            all: (function(_this) {
-              return function() {
-                var result;
-                result = _.find(arguments, function(a) {
-                  return a != null ? a.then : void 0;
-                }) || _.first(arguments);
-                if (_this.disposed) {
-                  return _this.safeSyncDeadPromise();
-                } else {
-                  return result;
-                }
-              };
-            })(this)
-          });
+          var deferred, filter;
+          if (!$xhr) {
+            return;
+          }
+          filter = (function(_this) {
+            return function() {
+              if (_this.disposed) {
+                $xhr.errorHandled = true;
+                return _this.safeSyncDeadPromise();
+              } else {
+                return $xhr;
+              }
+            };
+          })(this);
+          deferred = $xhr.then(filter, filter, filter).promise();
+          deferred.abort = function() {
+            return $xhr.abort();
+          };
+          return deferred;
         };
 
 
