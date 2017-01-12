@@ -74,7 +74,7 @@
           this.$el.append(opts.link);
         }
         if ((ref = opts.deferred) != null) {
-          ref.done((function(_this) {
+          ref.then((function(_this) {
             return function() {
               return _this.dismiss();
             };

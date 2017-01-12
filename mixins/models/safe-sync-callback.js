@@ -3,8 +3,14 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper;
+    var helper, utils;
+    utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
+
+    /**
+     * This mixin prevent errors when sync/fetch callback executes after
+      * route change when model is disposed.
+     */
     return function(superclass) {
       var SafeSyncCallback;
       return SafeSyncCallback = (function(superClass) {
@@ -22,11 +28,17 @@
         };
 
         SafeSyncCallback.prototype.sync = function() {
-          this.safeSyncCallback.apply(this, arguments);
-          return this.safeDeferred(SafeSyncCallback.__super__.sync.apply(this, arguments));
+          this.safeSyncHashCallbacks.apply(this, arguments);
+          return this.safeSyncPromiseCallbacks(SafeSyncCallback.__super__.sync.apply(this, arguments));
         };
 
-        SafeSyncCallback.prototype.safeSyncCallback = function(method, model, options) {
+
+        /**
+         * Piggies back off the AJAX option hash which the Backbone
+          * server methods (such as `fetch` and `save`) use.
+         */
+
+        SafeSyncCallback.prototype.safeSyncHashCallbacks = function(method, model, options) {
           if (!options) {
             return;
           }
@@ -46,26 +58,36 @@
           })(this));
         };
 
-        SafeSyncCallback.prototype.safeDeferred = function($xhr) {
-          var deferred, filter;
-          if (!$xhr) {
-            return;
-          }
-          filter = (function(_this) {
-            return function() {
-              if (_this.disposed) {
-                $xhr.errorHandled = true;
-                return $.Deferred();
-              } else {
-                return $xhr;
-              }
-            };
-          })(this);
-          deferred = $xhr.then(filter, filter, filter).promise();
-          deferred.abort = function() {
-            return $xhr.abort();
-          };
-          return deferred;
+
+        /**
+         * Filters deferred calbacks and cancels chain if model is disposed.
+         */
+
+        SafeSyncCallback.prototype.safeSyncPromiseCallbacks = function($xhr) {
+          return utils.abortable($xhr, {
+            all: (function(_this) {
+              return function() {
+                var result;
+                result = _.find(arguments, function(a) {
+                  return a != null ? a.then : void 0;
+                }) || _.first(arguments);
+                if (_this.disposed) {
+                  return _this.safeSyncDeadPromise();
+                } else {
+                  return result;
+                }
+              };
+            })(this)
+          });
+        };
+
+
+        /**
+         * A promise that never resolved, so niether of callbacks is called.
+         */
+
+        SafeSyncCallback.prototype.safeSyncDeadPromise = function() {
+          return $.Deferred().promise();
         };
 
         return SafeSyncCallback;

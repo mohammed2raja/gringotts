@@ -3,15 +3,14 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ActiveSyncMachine, helper, utils;
+    var helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
-    ActiveSyncMachine = require('./active-sync-machine');
 
     /**
      * Aborts the existing fetch request if a new one is being requested.
      */
-    return function(base) {
+    return function(superclass) {
       var Abortable;
       return Abortable = (function(superClass) {
         extend(Abortable, superClass);
@@ -28,20 +27,17 @@
         };
 
         Abortable.prototype.fetch = function() {
-          var $xhr;
-          $xhr = Abortable.__super__.fetch.apply(this, arguments);
-          if (this.currentXHR && _.isFunction(this.currentXHR.abort) && this.isSyncing()) {
-            this.currentXHR.fail(function($xhr) {
-              if ($xhr.status === 0) {
-                return $xhr.errorHandled = true;
-              }
-            }).abort();
+          if (this.currentXHR) {
+            this.currentXHR.abort();
           }
-          return this.currentXHR = $xhr ? $xhr.always((function(_this) {
-            return function() {
-              return delete _this.currentXHR;
-            };
-          })(this)) : void 0;
+          return this.currentXHR = utils.abortable(Abortable.__super__.fetch.apply(this, arguments), {
+            then: (function(_this) {
+              return function(r, s, $xhr) {
+                delete _this.currentXHR;
+                return $xhr;
+              };
+            })(this)
+          });
         };
 
         Abortable.prototype.sync = function(method, model, options) {
@@ -51,9 +47,7 @@
           }
           error = options.error;
           options.error = function($xhr) {
-            if ($xhr.statusText === 'abort') {
-              return $xhr.errorHandled = true;
-            } else {
+            if ($xhr.statusText !== 'abort') {
               return error != null ? error.apply(this, arguments) : void 0;
             }
           };
@@ -62,7 +56,7 @@
 
         return Abortable;
 
-      })(utils.mix(base)["with"](ActiveSyncMachine));
+      })(superclass);
     };
   });
 

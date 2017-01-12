@@ -3,12 +3,13 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper;
+    var helper, utils;
+    utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
 
     /**
      * Sets XHR errors on fetch as handled,
-     * to suppress global error notification.
+     * to suppress further error notification.
      * This mixin is useful for Collections that are being used by views
      * with ServiceErrorReady applied.
      */
@@ -30,10 +31,9 @@
         };
 
         ServiceErrorHandled.prototype.fetch = function() {
-          var ref;
-          return (ref = ServiceErrorHandled.__super__.fetch.apply(this, arguments)) != null ? ref.fail(function($xhr) {
-            return $xhr.errorHandled = true;
-          }) : void 0;
+          return utils.abortable(ServiceErrorHandled.__super__.fetch.apply(this, arguments), {
+            "catch": function() {}
+          });
         };
 
         return ServiceErrorHandled;
