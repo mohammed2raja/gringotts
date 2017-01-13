@@ -3,9 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, StringTemplatable, View;
+    var Chaplin, ErrorHandling, StringTemplatable, View;
     Chaplin = require('chaplin');
     StringTemplatable = require('../../mixins/views/string-templatable');
+    ErrorHandling = require('../../mixins/views/error-handling');
     return View = (function(superClass) {
       extend(View, superClass);
 
@@ -17,7 +18,7 @@
 
       return View;
 
-    })(StringTemplatable(Chaplin.View));
+    })(ErrorHandling(StringTemplatable(Chaplin.View)));
   });
 
 }).call(this);

@@ -3,15 +3,17 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper;
+    var SafeSyncCallback, helper, utils;
+    utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
+    SafeSyncCallback = require('../../mixins/models/safe-sync-callback');
 
     /**
      * An extensible mixin to intercept Model's syncing operation and adding
      * the required HTTP Headers to the XHR request.
      * @param  {Model|Collection} superclass Any Backbone Model or Collection.
      */
-    return function(superclass) {
+    return function(base) {
       var WithHeaders;
       return WithHeaders = (function(superClass) {
         extend(WithHeaders, superClass);
@@ -57,19 +59,20 @@
          */
 
         WithHeaders.prototype.sync = function(method, model, options) {
-          var $xhr, deferred;
+          var $xhr, promise;
           $xhr = null;
-          deferred = this.resolveHeaders(this.HEADERS).then((function(_this) {
+          promise = this.resolveHeaders(this.HEADERS).then((function(_this) {
             return function(headers) {
-              if (!_this.disposed) {
-                return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
-              }
+              return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
             };
           })(this));
-          deferred.abort = function() {
-            return $xhr != null ? $xhr.abort() : void 0;
+          promise.abort = function() {
+            if ($xhr != null) {
+              $xhr.abort();
+            }
+            return promise;
           };
-          return deferred;
+          return promise;
         };
 
 
@@ -87,7 +90,11 @@
         WithHeaders.prototype.resolveHeaders = function(headers) {
           var sourceHeaders;
           sourceHeaders = _.isFunction(headers) ? headers.apply(this) : headers;
-          return $.when(sourceHeaders);
+          return utils.disposable($.when(sourceHeaders), (function(_this) {
+            return function() {
+              return _this.disposed;
+            };
+          })(this));
         };
 
 
@@ -106,7 +113,7 @@
 
         return WithHeaders;
 
-      })(superclass);
+      })(utils.mix(base)["with"](SafeSyncCallback));
     };
   });
 

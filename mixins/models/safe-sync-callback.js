@@ -3,7 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var helper;
+    var helper, utils;
+    utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
 
     /**
@@ -28,7 +29,11 @@
 
         SafeSyncCallback.prototype.sync = function() {
           this.safeSyncHashCallbacks.apply(this, arguments);
-          return this.safeSyncPromiseCallbacks(SafeSyncCallback.__super__.sync.apply(this, arguments));
+          return utils.disposable(SafeSyncCallback.__super__.sync.apply(this, arguments), (function(_this) {
+            return function() {
+              return _this.disposed;
+            };
+          })(this));
         };
 
 
@@ -55,42 +60,6 @@
               }
             };
           })(this));
-        };
-
-
-        /**
-         * Filters deferred calbacks and cancels chain if model is disposed.
-         */
-
-        SafeSyncCallback.prototype.safeSyncPromiseCallbacks = function($xhr) {
-          var deferred, filter;
-          if (!$xhr) {
-            return;
-          }
-          filter = (function(_this) {
-            return function() {
-              if (_this.disposed) {
-                $xhr.errorHandled = true;
-                return _this.safeSyncDeadPromise();
-              } else {
-                return $xhr;
-              }
-            };
-          })(this);
-          deferred = $xhr.then(filter, filter, filter).promise();
-          deferred.abort = function() {
-            return $xhr.abort();
-          };
-          return deferred;
-        };
-
-
-        /**
-         * A promise that never resolved, so niether of callbacks is called.
-         */
-
-        SafeSyncCallback.prototype.safeSyncDeadPromise = function() {
-          return $.Deferred().promise();
         };
 
         return SafeSyncCallback;

@@ -3,12 +3,13 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Abortable, ActiveSyncMachine, Chaplin, Collection, Model, SafeSyncCallback, ServiceErrorHandled, WithHeaders, utils;
+    var Abortable, ActiveSyncMachine, Chaplin, Collection, ErrorHandled, Model, SafeSyncCallback, ServiceErrorHandled, WithHeaders, utils;
     Chaplin = require('chaplin');
     utils = require('lib/utils');
     ActiveSyncMachine = require('../../mixins/models/active-sync-machine');
     Abortable = require('../../mixins/models/abortable');
     SafeSyncCallback = require('../../mixins/models/safe-sync-callback');
+    ErrorHandled = require('../../mixins/models/error-handled');
     ServiceErrorHandled = require('../../mixins/models/service-error-handled');
     WithHeaders = require('../../mixins/models/with-headers');
     Model = require('./model');
@@ -27,7 +28,7 @@
 
       return Collection;
 
-    })(utils.mix(Chaplin.Collection)["with"](WithHeaders, ActiveSyncMachine, Abortable, SafeSyncCallback, ServiceErrorHandled));
+    })(utils.mix(Chaplin.Collection)["with"](WithHeaders, ActiveSyncMachine, Abortable, SafeSyncCallback, ErrorHandled, ServiceErrorHandled));
   });
 
 }).call(this);

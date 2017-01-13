@@ -47,8 +47,8 @@
         'synced model': function() {
           return this.onSynced();
         },
-        'error model': function(model, $xhr) {
-          return this.onError($xhr);
+        'unsynced model': function() {
+          return this.onUnsynced();
         }
       };
 
@@ -164,10 +164,14 @@
         return this.switchTo('success');
       };
 
-      ProgressDialogView.prototype.onError = function($xhr) {
-        $xhr.errorHandled = true;
+      ProgressDialogView.prototype.onUnsynced = function() {
         this.setLoading(false);
         return this.switchTo('error');
+      };
+
+      ProgressDialogView.prototype.handleError = function(obj) {
+        this.onUnsynced();
+        return this.markAsHandled(obj);
       };
 
       ProgressDialogView.prototype.switchTo = function(state) {
