@@ -11,14 +11,14 @@ define (require) ->
     className: 'test-item'
     getTemplateFunction: -> -> '<td><td><td>'
 
-  class PaginatedCollectionMock extends utils.mix Chaplin.Collection
-      .with Paginated, ActiveSyncMachine
+  class PaginatedCollectionMock extends Paginated \
+      ActiveSyncMachine Chaplin.Collection
     DEFAULTS: _.extend {}, @::DEFAULTS, per_page: 10
     urlRoot: '/test'
     syncKey: 'itemsList'
 
-  class PaginatingViewMock extends utils.mix(Chaplin.CollectionView)
-      .with StringTemplatable, Paginating
+  class PaginatingViewMock extends StringTemplatable \
+      Paginating Chaplin.CollectionView
     loadingSelector: '.loading'
     itemView: ItemViewMock
     listSelector: 'tbody'

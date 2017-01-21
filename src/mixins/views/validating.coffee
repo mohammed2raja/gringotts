@@ -33,7 +33,9 @@ define (require) ->
    * Add/remove bootstrap validation classes for elements with errors.
    * @param  {Backbone.View} superclass
   ###
-  (superclass) -> class Validating extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Validating extends superclass
     helper.setTypeName @prototype, 'Validating'
 
     ###*

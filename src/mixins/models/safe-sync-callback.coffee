@@ -6,7 +6,9 @@ define (require) ->
    * This mixin prevent errors when sync/fetch callback executes after
    # route change when model is disposed.
   ###
-  (superclass) -> class SafeSyncCallback extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class SafeSyncCallback extends superclass
     helper.setTypeName @prototype, 'SafeSyncCallback'
 
     initialize: ->

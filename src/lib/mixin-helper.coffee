@@ -1,39 +1,39 @@
 define (require) ->
   Chaplin = require 'chaplin'
 
-  assertModel: (_this) ->
-    unless _this instanceof Chaplin.Model
+  assertModel: (target) ->
+    unless target instanceof Chaplin.Model
       throw new Error 'This mixin can be applied only to models.'
 
-  assertNotModel: (_this) ->
-    if _this instanceof Chaplin.Model
+  assertNotModel: (target) ->
+    if target instanceof Chaplin.Model
       throw new Error 'This mixin can not be applied to models.'
 
-  assertCollection: (_this) ->
-    unless _this instanceof Chaplin.Collection
+  assertCollection: (target) ->
+    unless target instanceof Chaplin.Collection
       throw new Error 'This mixin can be applied only to collections.'
 
-  assertNotCollection: (_this) ->
-    if _this instanceof Chaplin.Collection
+  assertNotCollection: (target) ->
+    if target instanceof Chaplin.Collection
       throw new Error 'This mixin can not be applied to collections.'
 
-  assertModelOrCollection: (_this) ->
-    unless (_this instanceof Chaplin.Model or
-      _this instanceof Chaplin.Collection)
+  assertModelOrCollection: (target) ->
+    unless (target instanceof Chaplin.Model or
+      target instanceof Chaplin.Collection)
         throw new Error 'This mixin can be applied only to
           models or collections.'
 
-  assertView: (_this) ->
-    unless _this instanceof Chaplin.View
+  assertView: (target) ->
+    unless target instanceof Chaplin.View
       throw new Error 'This mixin can be applied only to views.'
 
-  assertCollectionView: (_this) ->
-    unless _this instanceof Chaplin.CollectionView
+  assertCollectionView: (target) ->
+    unless target instanceof Chaplin.CollectionView
       throw new Error 'This mixin can be applied only to collection views.'
 
-  assertViewOrCollectionView: (_this) ->
-    unless (_this instanceof Chaplin.View or
-      _this instanceof Chaplin.CollectionView)
+  assertViewOrCollectionView: (target) ->
+    unless (target instanceof Chaplin.View or
+      target instanceof Chaplin.CollectionView)
         throw new Error 'This mixin can be applied only to
           views or collection views.'
 
@@ -59,19 +59,18 @@ define (require) ->
    * Checks if an object or a prototype has mixin prototype in
    * the inheritance chain.
    * @param  {Object|Prototype} something
-   * @param  {Prototype} mixinProto
+   * @param  {Function} mixin
    * @return {Boolean}
   ###
-  withMixin: (something, mixinProto) ->
-    mixinName = @getTypeName mixinProto
+  withMixin: (something, mixin) ->
+    mixinName = @getTypeName mixinProto = mixin(Object)::
     unless mixinName
       throw new Error "The mixin #{mixinProto.constructor.name}
       should have type name set. Call mixin-helper.setTypeName() on prototype."
     chain = Chaplin.utils.getPrototypeChain something
     if target = _.find(chain, (pro) => mixinName is @getTypeName pro)
       targetFunctions = _.functions something
-      _.functions(mixinProto).every (func) ->
-        -1 < targetFunctions.indexOf func
+      _.functions(mixinProto).every (func) -> _(targetFunctions).includes func
     else
       false
 
@@ -82,13 +81,23 @@ define (require) ->
    * @return {Boolean}
   ###
   instanceWithMixin: (obj, mixin) ->
-    @withMixin obj, mixin(Object)::
+    @withMixin obj, mixin
 
   ###*
-   * Checks if an class has a specific mixin in the inheritance chain.
-   * @param  {Class} _class
+   * Checks if a class has a specific mixin in the inheritance chain.
+   * @param  {Type} type
    * @param  {Function} mixin
    * @return {Boolean}
   ###
-  classWithMixin: (_class, mixin) ->
-    @withMixin _class::, mixin(Object)::
+  typeWithMixin: (type, mixin) ->
+    @withMixin type::, mixin
+
+  ###*
+   * Applies a mixin to a class if the class doesn't have it
+   * in the inheritance chain yet.
+   * @param  {Type} type
+   * @param  {Function} mixin
+   * @return {Type}
+  ###
+  apply: (type, mixin) ->
+    if @typeWithMixin type, mixin then type else mixin type

@@ -6,7 +6,9 @@ define (require) ->
    * without interfering with Backbone View's className.
    * @param  {Backbone.View} superclass
   ###
-  (superclass) -> class Classy extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Classy extends superclass
     helper.setTypeName @prototype, 'Classy'
 
     classyName: null

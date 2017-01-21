@@ -16,7 +16,5 @@ define (require) ->
      * @return {Type}       A result class with all mixins applied only once.
     ###
     with: ->
-      _.reduce arguments,
-        (c, mixin) ->
-          if mixinHelper.classWithMixin(c, mixin) then c else mixin c
-        @superclass
+      _.reduce arguments, (type, mixin) -> mixinHelper.apply type, mixin,
+      @superclass

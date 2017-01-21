@@ -32,41 +32,6 @@ define (require) ->
         view.handleError obj
 
       context 'XHR errors', ->
-        context 'with 403 (access denied)', ->
-          before ->
-            obj = status: 403
-
-          after ->
-            obj = null
-
-          it 'should redirect to root route', ->
-            expect(utils.redirectTo).to.have.been.calledWith {}
-
-          it 'should send error notification', ->
-            expect(view.publishEvent).to.have.been.calledWith 'notify'
-
-          context 'with respond JSON', ->
-            before ->
-              obj.responseText = JSON.stringify error: 'No access available'
-
-            after ->
-              obj.responseText = null
-
-            it 'should notify with message from response', ->
-              expect(view.publishEvent).to.have.been.
-                calledWith 'notify', 'No access available'
-
-          context 'with I18n', ->
-            before ->
-              i18n = yes
-
-            after ->
-              i18n = null
-
-            it 'should notify with message from i18n', ->
-              text = I18n.t 'error.no_access'
-              expect(view.publishEvent).to.have.been.calledWith 'notify', text
-
         context 'with any http error', ->
           before ->
             obj = status: 500

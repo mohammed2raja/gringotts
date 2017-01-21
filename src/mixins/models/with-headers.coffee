@@ -8,7 +8,9 @@ define (require) ->
    * the required HTTP Headers to the XHR request.
    * @param  {Model|Collection} superclass Any Backbone Model or Collection.
   ###
-  (base) -> class WithHeaders extends utils.mix(base).with SafeSyncCallback
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class WithHeaders extends SafeSyncCallback superclass
     helper.setTypeName @prototype, 'WithHeaders'
 
     ###*

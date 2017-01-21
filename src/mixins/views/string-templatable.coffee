@@ -9,7 +9,9 @@ define (require) ->
   #
   # You can override the template path by passing in `templatePath`
   # in the options.
-  (superclass) -> class StringTemplatable extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class StringTemplatable extends superclass
     helper.setTypeName @prototype, 'StringTemplatable'
 
     optionNames: @::optionNames?.concat ['template']

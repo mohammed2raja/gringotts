@@ -11,10 +11,7 @@ define (require) ->
     beforeEach ->
       sandbox = sinon.sandbox.create()
       collection = new CollectionMock()
-      sandbox.stub collection, 'sync', ->
-        promise = $.Deferred().reject()
-        promise.abort = ->
-        promise
+      sandbox.stub collection, 'sync', -> $.Deferred().reject()
       collection.fetch()
 
     afterEach ->

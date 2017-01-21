@@ -16,7 +16,9 @@ define (require) ->
    * }
    * @param  {Collection}  superclass
   ###
-  (superclass) -> class SyncKey extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class SyncKey extends superclass
     helper.setTypeName @prototype, 'SyncKey'
 
     ###*

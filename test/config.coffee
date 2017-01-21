@@ -1,4 +1,5 @@
 require.config
+  waitSeconds: 0
   paths:
     mocha: '../node_modules/mocha/mocha'
     blanket: '../node_modules/blanket/dist/qunit/blanket'

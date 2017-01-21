@@ -12,7 +12,9 @@ define (require) ->
    * with getQuery() method.
    * @param  {View|CollectionView} superclass
   ###
-  (superclass) -> class Routing extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Routing extends superclass
     helper.setTypeName @prototype, 'Routing'
 
     ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeQueryable']

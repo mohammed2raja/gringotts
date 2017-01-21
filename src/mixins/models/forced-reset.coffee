@@ -8,7 +8,9 @@ define (require) ->
    * This is required for Sorted or Paginated collections,
    * to clear current items if new page request or new sort ajax request failed.
   ###
-  (base) -> class ForcedReset extends utils.mix(base).with SafeSyncCallback
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ForcedReset extends SafeSyncCallback superclass
     helper.setTypeName @prototype, 'ForcedReset'
 
     initialize: ->
@@ -17,6 +19,4 @@ define (require) ->
       super
 
     fetch: ->
-      utils.abortable super, catch: ($xhr) =>
-        @reset()
-        $xhr
+      utils.abortable super, catch: ($xhr) => @reset(); $xhr

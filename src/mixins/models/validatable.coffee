@@ -32,7 +32,9 @@ define (require) ->
    * Adds a validateDate function.
    * @param  {Backbone.Model} superclass
   ###
-  (superclass) -> class Validatable extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Validatable extends superclass
     helper.setTypeName @prototype, 'Validatable'
 
     _.extend @prototype, _.extend {}, backboneValidation.mixin,

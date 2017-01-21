@@ -11,13 +11,12 @@ define (require) ->
     className: 'test-item'
     getTemplateFunction: -> -> '<td><td><td>'
 
-  class CollectionMock extends utils.mix Chaplin.Collection
-      .with Sorted, ActiveSyncMachine
+  class CollectionMock extends Sorted ActiveSyncMachine Chaplin.Collection
     urlRoot: '/test'
     DEFAULTS: _.extend {}, @::DEFAULTS, sort_by: 'attr_a'
 
-  class SortingViewMock extends utils.mix(Chaplin.CollectionView)
-      .with StringTemplatable, Sorting
+  class SortingViewMock extends StringTemplatable \
+      Sorting Chaplin.CollectionView
     loadingSelector: '.loading'
     itemView: ItemViewMock
     listSelector: 'tbody'

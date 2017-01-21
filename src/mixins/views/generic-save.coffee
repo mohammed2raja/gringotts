@@ -8,7 +8,9 @@ define (require) ->
   #
   # Pass delayedSave true in options to turn on couple of secs delay before
   # saving update value on server. The notification with Undo will be shown.
-  (base) -> class GenericSave extends utils.mix(base).with ErrorHandling
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class GenericSave extends ErrorHandling superclass
     helper.setTypeName @prototype, 'GenericSave'
 
     initialize: ->

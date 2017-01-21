@@ -64,7 +64,9 @@ define (require) ->
         # Mirror content change to href attribute.
         updateLink opts if opts.href
 
-  (superclass) -> class Editable extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Editable extends superclass
     helper.setTypeName @prototype, 'Editable'
 
     initialize: ->

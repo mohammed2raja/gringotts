@@ -1,12 +1,13 @@
 define (require) ->
   utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
-  SafeSyncCallback = require '../../mixins/models/safe-sync-callback'
 
   ###*
    * Aborts the existing fetch request if a new one is being requested.
   ###
-  (base) -> class Abortable extends utils.mix(base).with SafeSyncCallback
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Abortable extends superclass
     helper.setTypeName @prototype, 'Abortable'
 
     initialize: ->
@@ -14,11 +15,10 @@ define (require) ->
       super
 
     fetch: ->
-      @currentXHR.abort() if @currentXHR
-      @currentXHR = utils.abortable super,
+      @current_fetch.abort() if @current_fetch
+      @current_fetch = utils.abortable super,
         then: (r, s, $xhr) =>
-          delete @currentXHR
-          $xhr
+          delete @current_fetch; $xhr
 
     sync: (method, model, options={}) ->
       error = options.error

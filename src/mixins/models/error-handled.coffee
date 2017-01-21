@@ -1,7 +1,9 @@
 define (require) ->
   helper = require '../../lib/mixin-helper'
 
-  (superclass) -> class ErrorHandled extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ErrorHandled extends superclass
     helper.setTypeName @prototype, 'ErrorHandled'
 
     initialize: ->

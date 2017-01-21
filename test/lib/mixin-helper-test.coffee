@@ -34,7 +34,7 @@ define (require) ->
         expect(helper.instanceWithMixin target, MixinB).to.be.false
 
       it 'should return true for class T having MixinA', ->
-        expect(helper.classWithMixin T, MixinA).to.be.true
+        expect(helper.typeWithMixin T, MixinA).to.be.true
 
       it 'should return false for class T having MixinB', ->
-        expect(helper.classWithMixin T, MixinB).to.be.false
+        expect(helper.typeWithMixin T, MixinB).to.be.false

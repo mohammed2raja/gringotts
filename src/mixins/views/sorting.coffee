@@ -9,7 +9,9 @@ define (require) ->
    * mixin to get current route name and params to generate sorting links.
    * @param  {CollectionView} base superclass
   ###
-  (base) -> class Sorting extends utils.mix(base).with Routing
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Sorting extends Routing superclass
     helper.setTypeName @prototype, 'Sorting'
 
     ###*

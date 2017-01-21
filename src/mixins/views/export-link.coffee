@@ -1,7 +1,9 @@
 define (require) ->
   helper = require '../../lib/mixin-helper'
 
-  (superclass) -> class ExportLink extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ExportLink extends superclass
     helper.setTypeName @prototype, 'ExportLink'
 
     initialize: ->

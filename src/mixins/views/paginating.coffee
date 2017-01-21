@@ -9,7 +9,9 @@ define (require) ->
    * mixin to get current route name and params to generate pagination links.
    * @param  {CollectionView} base superclass
   ###
-  (base) -> class Paginating extends utils.mix(base).with Routing
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Paginating extends Routing superclass
     helper.setTypeName @prototype, 'Paginating'
 
     ###*

@@ -11,7 +11,9 @@ define (require) ->
   resolveMessage = (response) ->
     response?.error or response?.message
 
-  (superclass) -> class ErrorHandling extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ErrorHandling extends superclass
     helper.setTypeName @prototype, 'ErrorHandling'
 
     listen:
@@ -28,27 +30,13 @@ define (require) ->
     handleError: (obj) =>
       if obj.status?
         $xhr = obj
-        if $xhr.status is 403
-          @handle403 $xhr
-        else if $xhr.statusText is 'abort'
+        if $xhr.statusText is 'abort'
           @markAsHandled $xhr
         else if $xhr.status not in [200, 201]
           @handleAny $xhr
       else
         @logError obj
         @markAsHandled obj
-
-    ###*
-     * Access denied XHR handler.
-    ###
-    handle403: ($xhr) ->
-      response = parseResponse $xhr
-      utils.redirectTo {}
-      message = resolveMessage(response) or
-        I18n?.t('error.no_access') or
-        "Sorry, you don't have access to that section of the application."
-      @notifyError message
-      @markAsHandled $xhr
 
     ###*
      * Any XHR error handler.

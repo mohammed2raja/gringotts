@@ -8,7 +8,9 @@ define (require) ->
    * and UI state bindings that target a special independent state model.
    * @param  {Backbone.View} superclass
   ###
-  (superclass) -> class StateBindable extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class StateBindable extends superclass
     helper.setTypeName @prototype, 'StateBindable'
 
     ###*

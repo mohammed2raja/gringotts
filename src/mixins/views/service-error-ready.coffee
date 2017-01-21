@@ -5,7 +5,9 @@ define (require) ->
   # This follows a similar pattern to the `loadingSelector`
   # and `fallbackSelector` that `Chaplin.CollectionView` provides.
   #
-  (superclass) -> class ServiceErrorReady extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ServiceErrorReady extends superclass
     helper.setTypeName @prototype, 'ServiceErrorReady'
 
     errorSelector: '.service-error'

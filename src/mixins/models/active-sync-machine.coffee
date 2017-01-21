@@ -16,10 +16,11 @@ define (require) ->
   switchStateTo = (target, state) ->
     target[STATE_MAP[state]]()
 
-  (superclass) -> class ActiveSyncMachine extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ActiveSyncMachine extends superclass
     _.extend @prototype, Chaplin.SyncMachine
     helper.setTypeName @prototype, 'ActiveSyncMachine'
-
 
     initialize: ->
       helper.assertModelOrCollection this

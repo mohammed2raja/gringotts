@@ -1,6 +1,7 @@
 define (require) ->
   utils = require 'lib/utils'
   helper = require '../../lib/mixin-helper'
+  SafeSyncCallback = require './safe-sync-callback'
   ForcedReset = require './forced-reset'
   Queryable = require './queryable'
 
@@ -10,7 +11,9 @@ define (require) ->
    * on every sync action.
    * @param  {Collection} base superclass
   ###
-  (base) -> class Sorted extends utils.mix(base).with Queryable, ForcedReset
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Sorted extends Queryable ForcedReset SafeSyncCallback superclass
     helper.setTypeName @prototype, 'Sorted'
 
     DEFAULTS: _.extend {}, @::DEFAULTS,

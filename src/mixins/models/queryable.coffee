@@ -16,7 +16,9 @@ define (require) ->
    * query state params before passing it to Chaplin routing system.
    * @param  {Model|Collection} superclass
   ###
-  (superclass) -> class Queryable extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class Queryable extends superclass
     helper.setTypeName @prototype, 'Queryable'
 
     ###*

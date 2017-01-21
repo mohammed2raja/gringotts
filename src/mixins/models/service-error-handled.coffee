@@ -8,7 +8,9 @@ define (require) ->
    * This mixin is useful for Collections that are being used by views
    * with ServiceErrorReady applied.
   ###
-  (superclass) -> class ServiceErrorHandled extends superclass
+  (superclass) -> helper.apply superclass, (superclass) -> \
+
+  class ServiceErrorHandled extends superclass
     helper.setTypeName @prototype, 'ServiceErrorHandled'
 
     initialize: ->
