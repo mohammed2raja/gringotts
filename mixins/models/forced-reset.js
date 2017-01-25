@@ -13,37 +13,39 @@
      * This is required for Sorted or Paginated collections,
      * to clear current items if new page request or new sort ajax request failed.
      */
-    return function(base) {
-      var ForcedReset;
-      return ForcedReset = (function(superClass) {
-        extend(ForcedReset, superClass);
+    return function(superclass) {
+      return helper.apply(superclass, function(superclass) {
+        var ForcedReset;
+        return ForcedReset = (function(superClass) {
+          extend(ForcedReset, superClass);
 
-        function ForcedReset() {
-          return ForcedReset.__super__.constructor.apply(this, arguments);
-        }
+          function ForcedReset() {
+            return ForcedReset.__super__.constructor.apply(this, arguments);
+          }
 
-        helper.setTypeName(ForcedReset.prototype, 'ForcedReset');
+          helper.setTypeName(ForcedReset.prototype, 'ForcedReset');
 
-        ForcedReset.prototype.initialize = function() {
-          helper.assertCollection(this);
-          helper.assertNotModel(this);
-          return ForcedReset.__super__.initialize.apply(this, arguments);
-        };
+          ForcedReset.prototype.initialize = function() {
+            helper.assertCollection(this);
+            helper.assertNotModel(this);
+            return ForcedReset.__super__.initialize.apply(this, arguments);
+          };
 
-        ForcedReset.prototype.fetch = function() {
-          return utils.abortable(ForcedReset.__super__.fetch.apply(this, arguments), {
-            "catch": (function(_this) {
-              return function($xhr) {
-                _this.reset();
-                return $xhr;
-              };
-            })(this)
-          });
-        };
+          ForcedReset.prototype.fetch = function() {
+            return utils.abortable(ForcedReset.__super__.fetch.apply(this, arguments), {
+              "catch": (function(_this) {
+                return function($xhr) {
+                  _this.reset();
+                  return $xhr;
+                };
+              })(this)
+            });
+          };
 
-        return ForcedReset;
+          return ForcedReset;
 
-      })(utils.mix(base)["with"](SafeSyncCallback));
+        })(SafeSyncCallback(superclass));
+      });
     };
   });
 

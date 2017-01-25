@@ -12,40 +12,42 @@
      * @param  {Backbone.View} superclass
      */
     return function(superclass) {
-      var Classy;
-      return Classy = (function(superClass) {
-        extend(Classy, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var Classy;
+        return Classy = (function(superClass) {
+          extend(Classy, superClass);
 
-        function Classy() {
-          return Classy.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(Classy.prototype, 'Classy');
-
-        Classy.prototype.classyName = null;
-
-        Classy.prototype.initialize = function() {
-          helper.assertViewOrCollectionView(this);
-          return Classy.__super__.initialize.apply(this, arguments);
-        };
-
-        Classy.prototype.render = function() {
-          var className;
-          if (this.classyName) {
-            className = this.$el.attr('class') || '';
-            if (className !== '') {
-              className += ' ';
-            }
-            if (!new RegExp("(^|\\s+)" + this.classyName + "(\\s+|$)", 'ig').test(className)) {
-              this.$el.attr('class', "" + className + this.classyName);
-            }
+          function Classy() {
+            return Classy.__super__.constructor.apply(this, arguments);
           }
-          return Classy.__super__.render.apply(this, arguments);
-        };
 
-        return Classy;
+          helper.setTypeName(Classy.prototype, 'Classy');
 
-      })(superclass);
+          Classy.prototype.classyName = null;
+
+          Classy.prototype.initialize = function() {
+            helper.assertViewOrCollectionView(this);
+            return Classy.__super__.initialize.apply(this, arguments);
+          };
+
+          Classy.prototype.render = function() {
+            var className;
+            if (this.classyName) {
+              className = this.$el.attr('class') || '';
+              if (className !== '') {
+                className += ' ';
+              }
+              if (!new RegExp("(^|\\s+)" + this.classyName + "(\\s+|$)", 'ig').test(className)) {
+                this.$el.attr('class', "" + className + this.classyName);
+              }
+            }
+            return Classy.__super__.render.apply(this, arguments);
+          };
+
+          return Classy;
+
+        })(superclass);
+      });
     };
   });
 

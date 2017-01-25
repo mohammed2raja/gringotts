@@ -6,28 +6,30 @@
     var helper;
     helper = require('../../lib/mixin-helper');
     return function(superclass) {
-      var Content;
-      return Content = (function(superClass) {
-        extend(Content, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var Content;
+        return Content = (function(superClass) {
+          extend(Content, superClass);
 
-        function Content() {
-          return Content.__super__.constructor.apply(this, arguments);
-        }
+          function Content() {
+            return Content.__super__.constructor.apply(this, arguments);
+          }
 
-        helper.setTypeName(Content.prototype, 'Content');
+          helper.setTypeName(Content.prototype, 'Content');
 
-        Content.prototype.container = '#content';
+          Content.prototype.container = '#content';
 
-        Content.prototype.containerMethod = 'prepend';
+          Content.prototype.containerMethod = 'prepend';
 
-        Content.prototype.initialize = function() {
-          helper.assertViewOrCollectionView(this);
-          return Content.__super__.initialize.apply(this, arguments);
-        };
+          Content.prototype.initialize = function() {
+            helper.assertViewOrCollectionView(this);
+            return Content.__super__.initialize.apply(this, arguments);
+          };
 
-        return Content;
+          return Content;
 
-      })(superclass);
+        })(superclass);
+      });
     };
   });
 

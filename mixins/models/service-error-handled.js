@@ -14,31 +14,33 @@
      * with ServiceErrorReady applied.
      */
     return function(superclass) {
-      var ServiceErrorHandled;
-      return ServiceErrorHandled = (function(superClass) {
-        extend(ServiceErrorHandled, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var ServiceErrorHandled;
+        return ServiceErrorHandled = (function(superClass) {
+          extend(ServiceErrorHandled, superClass);
 
-        function ServiceErrorHandled() {
-          return ServiceErrorHandled.__super__.constructor.apply(this, arguments);
-        }
+          function ServiceErrorHandled() {
+            return ServiceErrorHandled.__super__.constructor.apply(this, arguments);
+          }
 
-        helper.setTypeName(ServiceErrorHandled.prototype, 'ServiceErrorHandled');
+          helper.setTypeName(ServiceErrorHandled.prototype, 'ServiceErrorHandled');
 
-        ServiceErrorHandled.prototype.initialize = function() {
-          helper.assertCollection(this);
-          helper.assertNotModel(this);
-          return ServiceErrorHandled.__super__.initialize.apply(this, arguments);
-        };
+          ServiceErrorHandled.prototype.initialize = function() {
+            helper.assertCollection(this);
+            helper.assertNotModel(this);
+            return ServiceErrorHandled.__super__.initialize.apply(this, arguments);
+          };
 
-        ServiceErrorHandled.prototype.fetch = function() {
-          return utils.abortable(ServiceErrorHandled.__super__.fetch.apply(this, arguments), {
-            "catch": function() {}
-          });
-        };
+          ServiceErrorHandled.prototype.fetch = function() {
+            return utils.abortable(ServiceErrorHandled.__super__.fetch.apply(this, arguments), {
+              "catch": function() {}
+            });
+          };
 
-        return ServiceErrorHandled;
+          return ServiceErrorHandled;
 
-      })(superclass);
+        })(superclass);
+      });
     };
   });
 

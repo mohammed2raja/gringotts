@@ -3,61 +3,62 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var SafeSyncCallback, helper, utils;
+    var helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
-    SafeSyncCallback = require('../../mixins/models/safe-sync-callback');
 
     /**
      * Aborts the existing fetch request if a new one is being requested.
      */
-    return function(base) {
-      var Abortable;
-      return Abortable = (function(superClass) {
-        extend(Abortable, superClass);
+    return function(superclass) {
+      return helper.apply(superclass, function(superclass) {
+        var Abortable;
+        return Abortable = (function(superClass) {
+          extend(Abortable, superClass);
 
-        function Abortable() {
-          return Abortable.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(Abortable.prototype, 'Abortable');
-
-        Abortable.prototype.initialize = function() {
-          helper.assertModelOrCollection(this);
-          return Abortable.__super__.initialize.apply(this, arguments);
-        };
-
-        Abortable.prototype.fetch = function() {
-          if (this.currentXHR) {
-            this.currentXHR.abort();
+          function Abortable() {
+            return Abortable.__super__.constructor.apply(this, arguments);
           }
-          return this.currentXHR = utils.abortable(Abortable.__super__.fetch.apply(this, arguments), {
-            then: (function(_this) {
-              return function(r, s, $xhr) {
-                delete _this.currentXHR;
-                return $xhr;
-              };
-            })(this)
-          });
-        };
 
-        Abortable.prototype.sync = function(method, model, options) {
-          var error;
-          if (options == null) {
-            options = {};
-          }
-          error = options.error;
-          options.error = function($xhr) {
-            if ($xhr.statusText !== 'abort') {
-              return error != null ? error.apply(this, arguments) : void 0;
-            }
+          helper.setTypeName(Abortable.prototype, 'Abortable');
+
+          Abortable.prototype.initialize = function() {
+            helper.assertModelOrCollection(this);
+            return Abortable.__super__.initialize.apply(this, arguments);
           };
-          return Abortable.__super__.sync.apply(this, arguments);
-        };
 
-        return Abortable;
+          Abortable.prototype.fetch = function() {
+            if (this.current_fetch) {
+              this.current_fetch.abort();
+            }
+            return this.current_fetch = utils.abortable(Abortable.__super__.fetch.apply(this, arguments), {
+              then: (function(_this) {
+                return function(r, s, $xhr) {
+                  delete _this.current_fetch;
+                  return $xhr;
+                };
+              })(this)
+            });
+          };
 
-      })(utils.mix(base)["with"](SafeSyncCallback));
+          Abortable.prototype.sync = function(method, model, options) {
+            var error;
+            if (options == null) {
+              options = {};
+            }
+            error = options.error;
+            options.error = function($xhr) {
+              if ($xhr.statusText !== 'abort') {
+                return error != null ? error.apply(this, arguments) : void 0;
+              }
+            };
+            return Abortable.__super__.sync.apply(this, arguments);
+          };
+
+          return Abortable;
+
+        })(superclass);
+      });
     };
   });
 

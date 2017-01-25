@@ -27,96 +27,98 @@
       return target[STATE_MAP[state]]();
     };
     return function(superclass) {
-      var ActiveSyncMachine;
-      return ActiveSyncMachine = (function(superClass) {
-        extend(ActiveSyncMachine, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var ActiveSyncMachine;
+        return ActiveSyncMachine = (function(superClass) {
+          extend(ActiveSyncMachine, superClass);
 
-        function ActiveSyncMachine() {
-          return ActiveSyncMachine.__super__.constructor.apply(this, arguments);
-        }
-
-        _.extend(ActiveSyncMachine.prototype, Chaplin.SyncMachine);
-
-        helper.setTypeName(ActiveSyncMachine.prototype, 'ActiveSyncMachine');
-
-        ActiveSyncMachine.prototype.initialize = function() {
-          helper.assertModelOrCollection(this);
-          ActiveSyncMachine.__super__.initialize.apply(this, arguments);
-          return this.activateSyncMachine();
-        };
-
-
-        /**
-         * Activates SyncMachine on current model or collection.
-         */
-
-        ActiveSyncMachine.prototype.activateSyncMachine = function() {
-          return this.bindSyncMachineTo(this);
-        };
-
-
-        /**
-         * Binds current model SyncMachine to a source model.
-         * @param  {Model|Collection}   source
-         * @param  {Object}             options, listenAll: true to listen events
-         *                                       from nested models
-         */
-
-        ActiveSyncMachine.prototype.bindSyncMachineTo = function(source, options) {
-          options = _.defaults({}, options, {
-            listenAll: false
-          });
-          return _.each(EVENT_MAP, (function(_this) {
-            return function(entry) {
-              return _this.listenTo(source, entry.event, function(target) {
-                if (target === source || options.listenAll) {
-                  return this[entry.method]();
-                }
-              });
-            };
-          })(this));
-        };
-
-
-        /**
-         * Unbinds current model SyncMachine from a source model.
-         */
-
-        ActiveSyncMachine.prototype.unbindSyncMachineFrom = function(source) {
-          return _.each(EVENT_MAP, (function(_this) {
-            return function(entry) {
-              return _this.stopListening(source, entry.event);
-            };
-          })(this));
-        };
-
-
-        /**
-         * Links current model SyncMachine to another model SyncMachine.
-         * @param  {Model|Collection} source  with SyncMachine.
-         */
-
-        ActiveSyncMachine.prototype.linkSyncMachineTo = function(source) {
-          if (this.syncState() !== source.syncState()) {
-            switchStateTo(this, source.syncState());
+          function ActiveSyncMachine() {
+            return ActiveSyncMachine.__super__.constructor.apply(this, arguments);
           }
-          return this.listenTo(source, 'syncStateChange', function(source, state) {
-            return switchStateTo(this, state);
-          });
-        };
+
+          _.extend(ActiveSyncMachine.prototype, Chaplin.SyncMachine);
+
+          helper.setTypeName(ActiveSyncMachine.prototype, 'ActiveSyncMachine');
+
+          ActiveSyncMachine.prototype.initialize = function() {
+            helper.assertModelOrCollection(this);
+            ActiveSyncMachine.__super__.initialize.apply(this, arguments);
+            return this.activateSyncMachine();
+          };
 
 
-        /**
-         * Unlinks current model SyncMachine from another model SyncMachine.
-         */
+          /**
+           * Activates SyncMachine on current model or collection.
+           */
 
-        ActiveSyncMachine.prototype.unlinkSyncMachineFrom = function(source) {
-          return this.stopListening(source, 'syncStateChange');
-        };
+          ActiveSyncMachine.prototype.activateSyncMachine = function() {
+            return this.bindSyncMachineTo(this);
+          };
 
-        return ActiveSyncMachine;
 
-      })(superclass);
+          /**
+           * Binds current model SyncMachine to a source model.
+           * @param  {Model|Collection}   source
+           * @param  {Object}             options, listenAll: true to listen events
+           *                                       from nested models
+           */
+
+          ActiveSyncMachine.prototype.bindSyncMachineTo = function(source, options) {
+            options = _.defaults({}, options, {
+              listenAll: false
+            });
+            return _.each(EVENT_MAP, (function(_this) {
+              return function(entry) {
+                return _this.listenTo(source, entry.event, function(target) {
+                  if (target === source || options.listenAll) {
+                    return this[entry.method]();
+                  }
+                });
+              };
+            })(this));
+          };
+
+
+          /**
+           * Unbinds current model SyncMachine from a source model.
+           */
+
+          ActiveSyncMachine.prototype.unbindSyncMachineFrom = function(source) {
+            return _.each(EVENT_MAP, (function(_this) {
+              return function(entry) {
+                return _this.stopListening(source, entry.event);
+              };
+            })(this));
+          };
+
+
+          /**
+           * Links current model SyncMachine to another model SyncMachine.
+           * @param  {Model|Collection} source  with SyncMachine.
+           */
+
+          ActiveSyncMachine.prototype.linkSyncMachineTo = function(source) {
+            if (this.syncState() !== source.syncState()) {
+              switchStateTo(this, source.syncState());
+            }
+            return this.listenTo(source, 'syncStateChange', function(source, state) {
+              return switchStateTo(this, state);
+            });
+          };
+
+
+          /**
+           * Unlinks current model SyncMachine from another model SyncMachine.
+           */
+
+          ActiveSyncMachine.prototype.unlinkSyncMachineFrom = function(source) {
+            return this.stopListening(source, 'syncStateChange');
+          };
+
+          return ActiveSyncMachine;
+
+        })(superclass);
+      });
     };
   });
 

@@ -33,67 +33,69 @@
      * @param  {Backbone.View} superclass
      */
     return function(superclass) {
-      var Validating;
-      return Validating = (function(superClass) {
-        extend(Validating, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var Validating;
+        return Validating = (function(superClass) {
+          extend(Validating, superClass);
 
-        function Validating() {
-          return Validating.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(Validating.prototype, 'Validating');
-
-
-        /**
-         * Regex patterns that may be used in template data to
-         * fill DOM elements pattern property.
-         * @type {Object}
-         */
-
-        Validating.prototype.patterns = backboneValidation.patterns;
-
-        Validating.prototype.initialize = function() {
-          helper.assertView(this);
-          Validating.__super__.initialize.apply(this, arguments);
-          if (this.model) {
-            return this.bindModel(this.model);
+          function Validating() {
+            return Validating.__super__.constructor.apply(this, arguments);
           }
-        };
 
-        Validating.prototype.getTemplateData = function() {
-          return _.extend(Validating.__super__.getTemplateData.apply(this, arguments), {
-            regex: _.mapValues(this.patterns, function(re) {
-              return re.source;
-            })
-          });
-        };
+          helper.setTypeName(Validating.prototype, 'Validating');
 
-        Validating.prototype.dispose = function() {
-          if (this.model) {
-            this.unbindModel(this.model);
-          }
-          return Validating.__super__.dispose.apply(this, arguments);
-        };
 
-        Validating.prototype.bindModel = function(model) {
-          if (model.associatedViews) {
-            if (model.associatedViews.indexOf(this) < 0) {
-              return model.associatedViews.push(this);
+          /**
+           * Regex patterns that may be used in template data to
+           * fill DOM elements pattern property.
+           * @type {Object}
+           */
+
+          Validating.prototype.patterns = backboneValidation.patterns;
+
+          Validating.prototype.initialize = function() {
+            helper.assertView(this);
+            Validating.__super__.initialize.apply(this, arguments);
+            if (this.model) {
+              return this.bindModel(this.model);
             }
-          } else {
-            return model.associatedViews = [this];
-          }
-        };
+          };
 
-        Validating.prototype.unbindModel = function(model) {
-          if (model.associatedViews) {
-            return model.associatedViews = _.without(model.associatedViews, this);
-          }
-        };
+          Validating.prototype.getTemplateData = function() {
+            return _.extend(Validating.__super__.getTemplateData.apply(this, arguments), {
+              regex: _.mapValues(this.patterns, function(re) {
+                return re.source;
+              })
+            });
+          };
 
-        return Validating;
+          Validating.prototype.dispose = function() {
+            if (this.model) {
+              this.unbindModel(this.model);
+            }
+            return Validating.__super__.dispose.apply(this, arguments);
+          };
 
-      })(superclass);
+          Validating.prototype.bindModel = function(model) {
+            if (model.associatedViews) {
+              if (model.associatedViews.indexOf(this) < 0) {
+                return model.associatedViews.push(this);
+              }
+            } else {
+              return model.associatedViews = [this];
+            }
+          };
+
+          Validating.prototype.unbindModel = function(model) {
+            if (model.associatedViews) {
+              return model.associatedViews = _.without(model.associatedViews, this);
+            }
+          };
+
+          return Validating;
+
+        })(superclass);
+      });
     };
   });
 

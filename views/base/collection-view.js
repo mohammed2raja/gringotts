@@ -4,9 +4,8 @@
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(function(require) {
-    var Chaplin, CollectionView, ErrorHandling, ServiceErrorReady, StringTemplatable, utils;
+    var Chaplin, CollectionView, ErrorHandling, ServiceErrorReady, StringTemplatable;
     Chaplin = require('chaplin');
-    utils = require('lib/utils');
     StringTemplatable = require('../../mixins/views/string-templatable');
     ServiceErrorReady = require('../../mixins/views/service-error-ready');
     ErrorHandling = require('../../mixins/views/error-handling');
@@ -53,7 +52,7 @@
 
       return CollectionView;
 
-    })(utils.mix(Chaplin.CollectionView)["with"](StringTemplatable, ServiceErrorReady, ErrorHandling));
+    })(StringTemplatable(ServiceErrorReady(ErrorHandling(Chaplin.CollectionView))));
   });
 
 }).call(this);

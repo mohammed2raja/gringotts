@@ -31,42 +31,44 @@
      * @param  {Backbone.Model} superclass
      */
     return function(superclass) {
-      var Validatable;
-      return Validatable = (function(superClass) {
-        extend(Validatable, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var Validatable;
+        return Validatable = (function(superClass) {
+          extend(Validatable, superClass);
 
-        function Validatable() {
-          return Validatable.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(Validatable.prototype, 'Validatable');
-
-        _.extend(Validatable.prototype, _.extend({}, backboneValidation.mixin, {
-          isValid: function(option) {
-            return backboneValidation.mixin.isValid.apply(this, [option || true]);
-          },
-          validate: function() {
-            var error;
-            error = backboneValidation.mixin.validate.apply(this, arguments);
-            this.validationError = error || null;
-            return error;
+          function Validatable() {
+            return Validatable.__super__.constructor.apply(this, arguments);
           }
-        }));
 
-        Validatable.prototype.initialize = function() {
-          helper.assertModel(this);
-          return Validatable.__super__.initialize.apply(this, arguments);
-        };
+          helper.setTypeName(Validatable.prototype, 'Validatable');
 
-        Validatable.prototype.validateDate = function(value, attr) {
-          if (value && !moment(value, BROWSER_DATE).isValid()) {
-            return backboneValidation.messages.date.replace('{0}', backboneValidation.labelFormatters.label(attr, this));
-          }
-        };
+          _.extend(Validatable.prototype, _.extend({}, backboneValidation.mixin, {
+            isValid: function(option) {
+              return backboneValidation.mixin.isValid.apply(this, [option || true]);
+            },
+            validate: function() {
+              var error;
+              error = backboneValidation.mixin.validate.apply(this, arguments);
+              this.validationError = error || null;
+              return error;
+            }
+          }));
 
-        return Validatable;
+          Validatable.prototype.initialize = function() {
+            helper.assertModel(this);
+            return Validatable.__super__.initialize.apply(this, arguments);
+          };
 
-      })(superclass);
+          Validatable.prototype.validateDate = function(value, attr) {
+            if (value && !moment(value, BROWSER_DATE).isValid()) {
+              return backboneValidation.messages.date.replace('{0}', backboneValidation.labelFormatters.label(attr, this));
+            }
+          };
+
+          return Validatable;
+
+        })(superclass);
+      });
     };
   });
 

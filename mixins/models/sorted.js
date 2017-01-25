@@ -3,9 +3,10 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var ForcedReset, Queryable, helper, utils;
+    var ForcedReset, Queryable, SafeSyncCallback, helper, utils;
     utils = require('lib/utils');
     helper = require('../../lib/mixin-helper');
+    SafeSyncCallback = require('./safe-sync-callback');
     ForcedReset = require('./forced-reset');
     Queryable = require('./queryable');
 
@@ -15,35 +16,37 @@
      * on every sync action.
      * @param  {Collection} base superclass
      */
-    return function(base) {
-      var Sorted;
-      return Sorted = (function(superClass) {
-        extend(Sorted, superClass);
+    return function(superclass) {
+      return helper.apply(superclass, function(superclass) {
+        var Sorted;
+        return Sorted = (function(superClass) {
+          extend(Sorted, superClass);
 
-        function Sorted() {
-          return Sorted.__super__.constructor.apply(this, arguments);
-        }
+          function Sorted() {
+            return Sorted.__super__.constructor.apply(this, arguments);
+          }
 
-        helper.setTypeName(Sorted.prototype, 'Sorted');
+          helper.setTypeName(Sorted.prototype, 'Sorted');
 
-        Sorted.prototype.DEFAULTS = _.extend({}, Sorted.prototype.DEFAULTS, {
-          order: 'desc',
-          sort_by: void 0
-        });
+          Sorted.prototype.DEFAULTS = _.extend({}, Sorted.prototype.DEFAULTS, {
+            order: 'desc',
+            sort_by: void 0
+          });
 
-        Sorted.prototype.initialize = function() {
-          helper.assertCollection(this);
-          return Sorted.__super__.initialize.apply(this, arguments);
-        };
+          Sorted.prototype.initialize = function() {
+            helper.assertCollection(this);
+            return Sorted.__super__.initialize.apply(this, arguments);
+          };
 
-        Sorted.prototype.fetch = function() {
-          this.reset();
-          return Sorted.__super__.fetch.apply(this, arguments);
-        };
+          Sorted.prototype.fetch = function() {
+            this.reset();
+            return Sorted.__super__.fetch.apply(this, arguments);
+          };
 
-        return Sorted;
+          return Sorted;
 
-      })(utils.mix(base)["with"](Queryable, ForcedReset));
+        })(Queryable(ForcedReset(SafeSyncCallback(superclass))));
+      });
     };
   });
 

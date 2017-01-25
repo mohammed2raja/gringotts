@@ -7,51 +7,53 @@
     var helper;
     helper = require('../../lib/mixin-helper');
     return function(superclass) {
-      var ErrorHandled;
-      return ErrorHandled = (function(superClass) {
-        extend(ErrorHandled, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var ErrorHandled;
+        return ErrorHandled = (function(superClass) {
+          extend(ErrorHandled, superClass);
 
-        function ErrorHandled() {
-          this.handleError = bind(this.handleError, this);
-          return ErrorHandled.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(ErrorHandled.prototype, 'ErrorHandled');
-
-        ErrorHandled.prototype.initialize = function() {
-          helper.assertModelOrCollection(this);
-          return ErrorHandled.__super__.initialize.apply(this, arguments);
-        };
-
-
-        /**
-         * Generic error handler. Works with an Error and XHR instances.
-         * It triggers the event that a related view with applied ErrorHandling
-         * mixin will consume.
-         */
-
-        ErrorHandled.prototype.handleError = function(obj) {
-          this.trigger('promise-error', this, obj);
-          if (!obj.errorHandled) {
-            return this.logError(obj);
+          function ErrorHandled() {
+            this.handleError = bind(this.handleError, this);
+            return ErrorHandled.__super__.constructor.apply(this, arguments);
           }
-        };
 
-        ErrorHandled.prototype.logError = function(obj) {
-          if (!(window.console && window.console.warn)) {
-            return;
-          }
-          window.console.warn('Warning, an error was not handled correctly');
-          if (obj.status) {
-            return window.console.warn('HTTP Error', obj.status, obj);
-          } else {
-            return window.console.warn(obj);
-          }
-        };
+          helper.setTypeName(ErrorHandled.prototype, 'ErrorHandled');
 
-        return ErrorHandled;
+          ErrorHandled.prototype.initialize = function() {
+            helper.assertModelOrCollection(this);
+            return ErrorHandled.__super__.initialize.apply(this, arguments);
+          };
 
-      })(superclass);
+
+          /**
+           * Generic error handler. Works with an Error and XHR instances.
+           * It triggers the event that a related view with applied ErrorHandling
+           * mixin will consume.
+           */
+
+          ErrorHandled.prototype.handleError = function(obj) {
+            this.trigger('promise-error', this, obj);
+            if (!obj.errorHandled) {
+              return this.logError(obj);
+            }
+          };
+
+          ErrorHandled.prototype.logError = function(obj) {
+            if (!(window.console && window.console.warn)) {
+              return;
+            }
+            window.console.warn('Warning, an error was not handled correctly');
+            if (obj.status) {
+              return window.console.warn('HTTP Error', obj.status, obj);
+            } else {
+              return window.console.warn(obj);
+            }
+          };
+
+          return ErrorHandled;
+
+        })(superclass);
+      });
     };
   });
 

@@ -6,41 +6,43 @@
     var helper;
     helper = require('../../lib/mixin-helper');
     return function(superclass) {
-      var StringTemplatable;
-      return StringTemplatable = (function(superClass) {
-        var ref;
+      return helper.apply(superclass, function(superclass) {
+        var StringTemplatable;
+        return StringTemplatable = (function(superClass) {
+          var ref;
 
-        extend(StringTemplatable, superClass);
+          extend(StringTemplatable, superClass);
 
-        function StringTemplatable() {
-          return StringTemplatable.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(StringTemplatable.prototype, 'StringTemplatable');
-
-        StringTemplatable.prototype.optionNames = (ref = StringTemplatable.prototype.optionNames) != null ? ref.concat(['template']) : void 0;
-
-        StringTemplatable.prototype.templatePath = 'templates';
-
-        StringTemplatable.prototype.initialize = function() {
-          helper.assertViewOrCollectionView(this);
-          return StringTemplatable.__super__.initialize.apply(this, arguments);
-        };
-
-        StringTemplatable.prototype.getTemplateFunction = function() {
-          var template;
-          if (this.template) {
-            if (template = require(this.templatePath)[this.template]) {
-              return template;
-            } else {
-              throw new Error("The template file " + this.templatePath + "/" + this.template + " doesn't exist.");
-            }
+          function StringTemplatable() {
+            return StringTemplatable.__super__.constructor.apply(this, arguments);
           }
-        };
 
-        return StringTemplatable;
+          helper.setTypeName(StringTemplatable.prototype, 'StringTemplatable');
 
-      })(superclass);
+          StringTemplatable.prototype.optionNames = (ref = StringTemplatable.prototype.optionNames) != null ? ref.concat(['template']) : void 0;
+
+          StringTemplatable.prototype.templatePath = 'templates';
+
+          StringTemplatable.prototype.initialize = function() {
+            helper.assertViewOrCollectionView(this);
+            return StringTemplatable.__super__.initialize.apply(this, arguments);
+          };
+
+          StringTemplatable.prototype.getTemplateFunction = function() {
+            var template;
+            if (this.template) {
+              if (template = require(this.templatePath)[this.template]) {
+                return template;
+              } else {
+                throw new Error("The template file " + this.templatePath + "/" + this.template + " doesn't exist.");
+              }
+            }
+          };
+
+          return StringTemplatable;
+
+        })(superclass);
+      });
     };
   });
 

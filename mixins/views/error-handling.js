@@ -19,100 +19,86 @@
       return (response != null ? response.error : void 0) || (response != null ? response.message : void 0);
     };
     return function(superclass) {
-      var ErrorHandling;
-      return ErrorHandling = (function(superClass) {
-        extend(ErrorHandling, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var ErrorHandling;
+        return ErrorHandling = (function(superClass) {
+          extend(ErrorHandling, superClass);
 
-        function ErrorHandling() {
-          this.handleError = bind(this.handleError, this);
-          return ErrorHandling.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(ErrorHandling.prototype, 'ErrorHandling');
-
-        ErrorHandling.prototype.listen = {
-          'promise-error model': function(m, e) {
-            return this.handleError(e);
-          },
-          'promise-error collection': function(m, e) {
-            return this.handleError(e);
+          function ErrorHandling() {
+            this.handleError = bind(this.handleError, this);
+            return ErrorHandling.__super__.constructor.apply(this, arguments);
           }
-        };
 
-        ErrorHandling.prototype.initialize = function() {
-          helper.assertViewOrCollectionView(this);
-          return ErrorHandling.__super__.initialize.apply(this, arguments);
-        };
+          helper.setTypeName(ErrorHandling.prototype, 'ErrorHandling');
 
-
-        /**
-         * Generic error handler. Works with an Error and XHR instances.
-         */
-
-        ErrorHandling.prototype.handleError = function(obj) {
-          var $xhr, ref;
-          if (obj.status != null) {
-            $xhr = obj;
-            if ($xhr.status === 403) {
-              return this.handle403($xhr);
-            } else if ($xhr.statusText === 'abort') {
-              return this.markAsHandled($xhr);
-            } else if ((ref = $xhr.status) !== 200 && ref !== 201) {
-              return this.handleAny($xhr);
+          ErrorHandling.prototype.listen = {
+            'promise-error model': function(m, e) {
+              return this.handleError(e);
+            },
+            'promise-error collection': function(m, e) {
+              return this.handleError(e);
             }
-          } else {
-            this.logError(obj);
-            return this.markAsHandled(obj);
-          }
-        };
+          };
+
+          ErrorHandling.prototype.initialize = function() {
+            helper.assertViewOrCollectionView(this);
+            return ErrorHandling.__super__.initialize.apply(this, arguments);
+          };
 
 
-        /**
-         * Access denied XHR handler.
-         */
+          /**
+           * Generic error handler. Works with an Error and XHR instances.
+           */
 
-        ErrorHandling.prototype.handle403 = function($xhr) {
-          var message, response;
-          response = parseResponse($xhr);
-          utils.redirectTo({});
-          message = resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.no_access') : void 0) || "Sorry, you don't have access to that section of the application.";
-          this.notifyError(message);
-          return this.markAsHandled($xhr);
-        };
+          ErrorHandling.prototype.handleError = function(obj) {
+            var $xhr, ref;
+            if (obj.status != null) {
+              $xhr = obj;
+              if ($xhr.statusText === 'abort') {
+                return this.markAsHandled($xhr);
+              } else if ((ref = $xhr.status) !== 200 && ref !== 201) {
+                return this.handleAny($xhr);
+              }
+            } else {
+              this.logError(obj);
+              return this.markAsHandled(obj);
+            }
+          };
 
 
-        /**
-         * Any XHR error handler.
-         */
+          /**
+           * Any XHR error handler.
+           */
 
-        ErrorHandling.prototype.handleAny = function($xhr) {
-          var message, response;
-          response = parseResponse($xhr);
-          message = resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.notification') : void 0) || 'There was a problem communicating with the server.';
-          this.notifyError(message);
-          return this.markAsHandled($xhr);
-        };
+          ErrorHandling.prototype.handleAny = function($xhr) {
+            var message, response;
+            response = parseResponse($xhr);
+            message = resolveMessage(response) || (typeof I18n !== "undefined" && I18n !== null ? I18n.t('error.notification') : void 0) || 'There was a problem communicating with the server.';
+            this.notifyError(message);
+            return this.markAsHandled($xhr);
+          };
 
-        ErrorHandling.prototype.notifyError = function(message) {
-          return this.publishEvent('notify', message, {
-            classes: 'alert-danger'
-          });
-        };
+          ErrorHandling.prototype.notifyError = function(message) {
+            return this.publishEvent('notify', message, {
+              classes: 'alert-danger'
+            });
+          };
 
-        ErrorHandling.prototype.logError = function(obj) {
-          if (!(window.console && window.console.warn)) {
-            return;
-          }
-          return window.console.warn(obj);
-        };
+          ErrorHandling.prototype.logError = function(obj) {
+            if (!(window.console && window.console.warn)) {
+              return;
+            }
+            return window.console.warn(obj);
+          };
 
-        ErrorHandling.prototype.markAsHandled = function(obj) {
-          return obj.errorHandled = true;
-        };
+          ErrorHandling.prototype.markAsHandled = function(obj) {
+            return obj.errorHandled = true;
+          };
 
-        return ErrorHandling;
+          return ErrorHandling;
 
-      })(superclass);
+        })(superclass);
+      });
     };
   });
 

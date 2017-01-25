@@ -63,68 +63,70 @@
       }
     };
     return function(superclass) {
-      var Editable;
-      return Editable = (function(superClass) {
-        extend(Editable, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var Editable;
+        return Editable = (function(superClass) {
+          extend(Editable, superClass);
 
-        function Editable() {
-          return Editable.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(Editable.prototype, 'Editable');
-
-        Editable.prototype.initialize = function() {
-          helper.assertViewOrCollectionView(this);
-          return Editable.__super__.initialize.apply(this, arguments);
-        };
-
-        Editable.prototype.makeEditable = function(opts) {
-          if ($('[data-edit][contenteditable]').length) {
-            return;
+          function Editable() {
+            return Editable.__super__.constructor.apply(this, arguments);
           }
-          opts.attribute = opts.$field.data('edit');
-          opts.original = opts.model.get(opts.attribute) || '';
-          opts.$field.attr('contenteditable', true).focus().on('keydown.gringottsEditable', (function(_this) {
-            return function(evt) {
-              var keyCode;
-              keyCode = evt.keyCode;
-              if (keyCode === 13) {
-                evt.preventDefault();
+
+          helper.setTypeName(Editable.prototype, 'Editable');
+
+          Editable.prototype.initialize = function() {
+            helper.assertViewOrCollectionView(this);
+            return Editable.__super__.initialize.apply(this, arguments);
+          };
+
+          Editable.prototype.makeEditable = function(opts) {
+            if ($('[data-edit][contenteditable]').length) {
+              return;
+            }
+            opts.attribute = opts.$field.data('edit');
+            opts.original = opts.model.get(opts.attribute) || '';
+            opts.$field.attr('contenteditable', true).focus().on('keydown.gringottsEditable', (function(_this) {
+              return function(evt) {
+                var keyCode;
+                keyCode = evt.keyCode;
+                if (keyCode === 13) {
+                  evt.preventDefault();
+                  return checkInput.call(_this, opts);
+                } else if (keyCode === 27) {
+                  opts.model.validationError = null;
+                  return cleanEl.call(_this, opts).text(opts.original);
+                }
+              };
+            })(this)).on('blur.gringottsEditable', (function(_this) {
+              return function() {
                 return checkInput.call(_this, opts);
-              } else if (keyCode === 27) {
-                opts.model.validationError = null;
-                return cleanEl.call(_this, opts).text(opts.original);
-              }
-            };
-          })(this)).on('blur.gringottsEditable', (function(_this) {
-            return function() {
-              return checkInput.call(_this, opts);
-            };
-          })(this)).on('paste.gringottsEditable', function(evt) {
-            var text;
-            evt.preventDefault();
-            text = evt.originalEvent.clipboardData.getData('text/plain');
-            return document.execCommand('insertHTML', false, text);
-          });
-          return document.execCommand('selectAll', false, null);
-        };
+              };
+            })(this)).on('paste.gringottsEditable', function(evt) {
+              var text;
+              evt.preventDefault();
+              text = evt.originalEvent.clipboardData.getData('text/plain');
+              return document.execCommand('insertHTML', false, text);
+            });
+            return document.execCommand('selectAll', false, null);
+          };
 
-        Editable.prototype.setupEditable = function(clickTarget, field, opts) {
-          if (opts == null) {
-            opts = {};
-          }
-          return this.delegate('click', clickTarget, function(evt) {
-            evt.preventDefault();
-            _.defaults(opts, DEFAULTS);
-            opts.$field = this.$(field);
-            opts.model || (opts.model = this.model);
-            return this.makeEditable(opts);
-          });
-        };
+          Editable.prototype.setupEditable = function(clickTarget, field, opts) {
+            if (opts == null) {
+              opts = {};
+            }
+            return this.delegate('click', clickTarget, function(evt) {
+              evt.preventDefault();
+              _.defaults(opts, DEFAULTS);
+              opts.$field = this.$(field);
+              opts.model || (opts.model = this.model);
+              return this.makeEditable(opts);
+            });
+          };
 
-        return Editable;
+          return Editable;
 
-      })(superclass);
+        })(superclass);
+      });
     };
   });
 

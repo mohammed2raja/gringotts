@@ -13,107 +13,109 @@
      * the required HTTP Headers to the XHR request.
      * @param  {Model|Collection} superclass Any Backbone Model or Collection.
      */
-    return function(base) {
-      var WithHeaders;
-      return WithHeaders = (function(superClass) {
-        extend(WithHeaders, superClass);
+    return function(superclass) {
+      return helper.apply(superclass, function(superclass) {
+        var WithHeaders;
+        return WithHeaders = (function(superClass) {
+          extend(WithHeaders, superClass);
 
-        function WithHeaders() {
-          return WithHeaders.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(WithHeaders.prototype, 'WithHeaders');
-
-
-        /**
-         * A few default headers that are assumed to be added
-         * to every ajax request.
-         */
-
-        WithHeaders.prototype.HEADERS = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        };
-
-
-        /**
-         * Force passing cookies to ajax requests while in CORS mode.
-         * @type {Boolean}
-         */
-
-        WithHeaders.prototype.withCredentials = true;
-
-        WithHeaders.prototype.initialize = function() {
-          helper.assertModelOrCollection(this);
-          if (!this.HEADERS) {
-            throw new Error('HEADERS is required');
+          function WithHeaders() {
+            return WithHeaders.__super__.constructor.apply(this, arguments);
           }
-          return WithHeaders.__super__.initialize.apply(this, arguments);
-        };
+
+          helper.setTypeName(WithHeaders.prototype, 'WithHeaders');
 
 
-        /**
-         * Resolves headers and extends Backbone options with updated headers hash
-         * before syncing the model.
-         * @return {Deferred}   A jquery Deferred object.
-         */
+          /**
+           * A few default headers that are assumed to be added
+           * to every ajax request.
+           */
 
-        WithHeaders.prototype.sync = function(method, model, options) {
-          var $xhr, promise;
-          $xhr = null;
-          promise = this.resolveHeaders(this.HEADERS).then((function(_this) {
-            return function(headers) {
-              return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
-            };
-          })(this));
-          promise.abort = function() {
-            if ($xhr != null) {
-              $xhr.abort();
+          WithHeaders.prototype.HEADERS = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          };
+
+
+          /**
+           * Force passing cookies to ajax requests while in CORS mode.
+           * @type {Boolean}
+           */
+
+          WithHeaders.prototype.withCredentials = true;
+
+          WithHeaders.prototype.initialize = function() {
+            helper.assertModelOrCollection(this);
+            if (!this.HEADERS) {
+              throw new Error('HEADERS is required');
             }
+            return WithHeaders.__super__.initialize.apply(this, arguments);
+          };
+
+
+          /**
+           * Resolves headers and extends Backbone options with updated headers hash
+           * before syncing the model.
+           * @return {Deferred}   A jquery Deferred object.
+           */
+
+          WithHeaders.prototype.sync = function(method, model, options) {
+            var $xhr, promise;
+            $xhr = null;
+            promise = this.resolveHeaders(this.HEADERS).then((function(_this) {
+              return function(headers) {
+                return $xhr = WithHeaders.__super__.sync.call(_this, method, model, _this.extendWithHeaders(options, headers));
+              };
+            })(this));
+            promise.abort = function() {
+              if ($xhr != null) {
+                $xhr.abort();
+              }
+              return promise;
+            };
             return promise;
           };
-          return promise;
-        };
 
 
-        /**
-         * Resolves headers actual value. Since headers maybe be a function then
-         * invoke it. Result of the function may be a hash of headers or a jquery
-         * Deferred instance. Therefore return a new Deferred for
-         * a subsequent chaining.
-         * @param  {Object|Function|Deferred} headers Some value to resolve
-         *                                            headers from.
-         * @return {Object|Deferred}            A hash of headers or a Deferred
-         *                                      to chain with.
-         */
+          /**
+           * Resolves headers actual value. Since headers maybe be a function then
+           * invoke it. Result of the function may be a hash of headers or a jquery
+           * Deferred instance. Therefore return a new Deferred for
+           * a subsequent chaining.
+           * @param  {Object|Function|Deferred} headers Some value to resolve
+           *                                            headers from.
+           * @return {Object|Deferred}            A hash of headers or a Deferred
+           *                                      to chain with.
+           */
 
-        WithHeaders.prototype.resolveHeaders = function(headers) {
-          var sourceHeaders;
-          sourceHeaders = _.isFunction(headers) ? headers.apply(this) : headers;
-          return utils.disposable($.when(sourceHeaders), (function(_this) {
-            return function() {
-              return _this.disposed;
-            };
-          })(this));
-        };
+          WithHeaders.prototype.resolveHeaders = function(headers) {
+            var sourceHeaders;
+            sourceHeaders = _.isFunction(headers) ? headers.apply(this) : headers;
+            return utils.disposable($.when(sourceHeaders), (function(_this) {
+              return function() {
+                return _this.disposed;
+              };
+            })(this));
+          };
 
 
-        /**
-         * Extends the Backbone ajax options with headers hash object.
-         */
+          /**
+           * Extends the Backbone ajax options with headers hash object.
+           */
 
-        WithHeaders.prototype.extendWithHeaders = function(options, headers) {
-          return _.extend(options, {
-            xhrFields: {
-              withCredentials: this.withCredentials
-            },
-            headers: _.extend({}, options != null ? options.headers : void 0, headers)
-          });
-        };
+          WithHeaders.prototype.extendWithHeaders = function(options, headers) {
+            return _.extend(options, {
+              xhrFields: {
+                withCredentials: this.withCredentials
+              },
+              headers: _.extend({}, options != null ? options.headers : void 0, headers)
+            });
+          };
 
-        return WithHeaders;
+          return WithHeaders;
 
-      })(utils.mix(base)["with"](SafeSyncCallback));
+        })(SafeSyncCallback(superclass));
+      });
     };
   });
 

@@ -22,42 +22,44 @@
      * @param  {Collection}  superclass
      */
     return function(superclass) {
-      var SyncKey;
-      return SyncKey = (function(superClass) {
-        extend(SyncKey, superClass);
+      return helper.apply(superclass, function(superclass) {
+        var SyncKey;
+        return SyncKey = (function(superClass) {
+          extend(SyncKey, superClass);
 
-        function SyncKey() {
-          return SyncKey.__super__.constructor.apply(this, arguments);
-        }
-
-        helper.setTypeName(SyncKey.prototype, 'SyncKey');
-
-
-        /**
-         * Name of the property in response JSON that carries an array of items.
-         * @type {String}
-         */
-
-        SyncKey.prototype.syncKey = null;
-
-        SyncKey.prototype.initialize = function() {
-          helper.assertCollection(this);
-          return SyncKey.__super__.initialize.apply(this, arguments);
-        };
-
-        SyncKey.prototype.parse = function() {
-          var result;
-          result = SyncKey.__super__.parse.apply(this, arguments);
-          if (this.syncKey) {
-            return result[this.syncKey];
-          } else {
-            return result;
+          function SyncKey() {
+            return SyncKey.__super__.constructor.apply(this, arguments);
           }
-        };
 
-        return SyncKey;
+          helper.setTypeName(SyncKey.prototype, 'SyncKey');
 
-      })(superclass);
+
+          /**
+           * Name of the property in response JSON that carries an array of items.
+           * @type {String}
+           */
+
+          SyncKey.prototype.syncKey = null;
+
+          SyncKey.prototype.initialize = function() {
+            helper.assertCollection(this);
+            return SyncKey.__super__.initialize.apply(this, arguments);
+          };
+
+          SyncKey.prototype.parse = function() {
+            var result;
+            result = SyncKey.__super__.parse.apply(this, arguments);
+            if (this.syncKey) {
+              return result[this.syncKey];
+            } else {
+              return result;
+            }
+          };
+
+          return SyncKey;
+
+        })(superclass);
+      });
     };
   });
 

@@ -3,9 +3,8 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Abortable, ActiveSyncMachine, Chaplin, ErrorHandled, Model, SafeSyncCallback, WithHeaders, utils;
+    var Abortable, ActiveSyncMachine, Chaplin, ErrorHandled, Model, SafeSyncCallback, WithHeaders;
     Chaplin = require('chaplin');
-    utils = require('lib/utils');
     ActiveSyncMachine = require('../../mixins/models/active-sync-machine');
     Abortable = require('../../mixins/models/abortable');
     SafeSyncCallback = require('../../mixins/models/safe-sync-callback');
@@ -35,7 +34,7 @@
 
       return Model;
 
-    })(utils.mix(Chaplin.Model)["with"](WithHeaders, ActiveSyncMachine, Abortable, SafeSyncCallback, ErrorHandled));
+    })(ActiveSyncMachine(ErrorHandled(WithHeaders(Abortable(SafeSyncCallback(Chaplin.Model))))));
   });
 
 }).call(this);
