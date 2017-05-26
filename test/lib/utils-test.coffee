@@ -255,3 +255,24 @@ define (require) ->
 
       it 'should wait and then finish test', ->
         expect(true).to.be.true
+
+    context 'excludeUrlParams', ->
+      params = null
+      result = null
+
+      beforeEach ->
+        result = utils.excludeUrlParams 'some/url?a=b&c=d&e=f&g=h', params
+
+      context 'one param', ->
+        before ->
+          params = 'e'
+
+        it 'should return proper url', ->
+          expect(result).to.equal 'some/url?a=b&c=d&g=h'
+
+      context 'many params', ->
+        before ->
+          params = ['a', 'c', 'g']
+
+        it 'should return proper url', ->
+          expect(result).to.equal 'some/url?e=f'

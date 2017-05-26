@@ -127,3 +127,28 @@ define (require) ->
         # find a promise to return, if not available take first argument
         result = _.find(arguments, (a) -> a?.then) or _.first arguments
         if disposed() then deadDeferred.create() else result
+
+    ###*
+     * Remove one GET param by name from the string URL.
+     * @param  {String} url    The target URL string.
+     * @param  {String} param  One param to remove.
+     * @return {String}        The result URL without some params.
+    ###
+    excludeUrlParam: (url, param) ->
+      url
+        ?.replace new RegExp("\\b#{param}(\=[^&]*)?(&|$)"), ''
+        .replace /&$/, ''
+
+    ###*
+     * Remove one or many GET param by names from the string URL.
+     * @param  {String}       url    The target URL string.
+     * @param  {String|Array} param  One or many params to remove.
+     * @return {String}              The result URL without some params.
+    ###
+    excludeUrlParams: (url, params) ->
+      if _.isArray params
+        _.reduce params, (result, p) =>
+          @excludeUrlParam result, p
+        , url
+      else if _.isString params
+        @excludeUrlParam url, params

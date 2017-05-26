@@ -271,21 +271,6 @@ define (require) ->
           it 'should return query with simple keys', ->
             expect(query).to.eql page: 20, per_page: 15
 
-    context 'url overriding', ->
-      beforeEach ->
-        collection.setQuery coo: 'hoo'
-        collection.fetch()
-        sandbox.server.respond()
-
-      it 'should override url with custom rootUrl', ->
-        resultUrl = collection.url 'sneaky/url'
-        expect(resultUrl.indexOf 'sneaky/url').to.equal 0
-        expect(resultUrl).to.have.string 'coo=hoo'
-
-      it 'should override url with custom query', ->
-        expect(collection.url 'nasty/url', doo: 'woo').
-          to.equal 'nasty/url?doo=woo'
-
     context 'with complex urlRoot', ->
       urlRoots =
         array: ['/boo', '/foo', '/moo']

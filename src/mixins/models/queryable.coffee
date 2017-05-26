@@ -160,19 +160,15 @@ define (require) ->
       .value()
 
     ###*
-     * Incorporate the collection query.
-     * @param {String} base optional     base to calculate url, if it's
-     *                                   not set this.urlRoot or super.url
-     *                                   will be used.
-     * @param {String|Object} query
+     * Returns URL with collection query params.
      * @returns {String}
     ###
-    url: (base, query) ->
-      base = @urlRoot or Queryable.__super__.url unless base
+    url: ->
+      base = @urlRoot or Queryable.__super__.url
       throw new Error 'Please define url or urlRoot
         when implementing a queryable model or collection' unless base
       base = if _.isFunction(base) then base.apply(this) else base
-      query = @getQuery inclDefaults: yes, usePrefix: no unless query
+      query = @getQuery inclDefaults: yes, usePrefix: no
       # convert from local query keys to server query keys
       query = _.mapKeys _.omit(query, @ignoreKeys), (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
