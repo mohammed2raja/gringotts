@@ -244,29 +244,21 @@
 
 
           /**
-           * Incorporate the collection query.
-           * @param {String} base optional     base to calculate url, if it's
-           *                                   not set this.urlRoot or super.url
-           *                                   will be used.
-           * @param {String|Object} query
+           * Returns URL with collection query params.
            * @returns {String}
            */
 
-          Queryable.prototype.url = function(base, query) {
-            var querystring;
-            if (!base) {
-              base = this.urlRoot || Queryable.__super__.url;
-            }
+          Queryable.prototype.url = function() {
+            var base, query, querystring;
+            base = this.urlRoot || Queryable.__super__.url;
             if (!base) {
               throw new Error('Please define url or urlRoot when implementing a queryable model or collection');
             }
             base = _.isFunction(base) ? base.apply(this) : base;
-            if (!query) {
-              query = this.getQuery({
-                inclDefaults: true,
-                usePrefix: false
-              });
-            }
+            query = this.getQuery({
+              inclDefaults: true,
+              usePrefix: false
+            });
             query = _.mapKeys(_.omit(query, this.ignoreKeys), (function(_this) {
               return function(value, key) {
                 return _.invert(_this.DEFAULTS_SERVER_MAP)[key] || key;
