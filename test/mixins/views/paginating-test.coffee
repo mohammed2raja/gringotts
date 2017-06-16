@@ -61,13 +61,13 @@ define (require) ->
     it 'should render links correctly', ->
       $link_prev = view.$ '.pagination-controls a.prev-page'
       $link_next = view.$ '.pagination-controls a.next-page'
-      expect($link_prev).to.have.class('disabled-arrow').and.to.have
-        .attr 'href', 'test?'
-      expect($link_next).to.not.have.class 'disabled-arrow'
+      expect($link_prev).to.have.attr 'disabled'
+      expect($link_prev).to.have.attr 'href', 'test?'
+      expect($link_next).to.not.have.attr 'disabled'
       expect($link_next).to.have.attr 'href', 'test?page=2'
 
     it 'should render range string', ->
-      expect(view.$ '.pagination-controls strong').to.have.text '1-10 of 101'
+      expect(view.$ '.pagination-range').to.have.text '1-10 of 101'
 
     context 'changing to next page', ->
       beforeEach ->
@@ -77,13 +77,13 @@ define (require) ->
       it 'should render links correctly', ->
         $link_prev = view.$ '.pagination-controls a.prev-page'
         $link_next = view.$ '.pagination-controls a.next-page'
-        expect($link_prev).to.not.have.class 'disabled-arrow'
+        expect($link_prev).to.not.have.attr 'disabled'
         expect($link_prev).to.have.attr 'href', 'test?page=2'
-        expect($link_next).to.not.have.class 'disabled-arrow'
+        expect($link_next).to.not.have.attr 'disabled'
         expect($link_next).to.have.attr 'href', 'test?page=4'
 
       it 'should render range string', ->
-        expect(view.$ '.pagination-controls strong').to.have.text '21-30 of 101'
+        expect(view.$ '.pagination-range').to.have.text '21-30 of 101'
 
     context 'changing to last page', ->
       beforeEach ->
@@ -93,14 +93,13 @@ define (require) ->
       it 'should render links correctly', ->
         $link_prev = view.$ '.pagination-controls a.prev-page'
         $link_next = view.$ '.pagination-controls a.next-page'
-        expect($link_prev).to.not.have.class 'disabled-arrow'
+        expect($link_prev).to.not.have.attr 'disabled'
         expect($link_prev).to.have.attr 'href', 'test?page=10'
-        expect($link_next).to.have.class 'disabled-arrow'
+        expect($link_next).to.have.attr 'disabled'
         expect($link_next).to.have.attr 'href', 'test?page=11'
 
       it 'should render range string', ->
-        expect(view.$ '.pagination-controls strong').to.have
-          .text '101-101 of 101'
+        expect(view.$ '.pagination-range').to.have.text '101-101 of 101'
 
     context 'infinite pagination', ->
       before ->
@@ -112,13 +111,13 @@ define (require) ->
       it 'should render links correctly', ->
         $link_prev = view.$ '.pagination-controls a.prev-page'
         $link_next = view.$ '.pagination-controls a.next-page'
-        expect($link_prev).to.have.class 'disabled-arrow'
+        expect($link_prev).to.have.attr 'disabled'
         expect($link_prev).to.have.attr 'href', 'test?'
-        expect($link_next).to.not.have.class 'disabled-arrow'
+        expect($link_next).to.not.have.attr 'disabled'
         expect($link_next).to.have.attr 'href', 'test?page=abcdef'
 
       it 'should render range string', ->
-        expect(view.$ '.pagination-controls strong').to.have.text ''
+        expect(view.$ '.pagination-range').to.have.text ''
 
     context 'on fetching start', ->
       beforeEach (done) ->

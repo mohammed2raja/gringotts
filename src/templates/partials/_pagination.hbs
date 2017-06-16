@@ -1,13 +1,15 @@
 <div class="pagination-controls {{viewId}}">
   {{#if count}}
+    <span class="pagination-range">{{range}}</span>
     <a href="{{url routeName routeParams prevQuery}}"
-       class="prev-page {{#unless multiPaged}}hidden{{else}}{{#unless prev}}disabled-arrow{{/unless}}{{/unless}}">
-      {{icon 'atlas-arrow-thin-up' 'rotate-left'}}
+       class="prev-page{{#unless multiPaged}} hidden{{/unless}}"
+       {{#unless prev}}disabled{{/unless}}>
+      {{icon 'atlas-arrow-thin-left'}}
     </a>
-    <strong>{{range}}</strong>
     <a href="{{url routeName routeParams nextQuery}}"
-       class="next-page {{#unless multiPaged}}hidden{{else}}{{#unless next}}disabled-arrow{{/unless}}{{/unless}}">
-      {{icon 'atlas-arrow-thin-up' 'rotate-right'}}
+       class="next-page{{#unless multiPaged}} hidden{{/unless}}"
+       {{#unless next}}disabled{{/unless}}>
+      {{icon 'atlas-arrow-thin-right'}}
     </a>
   {{/if}}
 </div>
