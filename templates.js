@@ -5,33 +5,29 @@ this["Handlebars"] = this["Handlebars"] || {};
 Handlebars.registerPartial("pagination", Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3=container.escapeExpression;
 
-  return "    <a href=\""
-    + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.prevQuery : depth0),{"name":"url","hash":{},"data":data}))
-    + "\"\n       class=\"prev-page "
-    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(4, data, 0),"data":data})) != null ? stack1 : "")
-    + "\">\n      "
-    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"atlas-arrow-thin-up","rotate-left",{"name":"icon","hash":{},"data":data}))
-    + "\n    </a>\n    <strong>"
+  return "    <span class=\"pagination-range\">"
     + alias3(((helper = (helper = helpers.range || (depth0 != null ? depth0.range : depth0)) != null ? helper : alias2),(typeof helper === "function" ? helper.call(alias1,{"name":"range","hash":{},"data":data}) : helper)))
-    + "</strong>\n    <a href=\""
+    + "</span>\n    <a href=\""
+    + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.prevQuery : depth0),{"name":"url","hash":{},"data":data}))
+    + "\"\n       class=\"prev-page"
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\"\n       "
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.prev : depth0),{"name":"unless","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ">\n      "
+    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"atlas-arrow-thin-left",{"name":"icon","hash":{},"data":data}))
+    + "\n    </a>\n    <a href=\""
     + alias3((helpers.url || (depth0 && depth0.url) || alias2).call(alias1,(depth0 != null ? depth0.routeName : depth0),(depth0 != null ? depth0.routeParams : depth0),(depth0 != null ? depth0.nextQuery : depth0),{"name":"url","hash":{},"data":data}))
-    + "\"\n       class=\"next-page "
-    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
-    + "\">\n      "
-    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"atlas-arrow-thin-up","rotate-right",{"name":"icon","hash":{},"data":data}))
+    + "\"\n       class=\"next-page"
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.multiPaged : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\"\n       "
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.next : depth0),{"name":"unless","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ">\n      "
+    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"atlas-arrow-thin-right",{"name":"icon","hash":{},"data":data}))
     + "\n    </a>\n";
 },"2":function(container,depth0,helpers,partials,data) {
-    return "hidden";
+    return " hidden";
 },"4":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers.unless.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.prev : depth0),{"name":"unless","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
-},"5":function(container,depth0,helpers,partials,data) {
-    return "disabled-arrow";
-},"7":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers.unless.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.next : depth0),{"name":"unless","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+    return "disabled";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
 
