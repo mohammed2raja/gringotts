@@ -13,6 +13,13 @@ define (require) ->
   class StateBindable extends superclass
     helper.setTypeName @prototype, 'StateBindable'
 
+    listen:
+      'syncStateChange model': ->
+        @state.set syncState: @model.syncState()
+
+      'syncStateChange collection': ->
+        @state.set syncState: @collection.syncState()
+
     ###*
      * Initial state of UI, that passed to state model.
      * The value could be either an object or a function.
@@ -36,7 +43,9 @@ define (require) ->
     initialize: ->
       helper.assertViewOrCollectionView this
       super
-      @state = new Chaplin.Model _.result this, 'initialState'
+      attrs = _.result(this, 'initialState') or {}
+      syncState = @model?.syncState?() or @collection?.syncState?()
+      @state = new Chaplin.Model _.defaults attrs, {syncState}
 
     render: ->
       super
