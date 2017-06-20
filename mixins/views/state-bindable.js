@@ -25,6 +25,19 @@
 
           helper.setTypeName(StateBindable.prototype, 'StateBindable');
 
+          StateBindable.prototype.listen = {
+            'syncStateChange model': function() {
+              return this.state.set({
+                syncState: this.model.syncState()
+              });
+            },
+            'syncStateChange collection': function() {
+              return this.state.set({
+                syncState: this.collection.syncState()
+              });
+            }
+          };
+
 
           /**
            * Initial state of UI, that passed to state model.
@@ -52,9 +65,14 @@
           StateBindable.prototype.stateBindings = null;
 
           StateBindable.prototype.initialize = function() {
+            var attrs, ref, ref1, syncState;
             helper.assertViewOrCollectionView(this);
             StateBindable.__super__.initialize.apply(this, arguments);
-            return this.state = new Chaplin.Model(_.result(this, 'initialState'));
+            attrs = _.result(this, 'initialState') || {};
+            syncState = ((ref = this.model) != null ? typeof ref.syncState === "function" ? ref.syncState() : void 0 : void 0) || ((ref1 = this.collection) != null ? typeof ref1.syncState === "function" ? ref1.syncState() : void 0 : void 0);
+            return this.state = new Chaplin.Model(_.defaults(attrs, {
+              syncState: syncState
+            }));
           };
 
           StateBindable.prototype.render = function() {
