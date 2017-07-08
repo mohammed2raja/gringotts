@@ -1,4 +1,6 @@
 define (require) ->
+  Chaplin = require 'chaplin'
+  utils = require 'lib/utils'
   Collection = require 'models/base/collection'
 
   ###*
@@ -14,9 +16,12 @@ define (require) ->
     fromObject: (obj, filterGroups) ->
       result = []
       _.forOwn obj, (filterIds, groupId) ->
-        filterGroup = filterGroups.findWhere id: groupId
-        filters = filterGroup.get 'children'
-          .filter (f) -> _.includes filterIds, f.id
+        return unless filterGroup = filterGroups.findWhere id: groupId
+        filterIds = [].concat filterIds
+        if children = filterGroup.get 'children'
+          filters = children.filter (f) -> _.includes filterIds, f.id
+        else
+          filters = _.map filterIds, (id) -> new Chaplin.Model {id, name: id}
         selection = filters.map (f) ->
           (selected = f.clone()).set {
             groupId
@@ -24,13 +29,16 @@ define (require) ->
           }
           selected
         result.push.apply result, selection
-      @add result
+      @set result
 
     ###*
      * Generates JSON object from all selected filters.
      * @return {Object}
     ###
-    toObject: ->
+    toObject: (opts={}) ->
+      _.defaults opts, compress: yes
       result = _(@toJSON()).groupBy 'groupId'
-        .mapValues (filters) -> _.map filters, 'id'
+        .mapValues (filters) ->
+          ids = _.map filters, 'id'
+          if opts.compress then utils.compress ids else ids
         .value()

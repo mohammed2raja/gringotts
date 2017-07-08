@@ -141,8 +141,8 @@ define (require) ->
     ###
     stripEmptyOrDefault: (query, opts={}) ->
       query = _.omit query, (value, key) =>
-        value is undefined or
-          (_.isEqual(@DEFAULTS[key], value) and !opts.inclDefaults)
+        value is undefined or (not opts.inclDefaults and \
+          _.isEqual utils.compress(@DEFAULTS[key]), utils.compress value)
 
     ###*
      * Saves all alien values (without prefixes) into a separete hash

@@ -276,3 +276,16 @@ define (require) ->
 
         it 'should return proper url', ->
           expect(result).to.equal 'some/url?e=f'
+
+    context 'compress', ->
+      context 'passing undefined', ->
+        it 'should return undefined', ->
+          expect(utils.compress undefined).to.be.undefined
+
+      context 'passing single element array', ->
+        it 'should return the element', ->
+          expect(utils.compress [5]).to.equal 5
+
+      context 'passing multiple elements array', ->
+        it 'should return the array', ->
+          expect(utils.compress [6, 7]).to.eql [6, 7]

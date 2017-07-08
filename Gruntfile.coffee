@@ -258,7 +258,6 @@ module.exports = (grunt) ->
       buildPath = grunt.option 'target'
       if buildPath
         grunt.log.writeln "Building gringotts into #{buildPath}..."
-        grunt.option 'env', 'prod'
         grunt.task.run [
           'build'
           'connect'

@@ -33,6 +33,7 @@ define (require) ->
           id: 'group1'
           name: 'Group One'
           description: 'One Description'
+          singular: yes
           children: new Chaplin.Collection [
             new Chaplin.Model id: 'gp1item1', name: 'G1 Item One'
             new Chaplin.Model id: 'gp1item2', name: 'G1 Item Two'
@@ -46,6 +47,10 @@ define (require) ->
             new Chaplin.Model id: 'gp2item1', name: 'G2 Item One'
             new Chaplin.Model id: 'gp2item2', name: 'G2 Item Two'
           ]
+        new Chaplin.Model
+          id: 'q'
+          name: 'Search'
+          description: 'A leaf group for action filters, like search'
       ]
       sandbox.stub _, 'debounce', (fn) -> fn
       view = new FilterInputView {
@@ -73,7 +78,7 @@ define (require) ->
       expect(view.$ '.dropdown').to.not.have.class 'open'
 
     it 'should not render group label', ->
-      expect(view.$ '.selected-group').to.have.text ''
+      expect(view.$ '.selected-group').to.be.empty
 
     it 'should render selected items', ->
       $selectedItems = view.$ '.selected-item'
@@ -83,6 +88,9 @@ define (require) ->
         $el = $ el
         expect($el.find '.item-group').to.have.text model.get 'groupName'
         expect($el.find '.item-name').to.have.text model.get 'name'
+
+    it 'should have remove all button visible', ->
+      expect(view.$ '.remove-all-button').to.be.visible
 
     context 'on selected item remove click', ->
       beforeEach ->
@@ -104,6 +112,9 @@ define (require) ->
       it 'should remove all items from control', ->
         expect(view.$ '.selected-item').to.not.exist
 
+      it 'should set remove all button hidden', ->
+        expect(view.$ '.remove-all-button').to.be.hidden
+
     expectInputFocused = ->
       it 'should have input focused', ->
         expect(view.$('input')[0] is document.activeElement).to.be.true
@@ -117,7 +128,7 @@ define (require) ->
         expect(view.$ '.dropdown-items').to.have.class 'hidden'
 
       it 'should have input empty', ->
-        expect(view.$ 'input').to.have.text ''
+        expect(view.$ 'input').to.be.empty
 
       it 'should add focus to the root element', ->
         expect(view.$el).to.have.class 'focus'
@@ -125,22 +136,27 @@ define (require) ->
     expectDefaultGroupsInDropdown = ->
       it 'should render groups dropdown', ->
         $groupItems = view.$ '.dropdown-groups a'
-        expect($groupItems).to.have.length 2
+        expect($groupItems).to.have.length 3
         $groupItems.each (i, el) ->
           model = groupSource.models[i]
           $el = $ el
           expect($el.find '.item-name').to.have.text model.get 'name'
+          expect($el.find '.item-name i').to.not.exist
           expect($el.find '.item-description').to
             .have.text model.get 'description'
+          expect($el.find '.item-note').to.be.empty
 
     expectEmptyDropdown = (dropdown) ->
       it "should render empty #{dropdown} dropdown", ->
-        view.$(".dropdown-#{dropdown} li.fade").each (i, el) ->
-          expect($ el).to.have.css 'display', 'none'
-        expect(view.$ ".dropdown-#{dropdown} li.empty").to.not
-          .have.css 'display', 'none'
-        expect(view.$ ".dropdown-#{dropdown} li.loading").to
-          .have.css 'display', 'none'
+        if dropdown is 'items'
+          view.$('.dropdown-items li.fade').each (i, el) ->
+            expect($ el).to.be.hidden
+          expect(view.$ '.dropdown-items li.empty').to.be.visible
+        else
+          visibleGroupItem = view.$('.dropdown-groups li.fade:visible')
+          expect(visibleGroupItem).to.have.length 1
+          expect(visibleGroupItem.find '.item-name').to.have.text 'Search'
+        expect(view.$ ".dropdown-#{dropdown} li.loading").to.be.hidden
 
     expectOpenItemsDropdown = ->
       it 'should show dropdown', ->
@@ -151,7 +167,7 @@ define (require) ->
         expect(view.$ '.dropdown-items').to.not.have.class 'hidden'
 
       it 'should have input empty', ->
-        expect(view.$ 'input').to.have.text ''
+        expect(view.$ 'input').to.be.empty
 
     expectDefaultItemsDropdown = ->
       it 'should render group label', ->
@@ -160,17 +176,20 @@ define (require) ->
       it 'should render items dropdown', ->
         $items = view.$ '.dropdown-items a'
         expect($items).to.have.length 2
-        expect($items.first().find '.item-name').to
-          .have.text 'G1 Item One'
-        expect($items.last().find '.item-name').to
-          .have.text 'G1 Item Three'
+        expect($items.first().find '.item-name').to.have.text 'G1 Item One'
+        expect($items.last().find '.item-name').to.have.text 'G1 Item Three'
 
     expectClosedDropdowns = ->
       it 'should hide dropdown', ->
         expect(view.$ '.dropdown').to.not.have.class 'open'
 
-      it 'should remove focus from the root element', ->
-        expect(view.$el).to.not.have.class 'focus'
+    expectFocusedState = (focused) ->
+      if focused
+        it 'should have root element with focus', ->
+          expect(view.$el).to.have.class 'focus'
+      else
+        it 'should have root element without focus', ->
+          expect(view.$el).to.not.have.class 'focus'
 
     expectItemSelected = (groupName, itemName) ->
       it 'should render the item in selection', ->
@@ -180,7 +199,7 @@ define (require) ->
 
     context 'on whitespace click', ->
       beforeEach ->
-        view.$el.click()
+        view.$('.filter-items-container').click()
 
       expectOpenGroupsDropdown()
 
@@ -190,6 +209,20 @@ define (require) ->
 
       expectOpenGroupsDropdown()
       expectDefaultGroupsInDropdown()
+
+      context 'on input esc', ->
+        beforeEach ->
+          view.$('input').focus().trigger $.Event 'keydown',
+            which: utils.keys.ESC
+
+        expectClosedDropdowns()
+        expectFocusedState yes
+
+        context 'on type text', ->
+          beforeEach ->
+            view.$('input').trigger $.Event 'keydown', which: 100
+
+          expectOpenGroupsDropdown()
 
       context 'on first group item click', ->
         beforeEach ->
@@ -203,9 +236,11 @@ define (require) ->
             view.$('.dropdown-items a').last().click()
 
           expectClosedDropdowns()
+          expectFocusedState no
           expectItemSelected 'Group One', 'G1 Item Three'
 
-          it 'should add item model into collection', ->
+          it 'should update collection', ->
+            expect(collection.where groupId: 'group1').to.have.length 1
             expect(collection.last().attributes).to.eql {
               groupId: 'group1'
               groupName: 'Group One'
@@ -213,14 +248,36 @@ define (require) ->
               name: 'G1 Item Three'
             }
 
-      context 'on last group item click', ->
+          context 'on input delete', ->
+            beforeEach ->
+              view.$('input').click().trigger $.Event 'keydown',
+                which: utils.keys.DELETE
+
+            it 'should remote item model from collection', ->
+              expect(collection.last().attributes).to.include {
+                id: 'gp2item2'
+                name: 'G2 Item Two'
+              }
+
+      context 'on second group item click', ->
         beforeEach ->
-          view.$('.dropdown-groups a').last().click()
+          view.$('.dropdown-groups a')[1].click()
 
         it 'should render group label', ->
           expect(view.$ '.selected-group').to.have.text 'Group Two'
 
         expectEmptyDropdown 'items'
+
+      context 'on search group item click', ->
+        beforeEach ->
+          view.$('input').val 'needle'
+          view.$('.dropdown-groups a').last().click()
+
+        it 'should not render group label', ->
+          expect(view.$ '.selected-group').to.be.empty
+
+        expectClosedDropdowns()
+        expectItemSelected 'Search', 'needle'
 
     context 'on input enter', ->
       beforeEach ->
@@ -235,19 +292,22 @@ define (require) ->
         beforeEach ->
           view.$('input').val(text).trigger $.Event 'keyup'
 
+        getVisibleItems = (dropdown) ->
+          items = view.$(".dropdown-#{dropdown} li.fade:visible")
+
         context 'existing group name', ->
           before ->
             text = 'one'
 
-          getVisibleItems = (dropdown) ->
-            items = _.filter view.$(".dropdown-#{dropdown} li.fade"), (el) ->
-              $(el).css('display') is 'list-item'
-
           it 'should filter groups dropdown', ->
             groupItems = getVisibleItems 'groups'
-            expect(groupItems).to.have.length 1
-            $first = $ _.first groupItems
-            expect($first.find '.item-name').to.have.text 'Group One'
+            expect(groupItems).to.have.length 2
+            group0 = $ groupItems[0]
+            group1 = $ groupItems[1]
+            expect(group0.find '.item-name').to.have.text 'Group One'
+            expect(group0.find '.item-name i').to.have.text 'One'
+            expect(group1.find '.item-name').to.have.text 'Search'
+            expect(group1.find '.item-note').to.have.text 'one'
 
           context 'on enter key press when 1 group in dropdown', ->
             beforeEach ->
@@ -267,8 +327,9 @@ define (require) ->
               it 'should filter items dropdown', ->
                 items = getVisibleItems 'items'
                 expect(items).to.have.length 1
-                $first = $ _.first items
-                expect($first.find '.item-name').to.have.text 'G1 Item Three'
+                item0 = $ items[0]
+                expect(item0.find '.item-name').to.have.text 'G1 Item Three'
+                expect(item0.find '.item-name i').to.have.text 'Thre'
 
               context 'on enter key press when 1 item in dropdown', ->
                 beforeEach ->
@@ -291,26 +352,35 @@ define (require) ->
                     which: utils.keys.ESC
 
                 it 'should clear selected group', ->
-                  expect(view.$ '.selected-group').to.have.text ''
+                  expect(view.$ '.selected-group').to.be.empty
 
                 expectOpenGroupsDropdown()
                 expectDefaultGroupsInDropdown()
                 expectInputFocused()
 
-          context 'random text', ->
-            before ->
-              text = 'asdfgh'
+        context 'random text', ->
+          before ->
+            text = 'asdfgh'
 
-            expectEmptyDropdown 'groups'
+          expectEmptyDropdown 'groups'
 
-            context 'on delete text', ->
-              beforeEach ->
-                view.$('input').val('').trigger $.Event 'keydown',
-                  which: utils.keys.DELETE
+          context 'on input enter', ->
+            beforeEach ->
+              view.$('input').focus().trigger $.Event 'keydown',
+                which: utils.keys.ENTER
 
-              expectOpenGroupsDropdown()
-              expectDefaultGroupsInDropdown()
-              expectInputFocused()
+            expectOpenGroupsDropdown()
+            expectDefaultGroupsInDropdown()
+            expectInputFocused()
+            expectItemSelected 'Search', 'asdfgh'
+
+          context 'on delete text', ->
+            beforeEach ->
+              view.$('input').val('').trigger $.Event 'keyup'
+
+            expectOpenGroupsDropdown()
+            expectDefaultGroupsInDropdown()
+            expectInputFocused()
 
       context 'on down key press', ->
         beforeEach ->
@@ -363,12 +433,18 @@ define (require) ->
 
         it 'should focus dropdown last item', ->
           $last = view.$('.dropdown-groups a').last()
-          expect($last.find '.item-name').to.have.text 'Group Two'
+          expect($last.find '.item-name').to.have.text 'Search'
           expect($last[0] is document.activeElement).to.be.true
 
       context 'on click elsewhere', ->
         beforeEach ->
+          view.$('input').val 'abc'
           $(document).trigger 'click.bs.dropdown.data-api'
+
+        expectClosedDropdowns()
 
         it 'should remove focus from the root element', ->
           expect(view.$el).to.not.have.class 'focus'
+
+        it 'should clear input', ->
+          expect(view.$ 'input').to.be.empty

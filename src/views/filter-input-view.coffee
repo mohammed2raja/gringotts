@@ -4,9 +4,15 @@ define (require) ->
   View = require 'views/base/view'
   CollectionView = require 'views/base/collection-view'
 
+  isLeaf = (model) ->
+    not model.get('children')?
+
   class DropdownItemView extends View
     template: 'filter-input/list-item'
     noWrap: true
+    render: ->
+      super
+      @$el.addClass('leaf') if isLeaf @model
 
   class DropdownView extends CollectionView
     itemView: DropdownItemView
@@ -19,11 +25,16 @@ define (require) ->
   class FilterInputView extends CollectionView
     optionNames: @::optionNames.concat ['groupSource']
     template: 'filter-input/view'
-    className: 'filter-input form-control'
+    className: 'form-control filter-input'
+    listSelector: '.filter-items-container'
     loadingSelector: ".list-item#{@::loadingSelector}"
     fallbackSelector: null # no selected items is a default state
     errorSelector: ".list-item#{@::errorSelector}"
     itemView: FilterInputItemView
+    listen:
+      'add collection': -> @updateButtonsState()
+      'remove collection': -> @updateButtonsState()
+      'reset collection': -> @updateButtonsState()
     events:
       'click': (e) -> @onWhitespaceClick e
       'click .remove-button': (e) -> @onItemRemoveClick e
@@ -35,6 +46,7 @@ define (require) ->
       'blur input': (e) -> @onInputBlur e
       'click .dropdown-groups li': (e) -> @onDropdownGroupItemClick e
       'click .dropdown-items li': (e) -> @onDropdownItemClick e
+      'keydown .dropdown-groups': (e) -> @onDropdownGroupItemKeypress e
       'keydown .dropdown-items': (e) -> @onDropdownItemKeypress e
       'show.bs.dropdown .dropdown': (e) -> @onDropdownShow e
       'hide.bs.dropdown .dropdown': (e) -> @onDropdownHide e
@@ -42,12 +54,12 @@ define (require) ->
 
     initialize: (options={}) ->
       super
-      @$el.addClass @className
+      @$el.removeClass(cl = @$el.attr 'class').addClass "#{@className} #{cl}"
       @placeholder = @$el.data('placeholder') or options.placeholder
       @disabled = @$el.data('disabled')? or options.disabled
       @groupSource ?= new Chaplin.Collection()
       @itemSource ?= new Chaplin.Collection()
-      @filterDebounced = _.debounce @filterDropdownItems, 300
+      @filterDebounced = _.debounce @filterDropdownItems, 100
 
     getTemplateData: ->
       {
@@ -70,10 +82,14 @@ define (require) ->
         el: @$ '.dropdown-items'
         collection: @itemSource
       }
+      @updateButtonsState()
+
+    updateButtonsState: ->
+      @$('.remove-all-button').toggle @collection.length > 0
 
     onWhitespaceClick: (e) ->
       $target = $ e.target
-      if $target.hasClass('form-control') or
+      if $target.hasClass('filter-items-container') or
           $target.hasClass('dropdown-control')
         e.stopPropagation()
         @openDropdowns()
@@ -88,6 +104,7 @@ define (require) ->
       # keep opened dropdown visibile on second click
       e.stopPropagation() if @$('.dropdown').hasClass 'open'
 
+    # coffeelint: disable=cyclomatic_complexity
     onInputKeydown: (e) ->
       if e.which is utils.keys.UP
         e.preventDefault()
@@ -97,17 +114,27 @@ define (require) ->
         @visibleListItems().first().focus()
       else if e.which is utils.keys.ENTER
         e.preventDefault()
-        if (items = @visibleListItems()).length is 1
+        if @query() isnt '' and item = _.first @visibleListItems()
           @continue = true
-          items[0].click()
+          item.click()
         else
           @openDropdowns()
+      else if not @selectedGroup and e.which is utils.keys.ESC
+        e.preventDefault()
+        @closeDropdowns()
+      else if not @selectedGroup and @query() is '' and
+          e.which is utils.keys.DELETE
+        e.preventDefault()
+        @collection.pop()
       else if @selectedGroup and
           (e.which is utils.keys.ESC or
-            (@$('input').val() is '' and e.which is utils.keys.DELETE))
+            (@query() is '' and e.which is utils.keys.DELETE))
         e.preventDefault()
         @setSelectedGroup undefined
         @activateDropdown 'groups'
+      else if /[\w\s]/.test String.fromCharCode e.which
+        @openDropdowns()
+    # coffeelint: enable=cyclomatic_complexity
 
     onInputKeyup: (e) ->
       @filterDebounced()
@@ -116,17 +143,25 @@ define (require) ->
       @$el.addClass 'focus'
 
     onInputBlur: (e) ->
-      @$el.removeClass 'focus' unless @$('.dropdown').hasClass 'open'
+      unless @$('.dropdown').hasClass 'open'
+        @$el.removeClass 'focus'
+        @resetInput()
 
     onDropdownGroupItemClick: (e) ->
       e.preventDefault()
       group = _.first @subview('dropdown-groups').modelsFrom e.currentTarget
-      @setSelectedGroup group
+      unless isLeaf group
+        @setSelectedGroup group
+      else if query = @query()
+        @addSelectedItem group, new Chaplin.Model id: query, name: query
 
     onDropdownItemClick: (e) ->
       e.preventDefault()
       item = _.first @subview('dropdown-items').modelsFrom e.currentTarget
-      @addSelectedItem item
+      @addSelectedItem @selectedGroup, item
+
+    onDropdownGroupItemKeypress: (e) ->
+      @continue = true if e.which in [utils.keys.ENTER]
 
     onDropdownItemKeypress: (e) ->
       @continue = true if e.which in [utils.keys.ENTER, utils.keys.ESC]
@@ -148,19 +183,23 @@ define (require) ->
       if @selectedGroup
         @activateDropdown 'items'
         @openDropdowns()
-        @$('input').focus()
+      else
+        @maybeContinue()
 
     onItemsDropdownHidden: ->
       @setSelectedGroup undefined
       @activateDropdown 'groups'
-      if @continue
-        @openDropdowns()
-        @$('input').focus()
-        delete @continue
+      @maybeContinue()
+
+    query: ->
+      @$('input').val()
 
     openDropdowns: ->
       @$('.dropdown').addClass 'open'
-      @$el.addClass 'focus'
+      @$('input').focus()
+
+    closeDropdowns: ->
+      @$('.dropdown').removeClass 'open'
 
     visibleListItems: ->
       @$('.dropdown-menu:not(.hidden) a:visible')
@@ -182,16 +221,23 @@ define (require) ->
 
     groupItems: (group) ->
       return [] unless group
-      _.filter group.get('children').models, (listItem) =>
-        not _.any @collection.models, (item) -> item.id is listItem.id
+      group.get('children').filter (groupItem) =>
+        not @collection.any (item) -> item.id is groupItem.id
 
-    addSelectedItem: (item) ->
-      return unless item and @selectedGroup
+    addSelectedItem: (group, item) ->
+      return unless item and group
       selectedItem = item.clone()
       selectedItem.set
-        groupId: @selectedGroup.get 'id'
-        groupName: @selectedGroup.get 'name'
+        groupId: group.id
+        groupName: group.get 'name'
+      if group.get 'singular'
+        @collection.remove @collection.filter groupId: group.id
       @collection.add selectedItem
+
+    maybeContinue: ->
+      return unless @continue
+      @openDropdowns()
+      delete @continue
 
     resetInput: ->
       @$('input').val ''
@@ -199,14 +245,21 @@ define (require) ->
 
     filterDropdownItems: ->
       return if @disposed
-      if query = @$('input').val()
-        regexp = new RegExp query, 'gi'
-        filter = (item) -> regexp.test item.get 'name'
+      inGroups = @activeDropdown() is 'groups'
+      if query = @query()
+        regexp = try new RegExp query, 'i'
+        filter = (item) -> # always show all group leafs
+          (inGroups and isLeaf item) or regexp?.test item.get 'name'
       else
         filter = null
-      if @previousQuery isnt query
+      if (@previousQuery or '') isnt query
         dropdown = @subview "dropdown-#{@activeDropdown()}"
         dropdown.filter filter
+        names = 'li' + (if inGroups then ':not(.leaf)' else '') + ' .item-name'
+        dropdown.find(names).each (i, el) ->
+          ($el = $ el).html $el.text().replace regexp, '<i>$&</i>'
+        if inGroups
+          dropdown.find('li.leaf .item-note').each (i, el) -> $(el).text query
         dropdown.toggleFallback()
         @previousQuery = query
 
