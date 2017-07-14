@@ -20,8 +20,7 @@
     "node": ">=5.0"
   },
   "scripts": {
-    "grunt": "grunt",
-    "bower": "bower",
+    "start": "grunt",
     "test": "grunt test-ci"
   },
   "dependencies": {

@@ -3,8 +3,7 @@ define (require) ->
   StringTemplatable = require 'mixins/views/string-templatable'
 
   class ViewMock extends StringTemplatable Chaplin.View
-    template: 'VERSION'
-    templatePath: 'backbone'
+    template: 'string-templatable-test'
 
   describe 'StringTemplatable', ->
     view = null
@@ -12,18 +11,17 @@ define (require) ->
 
     beforeEach ->
       view = new ViewMock()
-      sinon.spy view, 'getTemplateFunction'
       template = view.getTemplateFunction()
 
     afterEach ->
       view.dispose()
 
-    it 'returns the template', ->
-      expect(template).to.equal Backbone.VERSION
+    it 'returns the template function', ->
+      expect(template()).to.include '<h1>Foo</h1>'
 
     describe 'with bad path', ->
       beforeEach ->
-        view.template = 'a'
+        view.template = 'a-non-existent-template'
 
       it 'throws an error', ->
         try
@@ -31,4 +29,4 @@ define (require) ->
         catch error
           message = error.message
 
-        expect(message).to.contain 'backbone/a'
+        expect(message).to.contain 'a-non-existent-template'

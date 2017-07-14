@@ -6,16 +6,12 @@ define (require) ->
   #
   # It assumes that there is a `views/templates` module object
   # with the string as keys and templates as values.
-  #
-  # You can override the template path by passing in `templatePath`
-  # in the options.
   (superclass) -> helper.apply superclass, (superclass) -> \
 
   class StringTemplatable extends superclass
     helper.setTypeName @prototype, 'StringTemplatable'
 
     optionNames: @::optionNames?.concat ['template']
-    templatePath: 'templates'
 
     initialize: ->
       helper.assertViewOrCollectionView this
@@ -24,8 +20,7 @@ define (require) ->
     # Precompiled templates function initializer.
     getTemplateFunction: ->
       if @template
-        if template = require(@templatePath)[@template]
+        if template = require('templates')[@template]
           template
         else
-          throw new Error "The template file #{@templatePath}/#{@template}
-            doesn't exist."
+          throw new Error "The template file #{@template} doesn't exist."

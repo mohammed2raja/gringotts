@@ -23,7 +23,6 @@ define (require) ->
     itemView: ItemViewMock
     listSelector: 'tbody'
     template: 'paginating-test'
-    templatePath: 'test/templates'
 
   describe 'Paginating mixin', ->
     sandbox = null

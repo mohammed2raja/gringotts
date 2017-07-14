@@ -9,7 +9,6 @@ define (require) ->
   class ViewMock extends StateBindable StringTemplatable Chaplin.View
     autoRender: yes
     template: 'state-bindable-test'
-    templatePath: 'test/templates'
 
   initialState = isDisabled: yes
 
