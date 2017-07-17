@@ -4,7 +4,7 @@ define (require) ->
   ErrorHandled = require 'mixins/models/error-handled'
   ActiveSyncMachine = require 'mixins/models/active-sync-machine'
   ProgressDialogView = require 'views/progress-dialog-view'
-  templates = require 'test/templates'
+  templates = require 'templates'
 
   class ModelMock extends ActiveSyncMachine ErrorHandled Chaplin.Model
 

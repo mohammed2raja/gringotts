@@ -17,7 +17,6 @@ define (require) ->
   class ViewMock extends Validating StringTemplatable Chaplin.View
     autoRender: yes
     template: 'validating-test'
-    templatePath: 'test/templates'
     bindings:
       '[name="name"]': 'name'
       '[name="email"]': 'email'

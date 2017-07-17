@@ -5,7 +5,6 @@ define (require) ->
 
   class MockModal extends ModalView
     template: 'modal-test'
-    templatePath: 'test/templates'
 
   describe 'ModalView', ->
     sandbox = null

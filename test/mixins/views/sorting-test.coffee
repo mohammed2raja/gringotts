@@ -21,7 +21,6 @@ define (require) ->
     itemView: ItemViewMock
     listSelector: 'tbody'
     template: 'sorting-test'
-    templatePath: 'test/templates'
     sortableTableHeaders:
       attr_a: 'Attribute A'
       attr_b: 'Attribute B'

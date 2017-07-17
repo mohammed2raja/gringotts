@@ -31,27 +31,31 @@ module.exports = (grunt) ->
         ext: '.js'
 
     handlebars:
-      compile_test:
+      prod:
         options:
           amd: yes
           namespace: 'Handlebars'
           processName: (file) ->
-            file.replace('.hbs', '')
-                .replace('test/templates/', '')
-        files:
-          'public/src/test/templates.js': [
-            'test/templates/**/*.hbs'
-          ]
-      compile:
-        options:
-          amd: yes
-          namespace: 'Handlebars'
-          processName: (file) ->
-            file.replace('src/templates/', '')
-                .replace('.hbs', '')
+            file
+              .replace('src/templates/', '')
+              .replace('.hbs', '')
         files:
           'public/src/templates.js': [
             'src/templates/**/*.hbs'
+          ]
+      dev:
+        options:
+          amd: yes
+          namespace: 'Handlebars'
+          processName: (file) ->
+            file
+              .replace('src/templates/', '')
+              .replace('test/templates/', '')
+              .replace('.hbs', '')
+        files:
+          'public/src/templates.js': [
+            'src/templates/**/*.hbs'
+            'test/templates/**/*.hbs'
           ]
 
     copy:
@@ -165,9 +169,9 @@ module.exports = (grunt) ->
             .writeln("Compiled in #{time}ms @ #{(new Date).toString()} 💪\n")
 
       coffee_hbs:
-        files: ['{src,test}/**/*.coffee', 'src/templates/**/*.hbs']
+        files: ['{src,test}/**/*.coffee', '{src,test}/templates/**/*.hbs']
         tasks: [
-          'newer:handlebars'
+          'newer:handlebars:dev'
           'newer:coffee'
           'force:newer:coffeelint'
           'force:htmllint'
@@ -206,7 +210,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'release', 'Create release branch', (version='') ->
     version = ":#{version}" if version
+    grunt.option 'env', 'prod'
     grunt.task.run [
+      'build'
       "bump-only#{version}"
       'shell:copy-package'
       'gh-pages:release'
@@ -214,11 +220,12 @@ module.exports = (grunt) ->
       'shell:publish'
     ]
 
-  grunt.registerTask 'compile', [
-    'handlebars'
-    'coffee'
-    'shell:specs'
-  ]
+  grunt.registerTask 'compile', ->
+    grunt.task.run [
+      "handlebars:#{grunt.option('env') || 'dev'}"
+      'coffee'
+      'shell:specs'
+    ]
 
   grunt.registerTask 'htmllint', [
     'verbosity'
@@ -251,6 +258,7 @@ module.exports = (grunt) ->
       buildPath = grunt.option 'target'
       if buildPath
         grunt.log.writeln "Building gringotts into #{buildPath}..."
+        grunt.option 'env', 'prod'
         grunt.task.run [
           'build'
           'connect'
