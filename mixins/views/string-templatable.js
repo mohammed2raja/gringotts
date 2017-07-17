@@ -21,8 +21,6 @@
 
           StringTemplatable.prototype.optionNames = (ref = StringTemplatable.prototype.optionNames) != null ? ref.concat(['template']) : void 0;
 
-          StringTemplatable.prototype.templatePath = 'templates';
-
           StringTemplatable.prototype.initialize = function() {
             helper.assertViewOrCollectionView(this);
             return StringTemplatable.__super__.initialize.apply(this, arguments);
@@ -31,10 +29,10 @@
           StringTemplatable.prototype.getTemplateFunction = function() {
             var template;
             if (this.template) {
-              if (template = require(this.templatePath)[this.template]) {
+              if (template = require('templates')[this.template]) {
                 return template;
               } else {
-                throw new Error("The template file " + this.templatePath + "/" + this.template + " doesn't exist.");
+                throw new Error("The template file " + this.template + " doesn't exist.");
               }
             }
           };
