@@ -86,7 +86,7 @@ define (require) ->
 
       beforeEach ->
         collection.ignoreKeys = ['coo']
-        difference = collection.setQuery foo: 1, boo: 'goo', coo: 'hoo'
+        difference = collection.setQuery foo: 1, boo: ['goo'], coo: 'hoo'
         collection.fetch()
         sandbox.server.respond()
 
@@ -104,7 +104,7 @@ define (require) ->
 
       context 'setting the same query again', ->
         beforeEach ->
-          difference = collection.setQuery boo: 'goo', foo: 1, coo: 'hoo'
+          difference = collection.setQuery boo: ['goo'], foo: 1, coo: 'hoo'
 
         it 'should return null difference for setQuery call', ->
           expect(difference).to.be.null

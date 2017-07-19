@@ -152,3 +152,10 @@ define (require) ->
         , url
       else if _.isString params
         @excludeUrlParam url, params
+
+    ###*
+    * If obj is a single element array, the element is returned. Otherwise the
+    * obj itself will be returned.
+    ###
+    compress: (obj) ->
+      if _.isArray(obj) and obj.length is 1 then obj[0] else obj

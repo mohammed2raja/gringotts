@@ -2,10 +2,37 @@ define (require) ->
   Chaplin = require 'chaplin'
   FilterSelection = require 'models/filter-selection'
 
+  filterGroups = new Chaplin.Collection [
+    new Chaplin.Model
+      id: 'alphabet'
+      name: 'A-Z'
+      children: new Chaplin.Collection [
+        new Chaplin.Model id: 'filterA'
+        new Chaplin.Model id: 'filterB'
+        new Chaplin.Model id: 'filterC'
+      ]
+    new Chaplin.Model
+      id: 'digits'
+      name: '0-9'
+      children: new Chaplin.Collection [
+        new Chaplin.Model id: 'filter1'
+        new Chaplin.Model id: 'filter2'
+        new Chaplin.Model id: 'filter3'
+      ]
+    new Chaplin.Model
+      id: 'random'
+      name: '$$$'
+      children: new Chaplin.Collection [
+        new Chaplin.Model id: '###'
+        new Chaplin.Model id: '&&&'
+      ]
+  ]
+
   filtersObj =
     alphabet: ['filterA', 'filterB']
     digits: ['filter1', 'filter2']
-    random: ['###']
+    missing: 'value'
+    random: '###'
 
   describe 'FilterSelection', ->
     collection = null
@@ -18,31 +45,6 @@ define (require) ->
 
     context 'fromObject', ->
       beforeEach ->
-        filterGroups = new Chaplin.Collection [
-          new Chaplin.Model
-            id: 'alphabet'
-            name: 'A-Z'
-            children: new Chaplin.Collection [
-              new Chaplin.Model id: 'filterA'
-              new Chaplin.Model id: 'filterB'
-              new Chaplin.Model id: 'filterC'
-            ]
-          new Chaplin.Model
-            id: 'digits'
-            name: '0-9'
-            children: new Chaplin.Collection [
-              new Chaplin.Model id: 'filter1'
-              new Chaplin.Model id: 'filter2'
-              new Chaplin.Model id: 'filter3'
-            ]
-          new Chaplin.Model
-            id: 'random'
-            name: '$$$'
-            children: new Chaplin.Collection [
-              new Chaplin.Model id: '###'
-              new Chaplin.Model id: '&&&'
-            ]
-        ]
         collection.fromObject filtersObj, filterGroups
 
       it 'should exact number of filter items into selection', ->
@@ -59,7 +61,9 @@ define (require) ->
           id: 'filter2'
           groupId: 'digits'
           groupName: '0-9'
-        filterHm =collection.findWhere id: '###'
+        filterVal = collection.findWhere id: 'value'
+        expect(filterVal).to.be.undefined
+        filterHm = collection.findWhere id: '###'
         expect(filterHm.attributes).to.eql
           id: '###'
           groupId: 'random'
@@ -67,6 +71,8 @@ define (require) ->
 
     context 'toObject', ->
       obj = null
+      opts = null
+      expectObj = null
 
       beforeEach ->
         collection.add [
@@ -86,7 +92,15 @@ define (require) ->
             id: '###'
             groupId: 'random'
         ]
-        obj = collection.toObject()
+        obj = collection.toObject opts
+        expectObj = _(filtersObj).omit('missing').value()
 
       it 'should generate proper object', ->
-        expect(obj).to.eql filtersObj
+        expect(obj).to.eql expectObj
+
+      context 'with custom options', ->
+        before ->
+          opts = compress: no
+
+        it 'should generate proper object', ->
+          expect(obj).to.eql _.extend {}, expectObj, random: ['###']
