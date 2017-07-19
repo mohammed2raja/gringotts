@@ -3,11 +3,14 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, DropdownItemView, DropdownView, FilterInputItemView, FilterInputView, View, utils;
+    var Chaplin, CollectionView, DropdownItemView, DropdownView, FilterInputItemView, FilterInputView, View, isLeaf, utils;
     Chaplin = require('chaplin');
     utils = require('lib/utils');
     View = require('views/base/view');
     CollectionView = require('views/base/collection-view');
+    isLeaf = function(model) {
+      return model.get('children') == null;
+    };
     DropdownItemView = (function(superClass) {
       extend(DropdownItemView, superClass);
 
@@ -18,6 +21,13 @@
       DropdownItemView.prototype.template = 'filter-input/list-item';
 
       DropdownItemView.prototype.noWrap = true;
+
+      DropdownItemView.prototype.render = function() {
+        DropdownItemView.__super__.render.apply(this, arguments);
+        if (isLeaf(this.model)) {
+          return this.$el.addClass('leaf');
+        }
+      };
 
       return DropdownItemView;
 
@@ -61,7 +71,9 @@
 
       FilterInputView.prototype.template = 'filter-input/view';
 
-      FilterInputView.prototype.className = 'filter-input form-control';
+      FilterInputView.prototype.className = 'form-control filter-input';
+
+      FilterInputView.prototype.listSelector = '.filter-items-container';
 
       FilterInputView.prototype.loadingSelector = ".list-item" + FilterInputView.prototype.loadingSelector;
 
@@ -70,6 +82,18 @@
       FilterInputView.prototype.errorSelector = ".list-item" + FilterInputView.prototype.errorSelector;
 
       FilterInputView.prototype.itemView = FilterInputItemView;
+
+      FilterInputView.prototype.listen = {
+        'add collection': function() {
+          return this.updateButtonsState();
+        },
+        'remove collection': function() {
+          return this.updateButtonsState();
+        },
+        'reset collection': function() {
+          return this.updateButtonsState();
+        }
+      };
 
       FilterInputView.prototype.events = {
         'click': function(e) {
@@ -102,6 +126,9 @@
         'click .dropdown-items li': function(e) {
           return this.onDropdownItemClick(e);
         },
+        'keydown .dropdown-groups': function(e) {
+          return this.onDropdownGroupItemKeypress(e);
+        },
         'keydown .dropdown-items': function(e) {
           return this.onDropdownItemKeypress(e);
         },
@@ -117,11 +144,12 @@
       };
 
       FilterInputView.prototype.initialize = function(options) {
+        var cl;
         if (options == null) {
           options = {};
         }
         FilterInputView.__super__.initialize.apply(this, arguments);
-        this.$el.addClass(this.className);
+        this.$el.removeClass(cl = this.$el.attr('class')).addClass(this.className + " " + cl);
         this.placeholder = this.$el.data('placeholder') || options.placeholder;
         this.disabled = (this.$el.data('disabled') != null) || options.disabled;
         if (this.groupSource == null) {
@@ -130,7 +158,7 @@
         if (this.itemSource == null) {
           this.itemSource = new Chaplin.Collection();
         }
-        return this.filterDebounced = _.debounce(this.filterDropdownItems, 300);
+        return this.filterDebounced = _.debounce(this.filterDropdownItems, 100);
       };
 
       FilterInputView.prototype.getTemplateData = function() {
@@ -149,16 +177,21 @@
           el: this.$('.dropdown-groups'),
           collection: this.groupSource
         }));
-        return this.subview('dropdown-items', new DropdownView({
+        this.subview('dropdown-items', new DropdownView({
           el: this.$('.dropdown-items'),
           collection: this.itemSource
         }));
+        return this.updateButtonsState();
+      };
+
+      FilterInputView.prototype.updateButtonsState = function() {
+        return this.$('.remove-all-button').toggle(this.collection.length > 0);
       };
 
       FilterInputView.prototype.onWhitespaceClick = function(e) {
         var $target;
         $target = $(e.target);
-        if ($target.hasClass('form-control') || $target.hasClass('dropdown-control')) {
+        if ($target.hasClass('filter-items-container') || $target.hasClass('dropdown-control')) {
           e.stopPropagation();
           return this.openDropdowns();
         }
@@ -179,7 +212,7 @@
       };
 
       FilterInputView.prototype.onInputKeydown = function(e) {
-        var items;
+        var item;
         if (e.which === utils.keys.UP) {
           e.preventDefault();
           return this.visibleListItems().last().focus();
@@ -188,16 +221,24 @@
           return this.visibleListItems().first().focus();
         } else if (e.which === utils.keys.ENTER) {
           e.preventDefault();
-          if ((items = this.visibleListItems()).length === 1) {
+          if (this.query() !== '' && (item = _.first(this.visibleListItems()))) {
             this["continue"] = true;
-            return items[0].click();
+            return item.click();
           } else {
             return this.openDropdowns();
           }
-        } else if (this.selectedGroup && (e.which === utils.keys.ESC || (this.$('input').val() === '' && e.which === utils.keys.DELETE))) {
+        } else if (!this.selectedGroup && e.which === utils.keys.ESC) {
+          e.preventDefault();
+          return this.closeDropdowns();
+        } else if (!this.selectedGroup && this.query() === '' && e.which === utils.keys.DELETE) {
+          e.preventDefault();
+          return this.collection.pop();
+        } else if (this.selectedGroup && (e.which === utils.keys.ESC || (this.query() === '' && e.which === utils.keys.DELETE))) {
           e.preventDefault();
           this.setSelectedGroup(void 0);
           return this.activateDropdown('groups');
+        } else if (/[\w\s]/.test(String.fromCharCode(e.which))) {
+          return this.openDropdowns();
         }
       };
 
@@ -211,22 +252,37 @@
 
       FilterInputView.prototype.onInputBlur = function(e) {
         if (!this.$('.dropdown').hasClass('open')) {
-          return this.$el.removeClass('focus');
+          this.$el.removeClass('focus');
+          return this.resetInput();
         }
       };
 
       FilterInputView.prototype.onDropdownGroupItemClick = function(e) {
-        var group;
+        var group, query;
         e.preventDefault();
         group = _.first(this.subview('dropdown-groups').modelsFrom(e.currentTarget));
-        return this.setSelectedGroup(group);
+        if (!isLeaf(group)) {
+          return this.setSelectedGroup(group);
+        } else if (query = this.query()) {
+          return this.addSelectedItem(group, new Chaplin.Model({
+            id: query,
+            name: query
+          }));
+        }
       };
 
       FilterInputView.prototype.onDropdownItemClick = function(e) {
         var item;
         e.preventDefault();
         item = _.first(this.subview('dropdown-items').modelsFrom(e.currentTarget));
-        return this.addSelectedItem(item);
+        return this.addSelectedItem(this.selectedGroup, item);
+      };
+
+      FilterInputView.prototype.onDropdownGroupItemKeypress = function(e) {
+        var ref;
+        if ((ref = e.which) === utils.keys.ENTER) {
+          return this["continue"] = true;
+        }
       };
 
       FilterInputView.prototype.onDropdownItemKeypress = function(e) {
@@ -256,24 +312,29 @@
       FilterInputView.prototype.onGroupsDropdownHidden = function() {
         if (this.selectedGroup) {
           this.activateDropdown('items');
-          this.openDropdowns();
-          return this.$('input').focus();
+          return this.openDropdowns();
+        } else {
+          return this.maybeContinue();
         }
       };
 
       FilterInputView.prototype.onItemsDropdownHidden = function() {
         this.setSelectedGroup(void 0);
         this.activateDropdown('groups');
-        if (this["continue"]) {
-          this.openDropdowns();
-          this.$('input').focus();
-          return delete this["continue"];
-        }
+        return this.maybeContinue();
+      };
+
+      FilterInputView.prototype.query = function() {
+        return this.$('input').val();
       };
 
       FilterInputView.prototype.openDropdowns = function() {
         this.$('.dropdown').addClass('open');
-        return this.$el.addClass('focus');
+        return this.$('input').focus();
+      };
+
+      FilterInputView.prototype.closeDropdowns = function() {
+        return this.$('.dropdown').removeClass('open');
       };
 
       FilterInputView.prototype.visibleListItems = function() {
@@ -307,26 +368,39 @@
         if (!group) {
           return [];
         }
-        return _.filter(group.get('children').models, (function(_this) {
-          return function(listItem) {
-            return !_.any(_this.collection.models, function(item) {
-              return item.id === listItem.id;
+        return group.get('children').filter((function(_this) {
+          return function(groupItem) {
+            return !_this.collection.any(function(item) {
+              return item.id === groupItem.id;
             });
           };
         })(this));
       };
 
-      FilterInputView.prototype.addSelectedItem = function(item) {
+      FilterInputView.prototype.addSelectedItem = function(group, item) {
         var selectedItem;
-        if (!(item && this.selectedGroup)) {
+        if (!(item && group)) {
           return;
         }
         selectedItem = item.clone();
         selectedItem.set({
-          groupId: this.selectedGroup.get('id'),
-          groupName: this.selectedGroup.get('name')
+          groupId: group.id,
+          groupName: group.get('name')
         });
+        if (group.get('singular')) {
+          this.collection.remove(this.collection.filter({
+            groupId: group.id
+          }));
+        }
         return this.collection.add(selectedItem);
+      };
+
+      FilterInputView.prototype.maybeContinue = function() {
+        if (!this["continue"]) {
+          return;
+        }
+        this.openDropdowns();
+        return delete this["continue"];
       };
 
       FilterInputView.prototype.resetInput = function() {
@@ -335,21 +409,36 @@
       };
 
       FilterInputView.prototype.filterDropdownItems = function() {
-        var dropdown, filter, query, regexp;
+        var dropdown, filter, inGroups, names, query, regexp;
         if (this.disposed) {
           return;
         }
-        if (query = this.$('input').val()) {
-          regexp = new RegExp(query, 'gi');
+        inGroups = this.activeDropdown() === 'groups';
+        if (query = this.query()) {
+          regexp = (function() {
+            try {
+              return new RegExp(query, 'i');
+            } catch (undefined) {}
+          })();
           filter = function(item) {
-            return regexp.test(item.get('name'));
+            return (inGroups && isLeaf(item)) || (regexp != null ? regexp.test(item.get('name')) : void 0);
           };
         } else {
           filter = null;
         }
-        if (this.previousQuery !== query) {
+        if ((this.previousQuery || '') !== query) {
           dropdown = this.subview("dropdown-" + (this.activeDropdown()));
           dropdown.filter(filter);
+          names = 'li' + (inGroups ? ':not(.leaf)' : '') + ' .item-name';
+          dropdown.find(names).each(function(i, el) {
+            var $el;
+            return ($el = $(el)).html($el.text().replace(regexp, '<i>$&</i>'));
+          });
+          if (inGroups) {
+            dropdown.find('li.leaf .item-note').each(function(i, el) {
+              return $(el).text(query);
+            });
+          }
           dropdown.toggleFallback();
           return this.previousQuery = query;
         }

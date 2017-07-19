@@ -3,7 +3,9 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Collection, FilterSelection;
+    var Chaplin, Collection, FilterSelection, utils;
+    Chaplin = require('chaplin');
+    utils = require('lib/utils');
     Collection = require('models/base/collection');
 
     /**
@@ -28,13 +30,25 @@
         var result;
         result = [];
         _.forOwn(obj, function(filterIds, groupId) {
-          var filterGroup, filters, selection;
-          filterGroup = filterGroups.findWhere({
+          var children, filterGroup, filters, selection;
+          if (!(filterGroup = filterGroups.findWhere({
             id: groupId
-          });
-          filters = filterGroup.get('children').filter(function(f) {
-            return _.includes(filterIds, f.id);
-          });
+          }))) {
+            return;
+          }
+          filterIds = [].concat(filterIds);
+          if (children = filterGroup.get('children')) {
+            filters = children.filter(function(f) {
+              return _.includes(filterIds, f.id);
+            });
+          } else {
+            filters = _.map(filterIds, function(id) {
+              return new Chaplin.Model({
+                id: id,
+                name: id
+              });
+            });
+          }
           selection = filters.map(function(f) {
             var selected;
             (selected = f.clone()).set({
@@ -45,7 +59,7 @@
           });
           return result.push.apply(result, selection);
         });
-        return this.add(result);
+        return this.set(result);
       };
 
 
@@ -54,10 +68,22 @@
        * @return {Object}
        */
 
-      FilterSelection.prototype.toObject = function() {
+      FilterSelection.prototype.toObject = function(opts) {
         var result;
+        if (opts == null) {
+          opts = {};
+        }
+        _.defaults(opts, {
+          compress: true
+        });
         return result = _(this.toJSON()).groupBy('groupId').mapValues(function(filters) {
-          return _.map(filters, 'id');
+          var ids;
+          ids = _.map(filters, 'id');
+          if (opts.compress) {
+            return utils.compress(ids);
+          } else {
+            return ids;
+          }
         }).value();
       };
 

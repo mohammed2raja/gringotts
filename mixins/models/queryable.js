@@ -210,7 +210,7 @@
             }
             return query = _.omit(query, (function(_this) {
               return function(value, key) {
-                return value === void 0 || (_.isEqual(_this.DEFAULTS[key], value) && !opts.inclDefaults);
+                return value === void 0 || (!opts.inclDefaults && _.isEqual(utils.compress(_this.DEFAULTS[key]), utils.compress(value)));
               };
             })(this));
           };

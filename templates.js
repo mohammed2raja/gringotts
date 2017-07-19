@@ -101,15 +101,17 @@ this["Handlebars"]["filter-input/item"] = Handlebars.template({"compiler":[7,">=
     + alias4(((helper = (helper = helpers.groupName || (depth0 != null ? depth0.groupName : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"groupName","hash":{},"data":data}) : helper)))
     + "</span>&nbsp;<span class=\"item-name\">"
     + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</span>\n  <button type=\"button\" class=\"close remove-button\">&times;</button>\n</span>\n";
+    + "</span>\n  <button type=\"button\" class=\"btn btn-link remove-button\">\n    "
+    + alias4((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"misc-x",{"name":"icon","hash":{},"data":data}))
+    + "\n  </button>\n</span>\n";
 },"useData":true});
 
 this["Handlebars"]["filter-input/list-item"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<li>\n  <a href=\"#\">\n    <div class=\"item-name\">"
+  return "<li>\n  <a href=\"#\">\n    <div>\n      <span class=\"item-name\">"
     + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</div>\n    <div class=\"sub-text item-description\">"
+    + "</span>\n      <span class=\"item-note\"></span>\n    </div>\n    <div class=\"sub-text item-description\">"
     + alias4(((helper = (helper = helpers.description || (depth0 != null ? depth0.description : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"description","hash":{},"data":data}) : helper)))
     + "</div>\n  </a>\n</li>\n";
 },"useData":true});
@@ -117,29 +119,32 @@ this["Handlebars"]["filter-input/list-item"] = Handlebars.template({"compiler":[
 this["Handlebars"]["filter-input/view"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "disabled";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3=container.escapeExpression, alias4="function";
 
-  return "<span class=\"list-item loading\" style=\"display: none\">"
-    + alias4(((helper = (helper = helpers.loadingText || (depth0 != null ? depth0.loadingText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"loadingText","hash":{},"data":data}) : helper)))
-    + "</span>\n<span class=\"list-item service-error\">"
-    + alias4(((helper = (helper = helpers.errorText || (depth0 != null ? depth0.errorText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"errorText","hash":{},"data":data}) : helper)))
-    + "</span>\n<span class=\"dropdown-control\">\n  <span class=\"selected-group\"></span>\n  <span class=\"dropdown\">\n    <input placeholder=\""
-    + alias4(((helper = (helper = helpers.placeholder || (depth0 != null ? depth0.placeholder : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"placeholder","hash":{},"data":data}) : helper)))
-    + "\" data-toggle=\"dropdown\"\n        "
+  return alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"misc-search",{"name":"icon","hash":{},"data":data}))
+    + "\n<div class=\"filter-items-container\">\n  <span class=\"list-item loading\" style=\"display: none\">"
+    + alias3(((helper = (helper = helpers.loadingText || (depth0 != null ? depth0.loadingText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"loadingText","hash":{},"data":data}) : helper)))
+    + "</span>\n  <span class=\"list-item service-error\">"
+    + alias3(((helper = (helper = helpers.errorText || (depth0 != null ? depth0.errorText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"errorText","hash":{},"data":data}) : helper)))
+    + "</span>\n  <span class=\"dropdown-control\">\n    <span class=\"selected-group\"></span>\n    <span class=\"dropdown\">\n      <input placeholder=\""
+    + alias3(((helper = (helper = helpers.placeholder || (depth0 != null ? depth0.placeholder : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"placeholder","hash":{},"data":data}) : helper)))
+    + "\" data-toggle=\"dropdown\"\n          "
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.disabled : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "  />\n    <ul class=\"dropdown-menu dropdown-groups\">\n      <li class=\"loading\" style=\"display: none\"><label>"
-    + alias4(((helper = (helper = helpers.loadingText || (depth0 != null ? depth0.loadingText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"loadingText","hash":{},"data":data}) : helper)))
-    + "</label></li>\n      <li class=\"empty\"><label>"
-    + alias4(((helper = (helper = helpers.emptyText || (depth0 != null ? depth0.emptyText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"emptyText","hash":{},"data":data}) : helper)))
-    + "</label></li>\n      <li class=\"service-error\"><label>"
-    + alias4(((helper = (helper = helpers.errorText || (depth0 != null ? depth0.errorText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"errorText","hash":{},"data":data}) : helper)))
-    + "</label></li>\n    </ul>\n    <ul class=\"dropdown-menu dropdown-items hidden\">\n      <li class=\"loading\" style=\"display: none\"><label>"
-    + alias4(((helper = (helper = helpers.loadingText || (depth0 != null ? depth0.loadingText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"loadingText","hash":{},"data":data}) : helper)))
-    + "</label></li>\n      <li class=\"empty\"><label>"
-    + alias4(((helper = (helper = helpers.emptyText || (depth0 != null ? depth0.emptyText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"emptyText","hash":{},"data":data}) : helper)))
-    + "</label></li>\n      <li class=\"service-error\"><label>"
-    + alias4(((helper = (helper = helpers.errorText || (depth0 != null ? depth0.errorText : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"errorText","hash":{},"data":data}) : helper)))
-    + "</label></li>\n    </ul>\n  </span>\n</span>\n<button type=\"button\" class=\"close remove-all-button\">&times;</button>\n";
+    + "  />\n      <ul class=\"dropdown-menu dropdown-groups\">\n        <li class=\"no-hover loading\" style=\"display: none\">\n          <label>"
+    + alias3(((helper = (helper = helpers.loadingText || (depth0 != null ? depth0.loadingText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"loadingText","hash":{},"data":data}) : helper)))
+    + "</label>\n        </li>\n        <li class=\"no-hover empty\"><label>"
+    + alias3(((helper = (helper = helpers.emptyText || (depth0 != null ? depth0.emptyText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"emptyText","hash":{},"data":data}) : helper)))
+    + "</label></li>\n        <li class=\"no-hover service-error\"><label>"
+    + alias3(((helper = (helper = helpers.errorText || (depth0 != null ? depth0.errorText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"errorText","hash":{},"data":data}) : helper)))
+    + "</label></li>\n      </ul>\n      <ul class=\"dropdown-menu dropdown-items hidden\">\n        <li class=\"no-hover loading\" style=\"display: none\">\n          <label>"
+    + alias3(((helper = (helper = helpers.loadingText || (depth0 != null ? depth0.loadingText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"loadingText","hash":{},"data":data}) : helper)))
+    + "</label>\n        </li>\n        <li class=\"no-hover empty\"><label>"
+    + alias3(((helper = (helper = helpers.emptyText || (depth0 != null ? depth0.emptyText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"emptyText","hash":{},"data":data}) : helper)))
+    + "</label></li>\n        <li class=\"no-hover service-error\"><label>"
+    + alias3(((helper = (helper = helpers.errorText || (depth0 != null ? depth0.errorText : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"errorText","hash":{},"data":data}) : helper)))
+    + "</label></li>\n      </ul>\n    </span>\n  </span>\n</div>\n<button type=\"button\" class=\"btn btn-link remove-all-button\">\n  "
+    + alias3((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"misc-x",{"name":"icon","hash":{},"data":data}))
+    + "\n</button>\n";
 },"useData":true});
 
 this["Handlebars"]["notification-undo"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
