@@ -51,7 +51,7 @@ define (require) ->
     expectResetSelection = (query) ->
       it 'should update filterSelection', ->
         expect(view.filterSelection.fromObject).to.have.been.calledWith \
-          query?() or a: 'b', filterGroups
+          query?() or a: 'b', {filterGroups}
 
       it 'should not set browser query', ->
         expect(view.setBrowserQuery).to.have.not.been.called

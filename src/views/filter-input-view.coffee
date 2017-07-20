@@ -83,9 +83,10 @@ define (require) ->
         collection: @itemSource
       }
       @updateButtonsState()
+      @filterDropdownItems()
 
     updateButtonsState: ->
-      @$('.remove-all-button').toggle @collection.length > 0
+      @$('.remove-all-button').toggle @unrequiredSelection().length > 0
 
     onWhitespaceClick: (e) ->
       $target = $ e.target
@@ -98,7 +99,7 @@ define (require) ->
       @collection.remove @modelsFrom $(e.currentTarget).parent '.selected-item'
 
     onRemoveAllClick: (e) ->
-      @collection.reset()
+      @collection.remove @unrequiredSelection()
 
     onInputClick: (e) ->
       # keep opened dropdown visibile on second click
@@ -125,7 +126,7 @@ define (require) ->
       else if not @selectedGroup and @query() is '' and
           e.which is utils.keys.DELETE
         e.preventDefault()
-        @collection.pop()
+        @collection.remove _.last @unrequiredSelection()
       else if @selectedGroup and
           (e.which is utils.keys.ESC or
             (@query() is '' and e.which is utils.keys.DELETE))
@@ -148,6 +149,8 @@ define (require) ->
         @resetInput()
 
     onDropdownGroupItemClick: (e) ->
+      if ($t = $ e.currentTarget).hasClass('disabled') or $t.hasClass 'no-hover'
+        return e.stopImmediatePropagation()
       e.preventDefault()
       group = _.first @subview('dropdown-groups').modelsFrom e.currentTarget
       unless isLeaf group
@@ -156,6 +159,8 @@ define (require) ->
         @addSelectedItem group, new Chaplin.Model id: query, name: query
 
     onDropdownItemClick: (e) ->
+      if ($t = $ e.currentTarget).hasClass('disabled') or $t.hasClass 'no-hover'
+        return e.stopImmediatePropagation()
       e.preventDefault()
       item = _.first @subview('dropdown-items').modelsFrom e.currentTarget
       @addSelectedItem @selectedGroup, item
@@ -192,7 +197,7 @@ define (require) ->
       @maybeContinue()
 
     query: ->
-      @$('input').val()
+      @$('input').val() or ''
 
     openDropdowns: ->
       @$('.dropdown').addClass 'open'
@@ -222,7 +227,10 @@ define (require) ->
     groupItems: (group) ->
       return [] unless group
       group.get('children').filter (groupItem) =>
-        not @collection.any (item) -> item.id is groupItem.id
+        not @collection.find id: groupItem.id, groupId: group.id
+
+    unrequiredSelection: ->
+      @collection.filter (m) -> not m.get 'required'
 
     addSelectedItem: (group, item) ->
       return unless item and group
@@ -230,6 +238,8 @@ define (require) ->
       selectedItem.set
         groupId: group.id
         groupName: group.get 'name'
+      if required = group.get 'required'
+        selectedItem.set {required}
       if group.get 'singular'
         @collection.remove @collection.filter groupId: group.id
       @collection.add selectedItem
@@ -252,14 +262,16 @@ define (require) ->
           (inGroups and isLeaf item) or regexp?.test item.get 'name'
       else
         filter = null
-      if (@previousQuery or '') isnt query
+      if @previousQuery isnt query
         dropdown = @subview "dropdown-#{@activeDropdown()}"
         dropdown.filter filter
         names = 'li' + (if inGroups then ':not(.leaf)' else '') + ' .item-name'
         dropdown.find(names).each (i, el) ->
           ($el = $ el).html $el.text().replace regexp, '<i>$&</i>'
         if inGroups
-          dropdown.find('li.leaf .item-note').each (i, el) -> $(el).text query
+          dropdown.find('li.leaf').each (i, el) ->
+            ($el = $ el).find('.item-note').text query
+            ($el = $ el).toggleClass 'disabled no-hover', query is ''
         dropdown.toggleFallback()
         @previousQuery = query
 

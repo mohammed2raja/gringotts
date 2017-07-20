@@ -1,6 +1,8 @@
 <span class="selected-item">
   <span class="item-group">{{groupName}}</span>&nbsp;<span class="item-name">{{name}}</span>
-  <button type="button" class="btn btn-link remove-button">
-    {{icon 'misc-x'}}
-  </button>
+  {{#unless required}}
+    <button type="button" class="btn btn-link remove-button">
+      {{icon 'misc-x'}}
+    </button>
+  {{/unless}}
 </span>
