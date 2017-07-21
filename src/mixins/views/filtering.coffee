@@ -49,7 +49,7 @@ define (require) ->
 
     resetFilterSelection: (obj) ->
       @removeFilterSelectionListeners()
-      @filterSelection.fromObject obj, @filterGroups
+      @filterSelection.fromObject obj, {@filterGroups}
       @addFilterSelectionListeners()
 
     addFilterSelectionListeners: ->
@@ -61,6 +61,6 @@ define (require) ->
       @stopListening @filterSelection, 'reset', @onFilterSelectionUpdate
 
     onFilterSelectionUpdate: ->
-      query = _.defaults @filterSelection.toObject(),
+      query = _.defaults @filterSelection.toObject({@filterGroups}),
         _.zipObject @filterGroups.pluck 'id'
       @setBrowserQuery _.extend query, page: 1

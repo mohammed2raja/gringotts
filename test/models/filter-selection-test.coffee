@@ -16,12 +16,13 @@ define (require) ->
       name: '0-9'
       children: new Chaplin.Collection [
         new Chaplin.Model id: 'filter1'
-        new Chaplin.Model id: 'filter2'
+        new Chaplin.Model id: 'filterB'
         new Chaplin.Model id: 'filter3'
       ]
     new Chaplin.Model
       id: 'random'
       name: '$$$'
+      required: yes
       children: new Chaplin.Collection [
         new Chaplin.Model id: '###'
         new Chaplin.Model id: '&&&'
@@ -30,7 +31,7 @@ define (require) ->
 
   filtersObj =
     alphabet: ['filterA', 'filterB']
-    digits: ['filter1', 'filter2']
+    digits: ['filter1', 'filterB']
     missing: 'value'
     random: '###'
 
@@ -45,7 +46,7 @@ define (require) ->
 
     context 'fromObject', ->
       beforeEach ->
-        collection.fromObject filtersObj, filterGroups
+        collection.fromObject filtersObj, {filterGroups}
 
       it 'should exact number of filter items into selection', ->
         expect(collection.length).to.equal 5
@@ -56,9 +57,14 @@ define (require) ->
           id: 'filterA'
           groupId: 'alphabet'
           groupName: 'A-Z'
-        filter2 = collection.findWhere id: 'filter2'
-        expect(filter2.attributes).to.eql
-          id: 'filter2'
+        filterB_1 = collection.findWhere id: 'filterB', groupId: 'alphabet'
+        expect(filterB_1.attributes).to.eql
+          id: 'filterB'
+          groupId: 'alphabet'
+          groupName: 'A-Z'
+        filterB_2 = collection.findWhere id: 'filterB', groupId: 'digits'
+        expect(filterB_2.attributes).to.eql
+          id: 'filterB'
           groupId: 'digits'
           groupName: '0-9'
         filterVal = collection.findWhere id: 'value'
@@ -68,6 +74,7 @@ define (require) ->
           id: '###'
           groupId: 'random'
           groupName: '$$$'
+          required: yes
 
     context 'toObject', ->
       obj = null
@@ -86,11 +93,12 @@ define (require) ->
             id: 'filter1'
             groupId: 'digits'
           new Chaplin.Model
-            id: 'filter2'
+            id: 'filterB'
             groupId: 'digits'
           new Chaplin.Model
             id: '###'
             groupId: 'random'
+            required: yes
         ]
         obj = collection.toObject opts
         expectObj = _(filtersObj).omit('missing').value()

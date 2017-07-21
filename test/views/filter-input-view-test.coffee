@@ -1,7 +1,11 @@
 define (require) ->
   Chaplin = require 'chaplin'
   utils = require 'lib/utils'
+  FilterSelection = require 'models/filter-selection'
   FilterInputView = require 'views/filter-input-view'
+
+  setQuery = (view, query) ->
+    view.$('input').val(query).trigger $.Event 'keyup'
 
   describe 'FilterInputView', ->
     sandbox = null
@@ -11,7 +15,7 @@ define (require) ->
 
     beforeEach ->
       sandbox = sinon.sandbox.create()
-      collection = new Chaplin.Collection [
+      collection = new FilterSelection [
         new Chaplin.Model
           groupId: 'group1'
           groupName: 'Group One'
@@ -27,6 +31,7 @@ define (require) ->
           groupName: 'Group Two'
           id: 'gp2item2'
           name: 'G2 Item Two'
+          required: yes
       ]
       groupSource = new Chaplin.Collection [
         new Chaplin.Model
@@ -43,6 +48,7 @@ define (require) ->
           id: 'group2'
           name: 'Group Two'
           description: 'Two Description'
+          required: yes
           children: new Chaplin.Collection [
             new Chaplin.Model id: 'gp2item1', name: 'G2 Item One'
             new Chaplin.Model id: 'gp2item2', name: 'G2 Item Two'
@@ -88,6 +94,11 @@ define (require) ->
         $el = $ el
         expect($el.find '.item-group').to.have.text model.get 'groupName'
         expect($el.find '.item-name').to.have.text model.get 'name'
+        $removeButton = $el.find '.remove-button'
+        if model.get 'required'
+          expect($removeButton).to.not.exist
+        else
+          expect($removeButton).to.exist
 
     it 'should have remove all button visible', ->
       expect(view.$ '.remove-all-button').to.be.visible
@@ -97,7 +108,7 @@ define (require) ->
         view.$('.selected-item .remove-button').first().click()
 
       it 'should remove item from collection', ->
-        expect(collection.length).to.equal 2
+        expect(collection).to.have.length 2
 
       it 'should remove item from control', ->
         expect(view.$ '.selected-item').to.have.length 2
@@ -106,11 +117,11 @@ define (require) ->
       beforeEach ->
         view.$('.remove-all-button').click()
 
-      it 'should remove all items from collection', ->
-        expect(collection.length).to.equal 0
+      it 'should remove all unrequired items from collection', ->
+        expect(collection).to.have.length 1
 
       it 'should remove all items from control', ->
-        expect(view.$ '.selected-item').to.not.exist
+        expect(view.$ '.selected-item').to.have.length 1
 
       it 'should set remove all button hidden', ->
         expect(view.$ '.remove-all-button').to.be.hidden
@@ -145,6 +156,8 @@ define (require) ->
           expect($el.find '.item-description').to
             .have.text model.get 'description'
           expect($el.find '.item-note').to.be.empty
+          if not model.get('children')?
+            expect($el.parent 'li').to.have.class 'disabled no-hover'
 
     expectEmptyDropdown = (dropdown) ->
       it "should render empty #{dropdown} dropdown", ->
@@ -224,14 +237,14 @@ define (require) ->
 
           expectOpenGroupsDropdown()
 
-      context 'on first group item click', ->
+      context 'on "Group One" item click', ->
         beforeEach ->
           view.$('.dropdown-groups a').first().click()
 
         expectOpenItemsDropdown()
         expectDefaultItemsDropdown()
 
-        context 'on last item click', ->
+        context 'on "Item Three" click', ->
           beforeEach ->
             view.$('.dropdown-items a').last().click()
 
@@ -253,13 +266,26 @@ define (require) ->
               view.$('input').click().trigger $.Event 'keydown',
                 which: utils.keys.DELETE
 
-            it 'should remote item model from collection', ->
+            it 'should remove last unrequired item from collection', ->
+              expect(collection).to.have.length 2
               expect(collection.last().attributes).to.include {
                 id: 'gp2item2'
                 name: 'G2 Item Two'
               }
 
-      context 'on second group item click', ->
+            context 'on input delete again', ->
+              beforeEach ->
+                view.$('input').click().trigger $.Event 'keydown',
+                  which: utils.keys.DELETE
+
+              it 'should remote last unrequired item from collection', ->
+                expect(collection).to.have.length 1
+                expect(collection.last().attributes).to.include {
+                  id: 'gp2item2'
+                  name: 'G2 Item Two'
+                }
+
+      context 'on "Group Two" item click', ->
         beforeEach ->
           view.$('.dropdown-groups a')[1].click()
 
@@ -268,9 +294,9 @@ define (require) ->
 
         expectEmptyDropdown 'items'
 
-      context 'on search group item click', ->
+      context 'on "Search" group item click', ->
         beforeEach ->
-          view.$('input').val 'needle'
+          setQuery view, 'needle'
           view.$('.dropdown-groups a').last().click()
 
         it 'should not render group label', ->
@@ -290,7 +316,7 @@ define (require) ->
         text = null
 
         beforeEach ->
-          view.$('input').val(text).trigger $.Event 'keyup'
+          setQuery view, text
 
         getVisibleItems = (dropdown) ->
           items = view.$(".dropdown-#{dropdown} li.fade:visible")
@@ -308,6 +334,7 @@ define (require) ->
             expect(group0.find '.item-name i').to.have.text 'One'
             expect(group1.find '.item-name').to.have.text 'Search'
             expect(group1.find '.item-note').to.have.text 'one'
+            expect(group1).to.not.have.class 'disabled no-hover'
 
           context 'on enter key press when 1 group in dropdown', ->
             beforeEach ->
@@ -322,7 +349,7 @@ define (require) ->
 
             context 'on type existing item text', ->
               beforeEach ->
-                view.$('input').val('thre').trigger 'keyup'
+                setQuery view, 'thre'
 
               it 'should filter items dropdown', ->
                 items = getVisibleItems 'items'
@@ -342,7 +369,7 @@ define (require) ->
 
             context 'on type random text', ->
               beforeEach ->
-                view.$('input').val('qwerty').trigger 'keyup'
+                setQuery view, 'qwerty'
 
               expectEmptyDropdown 'items'
 
@@ -376,7 +403,7 @@ define (require) ->
 
           context 'on delete text', ->
             beforeEach ->
-              view.$('input').val('').trigger $.Event 'keyup'
+              setQuery view, ''
 
             expectOpenGroupsDropdown()
             expectDefaultGroupsInDropdown()
@@ -438,7 +465,7 @@ define (require) ->
 
       context 'on click elsewhere', ->
         beforeEach ->
-          view.$('input').val 'abc'
+          setQuery view, 'abc'
           $(document).trigger 'click.bs.dropdown.data-api'
 
         expectClosedDropdowns()
