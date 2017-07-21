@@ -94,16 +94,20 @@ this["Handlebars"]["dialog"] = Handlebars.template({"1":function(container,depth
     + "    </div>\n  </div>\n</div>\n";
 },"useData":true});
 
-this["Handlebars"]["filter-input/item"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+this["Handlebars"]["filter-input/item"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
+    return "    <button type=\"button\" class=\"btn btn-link remove-button\">\n      "
+    + container.escapeExpression((helpers.icon || (depth0 && depth0.icon) || helpers.helperMissing).call(depth0 != null ? depth0 : {},"misc-x",{"name":"icon","hash":{},"data":data}))
+    + "\n    </button>\n";
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<span class=\"selected-item\">\n  <span class=\"item-group\">"
     + alias4(((helper = (helper = helpers.groupName || (depth0 != null ? depth0.groupName : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"groupName","hash":{},"data":data}) : helper)))
     + "</span>&nbsp;<span class=\"item-name\">"
     + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</span>\n  <button type=\"button\" class=\"btn btn-link remove-button\">\n    "
-    + alias4((helpers.icon || (depth0 && depth0.icon) || alias2).call(alias1,"misc-x",{"name":"icon","hash":{},"data":data}))
-    + "\n  </button>\n</span>\n";
+    + "</span>\n"
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.required : depth0),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "</span>\n";
 },"useData":true});
 
 this["Handlebars"]["filter-input/list-item"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {

@@ -78,7 +78,9 @@
 
         Filtering.prototype.resetFilterSelection = function(obj) {
           this.removeFilterSelectionListeners();
-          this.filterSelection.fromObject(obj, this.filterGroups);
+          this.filterSelection.fromObject(obj, {
+            filterGroups: this.filterGroups
+          });
           return this.addFilterSelectionListeners();
         };
 
@@ -94,7 +96,9 @@
 
         Filtering.prototype.onFilterSelectionUpdate = function() {
           var query;
-          query = _.defaults(this.filterSelection.toObject(), _.zipObject(this.filterGroups.pluck('id')));
+          query = _.defaults(this.filterSelection.toObject({
+            filterGroups: this.filterGroups
+          }), _.zipObject(this.filterGroups.pluck('id')));
           return this.setBrowserQuery(_.extend(query, {
             page: 1
           }));

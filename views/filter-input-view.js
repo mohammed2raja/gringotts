@@ -181,11 +181,12 @@
           el: this.$('.dropdown-items'),
           collection: this.itemSource
         }));
-        return this.updateButtonsState();
+        this.updateButtonsState();
+        return this.filterDropdownItems();
       };
 
       FilterInputView.prototype.updateButtonsState = function() {
-        return this.$('.remove-all-button').toggle(this.collection.length > 0);
+        return this.$('.remove-all-button').toggle(this.unrequiredSelection().length > 0);
       };
 
       FilterInputView.prototype.onWhitespaceClick = function(e) {
@@ -202,7 +203,7 @@
       };
 
       FilterInputView.prototype.onRemoveAllClick = function(e) {
-        return this.collection.reset();
+        return this.collection.remove(this.unrequiredSelection());
       };
 
       FilterInputView.prototype.onInputClick = function(e) {
@@ -232,7 +233,7 @@
           return this.closeDropdowns();
         } else if (!this.selectedGroup && this.query() === '' && e.which === utils.keys.DELETE) {
           e.preventDefault();
-          return this.collection.pop();
+          return this.collection.remove(_.last(this.unrequiredSelection()));
         } else if (this.selectedGroup && (e.which === utils.keys.ESC || (this.query() === '' && e.which === utils.keys.DELETE))) {
           e.preventDefault();
           this.setSelectedGroup(void 0);
@@ -258,7 +259,10 @@
       };
 
       FilterInputView.prototype.onDropdownGroupItemClick = function(e) {
-        var group, query;
+        var $t, group, query;
+        if (($t = $(e.currentTarget)).hasClass('disabled') || $t.hasClass('no-hover')) {
+          return e.stopImmediatePropagation();
+        }
         e.preventDefault();
         group = _.first(this.subview('dropdown-groups').modelsFrom(e.currentTarget));
         if (!isLeaf(group)) {
@@ -272,7 +276,10 @@
       };
 
       FilterInputView.prototype.onDropdownItemClick = function(e) {
-        var item;
+        var $t, item;
+        if (($t = $(e.currentTarget)).hasClass('disabled') || $t.hasClass('no-hover')) {
+          return e.stopImmediatePropagation();
+        }
         e.preventDefault();
         item = _.first(this.subview('dropdown-items').modelsFrom(e.currentTarget));
         return this.addSelectedItem(this.selectedGroup, item);
@@ -325,7 +332,7 @@
       };
 
       FilterInputView.prototype.query = function() {
-        return this.$('input').val();
+        return this.$('input').val() || '';
       };
 
       FilterInputView.prototype.openDropdowns = function() {
@@ -370,15 +377,22 @@
         }
         return group.get('children').filter((function(_this) {
           return function(groupItem) {
-            return !_this.collection.any(function(item) {
-              return item.id === groupItem.id;
+            return !_this.collection.find({
+              id: groupItem.id,
+              groupId: group.id
             });
           };
         })(this));
       };
 
+      FilterInputView.prototype.unrequiredSelection = function() {
+        return this.collection.filter(function(m) {
+          return !m.get('required');
+        });
+      };
+
       FilterInputView.prototype.addSelectedItem = function(group, item) {
-        var selectedItem;
+        var required, selectedItem;
         if (!(item && group)) {
           return;
         }
@@ -387,6 +401,11 @@
           groupId: group.id,
           groupName: group.get('name')
         });
+        if (required = group.get('required')) {
+          selectedItem.set({
+            required: required
+          });
+        }
         if (group.get('singular')) {
           this.collection.remove(this.collection.filter({
             groupId: group.id
@@ -426,7 +445,7 @@
         } else {
           filter = null;
         }
-        if ((this.previousQuery || '') !== query) {
+        if (this.previousQuery !== query) {
           dropdown = this.subview("dropdown-" + (this.activeDropdown()));
           dropdown.filter(filter);
           names = 'li' + (inGroups ? ':not(.leaf)' : '') + ' .item-name';
@@ -435,8 +454,10 @@
             return ($el = $(el)).html($el.text().replace(regexp, '<i>$&</i>'));
           });
           if (inGroups) {
-            dropdown.find('li.leaf .item-note').each(function(i, el) {
-              return $(el).text(query);
+            dropdown.find('li.leaf').each(function(i, el) {
+              var $el;
+              ($el = $(el)).find('.item-note').text(query);
+              return ($el = $(el)).toggleClass('disabled no-hover', query === '');
             });
           }
           dropdown.toggleFallback();
