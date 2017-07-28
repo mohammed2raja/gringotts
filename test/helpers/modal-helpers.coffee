@@ -1,4 +1,4 @@
-define (require) ->
+module.exports = {
   stubModal: (sandbox, ctx) ->
     sandbox.stub $.fn, 'modal', (cmd) ->
       if cmd is undefined
@@ -7,3 +7,4 @@ define (require) ->
       if cmd is 'hide'
         @removeClass('in').trigger if ctx().transition then 'hide.bs.modal'
         else 'hidden.bs.modal'
+}

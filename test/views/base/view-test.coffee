@@ -1,14 +1,13 @@
-define (require) ->
-  View = require 'views/base/view'
+View = require 'views/base/view'
 
-  describe 'View', ->
-    view = null
+describe 'View', ->
+  view = null
 
-    beforeEach ->
-      view = new View()
+  beforeEach ->
+    view = new View()
 
-    afterEach ->
-      view.dispose()
+  afterEach ->
+    view.dispose()
 
-    it 'should be initialized', ->
-      expect(view).to.be.an.instanceOf View
+  it 'should be initialized', ->
+    expect(view).to.be.an.instanceOf View

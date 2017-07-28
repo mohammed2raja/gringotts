@@ -1,7 +1,6 @@
-define (require) ->
-  Chaplin = require 'chaplin'
-  StringTemplatable = require '../../mixins/views/string-templatable'
-  ErrorHandling = require '../../mixins/views/error-handling'
+Chaplin = require 'chaplin'
+Templatable = require '../../mixins/views/templatable'
+ErrorHandling = require '../../mixins/views/error-handling'
 
-  class View extends ErrorHandling StringTemplatable Chaplin.View
-    autoRender: yes
+module.exports = class View extends ErrorHandling Templatable Chaplin.View
+  autoRender: yes

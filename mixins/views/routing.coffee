@@ -1,97 +1,96 @@
-define (require) ->
-  utils = require 'lib/utils'
-  helper = require '../../lib/mixin-helper'
+utils = require 'lib/utils'
+helper = require '../../lib/mixin-helper'
+
+###*
+  * A utility mixin for a View or a CollectionView. It helps to pass routing
+  * parameters down the view hierarchy. Also adds helper methods to get current
+  * browser query state (usually it's received from a Collection or a Model
+  * with Queryable mixin applied) or to redirect browser to current
+  * route with updated query state.
+  * The routeQueryable is expected to be a Queryable or it's proxy
+  * with getQuery() method.
+  * @param  {View|CollectionView} superclass
+###
+module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+
+class Routing extends superclass
+  helper.setTypeName @prototype, 'Routing'
+
+  ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeQueryable']
+  optionNames: @::optionNames?.concat @::ROUTING_OPTIONS
+
+  initialize: ->
+    helper.assertViewOrCollectionView this
+    super
+    unless @routeQueryable
+      @routeQueryable = (@collection or @model)?.proxyQueryable?()
+    if @routeQueryable?.trigger
+      @listenTo @routeQueryable, 'queryChange', (info) ->
+        unless @muteQueryChangeEvent
+          @onBrowserQueryChange info.query, info.diff
+        else
+          delete @muteQueryChangeEvent
 
   ###*
-   * A utility mixin for a View or a CollectionView. It helps to pass routing
-   * parameters down the view hierarchy. Also adds helper methods to get current
-   * browser query state (usually it's received from a Collection or a Model
-   * with Queryable mixin applied) or to redirect browser to current
-   * route with updated query state.
-   * The routeQueryable is expected to be a Queryable or it's proxy
-   * with getQuery() method.
-   * @param  {View|CollectionView} superclass
+    * Overrides Chaplin.CollectionView method to init sub items with
+    * routing properties
+    * @return {View}
   ###
-  (superclass) -> helper.apply superclass, (superclass) -> \
+  initItemView: ->
+    _.extend super, @routeOpts()
 
-  class Routing extends superclass
-    helper.setTypeName @prototype, 'Routing'
+  getTemplateData: ->
+    _.extend super, {@routeName, @routeParams}
 
-    ROUTING_OPTIONS: ['routeName', 'routeParams', 'routeQueryable']
-    optionNames: @::optionNames?.concat @::ROUTING_OPTIONS
+  ###*
+    * A hash of current routing options.
+    * @return {Object}
+  ###
+  routeOpts: ->
+    _.reduce @ROUTING_OPTIONS, (result, key) =>
+      result[key] = @[key]
+      result
+    , {}
 
-    initialize: ->
-      helper.assertViewOrCollectionView this
-      super
-      unless @routeQueryable
-        @routeQueryable = (@collection or @model)?.proxyQueryable?()
-      if @routeQueryable?.trigger
-        @listenTo @routeQueryable, 'queryChange', (info) ->
-          unless @muteQueryChangeEvent
-            @onBrowserQueryChange info.query, info.diff
-          else
-            delete @muteQueryChangeEvent
+  ###*
+    * A hash of current routing options extended with other has.
+    * @return {Object}
+  ###
+  routeOptsWith: (hash) ->
+    _.extend @routeOpts(), hash
 
-    ###*
-     * Overrides Chaplin.CollectionView method to init sub items with
-     * routing properties
-     * @return {View}
-    ###
-    initItemView: ->
-      _.extend super, @routeOpts()
+  ###*
+    * Returns current query of the browser query relevant to the routeName.
+    * @return {Object}
+  ###
+  getBrowserQuery: (options) ->
+    options = _.defaults {}, options, inclDefaults: yes, usePrefix: no
+    unless @routeQueryable
+      throw new Error "Can't get query since @routeQueryable isn't set."
+    @routeQueryable.getQuery options
 
-    getTemplateData: ->
-      _.extend super, {@routeName, @routeParams}
+  ###*
+    * Redirect to current route with new query params.
+    * @param {Object} query to build URL query params with.
+  ###
+  setBrowserQuery: (query={}, options) ->
+    unless @routeQueryable
+      throw new Error "Can't set browser query
+        since @routeQueryable isn't set."
+    unless @routeName
+      throw new Error "Can't set browser query since @routeName isn't set."
+    @muteQueryChangeEvent = true # we don't want handle our own query change
+    utils.redirectTo @routeName, @routeParams,
+      _.extend {}, options, query: @routeQueryable.getQuery overrides: query
 
-    ###*
-     * A hash of current routing options.
-     * @return {Object}
-    ###
-    routeOpts: ->
-      _.reduce @ROUTING_OPTIONS, (result, key) =>
-        result[key] = @[key]
-        result
-      , {}
+  ###*
+    * Override this method to add your logic upon browser query change.
+    * @param  {Object} query   current browser query from URL query params.
+    * @param  {Object} diff    difference object from previous query.
+  ###
+  onBrowserQueryChange: (query, diff) ->
 
-    ###*
-     * A hash of current routing options extended with other has.
-     * @return {Object}
-    ###
-    routeOptsWith: (hash) ->
-      _.extend @routeOpts(), hash
-
-    ###*
-     * Returns current query of the browser query relevant to the routeName.
-     * @return {Object}
-    ###
-    getBrowserQuery: (options) ->
-      options = _.defaults {}, options, inclDefaults: yes, usePrefix: no
-      unless @routeQueryable
-        throw new Error "Can't get query since @routeQueryable isn't set."
-      @routeQueryable.getQuery options
-
-    ###*
-     * Redirect to current route with new query params.
-     * @param {Object} query to build URL query params with.
-    ###
-    setBrowserQuery: (query={}, options) ->
-      unless @routeQueryable
-        throw new Error "Can't set browser query
-          since @routeQueryable isn't set."
-      unless @routeName
-        throw new Error "Can't set browser query since @routeName isn't set."
-      @muteQueryChangeEvent = true # we don't want handle our own query change
-      utils.redirectTo @routeName, @routeParams,
-        _.extend {}, options, query: @routeQueryable.getQuery overrides: query
-
-    ###*
-     * Override this method to add your logic upon browser query change.
-     * @param  {Object} query   current browser query from URL query params.
-     * @param  {Object} diff    difference object from previous query.
-    ###
-    onBrowserQueryChange: (query, diff) ->
-
-    dispose: ->
-      @ROUTING_OPTIONS.forEach (key) =>
-        delete @[key]
-      super
+  dispose: ->
+    @ROUTING_OPTIONS.forEach (key) =>
+      delete @[key]
+    super

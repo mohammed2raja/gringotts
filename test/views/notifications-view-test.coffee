@@ -1,25 +1,24 @@
-define (require) ->
-  Chaplin = require 'chaplin'
-  Notifications = require 'models/notifications'
-  NotificationsView = require 'views/notifications-view'
+Chaplin = require 'chaplin'
+Notifications = require 'models/notifications'
+NotificationsView = require 'views/notifications-view'
 
-  describe 'NotificationsView', ->
-    view = null
-    collection = null
-    model = null
+describe 'NotificationsView', ->
+  view = null
+  collection = null
+  model = null
 
-    beforeEach ->
-      model = new Chaplin.Model message: 'message', opts: undo: yes
-      collection = new Notifications [model]
-      view = new NotificationsView {collection}
+  beforeEach ->
+    model = new Chaplin.Model message: 'message', opts: undo: yes
+    collection = new Notifications [model]
+    view = new NotificationsView {collection}
 
-    afterEach ->
-      view.dispose()
-      collection.dispose()
-      model.dispose()
+  afterEach ->
+    view.dispose()
+    collection.dispose()
+    model.dispose()
 
-    it 'should render a view', ->
-      expect(view.$el).not.to.be.empty
+  it 'should render a view', ->
+    expect(view.$el).not.to.be.empty
 
-    it 'should have an Undo label', ->
-      expect(view.$ '.undo').to.contain I18n?.t('notifications.undo') or 'Undo'
+  it 'should have an Undo label', ->
+    expect(view.$ '.undo').to.contain I18n?.t('notifications.undo') or 'Undo'

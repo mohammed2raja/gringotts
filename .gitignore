@@ -1,8 +1,6 @@
 .DS_Store
-.grunt/
-docs/
+.DSStore
 node_modules/
-public/
-tmp/*
 npm-debug.log
-/test-results.xml
+coverage/
+dist/

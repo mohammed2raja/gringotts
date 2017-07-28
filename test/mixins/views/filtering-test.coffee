@@ -1,131 +1,130 @@
-define (require) ->
-  Chaplin = require 'chaplin'
-  StringTemplatable = require 'mixins/views/string-templatable'
-  Filtering = require 'mixins/views/filtering'
+Chaplin = require 'chaplin'
+Templatable = require 'mixins/views/templatable'
+Filtering = require 'mixins/views/filtering'
 
-  class FilterSelectionMock extends Chaplin.Collection
-    fromObject: ->
-      @trigger 'update'
-      @trigger 'reset'
+class FilterSelectionMock extends Chaplin.Collection
+  fromObject: ->
+    @trigger 'update'
+    @trigger 'reset'
 
-    toObject: ->
-      x: 'z'
+  toObject: ->
+    x: 'z'
 
-    linkSyncMachineTo: sinon.spy()
+  linkSyncMachineTo: sinon.spy()
 
-  class ViewMock extends Filtering StringTemplatable Chaplin.View
-    autoRender: yes
-    template: 'filtering-test'
-    filterSelection: FilterSelectionMock
-    getBrowserQuery: ->
-    setBrowserQuery: ->
+class ViewMock extends Filtering Templatable Chaplin.View
+  autoRender: yes
+  template: require 'filtering-test.hbs'
+  filterSelection: FilterSelectionMock
+  getBrowserQuery: ->
+  setBrowserQuery: ->
 
-  describe 'Filtering', ->
-    sandbox = null
-    view = null
-    filterGroups = null
-    browserQuery = null
-    isSynced = yes
+describe 'Filtering', ->
+  sandbox = null
+  view = null
+  filterGroups = null
+  browserQuery = null
+  isSynced = yes
 
-    beforeEach ->
-      sandbox = sinon.sandbox.create()
-      sandbox.spy FilterSelectionMock::, 'fromObject'
-      sandbox.spy FilterSelectionMock::, 'toObject'
-      filterGroups = new Chaplin.Collection [{id: 'a'}, {id: 'b'}]
-      filterGroups.isSynced = -> isSynced
-      sandbox.stub ViewMock::, 'getBrowserQuery', -> browserQuery or a: 'b'
-      sandbox.stub ViewMock::, 'setBrowserQuery'
-      view = new ViewMock {filterGroups}
+  beforeEach ->
+    sandbox = sinon.sandbox.create()
+    sandbox.spy FilterSelectionMock::, 'fromObject'
+    sandbox.spy FilterSelectionMock::, 'toObject'
+    filterGroups = new Chaplin.Collection [{id: 'a'}, {id: 'b'}]
+    filterGroups.isSynced = -> isSynced
+    sandbox.stub ViewMock::, 'getBrowserQuery', -> browserQuery or a: 'b'
+    sandbox.stub ViewMock::, 'setBrowserQuery'
+    view = new ViewMock {filterGroups}
 
-    afterEach ->
-      sandbox.restore()
-      view.dispose()
-      filterGroups.dispose()
+  afterEach ->
+    sandbox.restore()
+    view.dispose()
+    filterGroups.dispose()
 
-    it 'should initialize', ->
-      expect(FilterSelectionMock::linkSyncMachineTo).to.have.been.calledOnce
+  it 'should initialize', ->
+    expect(FilterSelectionMock::linkSyncMachineTo).to.have.been.calledOnce
 
-    it 'should initialize filter view', ->
-      filterView = view.subview 'filtering-control'
-      expect(filterView.collection).to.be.instanceOf FilterSelectionMock
-      expect(filterView.groupSource).to.equal filterGroups
+  it 'should initialize filter view', ->
+    filterView = view.subview 'filtering-control'
+    expect(filterView.collection).to.be.instanceOf FilterSelectionMock
+    expect(filterView.groupSource).to.equal filterGroups
 
-    it 'should render filter view', ->
-      expect(view.$ '.filter-input').to.exist
+  it 'should render filter view', ->
+    expect(view.$ '.filter-input').to.exist
 
-    expectResetSelection = (query) ->
-      it 'should update filterSelection', ->
-        expect(view.filterSelection.fromObject).to.have.been.calledWith \
-          query?() or a: 'b', {filterGroups}
+  expectResetSelection = (query) ->
+    it 'should update filterSelection', ->
+      expect(view.filterSelection.fromObject).to.have.been.calledWith \
+        query?() or a: 'b', {filterGroups}
 
-      it 'should not set browser query', ->
-        expect(view.setBrowserQuery).to.have.not.been.called
+    it 'should not set browser query', ->
+      expect(view.setBrowserQuery).to.have.not.been.called
 
-    context 'when filterGroups is synced', ->
+  context 'when filterGroups is synced', ->
+    expectResetSelection()
+
+  context 'when filterGroups is not synced', ->
+    before ->
+      isSynced = no
+
+    after ->
+      isSynced = yes
+
+    it 'should not update filterSelection', ->
+      expect(view.filterSelection.fromObject).to.have.not.been.called
+
+    context 'on sync triggered', ->
+      beforeEach ->
+        filterGroups.trigger 'synced'
+
       expectResetSelection()
 
-    context 'when filterGroups is not synced', ->
+  context 'on browser query change', ->
+    filterngIsntActive = null
+
+    before ->
+      browserQuery = c: 'd'
+
+    after ->
+      browserQuery = null
+
+    beforeEach ->
+      if filterngIsntActive
+        delete view.filterGroups
+        view.filterSelection.fromObject.reset()
+      view.onBrowserQueryChange()
+
+    expectResetSelection -> browserQuery
+
+    context 'when filtering is not active', ->
       before ->
-        isSynced = no
+        filterngIsntActive = true
 
       after ->
-        isSynced = yes
+        filterngIsntActive = null
 
       it 'should not update filterSelection', ->
         expect(view.filterSelection.fromObject).to.have.not.been.called
 
-      context 'on sync triggered', ->
-        beforeEach ->
-          filterGroups.trigger 'synced'
+  context 'on filter selection', ->
+    event = null
 
-        expectResetSelection()
+    beforeEach ->
+      view.filterSelection.trigger event
 
-    context 'on browser query change', ->
-      filterngIsntActive = null
+    expectQuery = ->
+      it 'should set browser query', ->
+        expect(view.setBrowserQuery).to.have.been.calledWith \
+          x: 'z', a: undefined, b: undefined, page: 1
 
+    context 'update event', ->
       before ->
-        browserQuery = c: 'd'
+        event = 'update'
 
-      after ->
-        browserQuery = null
+      expectQuery()
 
-      beforeEach ->
-        if filterngIsntActive
-          delete view.filterGroups
-          view.filterSelection.fromObject.reset()
-        view.onBrowserQueryChange()
+    context 'update event', ->
+      before ->
+        event = 'reset'
 
-      expectResetSelection -> browserQuery
-
-      context 'when filtering is not active', ->
-        before ->
-          filterngIsntActive = true
-
-        after ->
-          filterngIsntActive = null
-
-        it 'should not update filterSelection', ->
-          expect(view.filterSelection.fromObject).to.have.not.been.called
-
-    context 'on filter selection', ->
-      event = null
-
-      beforeEach ->
-        view.filterSelection.trigger event
-
-      expectQuery = ->
-        it 'should set browser query', ->
-          expect(view.setBrowserQuery).to.have.been.calledWith \
-            x: 'z', a: undefined, b: undefined, page: 1
-
-      context 'update event', ->
-        before ->
-          event = 'update'
-
-        expectQuery()
-
-      context 'update event', ->
-        before ->
-          event = 'reset'
-
-        expectQuery()
+      expectQuery()

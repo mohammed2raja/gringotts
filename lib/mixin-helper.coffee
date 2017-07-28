@@ -1,6 +1,6 @@
-define (require) ->
-  Chaplin = require 'chaplin'
+Chaplin = require 'chaplin'
 
+module.exports = {
   assertModel: (target) ->
     unless target instanceof Chaplin.Model
       throw new Error 'This mixin can be applied only to models.'
@@ -101,3 +101,4 @@ define (require) ->
   ###
   apply: (type, mixin) ->
     if @typeWithMixin type, mixin then type else mixin type
+}

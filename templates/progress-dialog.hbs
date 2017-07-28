@@ -1,71 +1,35 @@
-{{#*inline "header"}}
-  {{#if title}}
-    <div class="modal-header">
-      <button type="button" class="close close-button" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <h4 class="modal-title">{{title}}</h4>
-    </div>
-  {{/if}}
-{{/inline}}
-
-{{#*inline "body-content"}}
-  {{#if html}}
-    {{{html}}}
-  {{else}}
-    <p>{{text}}</p>
-  {{/if}}
-{{/inline}}
-
-{{#*inline "footer"}}
-  <div class="modal-footer">
-    {{#each buttons}}
-      <button type="button" class="btn {{className}}"
-          {{#unless click.prototype}}data-dismiss="modal"{{/unless}}>
-        {{~text~}}
-      </button>
-    {{/each}}
-  </div>
-{{/inline}}
-
-{{#*inline "modal-content"}}
-  <div class="modal-content {{current}}-state-view fade{{#ifequal state current}} in{{/ifequal}}">
-    {{> @partial-block }}
-  </div>
-{{/inline}}
-
 <div class="modal-dialog">
-  {{#> modal-content current='default'}}
-    {{> header default}}
+  {{#> progress-dialog/modal-content current='default'}}
+    {{> progress-dialog/header default}}
     <div class="modal-body">
-      {{> body-content default}}
+      {{> progress-dialog/body-content default}}
     </div>
-    {{> footer default}}
-    {{> progressPulse class="loading fade"}}
-  {{/modal-content}}
+    {{> progress-dialog/footer default}}
+    {{> progress-pulse class="loading fade"}}
+  {{/progress-dialog/modal-content}}
 
-  {{#> modal-content current='progress'}}
-    {{> header progress}}
+  {{#> progress-dialog/modal-content current='progress'}}
+    {{> progress-dialog/header progress}}
     <div class="modal-body">
-      {{> body-content progress}}
-      {{> progressPulse}}
+      {{> progress-dialog/body-content progress}}
+      {{> progress-pulse}}
     </div>
-    {{> footer progress}}
-  {{/modal-content}}
+    {{> progress-dialog/footer progress}}
+  {{/progress-dialog/modal-content}}
 
-  {{#> modal-content current='error'}}
-    {{> header error}}
+  {{#> progress-dialog/modal-content current='error'}}
+    {{> progress-dialog/header error}}
     <div class="modal-body">
-      {{> body-content error}}
+      {{> progress-dialog/body-content error}}
     </div>
-    {{> footer error}}
-  {{/modal-content}}
+    {{> progress-dialog/footer error}}
+  {{/progress-dialog/modal-content}}
 
-  {{#> modal-content current='success'}}
-    {{> header success}}
+  {{#> progress-dialog/modal-content current='success'}}
+    {{> progress-dialog/header success}}
     <div class="modal-body">
-      {{> body-content success}}
+      {{> progress-dialog/body-content success}}
     </div>
-    {{> footer success}}
-  {{/modal-content}}
+    {{> progress-dialog/footer success}}
+  {{/progress-dialog/modal-content}}
 </div>

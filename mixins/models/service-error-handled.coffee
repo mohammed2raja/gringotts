@@ -1,22 +1,21 @@
-define (require) ->
-  utils = require 'lib/utils'
-  helper = require '../../lib/mixin-helper'
+utils = require 'lib/utils'
+helper = require '../../lib/mixin-helper'
 
-  ###*
-   * Sets XHR errors on fetch as handled,
-   * to suppress further error notification.
-   * This mixin is useful for Collections that are being used by views
-   * with ServiceErrorReady applied.
-  ###
-  (superclass) -> helper.apply superclass, (superclass) -> \
+###*
+  * Sets XHR errors on fetch as handled,
+  * to suppress further error notification.
+  * This mixin is useful for Collections that are being used by views
+  * with ServiceErrorReady applied.
+###
+module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
 
-  class ServiceErrorHandled extends superclass
-    helper.setTypeName @prototype, 'ServiceErrorHandled'
+class ServiceErrorHandled extends superclass
+  helper.setTypeName @prototype, 'ServiceErrorHandled'
 
-    initialize: ->
-      helper.assertCollection this
-      helper.assertNotModel this
-      super
+  initialize: ->
+    helper.assertCollection this
+    helper.assertNotModel this
+    super
 
-    fetch: ->
-      utils.abortable super, catch: ->
+  fetch: ->
+    utils.abortable super, catch: ->

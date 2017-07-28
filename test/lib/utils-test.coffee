@@ -1,291 +1,290 @@
-define (require) ->
-  Chaplin = require 'chaplin'
-  deadDeferred = require 'lib/dead-deferred'
-  utils = require 'lib/utils'
+Chaplin = require 'chaplin'
+deadDeferred = require 'lib/dead-deferred'
+utils = require 'lib/utils'
 
-  describe 'Utils lib', ->
-    it 'should correctly combine weird urls', ->
-      url = utils.urlJoin '', '/foo'
-      expect(url).to.equal '/foo'
-      url = utils.urlJoin '/', '/foo'
-      expect(url).to.equal '/foo'
-      url = utils.urlJoin '/', 'foo'
-      expect(url).to.equal '/foo'
+describe 'Utils lib', ->
+  it 'should correctly combine weird urls', ->
+    url = utils.urlJoin '', '/foo'
+    expect(url).to.equal '/foo'
+    url = utils.urlJoin '/', '/foo'
+    expect(url).to.equal '/foo'
+    url = utils.urlJoin '/', 'foo'
+    expect(url).to.equal '/foo'
 
-    context 'openURL', ->
-      it 'should open URLs', ->
-        sinon.stub window, 'open'
-        utils.openURL 'fum'
-        expect(window.open).to.be.calledOnce
-        expect(window.open).to.be.calledWith 'fum'
-        window.open.restore()
+  context 'openURL', ->
+    it 'should open URLs', ->
+      sinon.stub window, 'open'
+      utils.openURL 'fum'
+      expect(window.open).to.be.calledOnce
+      expect(window.open).to.be.calledWith 'fum'
+      window.open.restore()
 
-    context 'tagBuilder', ->
-      $el = null
+  context 'tagBuilder', ->
+    $el = null
 
-      beforeEach ->
-        $el = $ utils.tagBuilder 'a', 'Everything is awesome!', href: '#'
+    beforeEach ->
+      $el = $ utils.tagBuilder 'a', 'Everything is awesome!', href: '#'
 
-      it 'should create the correct tag', ->
-        expect($el).to.match 'a'
+    it 'should create the correct tag', ->
+      expect($el).to.match 'a'
 
-      it 'should contain the correct content', ->
-        expect($el).to.contain 'Everything is awesome!'
+    it 'should contain the correct content', ->
+      expect($el).to.contain 'Everything is awesome!'
 
-      it 'should have the correct attributes', ->
-        expect($el).to.have.attr 'href', '#'
+    it 'should have the correct attributes', ->
+      expect($el).to.have.attr 'href', '#'
 
-      it 'should insert HTML', ->
-        $myEl = $ utils.tagBuilder 'p', '<strong>Live!</strong>', null, no
-        expect($myEl).to.have.html '<strong>Live!</strong>'
+    it 'should insert HTML', ->
+      $myEl = $ utils.tagBuilder 'p', '<strong>Live!</strong>', null, no
+      expect($myEl).to.have.html '<strong>Live!</strong>'
 
-    context 'parseJSON', ->
-      result = null
-      value = null
+  context 'parseJSON', ->
+    result = null
+    value = null
 
-      beforeEach ->
-        window.Raven =
-          captureException: sinon.spy()
-        result = utils.parseJSON value
+    beforeEach ->
+      window.Raven =
+        captureException: sinon.spy()
+      result = utils.parseJSON value
 
-      afterEach ->
-        delete window.Raven
+    afterEach ->
+      delete window.Raven
 
-      context 'with valid JSON', ->
-        before ->
-          value = '{"key": "Brand New"}'
+    context 'with valid JSON', ->
+      before ->
+        value = '{"key": "Brand New"}'
 
-        after ->
-          value = null
+      after ->
+        value = null
 
-        it 'should return the json', ->
-          expect(result).to.not.be.false
-          expect(result).to.have.property 'key', 'Brand New'
+      it 'should return the json', ->
+        expect(result).to.not.be.false
+        expect(result).to.have.property 'key', 'Brand New'
 
-      context 'with invalid JSON', ->
-        before ->
-          value = 'invalid'
+    context 'with invalid JSON', ->
+      before ->
+        value = 'invalid'
 
-        after ->
-          value = null
+      after ->
+        value = null
 
-        it 'should log an exception to Raven', ->
-          expect(result).to.be.false
-          expect(window.Raven.captureException).to.have.been.called
+      it 'should log an exception to Raven', ->
+        expect(result).to.be.false
+        expect(window.Raven.captureException).to.have.been.called
 
-        it 'should pass the string that failed to parse', ->
-          secondArg = window.Raven.captureException.lastCall.args[1]
-          expect(secondArg).to.eql tags: str: 'invalid'
+      it 'should pass the string that failed to parse', ->
+        secondArg = window.Raven.captureException.lastCall.args[1]
+        expect(secondArg).to.eql tags: str: 'invalid'
 
-      context 'with empty string', ->
-        before ->
-          value = ''
+    context 'with empty string', ->
+      before ->
+        value = ''
 
-        after ->
-          value = null
+      after ->
+        value = null
 
-        it 'should pass the string that failed to parse', ->
-          secondArg = window.Raven.captureException.lastCall.args[1]
-          expect(secondArg).to.eql tags: str: 'Empty string'
+      it 'should pass the string that failed to parse', ->
+        secondArg = window.Raven.captureException.lastCall.args[1]
+        expect(secondArg).to.eql tags: str: 'Empty string'
 
-      context 'with undefined', ->
-        before ->
-          value = undefined
+    context 'with undefined', ->
+      before ->
+        value = undefined
 
-        after ->
-          value = null
+      after ->
+        value = null
 
-        it 'should pass the string that failed to parse', ->
-          secondArg = window.Raven.captureException.lastCall.args[1]
-          expect(secondArg).to.eql tags: str: 'undefined'
+      it 'should pass the string that failed to parse', ->
+        secondArg = window.Raven.captureException.lastCall.args[1]
+        expect(secondArg).to.eql tags: str: 'undefined'
 
-    context 'toBrowserDate', ->
-      it 'should convert data to HTML5 date', ->
-        date = utils.toBrowserDate '2016-07-18'
-        expect(date).to.equal '2016-07-18'
+  context 'toBrowserDate', ->
+    it 'should convert data to HTML5 date', ->
+      date = utils.toBrowserDate '2016-07-18'
+      expect(date).to.equal '2016-07-18'
 
-    context 'toServerDate', ->
-      it 'should parse a number', ->
-        date = utils.toServerDate '2016-07-18'
-        expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
+  context 'toServerDate', ->
+    it 'should parse a number', ->
+      date = utils.toServerDate '2016-07-18'
+      expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
 
-    context 'abortable', ->
-      xhr = null
+  context 'abortable', ->
+    xhr = null
 
-      beforeEach ->
-        xhr = $.Deferred()
-        xhr.abort = sinon.spy -> xhr.reject()
-        return
+    beforeEach ->
+      xhr = $.Deferred()
+      xhr.abort = sinon.spy -> xhr.reject()
+      return
 
-        context 'regular handlers', ->
-          progressSpy = null
-          thenSpy = null
-          catchSpy = null
-          promise = null
+      context 'regular handlers', ->
+        progressSpy = null
+        thenSpy = null
+        catchSpy = null
+        promise = null
 
+        beforeEach ->
+          promise = utils.abortable xhr,
+            progress: progressSpy = sinon.spy()
+            then: thenSpy = sinon.spy()
+            catch: catchSpy = sinon.spy()
+          return
+
+        context 'on nofity', ->
           beforeEach ->
-            promise = utils.abortable xhr,
-              progress: progressSpy = sinon.spy()
-              then: thenSpy = sinon.spy()
-              catch: catchSpy = sinon.spy()
-            return
+            xhr.notify(5).resolve()
+            promise
 
-          context 'on nofity', ->
-            beforeEach ->
-              xhr.notify(5).resolve()
-              promise
+          it 'should pass progress to promise', ->
+            expect(progressSpy).to.have.been.calledWith 5
 
-            it 'should pass progress to promise', ->
-              expect(progressSpy).to.have.been.calledWith 5
-
-          context 'on resolve', ->
-            beforeEach ->
-              xhr.resolve 6
-              promise
-
-            it 'should pass resolved value to promise', ->
-              expect(thenSpy).to.have.been.calledWith 6
-
-          context 'on reject', ->
-            beforeEach ->
-              xhr.reject 7
-              promise
-
-            it 'should pass rejected value to promise', ->
-              expect(catchSpy).to.have.been.calledWith 7
-
-          context 'on abort', ->
-            beforeEach ->
-              promise.abort()
-
-            it 'should abort xhr', ->
-              expect(xhr.abort).to.have.been.calledOnce
-
-        context 'all handler', ->
-          promise = null
-          allSpy = null
-
+        context 'on resolve', ->
           beforeEach ->
-            promise = utils.abortable xhr,
-              all: allSpy = sinon.spy()
-            return
+            xhr.resolve 6
+            promise
 
-          context 'on nofity', ->
-            beforeEach ->
-              xhr.notify(5).resolve()
-              promise
+          it 'should pass resolved value to promise', ->
+            expect(thenSpy).to.have.been.calledWith 6
 
-            it 'should pass progress to promise', ->
-              expect(allSpy).to.have.been.calledWith 5
-
-          context 'on resolve', ->
-            beforeEach ->
-              xhr.resolve 6
-              promise
-
-            it 'should pass resolved value to promise', ->
-              expect(allSpy).to.have.been.calledWith 6
-
-          context 'on reject', ->
-            beforeEach ->
-              xhr.reject 7
-              promise
-
-            it 'should pass rejected value to promise', ->
-              expect(allSpy).to.have.been.calledWith 7
-
-    context 'disposable', ->
-      expectCallback = (key, response, type) ->
-        context key, ->
-          sandbox = null
-          promise = null
-          callback = null
-          disposed = null
-
+        context 'on reject', ->
           beforeEach ->
-            sandbox = sinon.sandbox.create useFakeServer: yes
-            sandbox.stub deadDeferred, 'create', ->
-              $.Deferred().reject 'disposed'
-            model = new Chaplin.Model()
-            model.url = '/foo'
-            promise = utils.disposable model.fetch(), -> model.disposed
-            promise[key] callback = sinon.spy()
-            model.dispose() if disposed
-            sandbox.server.respondWith response
-            sandbox.server.respond()
-            promise.catch ($xhr) ->
-              $xhr unless $xhr is 'disposed' or $xhr.status is 500
+            xhr.reject 7
+            promise
 
-          afterEach ->
-            sandbox.restore()
+          it 'should pass rejected value to promise', ->
+            expect(catchSpy).to.have.been.calledWith 7
 
-          it 'should invoke promise callback', ->
-            if type is 'success'
-              expect(callback).to.be.calledWith [],
-                sinon.match.string, sinon.match.has 'status', 200
+        context 'on abort', ->
+          beforeEach ->
+            promise.abort()
+
+          it 'should abort xhr', ->
+            expect(xhr.abort).to.have.been.calledOnce
+
+      context 'all handler', ->
+        promise = null
+        allSpy = null
+
+        beforeEach ->
+          promise = utils.abortable xhr,
+            all: allSpy = sinon.spy()
+          return
+
+        context 'on nofity', ->
+          beforeEach ->
+            xhr.notify(5).resolve()
+            promise
+
+          it 'should pass progress to promise', ->
+            expect(allSpy).to.have.been.calledWith 5
+
+        context 'on resolve', ->
+          beforeEach ->
+            xhr.resolve 6
+            promise
+
+          it 'should pass resolved value to promise', ->
+            expect(allSpy).to.have.been.calledWith 6
+
+        context 'on reject', ->
+          beforeEach ->
+            xhr.reject 7
+            promise
+
+          it 'should pass rejected value to promise', ->
+            expect(allSpy).to.have.been.calledWith 7
+
+  context 'disposable', ->
+    expectCallback = (key, response, type) ->
+      context key, ->
+        sandbox = null
+        promise = null
+        callback = null
+        disposed = null
+
+        beforeEach ->
+          sandbox = sinon.sandbox.create useFakeServer: yes
+          sandbox.stub deadDeferred, 'create', ->
+            $.Deferred().reject 'disposed'
+          model = new Chaplin.Model()
+          model.url = '/foo'
+          promise = utils.disposable model.fetch(), -> model.disposed
+          promise[key] callback = sinon.spy()
+          model.dispose() if disposed
+          sandbox.server.respondWith response
+          sandbox.server.respond()
+          promise.catch ($xhr) ->
+            $xhr unless $xhr is 'disposed' or $xhr.status is 500
+
+        afterEach ->
+          sandbox.restore()
+
+        it 'should invoke promise callback', ->
+          if type is 'success'
+            expect(callback).to.be.calledWith [],
+              sinon.match.string, sinon.match.has 'status', 200
+          else
+            expect(callback).to.be.calledWith sinon.match.has('status', 500),
+              sinon.match.string, sinon.match.string
+
+        context 'if disposed', ->
+          before ->
+            disposed = yes
+
+          after ->
+            disposed = null
+
+          it 'should not invoke promise callback', ->
+            if key in ['done', 'then']
+              expect(callback).to.not.be.calledOnce
             else
-              expect(callback).to.be.calledWith sinon.match.has('status', 500),
-                sinon.match.string, sinon.match.string
+              expect(callback).to.be.calledWith 'disposed'
 
-          context 'if disposed', ->
-            before ->
-              disposed = yes
+    expectCallback 'done', '[]', 'success'
+    expectCallback 'fail', [500, {}, '{}'], 'fail'
+    expectCallback 'always', '[]', 'success'
+    expectCallback 'then', '[]', 'success'
+    expectCallback 'catch', [500, {}, '{}'], 'fail'
 
-            after ->
-              disposed = null
+  context 'waitUntil', ->
+    beforeEach (done) ->
+      i = 0
+      utils.waitUntil \
+        condition: -> i++ > 5,
+        then: done
 
-            it 'should not invoke promise callback', ->
-              if key in ['done', 'then']
-                expect(callback).to.not.be.calledOnce
-              else
-                expect(callback).to.be.calledWith 'disposed'
+    it 'should wait and then finish test', ->
+      expect(true).to.be.true
 
-      expectCallback 'done', '[]', 'success'
-      expectCallback 'fail', [500, {}, '{}'], 'fail'
-      expectCallback 'always', '[]', 'success'
-      expectCallback 'then', '[]', 'success'
-      expectCallback 'catch', [500, {}, '{}'], 'fail'
+  context 'excludeUrlParams', ->
+    params = null
+    result = null
 
-    context 'waitUntil', ->
-      beforeEach (done) ->
-        i = 0
-        utils.waitUntil \
-          condition: -> i++ > 5,
-          then: done
+    beforeEach ->
+      result = utils.excludeUrlParams 'some/url?a=b&c=d&e=f&g=h', params
 
-      it 'should wait and then finish test', ->
-        expect(true).to.be.true
+    context 'one param', ->
+      before ->
+        params = 'e'
 
-    context 'excludeUrlParams', ->
-      params = null
-      result = null
+      it 'should return proper url', ->
+        expect(result).to.equal 'some/url?a=b&c=d&g=h'
 
-      beforeEach ->
-        result = utils.excludeUrlParams 'some/url?a=b&c=d&e=f&g=h', params
+    context 'many params', ->
+      before ->
+        params = ['a', 'c', 'g']
 
-      context 'one param', ->
-        before ->
-          params = 'e'
+      it 'should return proper url', ->
+        expect(result).to.equal 'some/url?e=f'
 
-        it 'should return proper url', ->
-          expect(result).to.equal 'some/url?a=b&c=d&g=h'
+  context 'compress', ->
+    context 'passing undefined', ->
+      it 'should return undefined', ->
+        expect(utils.compress undefined).to.be.undefined
 
-      context 'many params', ->
-        before ->
-          params = ['a', 'c', 'g']
+    context 'passing single element array', ->
+      it 'should return the element', ->
+        expect(utils.compress [5]).to.equal 5
 
-        it 'should return proper url', ->
-          expect(result).to.equal 'some/url?e=f'
-
-    context 'compress', ->
-      context 'passing undefined', ->
-        it 'should return undefined', ->
-          expect(utils.compress undefined).to.be.undefined
-
-      context 'passing single element array', ->
-        it 'should return the element', ->
-          expect(utils.compress [5]).to.equal 5
-
-      context 'passing multiple elements array', ->
-        it 'should return the array', ->
-          expect(utils.compress [6, 7]).to.eql [6, 7]
+    context 'passing multiple elements array', ->
+      it 'should return the array', ->
+        expect(utils.compress [6, 7]).to.eql [6, 7]

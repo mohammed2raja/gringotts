@@ -1,8 +1,9 @@
-define (require) ->
-
+module.exports = {
   ###*
-   * Creates a promise that is never resolved, so niether of chain callbacks
-   * is called. This is useful for mocking in unit testing.
+   * Creates a promise that is never resolved. This prevents either
+   * chain of callbacks from executing. This is useful for mocking
+   * in unit tests.
   ###
   create: ->
     $.Deferred().promise()
+}
