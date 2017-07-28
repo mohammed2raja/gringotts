@@ -15,6 +15,9 @@ define (require) ->
       @$el.addClass('leaf') if isLeaf @model
 
   class DropdownView extends CollectionView
+    loadingSelector: '.filters-dropdown-loading'
+    fallbackSelector: '.filters-dropdown-empty'
+    errorSelector: '.filters-dropdown-service-error'
     itemView: DropdownItemView
     getTemplateFunction: ->
 
@@ -27,14 +30,14 @@ define (require) ->
     template: 'filter-input/view'
     className: 'form-control filter-input'
     listSelector: '.filter-items-container'
-    loadingSelector: ".list-item#{@::loadingSelector}"
+    loadingSelector: '.filters-loading'
     fallbackSelector: null # no selected items is a default state
-    errorSelector: ".list-item#{@::errorSelector}"
+    errorSelector: '.filters-service-error'
     itemView: FilterInputItemView
     listen:
-      'add collection': -> @updateButtonsState()
-      'remove collection': -> @updateButtonsState()
-      'reset collection': -> @updateButtonsState()
+      'add collection': -> @updateViewState()
+      'remove collection': -> @updateViewState()
+      'reset collection': -> @updateViewState()
     events:
       'click': (e) -> @onWhitespaceClick e
       'click .remove-button': (e) -> @onItemRemoveClick e
@@ -58,6 +61,8 @@ define (require) ->
       @placeholder = @$el.data('placeholder') or options.placeholder
       @disabled = @$el.data('disabled')? or options.disabled
       @groupSource ?= new Chaplin.Collection()
+      @listenTo @groupSource, 'synced', -> @updateViewState()
+      @listenTo @groupSource, 'unsynced', -> @updateViewState()
       @itemSource ?= new Chaplin.Collection()
       @filterDebounced = _.debounce @filterDropdownItems, 100
 
@@ -82,10 +87,10 @@ define (require) ->
         el: @$ '.dropdown-items'
         collection: @itemSource
       }
-      @updateButtonsState()
-      @filterDropdownItems()
+      @updateViewState()
 
-    updateButtonsState: ->
+    updateViewState: ->
+      @filterDropdownItems force: yes
       @$('.remove-all-button').toggle @unrequiredSelection().length > 0
 
     onWhitespaceClick: (e) ->
@@ -253,8 +258,9 @@ define (require) ->
       @$('input').val ''
       @filterDropdownItems()
 
-    filterDropdownItems: ->
+    filterDropdownItems: (opts={}) ->
       return if @disposed
+      {force} = _.defaults opts, force: no
       inGroups = @activeDropdown() is 'groups'
       if query = @query()
         regexp = try new RegExp query, 'i'
@@ -262,7 +268,7 @@ define (require) ->
           (inGroups and isLeaf item) or regexp?.test item.get 'name'
       else
         filter = null
-      if @previousQuery isnt query
+      if (@previousQuery or '') isnt query or force
         dropdown = @subview "dropdown-#{@activeDropdown()}"
         dropdown.filter filter
         names = 'li' + (if inGroups then ':not(.leaf)' else '') + ' .item-name'

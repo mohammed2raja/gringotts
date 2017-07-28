@@ -162,14 +162,15 @@ define (require) ->
     expectEmptyDropdown = (dropdown) ->
       it "should render empty #{dropdown} dropdown", ->
         if dropdown is 'items'
-          view.$('.dropdown-items li.fade').each (i, el) ->
+          view.$('.dropdown-items .filter-item').each (i, el) ->
             expect($ el).to.be.hidden
-          expect(view.$ '.dropdown-items li.empty').to.be.visible
+          expect(view.$ '.dropdown-items .filters-dropdown-empty').to.be.visible
         else
-          visibleGroupItem = view.$('.dropdown-groups li.fade:visible')
+          visibleGroupItem = view.$('.dropdown-groups .filter-item:visible')
           expect(visibleGroupItem).to.have.length 1
           expect(visibleGroupItem.find '.item-name').to.have.text 'Search'
-        expect(view.$ ".dropdown-#{dropdown} li.loading").to.be.hidden
+          expect(view.$ '.dropdown-groups .filters-dropdown-loading')
+            .to.be.hidden
 
     expectOpenItemsDropdown = ->
       it 'should show dropdown', ->
@@ -319,7 +320,7 @@ define (require) ->
           setQuery view, text
 
         getVisibleItems = (dropdown) ->
-          items = view.$(".dropdown-#{dropdown} li.fade:visible")
+          items = view.$(".dropdown-#{dropdown} .filter-item:visible")
 
         context 'existing group name', ->
           before ->

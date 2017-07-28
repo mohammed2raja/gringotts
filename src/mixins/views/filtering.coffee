@@ -4,9 +4,8 @@ define (require) ->
   FilterInputView = require '../../views/filter-input-view'
   Routing = require './routing'
 
-  isPerhapsSyncedDeep = (collection) ->
-    if _.isFunction collection.isSyncedDeep
-    then collection.isSyncedDeep() else yes
+  isPerhapsSynced = (collection) ->
+    if _.isFunction collection?.isSynced then collection.isSynced() else yes
 
   ###*
    * Helps initialize and sync the filter selection state of the FilterInputView
@@ -18,12 +17,14 @@ define (require) ->
     filterSelection: FilterSelection
 
     filteringIsActive: ->
-      @filterSelection and @filterGroups
+      !!@filterGroups
 
     initialize: ->
       helper.assertViewOrCollectionView this
       super
       @filterSelection = new @filterSelection()
+      if @filteringIsActive()
+        @filterSelection.linkSyncMachineTo @filterGroups
       @addFilterSelectionListeners()
 
     render: ->
@@ -41,10 +42,10 @@ define (require) ->
 
     updateFilterSelection: ->
       return unless @filteringIsActive()
-      if isPerhapsSyncedDeep @filterGroups
+      if isPerhapsSynced @filterGroups
         @resetFilterSelection @getBrowserQuery()
       else
-        @listenTo @filterGroups, 'syncDeep', ->
+        @listenTo @filterGroups, 'synced', ->
           @resetFilterSelection @getBrowserQuery()
 
     resetFilterSelection: (obj) ->
