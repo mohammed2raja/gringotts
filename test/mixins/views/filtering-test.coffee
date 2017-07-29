@@ -7,8 +7,11 @@ define (require) ->
     fromObject: ->
       @trigger 'update'
       @trigger 'reset'
+
     toObject: ->
       x: 'z'
+
+    linkSyncMachineTo: sinon.spy()
 
   class ViewMock extends Filtering StringTemplatable Chaplin.View
     autoRender: yes
@@ -22,15 +25,14 @@ define (require) ->
     view = null
     filterGroups = null
     browserQuery = null
-    withSyncDeep = null
+    isSynced = yes
 
     beforeEach ->
       sandbox = sinon.sandbox.create()
       sandbox.spy FilterSelectionMock::, 'fromObject'
       sandbox.spy FilterSelectionMock::, 'toObject'
       filterGroups = new Chaplin.Collection [{id: 'a'}, {id: 'b'}]
-      if withSyncDeep
-        filterGroups.isSyncedDeep = -> false
+      filterGroups.isSynced = -> isSynced
       sandbox.stub ViewMock::, 'getBrowserQuery', -> browserQuery or a: 'b'
       sandbox.stub ViewMock::, 'setBrowserQuery'
       view = new ViewMock {filterGroups}
@@ -39,6 +41,9 @@ define (require) ->
       sandbox.restore()
       view.dispose()
       filterGroups.dispose()
+
+    it 'should initialize', ->
+      expect(FilterSelectionMock::linkSyncMachineTo).to.have.been.calledOnce
 
     it 'should initialize filter view', ->
       filterView = view.subview 'filtering-control'
@@ -56,22 +61,22 @@ define (require) ->
       it 'should not set browser query', ->
         expect(view.setBrowserQuery).to.have.not.been.called
 
-    context 'without filterGroups.isSyncedDeep', ->
+    context 'when filterGroups is synced', ->
       expectResetSelection()
 
-    context 'with filterGroups.isSyncedDeep', ->
+    context 'when filterGroups is not synced', ->
       before ->
-        withSyncDeep = true
+        isSynced = no
 
       after ->
-        withSyncDeep = false
+        isSynced = yes
 
       it 'should not update filterSelection', ->
         expect(view.filterSelection.fromObject).to.have.not.been.called
 
-      context 'on syncDeep triggered', ->
+      context 'on sync triggered', ->
         beforeEach ->
-          filterGroups.trigger 'syncDeep'
+          filterGroups.trigger 'synced'
 
         expectResetSelection()
 

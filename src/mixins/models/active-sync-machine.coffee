@@ -57,6 +57,7 @@ define (require) ->
      * @param  {Model|Collection} source  with SyncMachine.
     ###
     linkSyncMachineTo: (source) ->
+      return unless _.isFunction source?.syncState
       unless @syncState() is source.syncState()
         switchStateTo this, source.syncState()
       @listenTo source, 'syncStateChange', (source, state) ->

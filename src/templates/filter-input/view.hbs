@@ -1,29 +1,31 @@
 {{icon 'misc-search'}}
 <div class="filter-items-container">
-  <span class="list-item loading" style="display: none">{{loadingText}}</span>
-  <span class="list-item service-error">{{errorText}}</span>
   <span class="dropdown-control">
     <span class="selected-group"></span>
     <span class="dropdown">
       <input placeholder="{{placeholder}}" data-toggle="dropdown"
           {{#if disabled}}disabled{{/if}}  />
       <ul class="dropdown-menu dropdown-groups">
-        <li class="no-hover loading" style="display: none">
+        <li class="no-hover filters-dropdown-loading" style="display: none">
           <label>{{loadingText}}</label>
         </li>
-        <li class="no-hover empty"><label>{{emptyText}}</label></li>
-        <li class="no-hover service-error"><label>{{errorText}}</label></li>
+        <li class="no-hover filters-dropdown-empty" style="display: none">
+          <label>{{emptyText}}</label>
+        </li>
+        <li class="no-hover filters-dropdown-service-error" style="display: none">
+          <label>{{errorText}}</label>
+        </li>
       </ul>
       <ul class="dropdown-menu dropdown-items hidden">
-        <li class="no-hover loading" style="display: none">
-          <label>{{loadingText}}</label>
+        <li class="no-hover filters-dropdown-empty" style="display: none">
+          <label>{{emptyText}}</label>
         </li>
-        <li class="no-hover empty"><label>{{emptyText}}</label></li>
-        <li class="no-hover service-error"><label>{{errorText}}</label></li>
       </ul>
     </span>
   </span>
 </div>
+<span class="filters-loading" style="display: none">{{loadingText}}</span>
+<span class="filters-service-error" style="display: none">{{errorText}}</span>
 <button type="button" class="btn btn-link remove-all-button">
   {{icon 'misc-x'}}
 </button>
