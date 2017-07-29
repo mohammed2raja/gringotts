@@ -3,14 +3,14 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var FilterInputView, FilterSelection, Routing, helper, isPerhapsSyncedDeep;
+    var FilterInputView, FilterSelection, Routing, helper, isPerhapsSynced;
     helper = require('../../lib/mixin-helper');
     FilterSelection = require('../../models/filter-selection');
     FilterInputView = require('../../views/filter-input-view');
     Routing = require('./routing');
-    isPerhapsSyncedDeep = function(collection) {
-      if (_.isFunction(collection.isSyncedDeep)) {
-        return collection.isSyncedDeep();
+    isPerhapsSynced = function(collection) {
+      if (_.isFunction(collection != null ? collection.isSynced : void 0)) {
+        return collection.isSynced();
       } else {
         return true;
       }
@@ -36,13 +36,16 @@
         Filtering.prototype.filterSelection = FilterSelection;
 
         Filtering.prototype.filteringIsActive = function() {
-          return this.filterSelection && this.filterGroups;
+          return !!this.filterGroups;
         };
 
         Filtering.prototype.initialize = function() {
           helper.assertViewOrCollectionView(this);
           Filtering.__super__.initialize.apply(this, arguments);
           this.filterSelection = new this.filterSelection();
+          if (this.filteringIsActive()) {
+            this.filterSelection.linkSyncMachineTo(this.filterGroups);
+          }
           return this.addFilterSelectionListeners();
         };
 
@@ -67,10 +70,10 @@
           if (!this.filteringIsActive()) {
             return;
           }
-          if (isPerhapsSyncedDeep(this.filterGroups)) {
+          if (isPerhapsSynced(this.filterGroups)) {
             return this.resetFilterSelection(this.getBrowserQuery());
           } else {
-            return this.listenTo(this.filterGroups, 'syncDeep', function() {
+            return this.listenTo(this.filterGroups, 'synced', function() {
               return this.resetFilterSelection(this.getBrowserQuery());
             });
           }

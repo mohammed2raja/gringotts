@@ -39,6 +39,12 @@
         return DropdownView.__super__.constructor.apply(this, arguments);
       }
 
+      DropdownView.prototype.loadingSelector = '.filters-dropdown-loading';
+
+      DropdownView.prototype.fallbackSelector = '.filters-dropdown-empty';
+
+      DropdownView.prototype.errorSelector = '.filters-dropdown-service-error';
+
       DropdownView.prototype.itemView = DropdownItemView;
 
       DropdownView.prototype.getTemplateFunction = function() {};
@@ -75,23 +81,23 @@
 
       FilterInputView.prototype.listSelector = '.filter-items-container';
 
-      FilterInputView.prototype.loadingSelector = ".list-item" + FilterInputView.prototype.loadingSelector;
+      FilterInputView.prototype.loadingSelector = '.filters-loading';
 
       FilterInputView.prototype.fallbackSelector = null;
 
-      FilterInputView.prototype.errorSelector = ".list-item" + FilterInputView.prototype.errorSelector;
+      FilterInputView.prototype.errorSelector = '.filters-service-error';
 
       FilterInputView.prototype.itemView = FilterInputItemView;
 
       FilterInputView.prototype.listen = {
         'add collection': function() {
-          return this.updateButtonsState();
+          return this.updateViewState();
         },
         'remove collection': function() {
-          return this.updateButtonsState();
+          return this.updateViewState();
         },
         'reset collection': function() {
-          return this.updateButtonsState();
+          return this.updateViewState();
         }
       };
 
@@ -155,6 +161,12 @@
         if (this.groupSource == null) {
           this.groupSource = new Chaplin.Collection();
         }
+        this.listenTo(this.groupSource, 'synced', function() {
+          return this.updateViewState();
+        });
+        this.listenTo(this.groupSource, 'unsynced', function() {
+          return this.updateViewState();
+        });
         if (this.itemSource == null) {
           this.itemSource = new Chaplin.Collection();
         }
@@ -181,11 +193,13 @@
           el: this.$('.dropdown-items'),
           collection: this.itemSource
         }));
-        this.updateButtonsState();
-        return this.filterDropdownItems();
+        return this.updateViewState();
       };
 
-      FilterInputView.prototype.updateButtonsState = function() {
+      FilterInputView.prototype.updateViewState = function() {
+        this.filterDropdownItems({
+          force: true
+        });
         return this.$('.remove-all-button').toggle(this.unrequiredSelection().length > 0);
       };
 
@@ -427,11 +441,17 @@
         return this.filterDropdownItems();
       };
 
-      FilterInputView.prototype.filterDropdownItems = function() {
-        var dropdown, filter, inGroups, names, query, regexp;
+      FilterInputView.prototype.filterDropdownItems = function(opts) {
+        var dropdown, filter, force, inGroups, names, query, regexp;
+        if (opts == null) {
+          opts = {};
+        }
         if (this.disposed) {
           return;
         }
+        force = _.defaults(opts, {
+          force: false
+        }).force;
         inGroups = this.activeDropdown() === 'groups';
         if (query = this.query()) {
           regexp = (function() {
@@ -445,7 +465,7 @@
         } else {
           filter = null;
         }
-        if (this.previousQuery !== query) {
+        if ((this.previousQuery || '') !== query || force) {
           dropdown = this.subview("dropdown-" + (this.activeDropdown()));
           dropdown.filter(filter);
           names = 'li' + (inGroups ? ':not(.leaf)' : '') + ' .item-name';

@@ -98,6 +98,9 @@
            */
 
           ActiveSyncMachine.prototype.linkSyncMachineTo = function(source) {
+            if (!_.isFunction(source != null ? source.syncState : void 0)) {
+              return;
+            }
             if (this.syncState() !== source.syncState()) {
               switchStateTo(this, source.syncState());
             }
