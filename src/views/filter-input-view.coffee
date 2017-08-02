@@ -1,18 +1,96 @@
 define (require) ->
   Chaplin = require 'chaplin'
+  handlebars = require 'handlebars'
   utils = require 'lib/utils'
   View = require 'views/base/view'
   CollectionView = require 'views/base/collection-view'
 
+  DESCRIPTION_MAX_LENGTH = 40
+
   isLeaf = (model) ->
     not model.get('children')?
 
+  regExp = (query, opts={}) ->
+    return unless query
+    {startsWith} = _.defaults opts, startsWith: yes
+    # always match numbers anywhere inside filter names
+    mode = if !!parseInt query then '()' \
+      else (if startsWith then '^()' else '(^|\\W)')
+    try new RegExp "#{mode}(#{query})", 'i'
+
+  matching = (item, regexp) ->
+    regexp?.test item.get 'name'
+
+  matchingChild = (group, regexp) ->
+    _.first group?.get('children')?.filter (c) -> matching c, regexp
+
+  highlightMatch = (text, regexp) ->
+    new handlebars.SafeString text?.replace regexp, '$1<i>$2</i>'
+
   class DropdownItemView extends View
     template: 'filter-input/list-item'
-    noWrap: true
+    tagName: 'li'
+    query: ''
+    className: ->
+      (if @isLeaf then 'leaf ' else '') + 'filter-item'
+
+    constructor: ({model}) ->
+      @isLeaf = isLeaf model
+      @isActionItem = @isLeaf and model.get 'description'
+      @needsDescription = not @isLeaf and not model.get 'description'
+      super
+
+    initialize: ->
+      super
+      if @needsDescription
+        @listenTo @model.get('children'), 'synced', -> @render()
+
+    getTemplateData: ->
+      data = super
+      if @needsDescription
+        _.extend data, description: @generateDesc()
+      if @query
+        if @isActionItem
+          data.name = highlightMatch "#{data.name} #{@query}",
+            regExp @query, startsWith: no
+        else
+          data.name = highlightMatch data.name, regExp @query
+          if data.description
+            data.description = highlightMatch data.description,
+              regExp @query, startsWith: no
+      data
+
     render: ->
       super
-      @$el.addClass('leaf') if isLeaf @model
+      if @isActionItem
+        @$el.toggleClass 'disabled no-hover', @query is ''
+
+    highlight: (query) ->
+      return unless @query isnt query
+      @query = query
+      @description = null
+      @render()
+
+    generateDesc: ->
+      return @description if @description
+      if (children = @model.get 'children').length
+        picks = []
+        totalLength = 0
+        for name in _.compact children.pluck 'name'
+          break unless (totalLength += name.length) <= DESCRIPTION_MAX_LENGTH
+          picks.push name.trim()
+        match = matchingChild(@model, regExp @query)?.get 'name' if @query
+        picks = _.union(picks, [match] if match)
+        @description = @unionDesc picks, children.length
+      else
+        I18n?.t('loading.text') or 'Loading...'
+
+    unionDesc: (picks, totalCount) ->
+      if picks.length is 2 and totalCount is 2
+        picks.join " #{I18n?.t('labels.or') or 'or'} " # or what?..
+      else if picks.length
+        ellipsis = if picks.length < totalCount then '…' else ''
+        picks.join(', ') + ellipsis
 
   class DropdownView extends CollectionView
     loadingSelector: '.filters-dropdown-loading'
@@ -120,6 +198,7 @@ define (require) ->
         @visibleListItems().first().focus()
       else if e.which is utils.keys.ENTER
         e.preventDefault()
+        @filterDropdownItems() # for quick types then enter
         if @query() isnt '' and item = _.first @visibleListItems()
           @continue = true
           item.click()
@@ -158,10 +237,16 @@ define (require) ->
         return e.stopImmediatePropagation()
       e.preventDefault()
       group = _.first @subview('dropdown-groups').modelsFrom e.currentTarget
-      unless isLeaf group
+      throw new Error('There is no group for clicked item!') unless group
+      if query = @query()
+        if isLeaf group # like Search action
+          @addSelectedItem group, new Chaplin.Model id: query, name: query
+        else if item = matchingChild group, regExp query # match in filter items
+          @addSelectedItem group, item
+        else # select only matching group, show items in items dropdown
+          @setSelectedGroup group
+      else
         @setSelectedGroup group
-      else if query = @query()
-        @addSelectedItem group, new Chaplin.Model id: query, name: query
 
     onDropdownItemClick: (e) ->
       if ($t = $ e.currentTarget).hasClass('disabled') or $t.hasClass 'no-hover'
@@ -259,27 +344,26 @@ define (require) ->
       @filterDropdownItems()
 
     filterDropdownItems: (opts={}) ->
-      return if @disposed
       {force} = _.defaults opts, force: no
+      applyFilter = (@previousQuery or '') isnt (query = @query()) or force
+      return unless not @disposed and applyFilter
+      dropdown = @subview "dropdown-#{@activeDropdown()}"
+      dropdown.filter @dropdownFilterFunc()
+      dropdown.toggleFallback()
+      for itemView in _.values dropdown.getItemViews()
+        visible = -1 < dropdown.visibleItems.indexOf itemView.model
+        itemView.highlight if visible then query else ''
+      @previousQuery = query
+
+    dropdownFilterFunc: ->
+      return null unless query = @query()
       inGroups = @activeDropdown() is 'groups'
-      if query = @query()
-        regexp = try new RegExp query, 'i'
-        filter = (item) -> # always show all group leafs
-          (inGroups and isLeaf item) or regexp?.test item.get 'name'
-      else
-        filter = null
-      if (@previousQuery or '') isnt query or force
-        dropdown = @subview "dropdown-#{@activeDropdown()}"
-        dropdown.filter filter
-        names = 'li' + (if inGroups then ':not(.leaf)' else '') + ' .item-name'
-        dropdown.find(names).each (i, el) ->
-          ($el = $ el).html $el.text().replace regexp, '<i>$&</i>'
-        if inGroups
-          dropdown.find('li.leaf').each (i, el) ->
-            ($el = $ el).find('.item-note').text query
-            ($el = $ el).toggleClass 'disabled no-hover', query is ''
-        dropdown.toggleFallback()
-        @previousQuery = query
+      regexp = regExp query
+      (item) ->
+        # always show leafs in groups
+        include = (inGroups and isLeaf item) or
+          matching(item, regexp) or matchingChild(item, regexp)?
+        include or no # Boolean type is expected as result
 
     dispose: ->
       delete @groupSource
