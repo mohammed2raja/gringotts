@@ -209,8 +209,8 @@ define (require) ->
         expect(group0.find '.item-name').to.have.text 'Group One'
         expect(group0.find '.item-name i').to.have.text groupNameInj
         expect(group0.find '.item-description i').to.have.text groupDescInj
-        expect(group1.find '.item-name').to.have.text "Search #{query}"
-        expect(group1.find '.item-name i').to.have.text query
+        expect(group1.find '.item-name').to.have.text 'Search'
+        expect(group1.find '.item-note').to.have.text query
         expect(group1).to.not.have.class 'disabled no-hover'
 
     expectOpenItemsDropdown = ->
@@ -238,13 +238,9 @@ define (require) ->
       it 'should hide dropdown', ->
         expect(view.$ '.dropdown').to.not.have.class 'open'
 
-    expectFocusedState = (focused) ->
-      if focused
-        it 'should have root element with focus', ->
-          expect(view.$el).to.have.class 'focus'
-      else
-        it 'should have root element without focus', ->
-          expect(view.$el).to.not.have.class 'focus'
+    expectFocusedState = ->
+      it 'should have root element with focus', ->
+        expect(view.$el).to.have.class 'focus'
 
     expectItemSelected = (groupName, itemName) ->
       it 'should render the item in selection', ->
@@ -271,7 +267,7 @@ define (require) ->
             which: utils.keys.ESC
 
         expectClosedDropdowns()
-        expectFocusedState yes
+        expectFocusedState()
 
         context 'on type char', ->
           beforeEach ->
@@ -291,7 +287,7 @@ define (require) ->
             view.$('.dropdown-items a').last().click()
 
           expectClosedDropdowns()
-          expectFocusedState no
+          expectFocusedState()
           expectItemSelected 'Group One', 'Fifth Item'
 
           it 'should update collection', ->
@@ -393,7 +389,6 @@ define (require) ->
                   view.$('input').trigger $.Event 'keydown',
                     which: utils.keys.ENTER
 
-                expectOpenGroupsDropdown()
                 expectItemSelected 'Group One', 'Third Item'
                 expectInputFocused()
 
@@ -437,7 +432,6 @@ define (require) ->
               view.$('input').trigger $.Event 'keydown',
                 which: utils.keys.ENTER
 
-            expectOpenGroupsDropdown()
             expectItemSelected 'Group One', 'Fifth Item'
             expectInputFocused()
 
@@ -463,7 +457,6 @@ define (require) ->
               view.$('input').focus().trigger $.Event 'keydown',
                 which: utils.keys.ENTER
 
-            expectOpenGroupsDropdown()
             expectDefaultGroupsInDropdown()
             expectInputFocused()
             expectItemSelected 'Search', 'asdfgh'
@@ -516,7 +509,6 @@ define (require) ->
                   .trigger($.Event 'keydown', which: utils.keys.ENTER)
                   .click()
 
-              expectOpenGroupsDropdown()
               expectItemSelected 'Group One', 'First Item'
               expectInputFocused()
 

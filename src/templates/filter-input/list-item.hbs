@@ -1,5 +1,10 @@
 <a href="#">
-  <div class="item-name">{{name}}</div>
+  <div>
+    <span class="item-name">{{name}}</span>
+    {{#if note}}
+      <span class="item-note">{{note}}</span>
+    {{/if}}
+  </div>
   {{#if description}}
     <div class="sub-text item-description">{{description}}</div>
   {{/if}}
