@@ -82,9 +82,7 @@
         }
         if (this.query) {
           if (this.isActionItem) {
-            data.name = highlightMatch(data.name + " " + this.query, regExp(this.query, {
-              startsWith: false
-            }));
+            data.note = this.query;
           } else {
             data.name = highlightMatch(data.name, regExp(this.query));
             if (data.description) {
@@ -252,12 +250,6 @@
         'click .dropdown-items li': function(e) {
           return this.onDropdownItemClick(e);
         },
-        'keydown .dropdown-groups': function(e) {
-          return this.onDropdownGroupItemKeypress(e);
-        },
-        'keydown .dropdown-items': function(e) {
-          return this.onDropdownItemKeypress(e);
-        },
         'show.bs.dropdown .dropdown': function(e) {
           return this.onDropdownShow(e);
         },
@@ -358,7 +350,6 @@
           e.preventDefault();
           this.filterDropdownItems();
           if (this.query() !== '' && (item = _.first(this.visibleListItems()))) {
-            this["continue"] = true;
             return item.click();
           } else {
             return this.openDropdowns();
@@ -371,6 +362,7 @@
           return this.collection.remove(_.last(this.unrequiredSelection()));
         } else if (this.selectedGroup && (e.which === utils.keys.ESC || (this.query() === '' && e.which === utils.keys.DELETE))) {
           e.preventDefault();
+          this.resetInput();
           this.setSelectedGroup(void 0);
           return this.activateDropdown('groups');
         } else if (/[\w\s]/.test(String.fromCharCode(e.which))) {
@@ -405,18 +397,19 @@
         }
         if (query = this.query()) {
           if (isLeaf(group)) {
-            return this.addSelectedItem(group, new Chaplin.Model({
+            this.addSelectedItem(group, new Chaplin.Model({
               id: query,
               name: query
             }));
           } else if (item = matchingChild(group, regExp(query))) {
-            return this.addSelectedItem(group, item);
+            this.addSelectedItem(group, item);
           } else {
-            return this.setSelectedGroup(group);
+            this.setSelectedGroup(group);
           }
         } else {
-          return this.setSelectedGroup(group);
+          this.setSelectedGroup(group);
         }
+        return this["continue"] = true;
       };
 
       FilterInputView.prototype.onDropdownItemClick = function(e) {
@@ -426,21 +419,8 @@
         }
         e.preventDefault();
         item = _.first(this.subview('dropdown-items').modelsFrom(e.currentTarget));
-        return this.addSelectedItem(this.selectedGroup, item);
-      };
-
-      FilterInputView.prototype.onDropdownGroupItemKeypress = function(e) {
-        var ref;
-        if ((ref = e.which) === utils.keys.ENTER) {
-          return this["continue"] = true;
-        }
-      };
-
-      FilterInputView.prototype.onDropdownItemKeypress = function(e) {
-        var ref;
-        if ((ref = e.which) === utils.keys.ENTER || ref === utils.keys.ESC) {
-          return this["continue"] = true;
-        }
+        this.addSelectedItem(this.selectedGroup, item);
+        return this["continue"] = true;
       };
 
       FilterInputView.prototype.onDropdownShow = function(e) {
@@ -454,25 +434,23 @@
       FilterInputView.prototype.onDropdownHidden = function(e) {
         this.resetInput();
         if (this.activeDropdown() === 'groups') {
-          return this.onGroupsDropdownHidden();
+          this.onGroupsDropdownHidden();
         } else if (this.activeDropdown() === 'items') {
-          return this.onItemsDropdownHidden();
+          this.onItemsDropdownHidden();
         }
+        return this.maybeContinue();
       };
 
       FilterInputView.prototype.onGroupsDropdownHidden = function() {
         if (this.selectedGroup) {
           this.activateDropdown('items');
           return this.openDropdowns();
-        } else {
-          return this.maybeContinue();
         }
       };
 
       FilterInputView.prototype.onItemsDropdownHidden = function() {
         this.setSelectedGroup(void 0);
-        this.activateDropdown('groups');
-        return this.maybeContinue();
+        return this.activateDropdown('groups');
       };
 
       FilterInputView.prototype.query = function() {
@@ -562,7 +540,7 @@
         if (!this["continue"]) {
           return;
         }
-        this.openDropdowns();
+        this.$('input').focus();
         return delete this["continue"];
       };
 

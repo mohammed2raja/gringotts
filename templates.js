@@ -113,16 +113,24 @@ this["Handlebars"]["filter-input/item"] = Handlebars.template({"1":function(cont
 this["Handlebars"]["filter-input/list-item"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var helper;
 
+  return "      <span class=\"item-note\">"
+    + container.escapeExpression(((helper = (helper = helpers.note || (depth0 != null ? depth0.note : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"note","hash":{},"data":data}) : helper)))
+    + "</span>\n";
+},"3":function(container,depth0,helpers,partials,data) {
+    var helper;
+
   return "    <div class=\"sub-text item-description\">"
     + container.escapeExpression(((helper = (helper = helpers.description || (depth0 != null ? depth0.description : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"description","hash":{},"data":data}) : helper)))
     + "</div>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
 
-  return "<a href=\"#\">\n  <div class=\"item-name\">"
+  return "<a href=\"#\">\n  <div>\n    <span class=\"item-name\">"
     + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "</div>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.description : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "</span>\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.note : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "  </div>\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.description : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</a>\n";
 },"useData":true});
 
