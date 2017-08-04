@@ -51,8 +51,7 @@ define (require) ->
         _.extend data, description: @generateDesc()
       if @query
         if @isActionItem
-          data.name = highlightMatch "#{data.name} #{@query}",
-            regExp @query, startsWith: no
+          data.note = @query
         else
           data.name = highlightMatch data.name, regExp @query
           if data.description
@@ -127,8 +126,6 @@ define (require) ->
       'blur input': (e) -> @onInputBlur e
       'click .dropdown-groups li': (e) -> @onDropdownGroupItemClick e
       'click .dropdown-items li': (e) -> @onDropdownItemClick e
-      'keydown .dropdown-groups': (e) -> @onDropdownGroupItemKeypress e
-      'keydown .dropdown-items': (e) -> @onDropdownItemKeypress e
       'show.bs.dropdown .dropdown': (e) -> @onDropdownShow e
       'hide.bs.dropdown .dropdown': (e) -> @onDropdownHide e
       'hidden.bs.dropdown .dropdown': (e) -> @onDropdownHidden e
@@ -200,7 +197,6 @@ define (require) ->
         e.preventDefault()
         @filterDropdownItems() # for quick types then enter
         if @query() isnt '' and item = _.first @visibleListItems()
-          @continue = true
           item.click()
         else
           @openDropdowns()
@@ -215,6 +211,7 @@ define (require) ->
           (e.which is utils.keys.ESC or
             (@query() is '' and e.which is utils.keys.DELETE))
         e.preventDefault()
+        @resetInput()
         @setSelectedGroup undefined
         @activateDropdown 'groups'
       else if /[\w\s]/.test String.fromCharCode e.which
@@ -247,6 +244,7 @@ define (require) ->
           @setSelectedGroup group
       else
         @setSelectedGroup group
+      @continue = true
 
     onDropdownItemClick: (e) ->
       if ($t = $ e.currentTarget).hasClass('disabled') or $t.hasClass 'no-hover'
@@ -254,12 +252,7 @@ define (require) ->
       e.preventDefault()
       item = _.first @subview('dropdown-items').modelsFrom e.currentTarget
       @addSelectedItem @selectedGroup, item
-
-    onDropdownGroupItemKeypress: (e) ->
-      @continue = true if e.which in [utils.keys.ENTER]
-
-    onDropdownItemKeypress: (e) ->
-      @continue = true if e.which in [utils.keys.ENTER, utils.keys.ESC]
+      @continue = true
 
     onDropdownShow: (e) ->
       @$el.addClass 'focus'
@@ -273,18 +266,16 @@ define (require) ->
         @onGroupsDropdownHidden()
       else if @activeDropdown() is 'items'
         @onItemsDropdownHidden()
+      @maybeContinue()
 
     onGroupsDropdownHidden: ->
       if @selectedGroup
         @activateDropdown 'items'
         @openDropdowns()
-      else
-        @maybeContinue()
 
     onItemsDropdownHidden: ->
       @setSelectedGroup undefined
       @activateDropdown 'groups'
-      @maybeContinue()
 
     query: ->
       @$('input').val() or ''
@@ -336,7 +327,7 @@ define (require) ->
 
     maybeContinue: ->
       return unless @continue
-      @openDropdowns()
+      @$('input').focus()
       delete @continue
 
     resetInput: ->
