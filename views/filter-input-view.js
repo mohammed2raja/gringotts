@@ -3,29 +3,149 @@
     hasProp = {}.hasOwnProperty;
 
   define(function(require) {
-    var Chaplin, CollectionView, DropdownItemView, DropdownView, FilterInputItemView, FilterInputView, View, isLeaf, utils;
+    var Chaplin, CollectionView, DESCRIPTION_MAX_LENGTH, DropdownItemView, DropdownView, FilterInputItemView, FilterInputView, View, handlebars, highlightMatch, isLeaf, matching, matchingChild, regExp, utils;
     Chaplin = require('chaplin');
+    handlebars = require('handlebars');
     utils = require('lib/utils');
     View = require('views/base/view');
     CollectionView = require('views/base/collection-view');
+    DESCRIPTION_MAX_LENGTH = 40;
     isLeaf = function(model) {
       return model.get('children') == null;
+    };
+    regExp = function(query, opts) {
+      var mode, startsWith;
+      if (opts == null) {
+        opts = {};
+      }
+      if (!query) {
+        return;
+      }
+      startsWith = _.defaults(opts, {
+        startsWith: true
+      }).startsWith;
+      mode = !!parseInt(query) ? '()' : (startsWith ? '^()' : '(^|\\W)');
+      try {
+        return new RegExp(mode + "(" + query + ")", 'i');
+      } catch (undefined) {}
+    };
+    matching = function(item, regexp) {
+      return regexp != null ? regexp.test(item.get('name')) : void 0;
+    };
+    matchingChild = function(group, regexp) {
+      var ref;
+      return _.first(group != null ? (ref = group.get('children')) != null ? ref.filter(function(c) {
+        return matching(c, regexp);
+      }) : void 0 : void 0);
+    };
+    highlightMatch = function(text, regexp) {
+      return new handlebars.SafeString(text != null ? text.replace(regexp, '$1<i>$2</i>') : void 0);
     };
     DropdownItemView = (function(superClass) {
       extend(DropdownItemView, superClass);
 
-      function DropdownItemView() {
-        return DropdownItemView.__super__.constructor.apply(this, arguments);
-      }
-
       DropdownItemView.prototype.template = 'filter-input/list-item';
 
-      DropdownItemView.prototype.noWrap = true;
+      DropdownItemView.prototype.tagName = 'li';
+
+      DropdownItemView.prototype.query = '';
+
+      DropdownItemView.prototype.className = function() {
+        return (this.isLeaf ? 'leaf ' : '') + 'filter-item';
+      };
+
+      function DropdownItemView(arg) {
+        var model;
+        model = arg.model;
+        this.isLeaf = isLeaf(model);
+        this.isActionItem = this.isLeaf && model.get('description');
+        this.needsDescription = !this.isLeaf && !model.get('description');
+        DropdownItemView.__super__.constructor.apply(this, arguments);
+      }
+
+      DropdownItemView.prototype.initialize = function() {
+        DropdownItemView.__super__.initialize.apply(this, arguments);
+        if (this.needsDescription) {
+          return this.listenTo(this.model.get('children'), 'synced', function() {
+            return this.render();
+          });
+        }
+      };
+
+      DropdownItemView.prototype.getTemplateData = function() {
+        var data;
+        data = DropdownItemView.__super__.getTemplateData.apply(this, arguments);
+        if (this.needsDescription) {
+          _.extend(data, {
+            description: this.generateDesc()
+          });
+        }
+        if (this.query) {
+          if (this.isActionItem) {
+            data.name = highlightMatch(data.name + " " + this.query, regExp(this.query, {
+              startsWith: false
+            }));
+          } else {
+            data.name = highlightMatch(data.name, regExp(this.query));
+            if (data.description) {
+              data.description = highlightMatch(data.description, regExp(this.query, {
+                startsWith: false
+              }));
+            }
+          }
+        }
+        return data;
+      };
 
       DropdownItemView.prototype.render = function() {
         DropdownItemView.__super__.render.apply(this, arguments);
-        if (isLeaf(this.model)) {
-          return this.$el.addClass('leaf');
+        if (this.isActionItem) {
+          return this.$el.toggleClass('disabled no-hover', this.query === '');
+        }
+      };
+
+      DropdownItemView.prototype.highlight = function(query) {
+        if (this.query === query) {
+          return;
+        }
+        this.query = query;
+        this.description = null;
+        return this.render();
+      };
+
+      DropdownItemView.prototype.generateDesc = function() {
+        var children, i, len, match, name, picks, ref, ref1, totalLength;
+        if (this.description) {
+          return this.description;
+        }
+        if ((children = this.model.get('children')).length) {
+          picks = [];
+          totalLength = 0;
+          ref = _.compact(children.pluck('name'));
+          for (i = 0, len = ref.length; i < len; i++) {
+            name = ref[i];
+            if (!((totalLength += name.length) <= DESCRIPTION_MAX_LENGTH)) {
+              break;
+            }
+            picks.push(name.trim());
+          }
+          if (this.query) {
+            match = (ref1 = matchingChild(this.model, regExp(this.query))) != null ? ref1.get('name') : void 0;
+          }
+          picks = _.union(picks, match ? [match] : void 0);
+          return this.description = this.unionDesc(picks, children.length);
+        } else {
+          return (typeof I18n !== "undefined" && I18n !== null ? I18n.t('loading.text') : void 0) || 'Loading...';
+        }
+      };
+
+      DropdownItemView.prototype.unionDesc = function(picks, totalCount) {
+        var ellipsis;
+        if (picks.length === 2 && totalCount === 2) {
+          return picks.join(" " + ((typeof I18n !== "undefined" && I18n !== null ? I18n.t('labels.or') : void 0) || 'or') + " ");
+        } else if (picks.length) {
+          ellipsis = picks.length < totalCount ? '…' : '';
+          return picks.join(', ') + ellipsis;
         }
       };
 
@@ -236,6 +356,7 @@
           return this.visibleListItems().first().focus();
         } else if (e.which === utils.keys.ENTER) {
           e.preventDefault();
+          this.filterDropdownItems();
           if (this.query() !== '' && (item = _.first(this.visibleListItems()))) {
             this["continue"] = true;
             return item.click();
@@ -273,19 +394,28 @@
       };
 
       FilterInputView.prototype.onDropdownGroupItemClick = function(e) {
-        var $t, group, query;
+        var $t, group, item, query;
         if (($t = $(e.currentTarget)).hasClass('disabled') || $t.hasClass('no-hover')) {
           return e.stopImmediatePropagation();
         }
         e.preventDefault();
         group = _.first(this.subview('dropdown-groups').modelsFrom(e.currentTarget));
-        if (!isLeaf(group)) {
+        if (!group) {
+          throw new Error('There is no group for clicked item!');
+        }
+        if (query = this.query()) {
+          if (isLeaf(group)) {
+            return this.addSelectedItem(group, new Chaplin.Model({
+              id: query,
+              name: query
+            }));
+          } else if (item = matchingChild(group, regExp(query))) {
+            return this.addSelectedItem(group, item);
+          } else {
+            return this.setSelectedGroup(group);
+          }
+        } else {
           return this.setSelectedGroup(group);
-        } else if (query = this.query()) {
-          return this.addSelectedItem(group, new Chaplin.Model({
-            id: query,
-            name: query
-          }));
         }
       };
 
@@ -442,47 +572,41 @@
       };
 
       FilterInputView.prototype.filterDropdownItems = function(opts) {
-        var dropdown, filter, force, inGroups, names, query, regexp;
+        var applyFilter, dropdown, force, i, itemView, len, query, ref, visible;
         if (opts == null) {
           opts = {};
-        }
-        if (this.disposed) {
-          return;
         }
         force = _.defaults(opts, {
           force: false
         }).force;
+        applyFilter = (this.previousQuery || '') !== (query = this.query()) || force;
+        if (!(!this.disposed && applyFilter)) {
+          return;
+        }
+        dropdown = this.subview("dropdown-" + (this.activeDropdown()));
+        dropdown.filter(this.dropdownFilterFunc());
+        dropdown.toggleFallback();
+        ref = _.values(dropdown.getItemViews());
+        for (i = 0, len = ref.length; i < len; i++) {
+          itemView = ref[i];
+          visible = -1 < dropdown.visibleItems.indexOf(itemView.model);
+          itemView.highlight(visible ? query : '');
+        }
+        return this.previousQuery = query;
+      };
+
+      FilterInputView.prototype.dropdownFilterFunc = function() {
+        var inGroups, query, regexp;
+        if (!(query = this.query())) {
+          return null;
+        }
         inGroups = this.activeDropdown() === 'groups';
-        if (query = this.query()) {
-          regexp = (function() {
-            try {
-              return new RegExp(query, 'i');
-            } catch (undefined) {}
-          })();
-          filter = function(item) {
-            return (inGroups && isLeaf(item)) || (regexp != null ? regexp.test(item.get('name')) : void 0);
-          };
-        } else {
-          filter = null;
-        }
-        if ((this.previousQuery || '') !== query || force) {
-          dropdown = this.subview("dropdown-" + (this.activeDropdown()));
-          dropdown.filter(filter);
-          names = 'li' + (inGroups ? ':not(.leaf)' : '') + ' .item-name';
-          dropdown.find(names).each(function(i, el) {
-            var $el;
-            return ($el = $(el)).html($el.text().replace(regexp, '<i>$&</i>'));
-          });
-          if (inGroups) {
-            dropdown.find('li.leaf').each(function(i, el) {
-              var $el;
-              ($el = $(el)).find('.item-note').text(query);
-              return ($el = $(el)).toggleClass('disabled no-hover', query === '');
-            });
-          }
-          dropdown.toggleFallback();
-          return this.previousQuery = query;
-        }
+        regexp = regExp(query);
+        return function(item) {
+          var include;
+          include = (inGroups && isLeaf(item)) || matching(item, regexp) || (matchingChild(item, regexp) != null);
+          return include || false;
+        };
       };
 
       FilterInputView.prototype.dispose = function() {
