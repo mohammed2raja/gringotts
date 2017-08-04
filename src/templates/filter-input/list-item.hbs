@@ -1,9 +1,6 @@
-<li class="filter-item">
-  <a href="#">
-    <div>
-      <span class="item-name">{{name}}</span>
-      <span class="item-note"></span>
-    </div>
+<a href="#">
+  <div class="item-name">{{name}}</div>
+  {{#if description}}
     <div class="sub-text item-description">{{description}}</div>
-  </a>
-</li>
+  {{/if}}
+</a>

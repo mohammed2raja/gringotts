@@ -20,39 +20,43 @@ define (require) ->
           groupId: 'group1'
           groupName: 'Group One'
           id: 'gp1item2'
-          name: 'G1 Item Two'
+          name: 'Second Item'
         new Chaplin.Model
           groupId: 'group2'
           groupName: 'Group Two'
           id: 'gp2item1'
-          name: 'G2 Item One'
+          name: 'First Item'
         new Chaplin.Model
           groupId: 'group2'
           groupName: 'Group Two'
           id: 'gp2item2'
-          name: 'G2 Item Two'
+          name: 'Second Item'
           required: yes
       ]
       groupSource = new Chaplin.Collection [
         new Chaplin.Model
           id: 'group1'
           name: 'Group One'
-          description: 'One Description'
           singular: yes
           children: new Chaplin.Collection [
-            new Chaplin.Model id: 'gp1item1', name: 'G1 Item One'
-            new Chaplin.Model id: 'gp1item2', name: 'G1 Item Two'
-            new Chaplin.Model id: 'gp1item3', name: 'G1 Item Three'
+            new Chaplin.Model id: 'gp1item1', name: 'First Item'
+            new Chaplin.Model id: 'gp1item2', name: 'Second Item'
+            new Chaplin.Model id: 'gp1item3', name: 'Third Item'
+            new Chaplin.Model id: 'gp1item4', name: 'Forth 4 Item'
+            new Chaplin.Model id: 'gp1item5', name: 'Fifth Item'
           ]
         new Chaplin.Model
           id: 'group2'
           name: 'Group Two'
-          description: 'Two Description'
           required: yes
           children: new Chaplin.Collection [
-            new Chaplin.Model id: 'gp2item1', name: 'G2 Item One'
-            new Chaplin.Model id: 'gp2item2', name: 'G2 Item Two'
+            new Chaplin.Model id: 'gp2item1', name: 'First Item'
+            new Chaplin.Model id: 'gp2item2', name: 'Second Item'
           ]
+        new Chaplin.Model
+          id: 'group3'
+          name: 'Group Three'
+          children: new Chaplin.Collection()
         new Chaplin.Model
           id: 'q'
           name: 'Search'
@@ -126,6 +130,21 @@ define (require) ->
       it 'should set remove all button hidden', ->
         expect(view.$ '.remove-all-button').to.be.hidden
 
+    context 'on finish loading children', ->
+      beforeEach ->
+        group3 = groupSource.findWhere id: 'group3'
+        group3.get('children').add \
+          new Chaplin.Model id: 'gp3item1', name: 'First Item of Group Three'
+        group3.get('children').trigger 'synced'
+
+      it 'should render group description', ->
+        groupItems = view.$ '.dropdown-groups a'
+        expect($(groupItems[2]).find '.item-description').to.have.text \
+          'First Item of Group Three'
+
+    getVisibleItems = (dropdown) ->
+      items = view.$(".dropdown-#{dropdown} .filter-item:visible")
+
     expectInputFocused = ->
       it 'should have input focused', ->
         expect(view.$('input')[0] is document.activeElement).to.be.true
@@ -146,31 +165,53 @@ define (require) ->
 
     expectDefaultGroupsInDropdown = ->
       it 'should render groups dropdown', ->
-        $groupItems = view.$ '.dropdown-groups a'
-        expect($groupItems).to.have.length 3
+        $groupItems = view.$ '.dropdown-groups a:visible'
+        expect($groupItems).to.have.length 4
         $groupItems.each (i, el) ->
           model = groupSource.models[i]
           $el = $ el
           expect($el.find '.item-name').to.have.text model.get 'name'
           expect($el.find '.item-name i').to.not.exist
-          expect($el.find '.item-description').to
-            .have.text model.get 'description'
-          expect($el.find '.item-note').to.be.empty
+          if model.id is 'group1'
+            expect($el.find '.item-description').to.have
+              .text 'First Item, Second Item, Third Item…'
+          else if model.id is 'group2'
+            expect($el.find '.item-description').to.have
+              .text 'First Item or Second Item'
+          else if model.id is 'group3'
+            expect($el.find '.item-description').to.have.text 'Loading...'
+          else
+            expect($el.find '.item-description').to
+              .have.text model.get 'description'
           if not model.get('children')?
             expect($el.parent 'li').to.have.class 'disabled no-hover'
 
-    expectEmptyDropdown = (dropdown) ->
-      it "should render empty #{dropdown} dropdown", ->
-        if dropdown is 'items'
-          view.$('.dropdown-items .filter-item').each (i, el) ->
-            expect($ el).to.be.hidden
-          expect(view.$ '.dropdown-items .filters-dropdown-empty').to.be.visible
-        else
-          visibleGroupItem = view.$('.dropdown-groups .filter-item:visible')
-          expect(visibleGroupItem).to.have.length 1
-          expect(visibleGroupItem.find '.item-name').to.have.text 'Search'
-          expect(view.$ '.dropdown-groups .filters-dropdown-loading')
-            .to.be.hidden
+    expectEmptyGroupsDropdown = ->
+      it 'should render empty groups dropdown', ->
+        visibleGroupItem = view.$('.dropdown-groups .filter-item:visible')
+        expect(visibleGroupItem).to.have.length 1
+        expect(visibleGroupItem.find('.item-name').text()).to.include 'Search'
+        expect(view.$ '.dropdown-groups .filters-dropdown-loading')
+          .to.be.hidden
+
+    expectEmptyItemsDropdown = ->
+      it 'should render empty items dropdown', ->
+        view.$('.dropdown-items .filter-item').each (i, el) ->
+          expect($ el).to.be.hidden
+        expect(view.$ '.dropdown-items .filters-dropdown-empty').to.be.visible
+
+    expectFilteredGroupsDropdown = (query, groupNameInj='', groupDescInj='') ->
+      it 'should filter groups dropdown', ->
+        groupItems = getVisibleItems 'groups'
+        expect(groupItems).to.have.length 2
+        group0 = $ groupItems[0]
+        group1 = $ groupItems[1]
+        expect(group0.find '.item-name').to.have.text 'Group One'
+        expect(group0.find '.item-name i').to.have.text groupNameInj
+        expect(group0.find '.item-description i').to.have.text groupDescInj
+        expect(group1.find '.item-name').to.have.text "Search #{query}"
+        expect(group1.find '.item-name i').to.have.text query
+        expect(group1).to.not.have.class 'disabled no-hover'
 
     expectOpenItemsDropdown = ->
       it 'should show dropdown', ->
@@ -189,9 +230,9 @@ define (require) ->
 
       it 'should render items dropdown', ->
         $items = view.$ '.dropdown-items a'
-        expect($items).to.have.length 2
-        expect($items.first().find '.item-name').to.have.text 'G1 Item One'
-        expect($items.last().find '.item-name').to.have.text 'G1 Item Three'
+        expect($items).to.have.length 4
+        expect($items.first().find '.item-name').to.have.text 'First Item'
+        expect($items.last().find '.item-name').to.have.text 'Fifth Item'
 
     expectClosedDropdowns = ->
       it 'should hide dropdown', ->
@@ -232,7 +273,7 @@ define (require) ->
         expectClosedDropdowns()
         expectFocusedState yes
 
-        context 'on type text', ->
+        context 'on type char', ->
           beforeEach ->
             view.$('input').trigger $.Event 'keydown', which: 100
 
@@ -245,21 +286,21 @@ define (require) ->
         expectOpenItemsDropdown()
         expectDefaultItemsDropdown()
 
-        context 'on "Item Three" click', ->
+        context 'on "Fifth Item" click', ->
           beforeEach ->
             view.$('.dropdown-items a').last().click()
 
           expectClosedDropdowns()
           expectFocusedState no
-          expectItemSelected 'Group One', 'G1 Item Three'
+          expectItemSelected 'Group One', 'Fifth Item'
 
           it 'should update collection', ->
             expect(collection.where groupId: 'group1').to.have.length 1
             expect(collection.last().attributes).to.eql {
               groupId: 'group1'
               groupName: 'Group One'
-              id: 'gp1item3'
-              name: 'G1 Item Three'
+              id: 'gp1item5'
+              name: 'Fifth Item'
             }
 
           context 'on input delete', ->
@@ -271,7 +312,7 @@ define (require) ->
               expect(collection).to.have.length 2
               expect(collection.last().attributes).to.include {
                 id: 'gp2item2'
-                name: 'G2 Item Two'
+                name: 'Second Item'
               }
 
             context 'on input delete again', ->
@@ -283,7 +324,7 @@ define (require) ->
                 expect(collection).to.have.length 1
                 expect(collection.last().attributes).to.include {
                   id: 'gp2item2'
-                  name: 'G2 Item Two'
+                  name: 'Second Item'
                 }
 
       context 'on "Group Two" item click', ->
@@ -293,7 +334,7 @@ define (require) ->
         it 'should render group label', ->
           expect(view.$ '.selected-group').to.have.text 'Group Two'
 
-        expectEmptyDropdown 'items'
+        expectEmptyItemsDropdown()
 
       context 'on "Search" group item click', ->
         beforeEach ->
@@ -319,60 +360,48 @@ define (require) ->
         beforeEach ->
           setQuery view, text
 
-        getVisibleItems = (dropdown) ->
-          items = view.$(".dropdown-#{dropdown} .filter-item:visible")
-
         context 'existing group name', ->
           before ->
-            text = 'one'
+            text = 'group o'
 
-          it 'should filter groups dropdown', ->
-            groupItems = getVisibleItems 'groups'
-            expect(groupItems).to.have.length 2
-            group0 = $ groupItems[0]
-            group1 = $ groupItems[1]
-            expect(group0.find '.item-name').to.have.text 'Group One'
-            expect(group0.find '.item-name i').to.have.text 'One'
-            expect(group1.find '.item-name').to.have.text 'Search'
-            expect(group1.find '.item-note').to.have.text 'one'
-            expect(group1).to.not.have.class 'disabled no-hover'
+          expectFilteredGroupsDropdown 'group o', 'Group O'
 
-          context 'on enter key press when 1 group in dropdown', ->
+          context 'on enter key press', ->
             beforeEach ->
               view.$('input').trigger $.Event 'keydown',
                 which: utils.keys.ENTER
 
-              expectOpenItemsDropdown()
-              expectInputFocused()
+            expectOpenItemsDropdown()
+            expectInputFocused()
 
             it 'should select group', ->
               expect(view.$ '.selected-group').to.have.text 'Group One'
 
             context 'on type existing item text', ->
               beforeEach ->
-                setQuery view, 'thre'
+                setQuery view, 'thi'
 
               it 'should filter items dropdown', ->
                 items = getVisibleItems 'items'
                 expect(items).to.have.length 1
                 item0 = $ items[0]
-                expect(item0.find '.item-name').to.have.text 'G1 Item Three'
-                expect(item0.find '.item-name i').to.have.text 'Thre'
+                expect(item0.find '.item-name').to.have.text 'Third Item'
+                expect(item0.find '.item-name i').to.have.text 'Thi'
 
-              context 'on enter key press when 1 item in dropdown', ->
+              context 'on enter key press', ->
                 beforeEach ->
                   view.$('input').trigger $.Event 'keydown',
                     which: utils.keys.ENTER
 
                 expectOpenGroupsDropdown()
-                expectItemSelected 'Group One', 'G1 Item Three'
+                expectItemSelected 'Group One', 'Third Item'
                 expectInputFocused()
 
             context 'on type random text', ->
               beforeEach ->
                 setQuery view, 'qwerty'
 
-              expectEmptyDropdown 'items'
+              expectEmptyItemsDropdown()
 
               context 'on esc key press', ->
                 beforeEach ->
@@ -386,11 +415,48 @@ define (require) ->
                 expectDefaultGroupsInDropdown()
                 expectInputFocused()
 
+          context 'on text clear', ->
+            beforeEach ->
+              setQuery view, ''
+
+            expectDefaultGroupsInDropdown()
+
+        context 'existing group child name', ->
+          before ->
+            text = 'Fif'
+
+          it 'should add "Fifth Item" into description', ->
+            group = $ _.first getVisibleItems 'groups'
+            expect(group.find('.item-description').text()).to
+              .include 'Fifth Item'
+
+          expectFilteredGroupsDropdown 'Fif', null, 'Fif'
+
+          context 'on enter key press', ->
+            beforeEach ->
+              view.$('input').trigger $.Event 'keydown',
+                which: utils.keys.ENTER
+
+            expectOpenGroupsDropdown()
+            expectItemSelected 'Group One', 'Fifth Item'
+            expectInputFocused()
+
+        context 'number in existing group child name', ->
+          before ->
+            text = '4'
+
+          it 'should add "Forth Item" into description', ->
+            group = $ _.first getVisibleItems 'groups'
+            expect(group.find('.item-description').text()).to
+              .include 'Forth 4 Item'
+
+          expectFilteredGroupsDropdown '4', null, '4'
+
         context 'random text', ->
           before ->
             text = 'asdfgh'
 
-          expectEmptyDropdown 'groups'
+          expectEmptyGroupsDropdown()
 
           context 'on input enter', ->
             beforeEach ->
@@ -441,7 +507,7 @@ define (require) ->
 
             it 'should focus dropdown first item', ->
               $first = view.$('.dropdown-items a').first()
-              expect($first.find '.item-name').to.have.text 'G1 Item One'
+              expect($first.find '.item-name').to.have.text 'First Item'
               expect($first[0] is document.activeElement).to.be.true
 
             context 'on enter key press', ->
@@ -451,7 +517,7 @@ define (require) ->
                   .click()
 
               expectOpenGroupsDropdown()
-              expectItemSelected 'Group One', 'G1 Item One'
+              expectItemSelected 'Group One', 'First Item'
               expectInputFocused()
 
       context 'on up key press', ->
