@@ -73,7 +73,6 @@ define (require) ->
         count: @collection.count
         page: page
         perPage: perPage
-
       if infinite
         info.pages = 1
         info.multiPaged = true
@@ -85,13 +84,15 @@ define (require) ->
         info.prev = if page > 1 then page - 1 else 0
         info.next = if page < info.pages then page + 1 else 0
         info.range = @getRangeString page, perPage, info
-
+      options = inclDefaults: no, inclIgnored: no, usePrefix: yes
       info.nextQuery =
-        if info.next then @routeQueryable.getQuery overrides: page: info.next
-        else @routeQueryable.getQuery()
+        if info.next
+        then @getBrowserQuery _.extend {}, options, overrides: page: info.next
+        else @getBrowserQuery options
       info.prevQuery =
-        if info.prev then @routeQueryable.getQuery overrides: page: info.prev
-        else @routeQueryable.getQuery()
+        if info.prev
+        then @getBrowserQuery _.extend {}, options, overrides: page: info.prev
+        else @getBrowserQuery options
 
       info.routeName = @routeName
       info.routeParams = @routeParams

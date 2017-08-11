@@ -48,7 +48,7 @@ define (require) ->
     prefix: null
 
     ###*
-     * List of query keys to ignore while building url for fetching items.
+     * List of query keys to ignore when generating a query hash.
      * @type {Array}
     ###
     ignoreKeys: null
@@ -63,12 +63,14 @@ define (require) ->
 
     ###*
      * Generates a query hash from the current query and given overrides.
-     * @param  {Object} opts={}      inclDefaults - adds default query
-     *                               values into result, it is false by default.
-     *                               usePrefix - adds prefix string into query
-     *                               property key, it is true by default.
-     *                               overrides - optional state overrides.
-     * @return {Object}              Combined query
+     * @param  {Object} opts={} inclDefaults - adds default query
+     *                            values into result, it is false by default.
+     *                          inclIgnored - adds ignored query
+     *                            values into result, it's true by default.
+     *                          usePrefix - adds prefix string into query
+     *                            property key, it is true by default.
+     *                          overrides - optional state overrides.
+     * @return {Object}         Combined query
     ###
     getQuery: (opts={}) ->
       query = _.extend {}, @DEFAULTS, @query, opts.overrides
@@ -81,6 +83,8 @@ define (require) ->
       if @prefix and (not _.isBoolean(opts.usePrefix) or opts.usePrefix)
         query = _(query).mapKeys (value, key) => "#{@prefix}_#{key}"
           .extend(@alienQuery).value()
+      if _.isBoolean(opts.inclIgnored) and not opts.inclIgnored
+        query = _.omit query, @ignoreKeys
       query
 
     ###*
@@ -168,9 +172,9 @@ define (require) ->
       throw new Error 'Please define url or urlRoot
         when implementing a queryable model or collection' unless base
       base = if _.isFunction(base) then base.apply(this) else base
-      query = @getQuery inclDefaults: yes, usePrefix: no
+      query = @getQuery inclDefaults: yes, inclIgnored: no, usePrefix: no
       # convert from local query keys to server query keys
-      query = _.mapKeys _.omit(query, @ignoreKeys), (value, key) =>
+      query = _.mapKeys query, (value, key) =>
         _.invert(@DEFAULTS_SERVER_MAP)[key] or key
       querystring = utils.querystring.stringify query
       @urlWithQuery base, querystring
