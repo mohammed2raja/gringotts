@@ -64,8 +64,11 @@ define (require) ->
           order: order
           routeName: @routeName
           routeParams: @routeParams
-          nextQuery: @routeQueryable.getQuery overrides:
-            order: nextOrder, sort_by: column
+          nextQuery: @getBrowserQuery
+            inclDefaults: no
+            inclIgnored: no
+            usePrefix: yes
+            overrides: order: nextOrder, sort_by: column
         result
       , {}
 

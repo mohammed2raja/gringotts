@@ -102,6 +102,14 @@ define (require) ->
         request = _.last sandbox.server.requests
         expect(request.url).to.not.contain 'coo=hoo'
 
+      it 'should return ignored keys in getQuery result', ->
+        query = collection.getQuery()
+        expect(query.coo).to.eq 'hoo'
+
+      it 'should ignore keys in getQuery result', ->
+        query = collection.getQuery inclIgnored: no
+        expect(query.coo).to.be.undefined
+
       context 'setting the same query again', ->
         beforeEach ->
           difference = collection.setQuery boo: ['goo'], foo: 1, coo: 'hoo'

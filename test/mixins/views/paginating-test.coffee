@@ -16,6 +16,7 @@ define (require) ->
     DEFAULTS: _.extend {}, @::DEFAULTS, per_page: 10
     urlRoot: '/test'
     syncKey: 'itemsList'
+    ignoreKeys: ['bad']
 
   class PaginatingViewMock extends StringTemplatable \
       Paginating Chaplin.CollectionView
@@ -37,7 +38,7 @@ define (require) ->
       collection = new PaginatedCollectionMock()
       collection.infinite = infinite
       view = new PaginatingViewMock {routeName: 'test', collection}
-      collection.fetchWithQuery {}
+      collection.fetchWithQuery {bad: 'something'}
       sandbox.server.respondWith [200, {}, JSON.stringify {
         next_page_id: 'abcdef'
         count: 101

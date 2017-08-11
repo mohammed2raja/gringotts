@@ -14,6 +14,7 @@ define (require) ->
   class CollectionMock extends Sorted ActiveSyncMachine Chaplin.Collection
     urlRoot: '/test'
     DEFAULTS: _.extend {}, @::DEFAULTS, sort_by: 'attr_a'
+    ignoreKeys: ['bad']
 
   class SortingViewMock extends StringTemplatable \
       Sorting Chaplin.CollectionView
@@ -36,7 +37,7 @@ define (require) ->
         "#{path}?#{utils.querystring.stringify query}"
       collection = new CollectionMock()
       view = new SortingViewMock _.extend {routeName: 'test', collection}
-      collection.fetchWithQuery {}
+      collection.fetchWithQuery {bad: 'something'}
       sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
       sandbox.server.respond()
 

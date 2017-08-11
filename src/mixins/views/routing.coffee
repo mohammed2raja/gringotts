@@ -64,10 +64,11 @@ define (require) ->
      * Returns current query of the browser query relevant to the routeName.
      * @return {Object}
     ###
-    getBrowserQuery: ->
+    getBrowserQuery: (options) ->
+      options = _.defaults {}, options, inclDefaults: yes, usePrefix: no
       unless @routeQueryable
         throw new Error "Can't get query since @routeQueryable isn't set."
-      @routeQueryable.getQuery inclDefaults: yes, usePrefix: no
+      @routeQueryable.getQuery options
 
     ###*
      * Redirect to current route with new query params.
