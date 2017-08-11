@@ -102,14 +102,15 @@
            * @return {Object}
            */
 
-          Routing.prototype.getBrowserQuery = function() {
-            if (!this.routeQueryable) {
-              throw new Error("Can't get query since @routeQueryable isn't set.");
-            }
-            return this.routeQueryable.getQuery({
+          Routing.prototype.getBrowserQuery = function(options) {
+            options = _.defaults({}, options, {
               inclDefaults: true,
               usePrefix: false
             });
+            if (!this.routeQueryable) {
+              throw new Error("Can't get query since @routeQueryable isn't set.");
+            }
+            return this.routeQueryable.getQuery(options);
           };
 
 

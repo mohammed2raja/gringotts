@@ -93,7 +93,10 @@
                   order: order,
                   routeName: _this.routeName,
                   routeParams: _this.routeParams,
-                  nextQuery: _this.routeQueryable.getQuery({
+                  nextQuery: _this.getBrowserQuery({
+                    inclDefaults: false,
+                    inclIgnored: false,
+                    usePrefix: true,
                     overrides: {
                       order: nextOrder,
                       sort_by: column

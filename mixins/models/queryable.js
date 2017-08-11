@@ -71,7 +71,7 @@
 
 
           /**
-           * List of query keys to ignore while building url for fetching items.
+           * List of query keys to ignore when generating a query hash.
            * @type {Array}
            */
 
@@ -89,12 +89,14 @@
 
           /**
            * Generates a query hash from the current query and given overrides.
-           * @param  {Object} opts={}      inclDefaults - adds default query
-           *                               values into result, it is false by default.
-           *                               usePrefix - adds prefix string into query
-           *                               property key, it is true by default.
-           *                               overrides - optional state overrides.
-           * @return {Object}              Combined query
+           * @param  {Object} opts={} inclDefaults - adds default query
+           *                            values into result, it is false by default.
+           *                          inclIgnored - adds ignored query
+           *                            values into result, it's true by default.
+           *                          usePrefix - adds prefix string into query
+           *                            property key, it is true by default.
+           *                          overrides - optional state overrides.
+           * @return {Object}         Combined query
            */
 
           Queryable.prototype.getQuery = function(opts) {
@@ -113,6 +115,9 @@
                   return _this.prefix + "_" + key;
                 };
               })(this)).extend(this.alienQuery).value();
+            }
+            if (_.isBoolean(opts.inclIgnored) && !opts.inclIgnored) {
+              query = _.omit(query, this.ignoreKeys);
             }
             return query;
           };
@@ -257,9 +262,10 @@
             base = _.isFunction(base) ? base.apply(this) : base;
             query = this.getQuery({
               inclDefaults: true,
+              inclIgnored: false,
               usePrefix: false
             });
-            query = _.mapKeys(_.omit(query, this.ignoreKeys), (function(_this) {
+            query = _.mapKeys(query, (function(_this) {
               return function(value, key) {
                 return _.invert(_this.DEFAULTS_SERVER_MAP)[key] || key;
               };

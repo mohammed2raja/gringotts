@@ -93,7 +93,7 @@
           };
 
           Paginating.prototype.getPageInfo = function() {
-            var infinite, info, page, perPage, query;
+            var infinite, info, options, page, perPage, query;
             infinite = this.collection.infinite;
             query = this.getBrowserQuery();
             perPage = parseInt(query.per_page);
@@ -116,16 +116,21 @@
               info.next = page < info.pages ? page + 1 : 0;
               info.range = this.getRangeString(page, perPage, info);
             }
-            info.nextQuery = info.next ? this.routeQueryable.getQuery({
+            options = {
+              inclDefaults: false,
+              inclIgnored: false,
+              usePrefix: true
+            };
+            info.nextQuery = info.next ? this.getBrowserQuery(_.extend({}, options, {
               overrides: {
                 page: info.next
               }
-            }) : this.routeQueryable.getQuery();
-            info.prevQuery = info.prev ? this.routeQueryable.getQuery({
+            })) : this.getBrowserQuery(options);
+            info.prevQuery = info.prev ? this.getBrowserQuery(_.extend({}, options, {
               overrides: {
                 page: info.prev
               }
-            }) : this.routeQueryable.getQuery();
+            })) : this.getBrowserQuery(options);
             info.routeName = this.routeName;
             info.routeParams = this.routeParams;
             return info;
