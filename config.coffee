@@ -1,5 +1,5 @@
 require.config
-  baseUrl: '../src'
+  baseUrl: '/'
   paths:
     backbone: '../node_modules/backbone/backbone'
     chaplin: '../node_modules/chaplin/chaplin'

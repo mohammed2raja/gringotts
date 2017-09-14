@@ -13,21 +13,21 @@ module.exports = (grunt) ->
       public:
         src: 'public/*'
       'hbs-strip':
-        src: ['tmp/src/*', 'tmp/test/*']
+        src: ['tmp/*', 'tmp/test/*']
 
     coffee:
       compile:
         expand: yes
-        cwd: 'src/'
+        cwd: '/'
         src: ['*.coffee', '**/*.coffee']
-        dest: 'public/src/'
+        dest: 'public/'
         ext: '.js'
       # For Mocha tests in browser.
       test:
         expand: yes
         cwd: 'test/'
         src: ['*.coffee', '**/*.coffee']
-        dest: 'public/src/test'
+        dest: 'public/test'
         ext: '.js'
 
     handlebars:
@@ -37,11 +37,11 @@ module.exports = (grunt) ->
           namespace: 'Handlebars'
           processName: (file) ->
             file
-              .replace('src/templates/', '')
+              .replace('templates/', '')
               .replace('.hbs', '')
         files:
-          'public/src/templates.js': [
-            'src/templates/**/*.hbs'
+          'public/templates.js': [
+            'templates/**/*.hbs'
           ]
       dev:
         options:
@@ -49,12 +49,12 @@ module.exports = (grunt) ->
           namespace: 'Handlebars'
           processName: (file) ->
             file
-              .replace('src/templates/', '')
+              .replace('templates/', '')
               .replace('test/templates/', '')
               .replace('.hbs', '')
         files:
-          'public/src/templates.js': [
-            'src/templates/**/*.hbs'
+          'public/templates.js': [
+            'templates/**/*.hbs'
             'test/templates/**/*.hbs'
           ]
 
@@ -72,7 +72,7 @@ module.exports = (grunt) ->
         log : yes
         logErrors: yes
         moduleThreshold : 60
-        modulePattern : './src/(.*?)/'
+        modulePattern : './(.*?)/'
       test:
         src: 'public/test/index-phantomjs.html'
       report_spec:
@@ -88,7 +88,7 @@ module.exports = (grunt) ->
     'gh-pages':
       release:
         options:
-          base: 'public/src'
+          base: 'public'
           branch: 'release'
           message: 'Release v<%= pkg.version %>'
           tag: 'v<%= pkg.version %>'
@@ -115,7 +115,7 @@ module.exports = (grunt) ->
     'string-replace':
       'hbs-strip':
         files: [
-          {'tmp/': 'src/templates/**/*.hbs'}
+          {'tmp/': 'templates/**/*.hbs'}
           {'tmp/': 'test/templates/**/*.hbs'}
         ]
         options:
@@ -126,7 +126,7 @@ module.exports = (grunt) ->
       options:
         htmlhintrc: '.htmlhintrc'
       html:
-        src: ['tmp/src/templates/**/*.hbs', 'tmp/test/templates/**/*.hbs']
+        src: ['tmp/templates/**/*.hbs', 'tmp/test/templates/**/*.hbs']
 
     shell:
       options:
@@ -139,15 +139,15 @@ module.exports = (grunt) ->
         command: 'cd public; ln -sf ../node_modules node_modules'
       # Keep copy task clean.
       'copy-package':
-        command: 'cp package.json public/src/'
+        command: 'cp package.json public/'
       'publish':
-        command: 'npm publish public/src'
+        command: 'npm publish public'
       localBuild:
         command: ->
           buildPath = grunt.option 'target'
           return '' unless buildPath
           "rm -r #{buildPath};" +
-          "cp -R -v public/src #{buildPath};"
+          "cp -R -v public #{buildPath};"
 
     connect:
       server:
