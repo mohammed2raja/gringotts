@@ -18,7 +18,7 @@ STATES = ['default', 'progress', 'error', 'success']
 module.exports = class ProgressDialogView extends ModalView
   optionNames: @::optionNames.concat STATES, ['state', 'onDone', 'onCancel']
   className: 'progress-dialog'
-  template: require 'progress-dialog/view.hbs'
+  template: require './progress-dialog/view.hbs'
   onDone: null
   onCancel: null
   state: null
@@ -63,7 +63,7 @@ module.exports = class ProgressDialogView extends ModalView
         ]
       success:
         # using a template with check icon
-        html: => require('progress-dialog/success.hbs') @getTemplateData()
+        html: => require('./progress-dialog/success.hbs') @getTemplateData()
         buttons: [
           text: I18n?.t('buttons.Okay') or 'Okay',
           className: 'btn-primary confirm-button'

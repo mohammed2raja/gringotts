@@ -1,5 +1,5 @@
 Chaplin = require 'chaplin'
-modalHelpers = require 'test/helpers/modal-helpers'
+specHelper = require 'lib/spec-helper'
 ErrorHandled = require 'mixins/models/error-handled'
 ActiveSyncMachine = require 'mixins/models/active-sync-machine'
 ProgressDialogView = require 'views/progress-dialog-view'
@@ -18,7 +18,7 @@ describe 'ProgressDialogView', ->
 
   beforeEach ->
     sandbox = sinon.sandbox.create()
-    modalHelpers.stubModal sandbox, -> {transition}
+    specHelper.stubModal sandbox, -> {transition}
     onDone = sinon.spy()
     onCancel = sinon.spy()
     model = new ModelMock()
@@ -244,7 +244,7 @@ describe 'ProgressDialogView', ->
 
   context 'with custom template states', ->
     before ->
-      html = require 'progress-dialog-state.hbs'
+      html = require './progress-dialog/view-state-mock.spec.hbs'
       viewConfig =
         default: text: html
         progress: text: html

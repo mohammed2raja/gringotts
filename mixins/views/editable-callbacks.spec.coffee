@@ -1,6 +1,6 @@
 Chaplin = require 'chaplin'
-FakeModel = require 'test/helpers/validate-model'
-FakeView = require 'test/helpers/editable-view'
+ValidateModelMock = require 'spec/mocks/validate-model-mock'
+EditableViewMock = require 'spec/mocks/editable-view-mock'
 
 describe 'Editable callbacks', ->
   server = null
@@ -33,11 +33,11 @@ describe 'Editable callbacks', ->
   beforeEach ->
     server = sinon.fakeServer.create()
     sinon.stub document, 'execCommand'
-    model = new FakeModel
+    model = new ValidateModelMock
       name: 'Olivia Dunham'
       email: 'odunham@effbeeeye.com'
       url: 'http://dunham.com'
-    view = new FakeView {model}
+    view = new EditableViewMock {model}
     view.errorCallback = sinon.spy()
     view.cleanCallback = sinon.spy()
     view.setupEditable '.edit-name', '.name-field', {

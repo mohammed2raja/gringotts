@@ -19,7 +19,7 @@ class SortingViewMock extends Templatable Sorting Chaplin.CollectionView
   loadingSelector: '.loading'
   itemView: ItemViewMock
   listSelector: 'tbody'
-  template: require 'sorting-test.hbs'
+  template: require './sorting.spec.hbs'
   sortableTableHeaders:
     attr_a: 'Attribute A'
     attr_b: 'Attribute B'

@@ -21,7 +21,7 @@ class PaginatingViewMock extends Templatable Paginating Chaplin.CollectionView
   loadingSelector: '.loading'
   itemView: ItemViewMock
   listSelector: 'tbody'
-  template: require 'paginating-test.hbs'
+  template: require './paginating.spec.hbs'
 
 describe 'Paginating mixin', ->
   sandbox = null

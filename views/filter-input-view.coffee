@@ -27,7 +27,7 @@ highlightMatch = (text, regexp) ->
   new handlebars.SafeString text?.replace regexp, '$1<i>$2</i>'
 
 class DropdownItemView extends View
-  template: require 'filter-input/list-item.hbs'
+  template: require './filter-input/list-item.hbs'
   tagName: 'li'
   query: ''
   className: ->
@@ -98,12 +98,12 @@ class DropdownView extends CollectionView
   getTemplateFunction: ->
 
 class FilterInputItemView extends View
-  template: require 'filter-input/item.hbs'
+  template: require './filter-input/item.hbs'
   noWrap: true
 
 module.exports = class FilterInputView extends CollectionView
   optionNames: @::optionNames.concat ['groupSource']
-  template: require 'filter-input/view.hbs'
+  template: require './filter-input/view.hbs'
   className: 'form-control filter-input'
   listSelector: '.filter-items-container'
   loadingSelector: '.filters-loading'

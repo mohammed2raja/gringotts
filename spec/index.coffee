@@ -9,5 +9,5 @@ require 'bootstrap/js/tab'
 require 'bootstrap/js/tooltip'
 require 'bootstrap/js/transition'
 
-testContext = require.context '../test/', true, /-test\.coffee$/
+testContext = require.context '../', true, /\.spec\.coffee$/
 testContext.keys().forEach testContext

@@ -1,6 +1,6 @@
 Chaplin = require 'chaplin'
 
-module.exports = class FakeModel extends Chaplin.Model
+module.exports = class ValidateModelMock extends Chaplin.Model
   url: 'dummy'
   # Default validation criterion for editable field.
   validate: (attrs, opts) ->

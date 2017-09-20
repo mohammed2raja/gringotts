@@ -7,7 +7,7 @@ class SyncMachineModelMock extends ActiveSyncMachine Chaplin.Model
 
 class ViewMock extends StateBindable Templatable Chaplin.View
   autoRender: yes
-  template: require 'state-bindable-test.hbs'
+  template: require './state-bindable.spec.hbs'
 
 initialState = isDisabled: yes
 

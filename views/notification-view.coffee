@@ -35,7 +35,7 @@ View = require './base/view'
 notificationTimeout = null
 
 module.exports = class NotificationView extends View
-  template: require 'notification.hbs'
+  template: require './notification.hbs'
   tagName: 'li'
   className: 'alert alert-success alert-dismissable'
   optionNames: @::optionNames.concat [
@@ -51,7 +51,7 @@ module.exports = class NotificationView extends View
 
   # Override to customize the undo element.
   getUndoElement: ->
-    require('notification-undo.hbs') {
+    require('./notification-undo.hbs') {
       label: I18n?.t('notifications.undo') or 'Undo'
     }
 

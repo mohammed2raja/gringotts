@@ -17,7 +17,7 @@ class ModelMock extends Validatable Chaplin.Model
 
 class ViewMock extends Validating Templatable Chaplin.View
   autoRender: yes
-  template: require 'validating-test.hbs'
+  template: require './validating.spec.hbs'
   bindings:
     '[name="name"]': 'name'
     '[name="email"]': 'email'

@@ -2,7 +2,7 @@ Chaplin = require 'chaplin'
 Templatable = require 'mixins/views/templatable'
 
 class ViewMock extends Templatable Chaplin.View
-  template: require 'templatable-test.hbs'
+  template: require './templatable.spec.hbs'
 
 describe 'Templatable', ->
   view = null

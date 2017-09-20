@@ -2,7 +2,7 @@ ModalView = require './base/modal-view'
 
 module.exports = class DialogView extends ModalView
   className: 'dialog'
-  template: require 'dialog.hbs'
+  template: require './dialog.hbs'
   title: null
   text: null
   buttons: [

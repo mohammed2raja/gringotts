@@ -14,7 +14,7 @@ class FilterSelectionMock extends Chaplin.Collection
 
 class ViewMock extends Filtering Templatable Chaplin.View
   autoRender: yes
-  template: require 'filtering-test.hbs'
+  template: require './filtering.spec.hbs'
   filterSelection: FilterSelectionMock
   getBrowserQuery: ->
   setBrowserQuery: ->

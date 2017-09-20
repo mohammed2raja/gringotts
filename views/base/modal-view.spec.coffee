@@ -1,9 +1,9 @@
 Chaplin = require 'chaplin'
-modalHelpers = require 'test/helpers/modal-helpers'
+specHelper = require 'lib/spec-helper'
 ModalView = require 'views/base/modal-view'
 
 class MockModal extends ModalView
-  template: require 'modal-test.hbs'
+  template: require './modal.spec.hbs'
 
 describe 'ModalView', ->
   sandbox = null
@@ -12,7 +12,7 @@ describe 'ModalView', ->
 
   beforeEach ->
     sandbox = sinon.sandbox.create()
-    modalHelpers.stubModal sandbox, -> {transition}
+    specHelper.stubModal sandbox, -> {transition}
     MockModal::autoAttach = no
     view = new MockModal()
 

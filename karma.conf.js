@@ -41,7 +41,7 @@ module.exports = (config) => {
         }
       }
     },
-    files: [{pattern: 'test/index.coffee', watched: false}],
+    files: [{pattern: 'spec/index.coffee', watched: false}],
     frameworks: [
       'mocha',
       'sinon-chai',
@@ -65,7 +65,7 @@ module.exports = (config) => {
       require('karma-sourcemap-loader')
     ]),
     preprocessors: {
-      'test/index.coffee': ['webpack', 'sourcemap']
+      'spec/index.coffee': ['webpack', 'sourcemap']
     },
     reporters: removeEmpty([
       ifProduction('spec'),
@@ -86,6 +86,7 @@ module.exports = (config) => {
             test: /\.coffee$/,
             enforce: 'post',
             include: /(lib|mixins|models|templates|views)/,
+            exclude: /\.spec\.coffee$/,
             loader: 'istanbul-instrumenter-loader',
             query: {
               esModules: true,
@@ -133,7 +134,6 @@ module.exports = (config) => {
         modules: [
           resolve(__dirname),
           resolve(__dirname, 'templates'),
-          resolve(__dirname, 'test/templates'),
           resolve(__dirname, 'node_modules')
         ]
       },

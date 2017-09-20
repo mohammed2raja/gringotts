@@ -3,7 +3,7 @@ utils = require 'lib/utils'
 Editable = require 'mixins/views/editable'
 GenericSave = require 'mixins/views/generic-save'
 
-module.exports = class FakeView extends Editable GenericSave Chaplin.View
+module.exports = class EditableViewMock extends Editable GenericSave Chaplin.View
   autoRender: yes
   getTemplateFunction: ->
     (data) -> """

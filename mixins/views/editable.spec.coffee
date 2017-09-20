@@ -1,6 +1,6 @@
 Chaplin = require 'chaplin'
-FakeModel = require 'test/helpers/validate-model'
-FakeView = require 'test/helpers/editable-view'
+ValidateModelMock = require 'spec/mocks/validate-model-mock'
+EditableViewMock = require 'spec/mocks/editable-view-mock'
 
 describe 'Editable', ->
   model = null
@@ -35,11 +35,11 @@ describe 'Editable', ->
 
   beforeEach ->
     sinon.stub document, 'execCommand'
-    model = new FakeModel
+    model = new ValidateModelMock
       name: 'Olivia Dunham'
       email: 'odunhameffbeeeye.com'
       url: 'http://dunham.com'
-    view = new FakeView {model}
+    view = new EditableViewMock {model}
     success = sinon.spy()
     error = sinon.spy()
     opts = _.extend {
@@ -68,7 +68,7 @@ describe 'Editable', ->
     otherModel = null
 
     before ->
-      otherModel = new FakeModel {test:'test'}
+      otherModel = new ValidateModelMock {test:'test'}
       sinon.spy otherModel, 'validate'
       customOpts =
         model: otherModel
@@ -214,8 +214,8 @@ describe 'Editable', ->
         view2 = null
 
         beforeEach ->
-          model2 = new FakeModel name: 'Phillip Broyles'
-          view2 = new FakeView model: model2
+          model2 = new ValidateModelMock name: 'Phillip Broyles'
+          view2 = new EditableViewMock model: model2
           view2.setupEditable '.edit-name', '.name-field'
           view2.$('.edit-name').click()
           # Non-DOM fragments don't propagate a blur event on click.
