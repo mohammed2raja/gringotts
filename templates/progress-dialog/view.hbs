@@ -1,0 +1,35 @@
+<div class="modal-dialog">
+  {{#> modal-content current='default'}}
+    {{> header default}}
+    <div class="modal-body">
+      {{> body-content default}}
+    </div>
+    {{> footer default}}
+    {{> progress-pulse class="loading fade"}}
+  {{/modal-content}}
+
+  {{#> modal-content current='progress'}}
+    {{> header progress}}
+    <div class="modal-body">
+      {{> body-content progress}}
+      {{> progress-pulse}}
+    </div>
+    {{> footer progress}}
+  {{/modal-content}}
+
+  {{#> modal-content current='error'}}
+    {{> header error}}
+    <div class="modal-body">
+      {{> body-content error}}
+    </div>
+    {{> footer error}}
+  {{/modal-content}}
+
+  {{#> modal-content current='success'}}
+    {{> header success}}
+    <div class="modal-body">
+      {{> body-content success}}
+    </div>
+    {{> footer success}}
+  {{/modal-content}}
+</div>
