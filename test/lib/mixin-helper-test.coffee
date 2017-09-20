@@ -1,6 +1,39 @@
 helper = require 'lib/mixin-helper'
 
 describe 'mixinHelper lib', ->
+  context 'assertModel', ->
+    it 'should throw error', ->
+      expect(-> helper.assertModel {}).to.throw Error
+
+  context 'assertNotModel', ->
+    it 'should throw error', ->
+      expect(-> helper.assertNotModel new Chaplin.Model()).to.throw Error
+
+  context 'assertCollection', ->
+    it 'should throw error', ->
+      expect(-> helper.assertCollection {}).to.throw Error
+
+  context 'assertNotCollection', ->
+    it 'should throw error', ->
+      expect(-> helper.assertNotCollection new Chaplin.Collection()) \
+        .to.throw Error
+
+  context 'assertModelOrCollection', ->
+    it 'should throw error', ->
+      expect(-> helper.assertModel {}).to.throw Error
+
+  context 'assertView', ->
+    it 'should throw error', ->
+      expect(-> helper.assertView {}).to.throw Error
+
+  context 'assertCollectionView', ->
+    it 'should throw error', ->
+      expect(-> helper.assertCollectionView {}).to.throw Error
+
+  context 'assertViewOrCollectionView', ->
+    it 'should throw error', ->
+      expect(-> helper.assertViewOrCollectionView {}).to.throw Error
+
   context 'withMixin', ->
     target = null
 

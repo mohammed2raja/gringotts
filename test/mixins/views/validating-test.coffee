@@ -29,9 +29,11 @@ class ViewMock extends Validating Templatable Chaplin.View
 describe 'Validating', ->
   view = null
   model = null
+  withAssosiatedViews = null
 
   beforeEach ->
     model = new ModelMock()
+    model.associatedViews = [new Chaplin.View()] if withAssosiatedViews
     view = new ViewMock {model}
 
   afterEach ->
@@ -40,6 +42,16 @@ describe 'Validating', ->
 
   it 'should update model associated views', ->
     expect(model.associatedViews).to.include view
+
+  context 'when model has associated views already', ->
+    before ->
+      withAssosiatedViews = yes
+
+    after ->
+      withAssosiatedViews = no
+
+    it 'should update model associated views', ->
+      expect(model.associatedViews).to.include view
 
   it 'should apply regex patterns', ->
     expect(view.$ '#adminName').to.have.prop 'pattern',

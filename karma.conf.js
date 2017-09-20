@@ -37,13 +37,7 @@ module.exports = (config) => {
           statements: 65,
           lines: 65,
           branches: 50,
-          functions: 65,
-          // TODO: Increase coverage of these modules
-          overrides: {
-            'lib/mixin-helper.coffee': hushCoverage,
-            'mixins/views/content.coffee': hushCoverage,
-            'mixins/views/validating.coffee': hushCoverage
-          }
+          functions: 65
         }
       }
     },
