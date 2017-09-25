@@ -39,9 +39,12 @@ class WithHeaders extends SafeSyncCallback superclass
   ###
   sync: (method, model, options) ->
     $xhr = null
+    aborted = no
     promise = @resolveHeaders(@HEADERS).then (headers) =>
-      $xhr = super method, model, @extendWithHeaders options, headers
+      unless aborted
+        $xhr = super method, model, @extendWithHeaders options, headers
     promise.abort = ->
+      aborted = yes
       $xhr?.abort() # compatibility with ajax deferred
       promise
     promise
