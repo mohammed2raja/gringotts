@@ -1,31 +1,19 @@
 const webpack = require('webpack');
-const {join, resolve} = require('path');
-const {getIfUtils, removeEmpty} = require('webpack-config-utils');
-const _ = require('lodash');
-
-const {ifProduction, ifNotProduction} = getIfUtils(process.env.NODE_ENV);
-
-const hushCoverage = {
-  statements: 0,
-  lines: 0,
-  branches: 0,
-  functions: 0
-};
+const {
+  alias,
+  coffeeLoader,
+  handlebarsLoader,
+  modules,
+  nodeMocks,
+  provideModules
+} = require('./webpack.config.common');
 
 module.exports = (config) => {
   config.set({
-    browsers: removeEmpty([
-      ifProduction('PhantomJS'),
-      ifNotProduction('Chrome')
-    ]),
-    client: {
-      mocha: {
-        reporter: 'html'
-      }
-    },
+    browsers: ['PhantomJS'],
     coverageIstanbulReporter: {
       fixWebpackSourcePaths: true,
-      reports: removeEmpty(['text', ifNotProduction('html')]),
+      reports: ['text'],
       thresholds: {
         global: {
           statements: 65,
@@ -51,37 +39,40 @@ module.exports = (config) => {
     ],
     logLevel: config.LOG_ERROR,
     port: 8000,
-    plugins: removeEmpty([
+    plugins: [
       require('karma-webpack'),
       require('karma-jquery'),
       require('karma-mocha'),
-      ifProduction(require('karma-spec-reporter')),
-      ifNotProduction(require('karma-nyan-reporter')),
+      require('karma-spec-reporter'),
       require('karma-chai'),
       require('karma-chai-plugins'),
-      ifProduction(require('karma-phantomjs-launcher')),
-      ifNotProduction(require('karma-chrome-launcher')),
+      require('karma-phantomjs-launcher'),
       require('karma-coverage-istanbul-reporter'),
       require('karma-sourcemap-loader')
-    ]),
+    ],
     preprocessors: {
       'spec/index.coffee': ['webpack', 'sourcemap']
     },
-    reporters: removeEmpty([
-      ifProduction('spec'),
-      ifNotProduction('nyan'),
-      'coverage-istanbul'
-    ]),
-    singleRun: false,
+    reporters: ['spec', 'coverage-istanbul'],
+    singleRun: true,
     webpack: {
-      devtool: ifProduction('source-map', 'eval'),
+      devtool: 'source-map',
       module: {
         exprContextCritical: false,
-        rules: removeEmpty([
+        noParse: /lodash|moment/,
+        rules: [
           {
-            test: /\.coffee$/,
-            loader: 'coffee-loader'
+            enforce: 'pre',
+            test: /\.hbs/,
+            loader: 'htmlhint-loader',
+            exclude: /node_modules/,
+            options: {
+              failOnError: true,
+              outputReport: true
+            }
           },
+          coffeeLoader,
+          handlebarsLoader,
           {
             test: /\.coffee$/,
             enforce: 'post',
@@ -93,52 +84,19 @@ module.exports = (config) => {
               produceSourceMap: true
             }
           },
-          ifProduction({
-            enforce: 'pre',
-            test: /\.hbs/,
-            loader: 'htmlhint-loader',
-            exclude: /node_modules/,
-            options: {
-              failOnError: true,
-              outputReport: true
-            }
-          }),
-          {
-            test: /\.hbs$/, loader: 'handlebars-loader',
-            query: {
-              helperDirs: [
-                join(__dirname, 'templates', 'helpers')
-              ],
-              partialDirs: [
-                join(__dirname, 'templates', 'partials')
-              ]
-            }
-          }
-        ])
-      },
-      node: {
-        fs: 'empty'
-      },
-      plugins: [
-        new webpack.ProvidePlugin({
-          _: 'lodash',
-          Backbone: 'backbone'
-        })
-      ],
-      resolve: {
-        alias: {
-          handlebars: 'handlebars/runtime',
-          stickit: 'backbone.stickit'
-        },
-        extensions: ['.coffee', '.js', '.hbs'],
-        modules: [
-          resolve(__dirname),
-          resolve(__dirname, 'templates'),
-          resolve(__dirname, 'node_modules')
         ]
       },
+      node: nodeMocks,
+      plugins: [
+        new webpack.ProvidePlugin(provideModules)
+      ],
+      resolve: {
+        alias: alias,
+        extensions: ['.coffee', '.js', '.hbs'],
+        modules: modules
+      },
       watchOptions: {
-        ignored: /coverage\/$/
+        aggregateTimeout: 500
       }
     }
   });
