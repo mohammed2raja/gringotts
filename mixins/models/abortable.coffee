@@ -14,10 +14,7 @@ class Abortable extends superclass
     super
 
   fetch: ->
-    @current_fetch.abort() if @current_fetch
-    @current_fetch = utils.abortable super,
-      then: (r, s, $xhr) =>
-        delete @current_fetch; $xhr
+    @makeAbortable 'fetch', super
 
   sync: (method, model, options={}) ->
     error = options.error
@@ -26,3 +23,10 @@ class Abortable extends superclass
       unless $xhr.statusText is 'abort'
         error?.apply this, arguments
     super
+
+  makeAbortable: (methodName, superMethod) ->
+    current_method = "current_#{methodName}"
+    @[current_method].abort() if @[current_method]
+    @[current_method] = utils.abortable superMethod,
+      then: (r, s, $xhr) =>
+        delete @[current_method]; $xhr
