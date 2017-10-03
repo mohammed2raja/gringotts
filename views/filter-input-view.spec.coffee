@@ -60,6 +60,7 @@ describe 'FilterInputView', ->
         id: 'q'
         name: 'Search'
         description: 'A leaf group for action filters, like search'
+        action: yes
     ]
     sandbox.stub _, 'debounce', (fn) -> fn
     view = new FilterInputView {

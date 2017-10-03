@@ -35,7 +35,7 @@ class DropdownItemView extends View
 
   constructor: ({model}) ->
     @isLeaf = isLeaf model
-    @isActionItem = @isLeaf and model.get 'description'
+    @isAction = model.get 'action'
     @needsDescription = not @isLeaf and not model.get 'description'
     super
 
@@ -49,7 +49,7 @@ class DropdownItemView extends View
     if @needsDescription
       _.extend data, description: @generateDesc()
     if @query
-      if @isActionItem
+      if @isAction
         data.note = @query
       else
         data.name = highlightMatch data.name, regExp @query
@@ -60,7 +60,7 @@ class DropdownItemView extends View
 
   render: ->
     super
-    if @isActionItem
+    if @isAction
       @$el.toggleClass 'disabled no-hover', @query is ''
 
   highlight: (query) ->
