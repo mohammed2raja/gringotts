@@ -3,8 +3,14 @@ Collection = require './base/collection'
 # An observer class for notifications. It makes sure that same messages
 # are not duplicated in the collection.
 module.exports = class Notifications extends Collection
-  initialize: ->
+  listenGlobal: false
+
+  initialize: (models, opts) ->
     super
-    @subscribeEvent 'notify', (message, opts) ->
-      @remove @where {message}
-      @add {message, opts}
+    @listenGlobal = opts.listenGlobal if opts?.listenGlobal
+    if @listenGlobal
+      @subscribeEvent 'notify', @addMessage
+
+  addMessage: (message, opts) ->
+    @remove @where {message}
+    @add {message, opts}

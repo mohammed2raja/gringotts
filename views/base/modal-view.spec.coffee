@@ -1,6 +1,7 @@
 Chaplin = require 'chaplin'
 specHelper = require 'lib/spec-helper'
 ModalView = require 'views/base/modal-view'
+NotificationsView = require 'views/notifications-view'
 
 class MockModal extends ModalView
   template: require './modal.spec.hbs'
@@ -56,6 +57,23 @@ describe 'ModalView', ->
 
         it 'should trigger shown event', ->
           expect(shownSpy).to.have.been.calledTwice
+
+      context 'notifying errors', ->
+        notifications = null
+
+        beforeEach ->
+          view.notifyError('error message')
+          notifications = view.subview('notifications')
+
+        it 'should set notifications subview', ->
+          expect(notifications).to.be.instanceOf NotificationsView
+
+        it 'should add error message to notifications', ->
+          expect(notifications.collection).to.have.length 1
+
+        it 'should have correct message', ->
+          message = notifications.collection.models[0].get 'message'
+          expect(message).to.eql 'error message'
 
     context 'on disposing', ->
       beforeEach ->

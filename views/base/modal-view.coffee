@@ -1,5 +1,7 @@
 Classy = require '../../mixins/views/classy'
 View = require './view'
+NotificationsView = require '../notifications-view'
+Notifications = require '../../models/notifications'
 
 ###*
   * Base View for bootstrap modals.
@@ -14,6 +16,7 @@ module.exports = class ModalView extends Classy View
   events:
     'shown.bs.modal': -> @onShown()
     'hidden.bs.modal': -> @onHidden()
+  notifyAnchorSelector: '.modal-header'
 
   attach: (opts) ->
     super
@@ -25,6 +28,21 @@ module.exports = class ModalView extends Classy View
     @delegateListeners()
     @render()
     @attach()
+
+  renderNotifications: ->
+    unless @subview('notifications')
+      notification = $ '<div>', class: 'modal-notifications'
+      if @notifyAnchorSelector
+        $el = @$(@notifyAnchorSelector)
+        $el.after notification
+      else
+        $el = @$('.modal-content')
+        $el.prepend notification
+      @notifications = new Notifications()
+      @subview 'notifications', new NotificationsView {
+        collection: @notifications
+        container: '.modal-notifications'
+      }
 
   hide: ->
     return if @disposed
@@ -42,7 +60,14 @@ module.exports = class ModalView extends Classy View
     @trigger 'hidden'
     @remove() unless @disposed
 
+  notifyError: (message) ->
+    @renderNotifications()
+    @notifications.addMessage message,
+      classes: 'alert-danger'
+      sticky: yes
+
   dispose: ->
+    @notifications.dispose() if @notifications
     if @modalVisible
       @once 'hidden', -> super
       @hide()

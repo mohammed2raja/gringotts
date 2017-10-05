@@ -2,9 +2,10 @@ Notifications = require 'models/notifications'
 
 describe 'Notifications', ->
   collection = null
+  listenGlobal = true
 
   beforeEach ->
-    collection = new Notifications()
+    collection = new Notifications(null, listenGlobal: listenGlobal)
 
   afterEach ->
     collection.dispose()
@@ -41,3 +42,22 @@ describe 'Notifications', ->
           expect(collection).to.have.lengthOf 2
           expect(collection.first().get('message')).to.equal message2
           expect(collection.at(1).get('message')).to.equal message1
+
+    context 'on listenGlobal false', ->
+      before ->
+        listenGlobal = false
+
+      after ->
+        listenGlobal = true
+
+      context 'on notifying a message', ->
+        message1 = null
+
+        beforeEach ->
+          message1 = 'A message for you, Rudy!'
+          collection.publishEvent 'notify', message1
+
+        afterEach -> message1 = null
+
+        it 'should not add a message', ->
+          expect(collection).to.have.lengthOf 0
