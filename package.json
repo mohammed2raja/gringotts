@@ -1,7 +1,7 @@
 {
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "main": "index.coffee",
   "homepage": "https://github.com/lookout/gringotts",
   "repository": "https://github.com/lookout/gringotts.git",
