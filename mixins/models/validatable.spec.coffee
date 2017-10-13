@@ -24,6 +24,9 @@ class ModelMock extends Validatable Chaplin.Model
     date:
       required: false
       fn: 'validateDate'
+  labels:
+    guid: 'ID'
+    date: -> 'Datetime'
 
 describe 'Validatable', ->
   model = null
@@ -60,14 +63,13 @@ describe 'Validatable', ->
 
     it 'should have errors of invalid', ->
       errors = model.validate()
-      expect(errors).to.eql {
+      expect(errors).to.eql
         name: 'Name must be a valid name'
         email: 'Email must be a valid email'
         url: 'Url must be a valid url'
         domain: 'Domain must be a valid domain'
-        guid: 'Guid must be a valid guid'
-        date: 'Date must be a valid date'
-      }
+        guid: 'ID must be a valid guid'
+        date: 'Datetime must be a valid date'
 
   context 'with valid data', ->
     beforeEach ->

@@ -2,9 +2,12 @@ moment = require 'moment'
 backboneValidation = require 'backbone-validation'
 helper = require '../../lib/mixin-helper'
 
-backboneValidation.configure {
+backboneValidation.configure
   labelFormatter: 'label'
-}
+
+backboneValidation.labelFormatters.label = (attrName, model) ->
+  _.result(model.labels, attrName) or
+    backboneValidation.labelFormatters.sentenceCase attrName, model
 
 # Override/extend default validation patterns
 _.extend backboneValidation.patterns,
