@@ -57,20 +57,42 @@ describe 'NotificationView', ->
     model.get('opts').model.trigger 'dispose'
     expect(success).to.have.been.called
 
-  it 'should dispose on navigation', ->
-    model.set 'opts', navigateDismiss: yes
-    # Kick off logic during construction.
-    view.initialize()
-    view.publishEvent 'dispatcher:dispatch'
-    expect(view.dismiss).to.be.calledOnce
+  context 'dismiss on navigation', ->
+    path = ''
+    previous = {}
 
-  it 'should only dispos errors on navigation if navigateDismiss', ->
-    sinon.spy model, 'dispose'
-    model.unset 'opts'
-    # Kick off logic during construction.
-    view.initialize()
-    view.publishEvent 'dispatcher:dispatch'
-    expect(model.dispose).not.to.be.called
+    beforeEach ->
+      model.set 'opts', navigateDismiss: yes
+      # Kick off logic during construction.
+      view.initialize()
+      view.publishEvent 'dispatcher:dispatch',
+        {}, {}, {path, previous}
+
+    context 'navigation to different primary route', ->
+      before ->
+        path = 'main_path/subpath'
+        previous =
+          path: 'another_main_path'
+
+      after ->
+        path = ''
+        previous = {}
+
+      it 'should dispose on navigation to main path', ->
+        expect(view.dismiss).to.be.calledOnce
+
+    context 'navigation to same route with different query params', ->
+      before ->
+        path = 'main_path?q=1'
+        previous =
+          path: 'main_path?q=2'
+
+      after ->
+        path = ''
+        previous = {}
+
+      it 'should not dispose on navigation to subpath', ->
+        expect(view.dismiss).not.to.be.called
 
   it 'should not call the timeout with the sticky option', ->
     sinon.stub window, 'setTimeout'

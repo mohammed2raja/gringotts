@@ -29,6 +29,15 @@ module.exports = class ModalView extends Classy View
     @render()
     @attach()
 
+  notify: (message, opts) ->
+    if @$el?.hasClass 'in'
+      @renderNotifications()
+      @notifications.addMessage message, _.extend {
+        sticky: yes
+      }, opts
+    else
+      super
+
   renderNotifications: ->
     unless @subview('notifications')
       notification = $ '<div>', class: 'modal-notifications'
@@ -59,12 +68,6 @@ module.exports = class ModalView extends Classy View
     $('body').removeClass 'no-scroll'
     @trigger 'hidden'
     @remove() unless @disposed
-
-  notifyError: (message) ->
-    @renderNotifications()
-    @notifications.addMessage message,
-      classes: 'alert-danger'
-      sticky: yes
 
   dispose: ->
     @notifications.dispose() if @notifications

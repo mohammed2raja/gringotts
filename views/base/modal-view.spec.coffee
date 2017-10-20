@@ -18,9 +18,9 @@ describe 'ModalView', ->
     view = new MockModal()
 
   afterEach ->
-    sandbox.restore()
     view.dispose()
     MockModal::autoAttach = yes
+    sandbox.restore()
 
   context 'after modal is attached', ->
     shownSpy = null
@@ -51,6 +51,26 @@ describe 'ModalView', ->
       it 'should trigger hidden event', ->
         expect(hiddenSpy).to.have.been.calledOnce
 
+      context 'notifying errors with modal hidden', ->
+        notifications = null
+
+        beforeEach ->
+          sinon.spy view, 'publishEvent'
+          view.notifyError('error message')
+          notifications = view.subview('notifications')
+
+        afterEach ->
+          view.publishEvent.restore()
+
+        it 'should not set notifications subview', ->
+          expect(notifications).not.to.exist
+
+        it 'should add notification through publishing notify event', ->
+          expect(view.publishEvent).to.been 
+            .calledWith 'notify', 'error message',
+              classes: 'alert-danger'
+              navigateDismiss: yes
+
       context 'and then show again', ->
         beforeEach ->
           view.show()
@@ -58,22 +78,22 @@ describe 'ModalView', ->
         it 'should trigger shown event', ->
           expect(shownSpy).to.have.been.calledTwice
 
-      context 'notifying errors', ->
-        notifications = null
+        context 'notifying errors', ->
+          notifications = null
 
-        beforeEach ->
-          view.notifyError('error message')
-          notifications = view.subview('notifications')
+          beforeEach ->
+            view.notifyError('error message')
+            notifications = view.subview('notifications')
 
-        it 'should set notifications subview', ->
-          expect(notifications).to.be.instanceOf NotificationsView
+          it 'should set notifications subview', ->
+            expect(notifications).to.be.instanceOf NotificationsView
 
-        it 'should add error message to notifications', ->
-          expect(notifications.collection).to.have.length 1
+          it 'should add error message to notifications', ->
+            expect(notifications.collection).to.have.length 1
 
-        it 'should have correct message', ->
-          message = notifications.collection.models[0].get 'message'
-          expect(message).to.eql 'error message'
+          it 'should have correct message', ->
+            message = notifications.collection.models[0].get 'message'
+            expect(message).to.eql 'error message'
 
     context 'on disposing', ->
       beforeEach ->

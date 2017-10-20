@@ -34,6 +34,14 @@ View = require './base/view'
 # Local reference for the timeout.
 notificationTimeout = null
 
+# ALL - Dismiss when navigating away from any route
+# ROUTE - Dismiss when navigating away from main route 
+# But ignore query param changes
+# e.g (/route?p=1 to /route?p=2)
+DISMISS_METHOD =
+  ALL: 'all'
+  ROUTE: 'route'
+
 module.exports = class NotificationView extends View
   template: require './notification.hbs'
   tagName: 'li'
@@ -44,6 +52,7 @@ module.exports = class NotificationView extends View
   undoSelector: '.undo'
   fadeSpeed: 500
   reqTimeout: 4000
+  dismissMethod: DISMISS_METHOD.ROUTE
 
   initialize: ->
     super
@@ -59,8 +68,21 @@ module.exports = class NotificationView extends View
   # dismissed
   navigateDismiss: ->
     opts = @model.get('opts') or {}
+    @dismissMethod = opts.dismissMethod if opts.dismissMethod
     if opts.navigateDismiss
-      @subscribeEvent 'dispatcher:dispatch', -> @dismiss()
+      @subscribeEvent 'dispatcher:dispatch', (controller, params, route) ->
+        if @dismissMethod is DISMISS_METHOD.ROUTE
+          @dismissOnNavigation route
+        else
+          @dismiss
+
+  # notifications should not be dismissed when navigating to
+  # paths in the same prefixed namespace
+  dismissOnNavigation: (route, path_level) ->
+    path = route.path.split('?')[0]
+    prevPath = route.previous?.path.split('?')[0]
+    unless path is prevPath
+      @dismiss()
 
   # Discard model when the view is removed.
   # `success` callback will execute when view is faded in `fadespeed` ms.

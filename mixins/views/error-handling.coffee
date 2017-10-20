@@ -1,5 +1,6 @@
 utils = require 'lib/utils'
 helper = require '../../lib/mixin-helper'
+Notifying = require './notifying'
 
 parseResponse = ($xhr) ->
   try
@@ -12,7 +13,7 @@ resolveMessage = (response) ->
 
 module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
 
-class ErrorHandling extends superclass
+class ErrorHandling extends Notifying superclass
   helper.setTypeName @prototype, 'ErrorHandling'
 
   listen:
@@ -47,10 +48,6 @@ class ErrorHandling extends superclass
       'There was a problem communicating with the server.'
     @notifyError message
     @markAsHandled $xhr
-
-  notifyError: (message) ->
-    # TODO: to replace with renderring notification into the view
-    @publishEvent 'notify', message, classes: 'alert-danger'
 
   logError: (obj) ->
     return unless window.console and window.console.warn

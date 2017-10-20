@@ -22,7 +22,7 @@ class GenericSave extends ErrorHandling superclass
     opts = _.extend {}, _.omit(opts, ['success']),
       wait: yes, validate: no
     if opts.delayedSave
-      @publishEvent 'notify', opts.saveMessage,
+      @notifySuccess opts.saveMessage,
         _.extend {}, opts,
           success: =>
             opts.model.save opts.attribute, opts.value, opts
@@ -32,7 +32,7 @@ class GenericSave extends ErrorHandling superclass
             @genericSaveRevert opts
     else
       opts.model.save opts.attribute, opts.value, opts
-        .then => @publishEvent 'notify', opts.saveMessage
+        .then => @notifySuccess opts.saveMessage
         .catch ($xhr) => @genericSaveRevert opts, $xhr
         .catch @handleError
 
