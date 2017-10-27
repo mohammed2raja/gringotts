@@ -51,24 +51,24 @@ describe 'FilterSelection', ->
       expect(collection.length).to.equal 5
 
     it 'should proper filter items into selection', ->
-      filterA = collection.findWhere id: 'filterA'
+      filterA = collection.find id: 'filterA'
       expect(filterA.attributes).to.eql
         id: 'filterA'
         groupId: 'alphabet'
         groupName: 'A-Z'
-      filterB_1 = collection.findWhere id: 'filterB', groupId: 'alphabet'
+      filterB_1 = collection.find id: 'filterB', groupId: 'alphabet'
       expect(filterB_1.attributes).to.eql
         id: 'filterB'
         groupId: 'alphabet'
         groupName: 'A-Z'
-      filterB_2 = collection.findWhere id: 'filterB', groupId: 'digits'
+      filterB_2 = collection.find id: 'filterB', groupId: 'digits'
       expect(filterB_2.attributes).to.eql
         id: 'filterB'
         groupId: 'digits'
         groupName: '0-9'
-      filterVal = collection.findWhere id: 'value'
+      filterVal = collection.find id: 'value'
       expect(filterVal).to.be.undefined
-      filterHm = collection.findWhere id: '###'
+      filterHm = collection.find id: '###'
       expect(filterHm.attributes).to.eql
         id: '###'
         groupId: 'random'

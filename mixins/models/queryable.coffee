@@ -133,7 +133,7 @@ class Queryable extends superclass
     changedKeys = @setQuery query
     queryChanged = changedKeys and
       (not @ignoreKeys or
-        not _.all changedKeys, (key) => @ignoreKeys.indexOf(key) >= 0)
+        not _.every changedKeys, (key) => @ignoreKeys.indexOf(key) >= 0)
     if queryChanged or @isUnsynced()
       @fetch options
     else
@@ -143,7 +143,7 @@ class Queryable extends superclass
     * Strips the query from all undefined or default values
   ###
   stripEmptyOrDefault: (query, opts={}) ->
-    query = _.omit query, (value, key) =>
+    query = _.omitBy query, (value, key) =>
       value is undefined or (not opts.inclDefaults and \
         _.isEqual utils.compress(@DEFAULTS[key]), utils.compress value)
 
@@ -155,7 +155,7 @@ class Queryable extends superclass
   unprefixKeys: (query) ->
     return query unless @prefix
     @alienQuery = {}
-    query = _(query).omit (value, key) =>
+    query = _(query).omitBy (value, key) =>
       if alien = key.indexOf(@prefix) < 0
         @alienQuery[key] = value
       return alien
@@ -193,11 +193,11 @@ class Queryable extends superclass
         url = "#{base}?#{querystring}"
       else if _.isArray(base) and base.length > 0
         bases = _.clone base
-        bases[0] = "#{_.first(bases)}?#{querystring}"
+        bases[0] = "#{_.head(bases)}?#{querystring}"
         url = bases
       else if _.isObject(base) and keys = _.keys base
         bases = _.clone base
-        firstKey = _.first keys
+        firstKey = _.head keys
         bases[firstKey] = "#{bases[firstKey]}?#{querystring}"
         url = bases
     url
@@ -207,8 +207,8 @@ class Queryable extends superclass
     * @return {Array}  Array of different value keys.
   ###
   queryDiff: (queryA, queryB) ->
-    diffA = _.keys _.pick queryA, (v, k) -> not _.isEqual queryB[k], v
-    diffB = _.keys _.pick queryB, (v, k) -> not _.isEqual queryA[k], v
+    diffA = _.keys _.pickBy queryA, (v, k) -> not _.isEqual queryB[k], v
+    diffB = _.keys _.pickBy queryB, (v, k) -> not _.isEqual queryA[k], v
     difference = _.union diffA, diffB
 
   class QueryableProxy

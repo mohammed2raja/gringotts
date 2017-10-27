@@ -20,7 +20,7 @@ module.exports = class FilterSelection extends Collection
     return unless filterGroups
     result = []
     _.forOwn obj, (filterIds, groupId) ->
-      return unless filterGroup = filterGroups.findWhere id: groupId
+      return unless filterGroup = filterGroups.find id: groupId
       filterIds = [].concat filterIds
       if children = filterGroup.get 'children'
         filters = children.filter (f) -> _.includes filterIds, f.id

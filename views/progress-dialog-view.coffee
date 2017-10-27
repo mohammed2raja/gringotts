@@ -57,7 +57,7 @@ module.exports = class ProgressDialogView extends ModalView
           seem to work."
         buttons: [
           # stealing action button's style and click handler to try again
-          _.extend (_.clone _.first _.filter @['default']?.buttons,
+          _.extend (_.clone _.head _.filter @['default']?.buttons,
               (b) -> b.click),
             text: I18n?.t('buttons.try_again') or 'Try again'
         ]

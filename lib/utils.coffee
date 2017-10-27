@@ -117,7 +117,7 @@ module.exports = _.extend {}, Chaplin.utils, {
   disposable: (promise, disposed) ->
     @abortable promise, all: ->
       # find a promise to return, if not available take first argument
-      result = _.find(arguments, (a) -> a?.then) or _.first arguments
+      result = _.find(arguments, (a) -> a?.then) or _.head arguments
       if disposed() then deadDeferred.create() else result
 
   ###*
