@@ -21,7 +21,7 @@ matching = (item, regexp) ->
   regexp?.test item.get 'name'
 
 matchingChild = (group, regexp) ->
-  _.first group?.get('children')?.filter (c) -> matching c, regexp
+  _.head group?.get('children')?.filter (c) -> matching c, regexp
 
 highlightMatch = (text, regexp) ->
   new handlebars.SafeString text?.replace regexp, '$1<i>$2</i>'
@@ -195,7 +195,7 @@ module.exports = class FilterInputView extends CollectionView
     else if e.which is utils.keys.ENTER
       e.preventDefault()
       @filterDropdownItems() # for quick types then enter
-      if @query() isnt '' and item = _.first @visibleListItems()
+      if @query() isnt '' and item = _.head @visibleListItems()
         item.click()
       else
         @openDropdowns()
@@ -232,7 +232,7 @@ module.exports = class FilterInputView extends CollectionView
     if ($t = $ e.currentTarget).hasClass('disabled') or $t.hasClass 'no-hover'
       return e.stopImmediatePropagation()
     e.preventDefault()
-    group = _.first @subview('dropdown-groups').modelsFrom e.currentTarget
+    group = _.head @subview('dropdown-groups').modelsFrom e.currentTarget
     throw new Error('There is no group for clicked item!') unless group
     if query = @query()
       if isLeaf group # like Search action
@@ -249,7 +249,7 @@ module.exports = class FilterInputView extends CollectionView
     if ($t = $ e.currentTarget).hasClass('disabled') or $t.hasClass 'no-hover'
       return e.stopImmediatePropagation()
     e.preventDefault()
-    item = _.first @subview('dropdown-items').modelsFrom e.currentTarget
+    item = _.head @subview('dropdown-items').modelsFrom e.currentTarget
     @addSelectedItem @selectedGroup, item
     @continue = true
 

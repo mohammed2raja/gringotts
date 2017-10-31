@@ -80,7 +80,7 @@ describe 'Routing', ->
       view.dispose()
 
     it 'should set properties to child views', ->
-      childView = _.first view.subviews
+      childView = _.head view.subviews
       expect(childView.routeName).to.equal 'that-route'
       expect(childView.routeParams).to.equal 'those-params'
       expect(childView.routeQueryable).to.eql {}

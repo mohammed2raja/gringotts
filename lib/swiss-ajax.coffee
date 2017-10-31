@@ -2,20 +2,20 @@ Backbone = require 'backbone'
 backboneAjax = Backbone.ajax
 
 ajaxForArray = ->
-  options = _.first arguments
+  options = _.head arguments
   $.when.apply $, options.url.map (url) ->
     backboneAjax _.merge _.omit(options, ['url', 'success']), {url}
   .then ->
     resp =
       if options.url.length > 1
-        _.slice(arguments).map (arg) -> _.first arg
+        _.slice(arguments).map (arg) -> _.head arg
       else
-        _.first arguments
+        _.head arguments
     options.success? resp
     resp
 
 ajaxForHash = ->
-  options = _.first arguments
+  options = _.head arguments
   pairs = _.transform options.url, (memo, url, key) ->
     memo.push {key, url}
   , []
@@ -23,14 +23,14 @@ ajaxForHash = ->
     backboneAjax _.merge _.omit(options, ['url', 'success']), url: pair.url
   .then ->
     resp = _.slice(arguments).reduce (memo, arg, i) ->
-      memo[pairs[i].key] = _.first arg
+      memo[pairs[i].key] = _.head arg
       memo
     , {}
     options.success? resp
     resp
 
 ajax = ->
-  options = _.first arguments
+  options = _.head arguments
   if _.isArray options.url
     ajaxForArray.apply $, arguments
   else if _.isObject(options.url) and not _.isFunction options.url

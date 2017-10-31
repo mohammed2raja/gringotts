@@ -1,5 +1,20 @@
 Chaplin = require 'chaplin'
 
+# _.functions from lodash@3.x, which returns all of the functions
+# on an object, including the prototype chain. In lodash@4.x, the
+# prototype chain is excluded.
+getFunctions = (object) ->
+  props = _.keysIn object
+  index = -1
+  length = props.length
+  resIndex = -1
+  result = []
+  while ++index < length
+    key = props[index]
+    if _.isFunction(object[key])
+      result[++resIndex] = key
+  result
+
 module.exports = {
   assertModel: (target) ->
     unless target instanceof Chaplin.Model
@@ -69,8 +84,9 @@ module.exports = {
       should have type name set. Call mixin-helper.setTypeName() on prototype."
     chain = Chaplin.utils.getPrototypeChain something
     if target = _.find(chain, (pro) => mixinName is @getTypeName pro)
-      targetFunctions = _.functions something
-      _.functions(mixinProto).every (func) -> _(targetFunctions).includes func
+      targetFunctions = getFunctions something
+      getFunctions(mixinProto).every (func) ->
+        _(targetFunctions).includes func
     else
       false
 

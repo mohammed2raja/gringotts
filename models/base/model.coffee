@@ -16,7 +16,7 @@ module.exports = class Model extends ActiveSyncMachine ErrorHandled \
     if @validationError
       message = @validationError[key] or
         if _.isObject @validationError
-        then _.first _.values @validationError
+        then _.head _.values @validationError
         else @validationError
       promise.reject new Error message
     else
