@@ -31,8 +31,8 @@
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.dev.js",
     "lint": "scripts/lint.sh",
-    "lint:coffee": "echo lib mixins models templates test views | xargs -n 1 coffeelint -f coffeelint.json",
-    "test": "NODE_ENV=production karma start --single-run",
+    "lint:coffee": "echo lib mixins models spec templates views | xargs -n 1 coffeelint -f coffeelint.json",
+    "test": "scripts/lint.sh; NODE_ENV=production karma start --single-run",
     "bump:patch": "npm version patch -m \"Release %s\"",
     "bump:minor": "npm version minor -m \"Release %s\"",
     "bump:major": "npm version major -m \"Release %s\"",

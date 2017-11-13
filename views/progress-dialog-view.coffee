@@ -33,7 +33,7 @@ module.exports = class ProgressDialogView extends ModalView
       @$stateView().addClass 'fade'
     'click button': (e) ->
       $btn = $(e.currentTarget)
-      @[@state]?.buttons.forEach (b) =>
+      @[@state]?.buttons?.forEach (b) =>
         b.click.call this, e if b.click and $btn.hasClass b.className
     'hide.bs.modal': ->
       @$stateView().removeClass 'fade' # to enable BS animation

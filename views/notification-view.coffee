@@ -35,7 +35,7 @@ View = require './base/view'
 notificationTimeout = null
 
 # ALL - Dismiss when navigating away from any route
-# ROUTE - Dismiss when navigating away from main route 
+# ROUTE - Dismiss when navigating away from main route
 # But ignore query param changes
 # e.g (/route?p=1 to /route?p=2)
 DISMISS_METHOD =

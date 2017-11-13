@@ -66,7 +66,7 @@ describe 'ModalView', ->
           expect(notifications).not.to.exist
 
         it 'should add notification through publishing notify event', ->
-          expect(view.publishEvent).to.been 
+          expect(view.publishEvent).to.been
             .calledWith 'notify', 'error message',
               classes: 'alert-danger'
               navigateDismiss: yes
