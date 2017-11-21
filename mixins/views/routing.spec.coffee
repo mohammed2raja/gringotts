@@ -1,6 +1,7 @@
 Backbone = require 'backbone'
 utils = require 'lib/utils'
 Chaplin = require 'chaplin'
+CollectionView = require 'views/base/collection-view'
 Routing = require 'mixins/views/routing'
 
 class ViewMock extends Routing Chaplin.View
@@ -12,6 +13,9 @@ class CollectionViewMock extends Routing Chaplin.CollectionView
     super
     @gotBrowserQuery = query
     @gotBrowserQueryDiff = diff
+
+class CollectionViewGringottsMock extends Routing CollectionView
+  itemView: ViewMock
 
 describe 'Routing', ->
   sandbox = null
@@ -64,11 +68,14 @@ describe 'Routing', ->
 
   context 'collection view', ->
     collection = null
+    withGringottsView = null
 
     beforeEach ->
       sandbox.stub Chaplin.View::, 'getTemplateFunction'
       collection = new Chaplin.Collection [1, 2, 3]
-      view = new CollectionViewMock {
+      viewType = if withGringottsView \
+        then CollectionViewGringottsMock else CollectionViewMock
+      view = new viewType {
         collection
         routeName: 'that-route'
         routeParams: 'those-params'
@@ -79,11 +86,23 @@ describe 'Routing', ->
       collection.dispose()
       view.dispose()
 
-    it 'should set properties to child views', ->
-      childView = _.head view.subviews
-      expect(childView.routeName).to.equal 'that-route'
-      expect(childView.routeParams).to.equal 'those-params'
-      expect(childView.routeQueryable).to.eql {}
+    expectChildView = ->
+      it 'should set properties to child views', ->
+        childView = _.head view.subviews
+        expect(childView.routeName).to.equal 'that-route'
+        expect(childView.routeParams).to.equal 'those-params'
+        expect(childView.routeQueryable).to.eql {}
+
+    expectChildView()
+
+    context 'is gringotts CollectionView', ->
+      before ->
+        withGringottsView = yes
+
+      after ->
+        withGringottsView = null
+
+      expectChildView()
 
   context 'browser query', ->
     routeQueryable = null

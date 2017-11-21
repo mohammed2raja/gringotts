@@ -1,5 +1,7 @@
+Chaplin = require 'chaplin'
 utils = require 'lib/utils'
 helper = require '../../lib/mixin-helper'
+CollectionView = require 'views/base/collection-view'
 
 ###*
   * A utility mixin for a View or a CollectionView. It helps to pass routing
@@ -36,8 +38,11 @@ class Routing extends superclass
     * routing properties
     * @return {View}
   ###
-  initItemView: ->
-    _.extend super, @routeOpts()
+  initItemView: (model, options) ->
+    if this instanceof CollectionView
+      super model, _.extend @routeOpts(), options
+    else
+      _.extend super, @routeOpts()
 
   getTemplateData: ->
     _.extend super, {@routeName, @routeParams}

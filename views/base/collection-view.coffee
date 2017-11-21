@@ -11,6 +11,15 @@ module.exports = class CollectionView extends Templatable ServiceErrorReady \
   animationStartClass: 'fade'
   animationEndClass: 'in'
 
+  # overrides default Chaplin method to unlock the ability of customizing
+  # item views with extra set of options upon instantiation
+  initItemView: (model, options) ->
+    if @itemView
+      new @itemView _.extend {autoRender: false, model}, options
+    else
+      throw new Error 'The CollectionView#itemView property ' +
+        'must be defined or the initItemView() must be overridden.'
+
   modelsFrom: (rows) ->
     rows = if rows.length then rows else [rows]
     itemViews = _.values @getItemViews()
