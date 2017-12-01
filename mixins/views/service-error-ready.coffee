@@ -21,3 +21,7 @@ class ServiceErrorReady extends superclass
   initialize: ->
     helper.assertViewOrCollectionView this
     super
+
+  render: ->
+    super
+    @$(@errorSelector).hide()

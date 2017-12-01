@@ -26,7 +26,7 @@ class ModelMock extends Validatable Chaplin.Model
       fn: 'validateDate'
   labels:
     guid: 'ID'
-    date: -> 'Datetime'
+    date: -> if @get('date') is 'is_this_a_date?' then 'Datetime' else 'toobad'
 
 describe 'Validatable', ->
   model = null

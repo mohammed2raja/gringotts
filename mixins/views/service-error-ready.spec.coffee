@@ -5,8 +5,8 @@ ServiceErrorReady = require 'mixins/views/service-error-ready'
 class CollectionViewMock extends ServiceErrorReady Chaplin.CollectionView
   getTemplateFunction: ->
     -> '''
-      <div class="service-error" style="display: none;"></div>
-      <div class="error" style="display: none;"></div>
+      <div class="service-error"></div>
+      <div class="error"></div>
     '''
 
 class CollectionMock extends ActiveSyncMachine Chaplin.Collection
@@ -16,6 +16,9 @@ describe 'ServiceErrorReady', ->
   collection = null
 
   serviceAssertions = (selector = '.service-error') ->
+    it 'should hide the error element by default', ->
+      expect(view.$ selector).to.have.css 'display', 'none'
+
     context 'when collection is unsynced due to error', ->
       beforeEach ->
         collection.trigger 'unsynced'

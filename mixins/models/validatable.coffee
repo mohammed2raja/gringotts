@@ -6,7 +6,8 @@ backboneValidation.configure
   labelFormatter: 'label'
 
 backboneValidation.labelFormatters.label = (attrName, model) ->
-  _.result(model.labels, attrName) or
+  (if _.isFunction(value = model.labels?[attrName]) \
+   then value.apply(model) else value) or
     backboneValidation.labelFormatters.sentenceCase attrName, model
 
 # Override/extend default validation patterns
