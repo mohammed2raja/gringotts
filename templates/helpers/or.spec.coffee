@@ -28,4 +28,4 @@ describe 'or operator', ->
       expect(helpers.or true, true, false).to.eql true
 
     it 'should return false when containing all falsy values', ->
-      expect(helpers.or false, '', 0).to.eql.false
+      expect(helpers.or false, '', 0).to.eql false

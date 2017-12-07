@@ -84,4 +84,4 @@ describe 'Validatable', ->
 
     it 'should have errors of invalid', ->
       errors = model.validate()
-      expect(errors).to.be.empty
+      expect(errors).to.be.undefined

@@ -24,7 +24,7 @@ describe 'ServiceErrorReady', ->
         collection.trigger 'unsynced'
 
       it 'should shows the error element', ->
-        expect(view.$ selector).not.to.have.css 'display', 'none'
+        expect(view.$ selector).to.not.have.css 'display', 'none'
 
     context 'when collection started to sync', ->
       beforeEach ->
@@ -39,6 +39,20 @@ describe 'ServiceErrorReady', ->
 
       it 'should hide the error element', ->
         expect(view.$ selector).to.have.css 'display', 'none'
+
+    context 'on unhandled error', ->
+      error = null
+
+      beforeEach ->
+        sinon.spy view, 'notifyError'
+        view.handleError error = status: 500
+
+      it 'should not show notification', ->
+        expect(view.notifyError).to.have.not.been.calledOnce
+        expect(view.$ selector).to.not.have.css 'display', 'none'
+
+      it 'should handle error', ->
+        expect(error.errorHandled).to.be.true
 
   beforeEach ->
     collection = new CollectionMock()

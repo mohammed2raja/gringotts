@@ -51,7 +51,7 @@ describe 'Abortable', ->
       expect(model.current_fetch).to.eql promise2
 
     it 'should abort the initial request', ->
-      expect(promise.abort).to.have.been.calledOne
+      expect(promise.abort).to.have.been.calledOnce
 
     it 'should abort fetch request', ->
       expect(request).to.have.property 'aborted', true
@@ -69,7 +69,7 @@ describe 'Abortable', ->
         expect(model.current_fetch).to.eql promise3
 
       it 'should abort the initial request', ->
-        expect(promise2.abort).to.have.been.calledOne
+        expect(promise2.abort).to.have.been.calledOnce
 
       it 'should abort fetch request', ->
         expect(request2).to.have.property 'aborted', true

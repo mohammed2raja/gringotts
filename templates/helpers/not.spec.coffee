@@ -28,4 +28,4 @@ describe 'not operator', ->
       expect(helpers.not true, false).to.eql false
 
     it 'should return true when containing all falsy values', ->
-      expect(helpers.not false, '', 0).to.eql.true
+      expect(helpers.not false, '', 0).to.eql true

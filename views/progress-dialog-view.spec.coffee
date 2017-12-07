@@ -33,12 +33,12 @@ describe 'ProgressDialogView', ->
 
   it 'should be initialized', ->
     expect(view).to.be.instanceOf ProgressDialogView
-    expect(view.default.buttons).to.
+    expect(view.default.buttons).to.deep.
       include text: 'OK', className: 'btn-primary confirm-button'
     expect(view.error.title).to.equal 'Try again?'
     expect(view.error.text).to.equal "Hmm. That didn't seem to work."
     expect(view.success.html()).to.contain 'icon-misc-sign-check'
-    expect(view.success.buttons).to.
+    expect(view.success.buttons).to.deep.
       include text: 'Okay', className: 'btn-primary confirm-button'
 
   it 'should have default view with proper classes', ->

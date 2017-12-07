@@ -43,11 +43,13 @@ class ErrorHandling extends Notifying superclass
   ###
   handleAny: ($xhr) ->
     response = parseResponse $xhr
-    message = resolveMessage(response) or
-      I18n?.t('error.notification') or
-      'There was a problem communicating with the server.'
+    message = resolveMessage(response) or @genericErrorMessage()
     @notifyError message
     @markAsHandled $xhr
+
+  genericErrorMessage: ->
+    I18n?.t('error.notification') or
+    'There was a problem communicating with the server.'
 
   logError: (obj) ->
     return unless window.console and window.console.warn

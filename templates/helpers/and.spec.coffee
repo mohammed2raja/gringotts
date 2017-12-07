@@ -28,4 +28,4 @@ describe 'and operator', ->
       expect(helpers.and true, true, false).to.eql false
 
     it 'should return true when containing all truthy values', ->
-      expect(helpers.and true, 'yes', 1).to.eql.true
+      expect(helpers.and true, 'yes', 1).to.eql true

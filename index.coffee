@@ -16,7 +16,6 @@ module.exports =
       Paginated: require 'mixins/models/paginated'
       Queryable: require 'mixins/models/queryable'
       SafeSyncCallback: require 'mixins/models/safe-sync-callback'
-      ServiceErrorHandled: require 'mixins/models/service-error-handled'
       Sorted: require 'mixins/models/sorted'
       SyncDeeply: require 'mixins/models/sync-deeply'
       SyncKey: require 'mixins/models/sync-key'
