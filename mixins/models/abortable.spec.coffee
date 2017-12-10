@@ -85,7 +85,7 @@ describe 'Abortable', ->
   context 'on error', ->
     beforeEach ->
       options = Chaplin.Model::sync.lastCall.args[2]
-      options.error (xhr = statusText: statusText or 'error')
+      options.error statusText: statusText or 'error'
 
     it 'should call original error handler', ->
       expect(errorSpy).to.have.been.calledOnce

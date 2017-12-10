@@ -52,7 +52,7 @@ class Validatable extends superclass
 
   initialize: ->
     helper.assertModel this
-    super
+    super arguments...
 
   validateDate: (value, attr) ->
     if value and not moment(value, BROWSER_DATE).isValid()

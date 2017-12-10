@@ -23,7 +23,7 @@ class ActiveSyncMachine extends superclass
 
   initialize: ->
     helper.assertModelOrCollection this
-    super
+    super arguments...
     @activateSyncMachine()
 
   ###*

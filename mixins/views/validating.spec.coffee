@@ -23,7 +23,7 @@ class ViewMock extends Validating Templatable Chaplin.View
     '[name="email"]': 'email'
 
   render: ->
-    super
+    super()
     @stickit()
 
 describe 'Validating', ->

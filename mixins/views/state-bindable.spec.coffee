@@ -38,14 +38,14 @@ describe 'StateBindable', ->
 
   expectations = ->
     it 'should set button disabled', ->
-      expect(view.$ '#button').to.be.disabled
+      expect(view.$ '#button').to.be.disabled()
 
     context 'on state attr change', ->
       beforeEach ->
         view.state.set 'isDisabled', no
 
       it 'should set button enabled', ->
-        expect(view.$ '#button').to.be.enabled
+        expect(view.$ '#button').to.be.enabled()
 
     context 'on view dispose', ->
       beforeEach ->

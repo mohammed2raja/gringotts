@@ -46,15 +46,15 @@ class Validating extends superclass
 
   initialize: ->
     helper.assertView this
-    super
+    super arguments...
     @bindModel @model if @model
 
   getTemplateData: ->
-    _.extend super, regex: _.mapValues @patterns, (re) -> re.source
+    _.extend super(), regex: _.mapValues @patterns, (re) -> re.source
 
   dispose: ->
     @unbindModel @model if @model
-    super
+    super()
 
   bindModel: (model) ->
     if model.associatedViews

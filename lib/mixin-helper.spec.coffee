@@ -45,13 +45,13 @@ describe 'mixinHelper lib', ->
       helper.setTypeName @prototype, 'A'
       a: true
       id: ->
-        super + 'a'
+        super() + 'a'
 
     MixinB = (superclass) -> class B extends superclass
       helper.setTypeName @prototype, 'B'
       b: true
       id: ->
-        super + 'b'
+        super() + 'b'
 
     class T extends MixinA S
       t: true

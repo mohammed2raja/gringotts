@@ -55,7 +55,7 @@ module.exports = class NotificationView extends View
   dismissMethod: DISMISS_METHOD.ROUTE
 
   initialize: ->
-    super
+    super arguments...
     @navigateDismiss()
 
   # Override to customize the undo element.
@@ -96,7 +96,7 @@ module.exports = class NotificationView extends View
   # Display undo and start the timeout for the view and optional
   # `success` callback.
   render: ->
-    super
+    super()
     opts = @model.get('opts') or {}
     # Limit undo to current change.
     if opts.undo
@@ -116,7 +116,7 @@ module.exports = class NotificationView extends View
 
   # Hooks up actions on the notification.
   attach: ->
-    super
+    super arguments...
     @delegate 'click', '.close', (e) ->
       e.preventDefault()
       e.stopPropagation()

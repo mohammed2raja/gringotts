@@ -19,7 +19,7 @@ class Paginating extends Routing superclass
 
   initialize: ->
     helper.assertCollectionView this
-    super
+    super arguments...
     unless @routeQueryable
       throw new Error 'This view should have a collection with
         applied Queryable mixin.'
@@ -32,12 +32,12 @@ class Paginating extends Routing superclass
     * @return {object} Context for use within the template.
   ###
   getTemplateData: ->
-    _.extend super, pageInfo: @getPageInfo()
+    _.extend super(), pageInfo: @getPageInfo()
 
   render: ->
     unless @routeName
       throw new Error "Can't render view when routeName isn't set"
-    super
+    super()
 
   getStats: (min, max, info) ->
     if I18n?

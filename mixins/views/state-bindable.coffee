@@ -41,16 +41,16 @@ class StateBindable extends superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
     attrs = _.result(this, 'initialState') or {}
     syncState = @model?.syncState?() or @collection?.syncState?()
     @state = new Chaplin.Model _.defaults attrs, {syncState}
 
   render: ->
-    super
+    super()
     if @state and @stateBindings
       @addBinding @state, _.result this, 'stateBindings'
 
   dispose: ->
-    super
+    super()
     @state.dispose()

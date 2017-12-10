@@ -21,8 +21,8 @@ class Sorted extends Queryable ForcedReset SafeSyncCallback superclass
 
   initialize: ->
     helper.assertCollection this
-    super
+    super arguments...
 
   fetch: ->
     @reset() # remove existing items
-    super
+    super arguments...

@@ -9,7 +9,7 @@ class Templatable extends superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
 
   getTemplateFunction: ->
     if @template

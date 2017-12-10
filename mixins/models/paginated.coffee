@@ -29,15 +29,15 @@ class Paginated extends Queryable ForcedReset SyncKey \
 
   initialize: ->
     helper.assertCollection this
-    super
+    super arguments...
 
   fetch: ->
     @reset() # remove existing items
-    utils.abortable super, catch: ($xhr) =>
+    utils.abortable super(arguments...), catch: ($xhr) =>
       @count = 0 unless $xhr.statusText is 'abort'; $xhr
 
   parse: (resp) ->
-    result = super
+    result = super arguments...
     @count = parseInt resp.count
     @nextPageId = resp.next_page_id if @infinite
     result

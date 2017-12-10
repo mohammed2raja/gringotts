@@ -11,10 +11,10 @@ class Abortable extends superclass
 
   initialize: ->
     helper.assertModelOrCollection this
-    super
+    super arguments...
 
   fetch: ->
-    @makeAbortable 'fetch', super
+    @makeAbortable 'fetch', super arguments...
 
   sync: (method, model, options={}) ->
     error = options.error
@@ -22,11 +22,11 @@ class Abortable extends superclass
       # cancel default error handler for abort errors
       unless $xhr.statusText is 'abort'
         error?.apply this, arguments
-    super
+    super arguments...
 
-  makeAbortable: (methodName, superMethod) ->
+  makeAbortable: (methodName, promise) ->
     current_method = "current_#{methodName}"
-    @[current_method].abort() if @[current_method]
-    @[current_method] = utils.abortable superMethod,
+    @[current_method]?.abort()
+    @[current_method] = utils.abortable promise,
       then: (r, s, $xhr) =>
         delete @[current_method]; $xhr

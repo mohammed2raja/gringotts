@@ -262,7 +262,7 @@ describe 'Queryable mixin', ->
       query = null
 
       beforeEach ->
-        query = collection.getQuery opts
+        query = collection.getQuery opts or undefined
 
       it 'should return query with prefix keys', ->
         expect(query).to.eql local_page: 20, local_per_page: 15

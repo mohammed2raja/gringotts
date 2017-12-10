@@ -6,7 +6,7 @@ describe 'icon helper', ->
   second = null
 
   beforeEach ->
-    icon = helpers.icon first or 'triangle', second
+    icon = helpers.icon first or 'triangle', second or undefined
 
   afterEach ->
     icon = null

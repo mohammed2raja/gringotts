@@ -30,7 +30,7 @@ class Sorting extends Routing superclass
     helper.assertCollectionView this
     unless @sortableTableHeaders
       throw new Error 'The sortableTableHeaders should be set for this view.'
-    super
+    super arguments...
     unless @routeQueryable
       throw new Error 'This view should have a collection with
         applied Queryable mixin.'
@@ -38,16 +38,16 @@ class Sorting extends Routing superclass
       @renderSortingControls()
 
   getTemplateData: ->
-    _.extend super, sortInfo: @getSortInfo()
+    _.extend super(), sortInfo: @getSortInfo()
 
   render: ->
     unless @routeName
       throw new Error "Can't render view when routeName isn't set"
-    super
+    super()
     @renderTooltips()
 
   renderAllItems: ->
-    super
+    super()
     @highlightColumns()
 
   getSortInfo: ->

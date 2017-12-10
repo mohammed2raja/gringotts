@@ -20,10 +20,10 @@ class ServiceErrorReady extends ErrorHandling superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
 
   render: ->
-    super
+    super()
     @$(@errorSelector).hide()
 
   handleAny: ($xhr) ->

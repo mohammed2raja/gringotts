@@ -32,7 +32,8 @@ describe 'Filtering', ->
     sandbox.spy FilterSelectionMock::, 'toObject'
     filterGroups = new Chaplin.Collection [{id: 'a'}, {id: 'b'}]
     filterGroups.isSynced = -> isSynced
-    sandbox.stub ViewMock::, 'getBrowserQuery', -> browserQuery or a: 'b'
+    sandbox.stub ViewMock::, 'getBrowserQuery', ->
+      browserQuery or a: 'b'
     sandbox.stub ViewMock::, 'setBrowserQuery'
     view = new ViewMock {filterGroups}
 

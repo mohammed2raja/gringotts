@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const _ = require('lodash');
 const {
   alias,
   coffeeLoader,
@@ -24,7 +25,7 @@ module.exports = (config) => {
         each: {
           statements: 65,
           lines: 65,
-          branches: 50,
+          branches: 45,
           functions: 65
         }
       }
@@ -35,7 +36,7 @@ module.exports = (config) => {
       'sinon-chai',
       'chai-jquery',
       'chai',
-      'jquery-3.1.1'
+      'jquery-3.2.1'
     ],
     logLevel: config.LOG_ERROR,
     port: 8000,
@@ -71,7 +72,13 @@ module.exports = (config) => {
               outputReport: true
             }
           },
-          coffeeLoader,
+          _.extend({}, coffeeLoader, {
+            options: {
+              transpile: {
+                presets: ['env']
+              }
+            }
+          }),
           handlebarsLoader,
           {
             test: /\.coffee$/,

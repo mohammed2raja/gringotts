@@ -30,7 +30,7 @@ class WithHeaders extends SafeSyncCallback superclass
     helper.assertModelOrCollection this
     unless @HEADERS
       throw new Error 'HEADERS is required'
-    super
+    super arguments...
 
   ###*
     * Resolves headers and extends Backbone options with updated headers hash

@@ -14,7 +14,7 @@ class GenericSave extends ErrorHandling superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
 
   genericSave: (opts) ->
     # The model should already have been validated

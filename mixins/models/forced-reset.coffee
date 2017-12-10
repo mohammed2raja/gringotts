@@ -15,7 +15,7 @@ class ForcedReset extends SafeSyncCallback superclass
   initialize: ->
     helper.assertCollection this
     helper.assertNotModel this
-    super
+    super arguments...
 
   fetch: ->
-    utils.abortable super, catch: ($xhr) => @reset(); $xhr
+    utils.abortable super(arguments...), catch: ($xhr) => @reset(); $xhr

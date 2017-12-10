@@ -9,4 +9,4 @@ class Content extends superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...

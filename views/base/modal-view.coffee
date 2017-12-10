@@ -19,7 +19,7 @@ module.exports = class ModalView extends Classy View
   notifyAnchorSelector: '.modal-header'
 
   attach: (opts) ->
-    super
+    super arguments...
     @$el.modal opts
 
   show: ->
@@ -36,7 +36,7 @@ module.exports = class ModalView extends Classy View
         sticky: yes
       }, opts
     else
-      super
+      super arguments...
 
   renderNotifications: ->
     unless @subview('notifications')
@@ -79,7 +79,7 @@ module.exports = class ModalView extends Classy View
   dispose: ->
     @notifications.dispose() if @notifications
     if @modalVisible
-      @once 'hidden', -> super
+      @once 'hidden', => super()
       @hide()
     else
-      super
+      super()

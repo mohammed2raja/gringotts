@@ -3,6 +3,10 @@ deadDeferred = require 'lib/dead-deferred'
 utils = require 'lib/utils'
 WithHeaders = require 'mixins/models/with-headers'
 
+getSuperHEADERS = (collection) ->
+  chain = Chaplin.utils.getPrototypeChain collection
+  _(chain).map('HEADERS').filter(_.isObject).first()
+
 class ModelMock extends WithHeaders Chaplin.Model
   url: '/foo/url'
 
@@ -12,13 +16,13 @@ class CustomSimpleMockModel extends WithHeaders Chaplin.Model
 
 class CustomFuncMockModel extends WithHeaders Chaplin.Model
   url: '/foo/url'
-  originalHeaders: @::HEADERS
   HEADERS: ->
     @mockDeferred.then =>
-      @resolveHeaders(@originalHeaders).then (headers) ->
+      @resolveHeaders(getSuperHEADERS(this)).then (headers) ->
         _.extend {}, headers, 'X-BOO-ID': '300'
 
   constructor: ->
+    super arguments...
     @mockDeferred = $.Deferred()
 
 describe 'WithHeaders mixin', ->

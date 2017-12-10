@@ -12,11 +12,11 @@ class SafeSyncCallback extends superclass
 
   initialize: ->
     helper.assertModelOrCollection this
-    super
+    super arguments...
 
   sync: ->
     @safeSyncHashCallbacks.apply this, arguments
-    utils.disposable super, => @disposed
+    utils.disposable super(arguments...), => @disposed
 
   ###*
     * Piggies back off the AJAX option hash which the Backbone
@@ -28,6 +28,6 @@ class SafeSyncCallback extends superclass
       callback = options[cb]
       if callback
         ctx = options.context or this
-        options[cb] = =>
+        options[cb] = (args...) =>
           # Check disposal at time of use.
-          callback.apply ctx, arguments unless @disposed
+          callback.apply ctx, args unless @disposed

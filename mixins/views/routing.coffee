@@ -23,7 +23,7 @@ class Routing extends superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
     unless @routeQueryable
       @routeQueryable = (@collection or @model)?.proxyQueryable?()
     if @routeQueryable?.trigger
@@ -42,10 +42,10 @@ class Routing extends superclass
     if this instanceof CollectionView
       super model, _.extend @routeOpts(), options
     else
-      _.extend super, @routeOpts()
+      _.extend super(arguments...), @routeOpts()
 
   getTemplateData: ->
-    _.extend super, {@routeName, @routeParams}
+    _.extend super(), {@routeName, @routeParams}
 
   ###*
     * A hash of current routing options.
@@ -98,4 +98,4 @@ class Routing extends superclass
   dispose: ->
     @ROUTING_OPTIONS.forEach (key) =>
       delete @[key]
-    super
+    super()

@@ -105,7 +105,7 @@ describe 'FilterInputView', ->
         expect($removeButton).to.exist
 
   it 'should have remove all button visible', ->
-    expect(view.$ '.remove-all-button').to.be.visible
+    expect(view.$ '.remove-all-button').to.be.visible()
 
   context 'on selected item remove click', ->
     beforeEach ->
@@ -128,7 +128,7 @@ describe 'FilterInputView', ->
       expect(view.$ '.selected-item').to.have.length 1
 
     it 'should set remove all button hidden', ->
-      expect(view.$ '.remove-all-button').to.be.hidden
+      expect(view.$ '.remove-all-button').to.be.hidden()
 
   context 'on finish loading children', ->
     beforeEach ->
@@ -192,13 +192,13 @@ describe 'FilterInputView', ->
       expect(visibleGroupItem).to.have.length 1
       expect(visibleGroupItem.find('.item-name').text()).to.include 'Search'
       expect(view.$ '.dropdown-groups .filters-dropdown-loading')
-        .to.be.hidden
+        .to.be.hidden()
 
   expectEmptyItemsDropdown = ->
     it 'should render empty items dropdown', ->
       view.$('.dropdown-items .filter-item').each (i, el) ->
-        expect($ el).to.be.hidden
-      expect(view.$ '.dropdown-items .filters-dropdown-empty').to.be.visible
+        expect($ el).to.be.hidden()
+      expect(view.$ '.dropdown-items .filters-dropdown-empty').to.be.visible()
 
   expectFilteredGroupsDropdown = (query, groupNameInj='', groupDescInj='') ->
     it 'should filter groups dropdown', ->
@@ -425,7 +425,7 @@ describe 'FilterInputView', ->
           expect(group.find('.item-description').text()).to
             .include 'Fifth Item'
 
-        expectFilteredGroupsDropdown 'Fif', null, 'Fif'
+        expectFilteredGroupsDropdown 'Fif', '', 'Fif'
 
         context 'on enter key press', ->
           beforeEach ->
@@ -444,7 +444,7 @@ describe 'FilterInputView', ->
           expect(group.find('.item-description').text()).to
             .include 'Forth 4 Item'
 
-        expectFilteredGroupsDropdown '4', null, '4'
+        expectFilteredGroupsDropdown '4', '', '4'
 
       context 'random text', ->
         before ->

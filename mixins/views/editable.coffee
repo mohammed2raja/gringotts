@@ -68,7 +68,7 @@ class Editable extends superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
 
   makeEditable: (opts) ->
     # cancel if there are other active editable (due to validation errors)

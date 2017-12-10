@@ -20,14 +20,14 @@ module.exports = (superclass) -> class Filtering extends Routing superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
     @filterSelection = new @filterSelection()
     if @filteringIsActive()
       @filterSelection.linkSyncMachineTo @filterGroups
     @addFilterSelectionListeners()
 
   render: ->
-    super
+    super()
     if @filteringIsActive()
       @subview 'filtering-control', new FilterInputView
         el: @$ '.filtering-control[data-filter-input]'
@@ -36,7 +36,7 @@ module.exports = (superclass) -> class Filtering extends Routing superclass
     @updateFilterSelection()
 
   onBrowserQueryChange: ->
-    super
+    super arguments...
     @updateFilterSelection()
 
   updateFilterSelection: ->

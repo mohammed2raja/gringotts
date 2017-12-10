@@ -22,12 +22,13 @@ class ErrorHandling extends Notifying superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
+    @handleError = @handleError.bind this
 
   ###*
     * Generic error handler. Works with an Error and XHR instances.
   ###
-  handleError: (obj) =>
+  handleError: (obj) ->
     if obj.status?
       $xhr = obj
       if $xhr.statusText is 'abort'

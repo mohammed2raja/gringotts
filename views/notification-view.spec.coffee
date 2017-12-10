@@ -16,7 +16,7 @@ describe 'NotificationView', ->
     undo = sinon.spy()
     opts = {success, undo, model: new Chaplin.Model()}
     model = new Chaplin.Model {opts}
-    viewOpts = {model}
+    viewOpts = {model, fadeSpeed: 0}
     viewOpts.undoSelector = undoSelector if undoSelector
     view = new NotificationView viewOpts
     view.getTemplateFunction = ->
@@ -46,12 +46,11 @@ describe 'NotificationView', ->
     expect(view.$ '.undo').to.exist
 
   it 'should display only one undo at a time', ->
-    sinon.spy $.fn, 'remove'
+    sandbox.spy $.fn, 'remove'
     sinon.spy view, 'getUndoElement'
     view.render()
     expect($.fn.remove).to.be.calledOnce
     expect(view.getUndoElement).to.be.calledOnce
-    $.fn.remove.restore()
 
   it 'should invoke callback before device is disposed', ->
     model.get('opts').model.trigger 'dispose'
@@ -150,10 +149,7 @@ describe 'NotificationView', ->
 
   context 'on dismiss', ->
     beforeEach ->
-      sinon.spy $.fn, 'animate'
-      view.fadeSpeed = 0
-    afterEach ->
-      $.fn.animate.restore()
+      sandbox.spy $.fn, 'animate'
 
     it 'should dispose the model', ->
       view.dismiss()

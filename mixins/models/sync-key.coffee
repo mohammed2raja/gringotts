@@ -28,8 +28,8 @@ class SyncKey extends superclass
 
   initialize: ->
     helper.assertCollection this
-    super
+    super arguments...
 
   parse: ->
-    result = super
+    result = super arguments...
     if @syncKey then result[@syncKey] else result

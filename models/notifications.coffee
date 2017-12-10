@@ -6,7 +6,7 @@ module.exports = class Notifications extends Collection
   listenGlobal: false
 
   initialize: (models, opts) ->
-    super
+    super arguments...
     @listenGlobal = opts.listenGlobal if opts?.listenGlobal
     if @listenGlobal
       @subscribeEvent 'notify', @addMessage

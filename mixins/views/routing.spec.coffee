@@ -10,7 +10,7 @@ class CollectionViewMock extends Routing Chaplin.CollectionView
   itemView: Chaplin.View
 
   onBrowserQueryChange: (query, diff) ->
-    super
+    super arguments...
     @gotBrowserQuery = query
     @gotBrowserQueryDiff = diff
 

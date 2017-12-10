@@ -13,19 +13,19 @@ describe 'MixinBuilder', ->
       helper.setTypeName @prototype, 'A'
       a: true
       id: ->
-        super + 'a'
+        super() + 'a'
 
     MixinB = (superclass) -> class B extends superclass
       helper.setTypeName @prototype, 'B'
       b: true
       id: ->
-        super + 'b'
+        super() + 'b'
 
     MixinC = (superclass) -> class C extends superclass
       helper.setTypeName @prototype, 'C'
       c: true
       id: ->
-        super + 'c'
+        super() + 'c'
 
     class T extends utils.mix(S).with MixinA, MixinB, MixinC
       t: true
@@ -54,21 +54,21 @@ describe 'MixinBuilder', ->
       helper.setTypeName @prototype, 'A'
       a: true
       id: ->
-        super + 'a'
+        super() + 'a'
 
     MixinB =
       (superclass) -> class B extends utils.mix(superclass).with MixinA
         helper.setTypeName @prototype, 'B'
         b: true
         id: ->
-          super + 'b'
+          super() + 'b'
 
     MixinC =
       (superclass) -> class C extends utils.mix(superclass).with MixinA
         helper.setTypeName @prototype, 'C'
         c: true
         id: ->
-          super + 'c'
+          super() + 'c'
 
     class T extends MixinC MixinB S
       t: true

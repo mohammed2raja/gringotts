@@ -41,7 +41,7 @@ module.exports = class ProgressDialogView extends ModalView
       if @state is 'success' then @onDone?() else @onCancel?()
 
   initialize: ->
-    super
+    super arguments...
     if not _.isFunction @model.isSyncing
       throw Error 'Requires a model implementing SyncMachine'
     # set a few essential defaults for basic dialog use cases
@@ -76,13 +76,13 @@ module.exports = class ProgressDialogView extends ModalView
     @state = @progressState() unless @state
 
   getTemplateData: ->
-    _.extend super, {@state}, _.reduce STATES, (data, state) =>
+    _.extend super(), {@state}, _.reduce STATES, (data, state) =>
       data[state] = @[state]
       data
     , {}
 
   render: ->
-    super
+    super()
     if @model.isSyncing() then @onSyncing()
 
   onSyncing: ->

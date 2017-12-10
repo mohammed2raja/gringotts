@@ -12,7 +12,8 @@ module.exports = class Model extends ActiveSyncMachine ErrorHandled \
     WithHeaders Abortable SafeSyncCallback Chaplin.Model
 
   save: (key, val, options) ->
-    promise = super or $.Deferred() # handling validation false result
+    # handling validation false result
+    promise = super(arguments...) or $.Deferred()
     if @validationError
       message = @validationError[key] or
         if _.isObject @validationError

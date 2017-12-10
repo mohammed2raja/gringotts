@@ -14,7 +14,7 @@ class Classy extends superclass
 
   initialize: ->
     helper.assertViewOrCollectionView this
-    super
+    super arguments...
 
   render: ->
     if @classyName
@@ -22,4 +22,4 @@ class Classy extends superclass
       className += ' ' unless className is ''
       unless new RegExp("(^|\\s+)#{@classyName}(\\s+|$)", 'ig').test className
         @$el.attr 'class', "#{className}#{@classyName}"
-    super
+    super()

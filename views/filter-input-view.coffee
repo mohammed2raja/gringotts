@@ -34,18 +34,15 @@ class DropdownItemView extends View
     (if @isLeaf then 'leaf ' else '') + 'filter-item'
 
   constructor: ({model}) ->
+    super arguments...
     @isLeaf = isLeaf model
     @isAction = model.get 'action'
     @needsDescription = not @isLeaf and not model.get 'description'
-    super
-
-  initialize: ->
-    super
     if @needsDescription
       @listenTo @model.get('children'), 'synced', -> @render()
 
   getTemplateData: ->
-    data = super
+    data = super()
     if @needsDescription
       _.extend data, description: @generateDesc()
     if @query
@@ -59,7 +56,7 @@ class DropdownItemView extends View
     data
 
   render: ->
-    super
+    super()
     if @isAction
       @$el.toggleClass 'disabled no-hover', @query is ''
 
@@ -130,7 +127,7 @@ module.exports = class FilterInputView extends CollectionView
     'hidden.bs.dropdown .dropdown': (e) -> @onDropdownHidden e
 
   initialize: (options={}) ->
-    super
+    super arguments...
     @$el.removeClass(cl = @$el.attr 'class').addClass "#{@className} #{cl}"
     @placeholder = @$el.data('placeholder') or options.placeholder
     @disabled = @$el.data('disabled')? or options.disabled
@@ -152,7 +149,7 @@ module.exports = class FilterInputView extends CollectionView
     }
 
   render: ->
-    super
+    super()
     @subview 'dropdown-groups', new DropdownView {
       el: @$ '.dropdown-groups'
       collection: @groupSource
@@ -359,4 +356,4 @@ module.exports = class FilterInputView extends CollectionView
     delete @groupSource
     delete @itemSource
     delete @selectedGroup
-    super
+    super()

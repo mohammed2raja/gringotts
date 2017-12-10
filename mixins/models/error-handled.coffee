@@ -7,14 +7,15 @@ class ErrorHandled extends superclass
 
   initialize: ->
     helper.assertModelOrCollection this
-    super
+    super arguments...
+    @handleError = @handleError.bind this
 
   ###*
     * Generic error handler. Works with an Error and XHR instances.
     * It triggers the event that a related view with applied ErrorHandling
     * mixin will consume.
   ###
-  handleError: (obj) =>
+  handleError: (obj) ->
     @trigger 'promise-error', this, obj
     @logError(obj) unless obj.errorHandled
 

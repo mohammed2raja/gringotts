@@ -20,7 +20,8 @@ class SyncDeeply extends ActiveSyncMachine superclass
 
   initialize: ->
     helper.assertCollection this
-    super
+    super arguments...
+    @onDeepSyncStateChange = @onDeepSyncStateChange.bind this
     @unbindSyncMachineFrom this
     @shadowSyncMachine = new ShadowSyncMachine()
     @shadowSyncMachine.bindSyncMachineTo this
@@ -29,7 +30,7 @@ class SyncDeeply extends ActiveSyncMachine superclass
     @on 'remove', (model) -> @removeDeepListener model.get 'children'
 
   reset: ->
-    super
+    super arguments...
     @each (model) => @addDeepListener model.get 'children'
 
   fetchChildren: ->
@@ -50,7 +51,7 @@ class SyncDeeply extends ActiveSyncMachine superclass
   removeDeepListener: (collection) ->
     collection?.off 'syncStateChange', @onDeepSyncStateChange
 
-  onDeepSyncStateChange: (collection, syncState) =>
+  onDeepSyncStateChange: (collection, syncState) ->
     if syncState is 'syncing' and not @errorHappened
       @beginSync()
     else if syncState is 'synced' and @isSynced()
@@ -63,4 +64,4 @@ class SyncDeeply extends ActiveSyncMachine superclass
     @removeDeepListener @shadowSyncMachine
     @each (model) =>
       @removeDeepListener model.get 'children'
-    super
+    super()
