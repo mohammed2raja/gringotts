@@ -1,4 +1,4 @@
-ModalView = require './base/modal-view'
+import ModalView from './base/modal-view'
 
 STATES = ['default', 'progress', 'error', 'success']
 
@@ -15,7 +15,7 @@ STATES = ['default', 'progress', 'error', 'success']
 * State text can be a Handlebars template function.
 * If a button doesn't have click handler, it will close dialog on click.
 ###
-module.exports = class ProgressDialogView extends ModalView
+export default class ProgressDialogView extends ModalView
   optionNames: @::optionNames.concat STATES, ['state', 'onDone', 'onCancel']
   className: 'progress-dialog'
   template: require './progress-dialog/view.hbs'

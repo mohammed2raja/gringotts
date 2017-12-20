@@ -1,10 +1,10 @@
-helper = require '../../lib/mixin-helper'
+import helper from '../../lib/mixin-helper'
 
 ###*
   * Helps publish 'notify' events for Notifications
 ###
 
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Notifying extends superclass
   helper.setTypeName @prototype, 'Notifying'

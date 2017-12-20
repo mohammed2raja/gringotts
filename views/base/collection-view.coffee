@@ -1,9 +1,9 @@
-Chaplin = require 'chaplin'
-Templatable = require '../../mixins/views/templatable'
-ServiceErrorReady = require '../../mixins/views/service-error-ready'
-ErrorHandling = require '../../mixins/views/error-handling'
+import Chaplin from 'chaplin'
+import Templatable from '../../mixins/views/templatable'
+import ServiceErrorReady from '../../mixins/views/service-error-ready'
+import ErrorHandling from '../../mixins/views/error-handling'
 
-module.exports = class CollectionView extends Templatable ServiceErrorReady \
+export default class CollectionView extends Templatable ServiceErrorReady \
     ErrorHandling Chaplin.CollectionView
   loadingSelector: '.loading'
   fallbackSelector: '.empty'

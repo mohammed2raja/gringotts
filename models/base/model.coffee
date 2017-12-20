@@ -1,14 +1,14 @@
-Chaplin = require 'chaplin'
-ActiveSyncMachine = require '../../mixins/models/active-sync-machine'
-Abortable = require '../../mixins/models/abortable'
-SafeSyncCallback = require '../../mixins/models/safe-sync-callback'
-ErrorHandled = require '../../mixins/models/error-handled'
-WithHeaders = require '../../mixins/models/with-headers'
+import Chaplin from 'chaplin'
+import ActiveSyncMachine from '../../mixins/models/active-sync-machine'
+import Abortable from '../../mixins/models/abortable'
+import SafeSyncCallback from '../../mixins/models/safe-sync-callback'
+import ErrorHandled from '../../mixins/models/error-handled'
+import WithHeaders from '../../mixins/models/with-headers'
 
 ###*
   *  Abstract class for models. Includes useful mixins by default.
 ###
-module.exports = class Model extends ActiveSyncMachine ErrorHandled \
+export default class Model extends ActiveSyncMachine ErrorHandled \
     WithHeaders Abortable SafeSyncCallback Chaplin.Model
 
   save: (key, val, options) ->

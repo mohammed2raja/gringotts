@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-ActiveSyncMachine = require 'mixins/models/active-sync-machine'
+import Chaplin from 'chaplin'
+import ActiveSyncMachine from 'mixins/models/active-sync-machine'
 
 class CollectionMock extends ActiveSyncMachine Chaplin.Collection
 

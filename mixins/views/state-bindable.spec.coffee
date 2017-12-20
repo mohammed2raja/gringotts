@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-StateBindable = require 'mixins/views/state-bindable'
-Templatable = require 'mixins/views/templatable'
-ActiveSyncMachine = require 'mixins/models/active-sync-machine'
+import Chaplin from 'chaplin'
+import StateBindable from 'mixins/views/state-bindable'
+import Templatable from 'mixins/views/templatable'
+import ActiveSyncMachine from 'mixins/models/active-sync-machine'
 
 class SyncMachineModelMock extends ActiveSyncMachine Chaplin.Model
 

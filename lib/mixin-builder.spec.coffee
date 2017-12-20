@@ -1,5 +1,5 @@
-utils = require 'lib/utils'
-helper = require 'lib/mixin-helper'
+import utils from 'lib/utils'
+import helper from 'lib/mixin-helper'
 
 describe 'MixinBuilder', ->
   context 'mix', ->

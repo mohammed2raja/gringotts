@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-deadDeferred = require 'lib/dead-deferred'
-utils = require 'lib/utils'
-WithHeaders = require 'mixins/models/with-headers'
+import Chaplin from 'chaplin'
+import deadDeferred from 'lib/dead-deferred'
+import utils from 'lib/utils'
+import WithHeaders from 'mixins/models/with-headers'
 
 getSuperHEADERS = (collection) ->
   chain = Chaplin.utils.getPrototypeChain collection

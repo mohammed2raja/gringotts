@@ -1,6 +1,6 @@
-Backbone = require 'backbone'
-Chaplin = require 'chaplin'
-swissAjax = require 'lib/swiss-ajax'
+import Backbone from 'backbone'
+import Chaplin from 'chaplin'
+import swissAjax from 'lib/swiss-ajax'
 
 class MockModelString extends Chaplin.Model
   url: '/foo'

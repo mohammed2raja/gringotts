@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-SyncKey = require 'mixins/models/sync-key'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import SyncKey from 'mixins/models/sync-key'
 
 class MockSyncKeyCollection extends SyncKey Chaplin.Collection
   syncKey: 'someItems'

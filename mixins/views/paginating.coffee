@@ -1,13 +1,13 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-Routing = require './routing'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import Routing from './routing'
 
 ###*
   * Adds pagination support to a CollectionView. It relies on Routing
   * mixin to get current route name and params to generate pagination links.
   * @param  {CollectionView} base superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Paginating extends Routing superclass
   helper.setTypeName @prototype, 'Paginating'

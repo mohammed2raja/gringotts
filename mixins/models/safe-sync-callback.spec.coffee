@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-SafeSyncCallback = require 'mixins/models/safe-sync-callback'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import SafeSyncCallback from 'mixins/models/safe-sync-callback'
 
 class CollectionMock extends SafeSyncCallback Chaplin.Collection
   url: 'abc'

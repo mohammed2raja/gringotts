@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-backboneValidation = require 'backbone-validation'
-Validatable = require 'mixins/models/validatable'
+import Chaplin from 'chaplin'
+import backboneValidation from 'backbone-validation'
+import Validatable from 'mixins/models/validatable'
 
 patterns = backboneValidation
 

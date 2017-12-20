@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-ActiveSyncMachine = require 'mixins/models/active-sync-machine'
-ServiceErrorReady = require 'mixins/views/service-error-ready'
+import Chaplin from 'chaplin'
+import ActiveSyncMachine from 'mixins/models/active-sync-machine'
+import ServiceErrorReady from 'mixins/views/service-error-ready'
 
 class CollectionViewMock extends ServiceErrorReady Chaplin.CollectionView
   getTemplateFunction: ->

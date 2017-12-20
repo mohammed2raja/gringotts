@@ -1,5 +1,5 @@
-handlebars = require 'handlebars'
-_ = require 'lodash'
+import handlebars from 'handlebars'
+import _ from 'lodash'
 
 # Output element for use with font icon classes.
 # If name has couple of classes then the last one is used as icon name.
@@ -9,7 +9,7 @@ _ = require 'lodash'
 # If it is a string it will add it as a class.
 #
 # **e.g.** `{{icon 'awesome' 'extra-classy'}}`
-module.exports = (name, attrs={}) ->
+export default (name, attrs={}) ->
   return unless name
   icon = $('<span>')
   if typeof attrs is 'string'

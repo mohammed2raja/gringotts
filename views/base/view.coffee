@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-Templatable = require '../../mixins/views/templatable'
-ErrorHandling = require '../../mixins/views/error-handling'
+import Chaplin from 'chaplin'
+import Templatable from '../../mixins/views/templatable'
+import ErrorHandling from '../../mixins/views/error-handling'
 
-module.exports = class View extends ErrorHandling Templatable Chaplin.View
+export default class View extends ErrorHandling Templatable Chaplin.View
   autoRender: yes

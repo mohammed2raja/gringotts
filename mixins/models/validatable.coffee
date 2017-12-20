@@ -1,6 +1,6 @@
-moment = require 'moment'
-backboneValidation = require 'backbone-validation'
-helper = require '../../lib/mixin-helper'
+import moment from 'moment'
+import backboneValidation from 'backbone-validation'
+import helper from '../../lib/mixin-helper'
 
 backboneValidation.configure
   labelFormatter: 'label'
@@ -35,7 +35,7 @@ BROWSER_DATE = ['MM/DD/YYYY', 'YYYY-MM-DD']
   * Adds a validateDate function.
   * @param  {Backbone.Model} superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Validatable extends superclass
   helper.setTypeName @prototype, 'Validatable'

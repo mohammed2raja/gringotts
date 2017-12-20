@@ -1,9 +1,9 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-ActiveSyncMachine = require 'mixins/models/active-sync-machine'
-Paginated = require 'mixins/models/paginated'
-Paginating = require 'mixins/views/paginating'
-Templatable = require 'mixins/views/templatable'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import ActiveSyncMachine from 'mixins/models/active-sync-machine'
+import Paginated from 'mixins/models/paginated'
+import Paginating from 'mixins/views/paginating'
+import Templatable from 'mixins/views/templatable'
 
 class ItemViewMock extends Chaplin.View
   tagName: 'tr'

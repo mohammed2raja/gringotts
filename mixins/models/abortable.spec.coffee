@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-Abortable = require 'mixins/models/abortable'
+import Chaplin from 'chaplin'
+import Abortable from 'mixins/models/abortable'
 
 class ModelMock extends Abortable Chaplin.Model
   url: '/abc'

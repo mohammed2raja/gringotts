@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-CollectionView = require 'views/base/collection-view'
+import Chaplin from 'chaplin'
+import CollectionView from 'views/base/collection-view'
 
 class ItemViewMock extends Chaplin.View
   className: 'test-item'

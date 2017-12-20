@@ -1,4 +1,4 @@
-helpers = unlessEqual: require 'templates/helpers/unlessEqual'
+import unlessEqual from 'templates/helpers/unlessEqual'
 
 describe 'unlessEqual helper', ->
   hbsOptions = null
@@ -16,16 +16,16 @@ describe 'unlessEqual helper', ->
 
   context 'with fn and inverse blocks', ->
     it 'should be true for non-equal values', ->
-      helpers.unlessEqual 100, 200, hbsOptions
+      unlessEqual 100, 200, hbsOptions
       expect(hbsOptions.fn).to.be.calledOnce
 
     it 'should be false for equal values', ->
-      helpers.unlessEqual 100, 100, hbsOptions
+      unlessEqual 100, 100, hbsOptions
       expect(hbsOptions.inverse).to.be.calledOnce
 
   context 'without fn and inverse blocks', ->
     it 'should be true for non-equal values', ->
-      expect(helpers.unlessEqual 100, 200).to.be.true
+      expect(unlessEqual 100, 200).to.be.true
 
     it 'should be false for equal values', ->
-      expect(helpers.unlessEqual 100, 100).to.be.false
+      expect(unlessEqual 100, 100).to.be.false

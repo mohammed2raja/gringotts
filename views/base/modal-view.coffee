@@ -1,7 +1,7 @@
-Classy = require '../../mixins/views/classy'
-View = require './view'
-NotificationsView = require '../notifications-view'
-Notifications = require '../../models/notifications'
+import Classy from '../../mixins/views/classy'
+import View from './view'
+import NotificationsView from '../notifications-view'
+import Notifications from '../../models/notifications'
 
 ###*
   * Base View for bootstrap modals.
@@ -9,7 +9,7 @@ Notifications = require '../../models/notifications'
   * the parent host Chaplin.View that initiates modal creation.
   * This will guarantee that modal view is disposed when host view is disposed.
 ###
-module.exports = class ModalView extends Classy View
+export default class ModalView extends Classy View
   classyName: 'modal fade'
   attributes:
     role: 'dialog'

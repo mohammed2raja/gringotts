@@ -1,8 +1,8 @@
-Backbone = require 'backbone'
-utils = require 'lib/utils'
-Chaplin = require 'chaplin'
-CollectionView = require 'views/base/collection-view'
-Routing = require 'mixins/views/routing'
+import Backbone from 'backbone'
+import utils from 'lib/utils'
+import Chaplin from 'chaplin'
+import CollectionView from 'views/base/collection-view'
+import Routing from 'mixins/views/routing'
 
 class ViewMock extends Routing Chaplin.View
 

@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-Classy = require 'mixins/views/classy'
+import Chaplin from 'chaplin'
+import Classy from 'mixins/views/classy'
 
 class ViewMock extends Classy Chaplin.View
   classyName: 'sweety'

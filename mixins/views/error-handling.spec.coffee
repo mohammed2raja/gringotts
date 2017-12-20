@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-ErrorHandling = require 'mixins/views/error-handling'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import ErrorHandling from 'mixins/views/error-handling'
 
 class ViewMock extends ErrorHandling Chaplin.View
 

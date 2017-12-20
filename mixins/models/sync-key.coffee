@@ -1,4 +1,4 @@
-helper = require '../../lib/mixin-helper'
+import helper from '../../lib/mixin-helper'
 
 ###*
   * Checks response JSON on every fetch and extracts items stored in "syncKey"
@@ -15,7 +15,7 @@ helper = require '../../lib/mixin-helper'
   * }
   * @param  {Collection}  superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class SyncKey extends superclass
   helper.setTypeName @prototype, 'SyncKey'

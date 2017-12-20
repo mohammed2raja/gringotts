@@ -1,13 +1,13 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-SafeSyncCallback = require '../../mixins/models/safe-sync-callback'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import SafeSyncCallback from '../../mixins/models/safe-sync-callback'
 
 ###*
   * An extensible mixin to intercept Model's syncing operation and adding
   * the required HTTP Headers to the XHR request.
   * @param  {Model|Collection} superclass Any Backbone Model or Collection.
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class WithHeaders extends SafeSyncCallback superclass
   helper.setTypeName @prototype, 'WithHeaders'

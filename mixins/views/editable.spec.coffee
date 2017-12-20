@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-ValidateModelMock = require 'spec/mocks/validate-model-mock'
-EditableViewMock = require 'spec/mocks/editable-view-mock'
+import Chaplin from 'chaplin'
+import ValidateModelMock from 'spec/mocks/validate-model-mock'
+import EditableViewMock from 'spec/mocks/editable-view-mock'
 
 describe 'Editable', ->
   model = null

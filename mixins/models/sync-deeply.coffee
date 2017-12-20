@@ -1,6 +1,6 @@
-Backbone = require 'backbone'
-helper = require '../../lib/mixin-helper'
-ActiveSyncMachine = require '../../mixins/models/active-sync-machine'
+import Backbone from 'backbone'
+import helper from '../../lib/mixin-helper'
+import ActiveSyncMachine from '../../mixins/models/active-sync-machine'
 
 isPerhapsSynced = (collection) ->
   if _.isFunction collection?.isSynced then collection.isSynced() else yes
@@ -13,7 +13,7 @@ class ShadowSyncMachine extends ActiveSyncMachine (->)
   * This mixin works the best when applied to Collections that serve as a
   * filter groups source of the FilterInputView control.
 ###
-module.exports = (superclass) -> \
+export default (superclass) -> \
 
 class SyncDeeply extends ActiveSyncMachine superclass
   helper.setTypeName @prototype, 'SyncDeeply'

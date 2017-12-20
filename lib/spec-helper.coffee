@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   stubModal: (sandbox, ctx) ->
     sandbox.stub $.fn, 'modal', (cmd) ->
       context = ctx() if ctx

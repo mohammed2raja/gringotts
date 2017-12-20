@@ -1,4 +1,4 @@
-Chaplin = require 'chaplin'
+import Chaplin from 'chaplin'
 
 # _.functions from lodash@3.x, which returns all of the functions
 # on an object, including the prototype chain. In lodash@4.x, the
@@ -15,7 +15,7 @@ getFunctions = (object) ->
       result[++resIndex] = key
   result
 
-module.exports = {
+export default {
   assertModel: (target) ->
     unless target instanceof Chaplin.Model
       throw new Error 'This mixin can be applied only to models.'

@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-helper = require '../../lib/mixin-helper'
+import Chaplin from 'chaplin'
+import helper from '../../lib/mixin-helper'
 
 ###*
   * Adds state model, that is a data source for state bindings.
@@ -7,7 +7,7 @@ helper = require '../../lib/mixin-helper'
   * and UI state bindings that target a special independent state model.
   * @param  {Backbone.View} superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class StateBindable extends superclass
   helper.setTypeName @prototype, 'StateBindable'

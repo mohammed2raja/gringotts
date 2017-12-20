@@ -1,4 +1,4 @@
-DialogView = require 'views/dialog-view'
+import DialogView from 'views/dialog-view'
 
 describe 'DialogView', ->
   title = 'Secret Operation'

@@ -1,10 +1,10 @@
-helper = require '../../lib/mixin-helper'
-ErrorHandling = require './error-handling'
+import helper from '../../lib/mixin-helper'
+import ErrorHandling from './error-handling'
 
 # Display errors when a collection sync returns an error.
 # This follows a similar pattern to the `loadingSelector`
 # and `fallbackSelector` that `Chaplin.CollectionView` provides.
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class ServiceErrorReady extends ErrorHandling superclass
   helper.setTypeName @prototype, 'ServiceErrorReady'

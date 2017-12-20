@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-Notifications = require 'models/notifications'
-NotificationsView = require 'views/notifications-view'
+import Chaplin from 'chaplin'
+import Notifications from 'models/notifications'
+import NotificationsView from 'views/notifications-view'
 
 describe 'NotificationsView', ->
   view = null

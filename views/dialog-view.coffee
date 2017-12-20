@@ -1,6 +1,6 @@
-ModalView = require './base/modal-view'
+import ModalView from './base/modal-view'
 
-module.exports = class DialogView extends ModalView
+export default class DialogView extends ModalView
   className: 'dialog'
   template: require './dialog.hbs'
   title: null

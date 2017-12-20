@@ -1,8 +1,8 @@
-Chaplin = require 'chaplin'
-helper = require 'lib/mixin-helper'
-Sorted = require 'mixins/models/sorted'
-ForcedReset = require 'mixins/models/forced-reset'
-Queryable = require 'mixins/models/queryable'
+import Chaplin from 'chaplin'
+import helper from 'lib/mixin-helper'
+import Sorted from 'mixins/models/sorted'
+import ForcedReset from 'mixins/models/forced-reset'
+import Queryable from 'mixins/models/queryable'
 
 class MockSortedCollection extends Sorted Chaplin.Collection
   urlRoot: '/test'

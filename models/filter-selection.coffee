@@ -1,12 +1,12 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-Collection = require 'models/base/collection'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import Collection from 'models/base/collection'
 
 ###*
   * A generic collection that can be used as a selected filters collection
   * source of the FilterInputView component.
 ###
-module.exports = class FilterSelection extends Collection
+export default class FilterSelection extends Collection
   modelId: (attrs) ->
     "#{attrs['groupId']}-#{attrs['id']}"
 

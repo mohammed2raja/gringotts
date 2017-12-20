@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-deadDeferred = require 'lib/dead-deferred'
-utils = require 'lib/utils'
+import Chaplin from 'chaplin'
+import deadDeferred from 'lib/dead-deferred'
+import utils from 'lib/utils'
 
 describe 'Utils lib', ->
   it 'should correctly combine weird urls', ->

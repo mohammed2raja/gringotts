@@ -1,4 +1,4 @@
-View = require 'views/base/view'
+import View from 'views/base/view'
 
 describe 'View', ->
   view = null

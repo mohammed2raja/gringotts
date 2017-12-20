@@ -1,8 +1,8 @@
-Chaplin = require 'chaplin'
-specHelper = require 'lib/spec-helper'
-ErrorHandled = require 'mixins/models/error-handled'
-ActiveSyncMachine = require 'mixins/models/active-sync-machine'
-ProgressDialogView = require 'views/progress-dialog-view'
+import Chaplin from 'chaplin'
+import specHelper from 'lib/spec-helper'
+import ErrorHandled from 'mixins/models/error-handled'
+import ActiveSyncMachine from 'mixins/models/active-sync-machine'
+import ProgressDialogView from 'views/progress-dialog-view'
 
 class ModelMock extends ActiveSyncMachine ErrorHandled Chaplin.Model
 

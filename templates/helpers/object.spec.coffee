@@ -1,4 +1,4 @@
-helpers = object: require 'templates/helpers/object'
+import object from 'templates/helpers/object'
 
 describe 'object helper', ->
   hbsOptions = null
@@ -13,6 +13,6 @@ describe 'object helper', ->
     hbsOptions = null
 
   it 'should return object for hash', ->
-    result = helpers.object null,
+    result = object null,
       _.extend {}, hbsOptions, hash: {a: 10, b: 55}
     expect(result).to.eql {a: 10, b: 55}

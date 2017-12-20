@@ -1,7 +1,7 @@
-jQuery = require 'jquery'
+import jQuery from 'jquery'
 window.$ = window.jQuery = jQuery
 
-chai = require 'chai'
+import chai from 'chai'
 chai.use require('sinon-chai')
 chai.use require('chai-jquery')
 window.expect = chai.expect

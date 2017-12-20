@@ -1,13 +1,13 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-ErrorHandling = require './error-handling'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import ErrorHandling from './error-handling'
 
 # This mixin adds genericSave handler method that could be used in combine
 # with editable mixin to handle save actions from editable UI input controls.
 #
 # Pass delayedSave true in options to turn on couple of secs delay before
 # saving update value on server. The notification with Undo will be shown.
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class GenericSave extends ErrorHandling superclass
   helper.setTypeName @prototype, 'GenericSave'

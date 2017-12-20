@@ -1,6 +1,6 @@
-backboneValidation = require 'backbone-validation'
-stickit = require 'stickit'
-helper = require '../../lib/mixin-helper'
+import backboneValidation from 'backbone-validation'
+import stickit from 'stickit'
+import helper from '../../lib/mixin-helper'
 
 stickit.addHandler {
   selector: '*'
@@ -32,7 +32,7 @@ backboneValidation.configure {
   * Add/remove bootstrap validation classes for elements with errors.
   * @param  {Backbone.View} superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Validating extends superclass
   helper.setTypeName @prototype, 'Validating'

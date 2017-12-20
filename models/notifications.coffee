@@ -1,8 +1,8 @@
-Collection = require './base/collection'
+import Collection from './base/collection'
 
 # An observer class for notifications. It makes sure that same messages
 # are not duplicated in the collection.
-module.exports = class Notifications extends Collection
+export default class Notifications extends Collection
   listenGlobal: false
 
   initialize: (models, opts) ->

@@ -1,6 +1,6 @@
-helper = require '../../lib/mixin-helper'
+import helper from '../../lib/mixin-helper'
 
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Templatable extends superclass
   helper.setTypeName @prototype, 'Templatable'

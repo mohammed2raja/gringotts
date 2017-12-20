@@ -1,8 +1,8 @@
-Chaplin = require 'chaplin'
-handlebars = require 'handlebars'
-utils = require 'lib/utils'
-View = require 'views/base/view'
-CollectionView = require 'views/base/collection-view'
+import Chaplin from 'chaplin'
+import handlebars from 'handlebars'
+import utils from 'lib/utils'
+import View from 'views/base/view'
+import CollectionView from 'views/base/collection-view'
 
 DESCRIPTION_MAX_LENGTH = 40
 
@@ -98,7 +98,7 @@ class FilterInputItemView extends View
   template: require './filter-input/item.hbs'
   noWrap: true
 
-module.exports = class FilterInputView extends CollectionView
+export default class FilterInputView extends CollectionView
   optionNames: @::optionNames.concat ['groupSource']
   template: require './filter-input/view.hbs'
   className: 'form-control filter-input'

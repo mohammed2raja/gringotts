@@ -1,9 +1,9 @@
-_ = require 'lodash'
+import _ from 'lodash'
 
 ###*
   * Returns hash of arguments as object. Useful for {{url (object a=b c=d)}}
   * @param  {Object} opts... Input hash
   * @return {Object}         Object from arguments
 ###
-module.exports = (opts...) ->
+export default (opts...) ->
   _.last(opts).hash

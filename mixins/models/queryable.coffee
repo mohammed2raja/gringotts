@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-Backbone = require 'backbone'
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
+import Chaplin from 'chaplin'
+import Backbone from 'backbone'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
 
 getSuperStringUrl = (collection) ->
   chain = Chaplin.utils.getPrototypeChain collection
@@ -20,7 +20,7 @@ getSuperStringUrl = (collection) ->
   * query state params before passing it to Chaplin routing system.
   * @param  {Model|Collection} superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Queryable extends superclass
   helper.setTypeName @prototype, 'Queryable'

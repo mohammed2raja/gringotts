@@ -1,10 +1,10 @@
-helpers = mailTo: require 'templates/helpers/mailTo'
+import mailTo from 'templates/helpers/mailTo'
 
 describe 'mail helper', ->
   $el = null
 
   beforeEach ->
-    $el = $ helpers.mailTo('<hax>').string
+    $el = $ mailTo('<hax>').string
 
   it 'should escape the email', ->
     expect($el).to.contain '&lt;hax&gt;'

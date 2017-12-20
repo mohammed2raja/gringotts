@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-NotificationView = require 'views/notification-view'
+import Chaplin from 'chaplin'
+import NotificationView from 'views/notification-view'
 
 describe 'NotificationView', ->
   sandbox = null

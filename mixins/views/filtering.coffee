@@ -1,7 +1,7 @@
-helper = require '../../lib/mixin-helper'
-FilterSelection = require '../../models/filter-selection'
-FilterInputView = require '../../views/filter-input-view'
-Routing = require './routing'
+import helper from '../../lib/mixin-helper'
+import FilterSelection from '../../models/filter-selection'
+import FilterInputView from '../../views/filter-input-view'
+import Routing from './routing'
 
 isPerhapsSynced = (collection) ->
   if _.isFunction collection?.isSynced then collection.isSynced() else yes
@@ -10,7 +10,7 @@ isPerhapsSynced = (collection) ->
   * Helps initialize and sync the filter selection state of the FilterInputView
   * control and the underlying CollectionView's queryable collection.
 ###
-module.exports = (superclass) -> class Filtering extends Routing superclass
+export default (superclass) -> class Filtering extends Routing superclass
   helper.setTypeName @prototype, 'Filtering'
   optionNames: @::optionNames.concat ['filterGroups']
   filterSelection: FilterSelection

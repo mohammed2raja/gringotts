@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-Templatable = require 'mixins/views/templatable'
+import Chaplin from 'chaplin'
+import Templatable from 'mixins/views/templatable'
 
 class ViewMock extends Templatable Chaplin.View
   template: require './templatable.spec.hbs'

@@ -1,10 +1,10 @@
-Chaplin = require 'chaplin'
-moment = require 'moment'
-join = require 'url-join'
-deadDeferred = require './dead-deferred'
-MixinBuilder = require './mixin-builder'
+import Chaplin from 'chaplin'
+import moment from 'moment'
+import join from 'url-join'
+import deadDeferred from './dead-deferred'
+import MixinBuilder from './mixin-builder'
 
-module.exports = _.extend {}, Chaplin.utils, {
+export default _.extend {}, Chaplin.utils, {
   ###*
     * Keyboard Keys Constants
   ###

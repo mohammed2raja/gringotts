@@ -29,7 +29,7 @@
 # Fade speed, timeout length, undo selector, stickiness, whether navigate
 # dismisses, link, click handler, and classes can be configured via
 # overrriding of public properties.
-View = require './base/view'
+import View from './base/view'
 
 # Local reference for the timeout.
 notificationTimeout = null
@@ -42,7 +42,7 @@ DISMISS_METHOD =
   ALL: 'all'
   ROUTE: 'route'
 
-module.exports = class NotificationView extends View
+export default class NotificationView extends View
   template: require './notification.hbs'
   tagName: 'li'
   className: 'alert alert-success alert-dismissable'

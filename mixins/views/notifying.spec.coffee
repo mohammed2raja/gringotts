@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-Notifying = require 'mixins/views/notifying'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import Notifying from 'mixins/views/notifying'
 
 class ViewMock extends Notifying Chaplin.View
 

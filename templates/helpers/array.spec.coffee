@@ -1,4 +1,4 @@
-helpers = array: require 'templates/helpers/array'
+import array from 'templates/helpers/array'
 
 describe 'array helper', ->
   hbsOptions = null
@@ -13,5 +13,5 @@ describe 'array helper', ->
     hbsOptions = null
 
   it 'should return array for arguments', ->
-    result = helpers.array 10, 55, 647, hbsOptions
+    result = array 10, 55, 647, hbsOptions
     expect(result).to.eql [10, 55, 647]

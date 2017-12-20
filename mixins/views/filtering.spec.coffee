@@ -1,6 +1,6 @@
-Chaplin = require 'chaplin'
-Templatable = require 'mixins/views/templatable'
-Filtering = require 'mixins/views/filtering'
+import Chaplin from 'chaplin'
+import Templatable from 'mixins/views/templatable'
+import Filtering from 'mixins/views/filtering'
 
 class FilterSelectionMock extends Chaplin.Collection
   fromObject: ->

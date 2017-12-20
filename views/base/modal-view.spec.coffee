@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-specHelper = require 'lib/spec-helper'
-ModalView = require 'views/base/modal-view'
-NotificationsView = require 'views/notifications-view'
+import Chaplin from 'chaplin'
+import specHelper from 'lib/spec-helper'
+import ModalView from 'views/base/modal-view'
+import NotificationsView from 'views/notifications-view'
 
 class MockModal extends ModalView
   template: require './modal.spec.hbs'

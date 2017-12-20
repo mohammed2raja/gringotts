@@ -1,6 +1,6 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-Notifying = require './notifying'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import Notifying from './notifying'
 
 parseResponse = ($xhr) ->
   try
@@ -11,7 +11,7 @@ parseResponse = ($xhr) ->
 resolveMessage = (response) ->
   response?.error or response?.message
 
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class ErrorHandling extends Notifying superclass
   helper.setTypeName @prototype, 'ErrorHandling'

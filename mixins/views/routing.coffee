@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-CollectionView = require 'views/base/collection-view'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import CollectionView from 'views/base/collection-view'
 
 ###*
   * A utility mixin for a View or a CollectionView. It helps to pass routing
@@ -13,7 +13,7 @@ CollectionView = require 'views/base/collection-view'
   * with getQuery() method.
   * @param  {View|CollectionView} superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Routing extends superclass
   helper.setTypeName @prototype, 'Routing'

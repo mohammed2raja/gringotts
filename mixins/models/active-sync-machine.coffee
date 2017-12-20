@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-helper = require '../../lib/mixin-helper'
+import Chaplin from 'chaplin'
+import helper from '../../lib/mixin-helper'
 
 EVENT_MAP = [
   {event: 'request', method: 'beginSync'}
@@ -15,7 +15,7 @@ STATE_MAP =
 switchStateTo = (target, state) ->
   target[STATE_MAP[state]]()
 
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class ActiveSyncMachine extends superclass
   _.extend @prototype, Chaplin.SyncMachine

@@ -1,11 +1,11 @@
-moment = require 'moment'
-_ = require 'lodash'
+import moment from 'moment'
+import _ from 'lodash'
 
 # Format time by passing in the format string.
 # The default input parsing format is ISO.
 #
 # **e.g.** `ll, h:mm:ss a`
-module.exports = (opts...) ->
+export default (opts...) ->
   [time, format, inputFormat] = _.initial opts
   return unless time
   hbsOpts = _.last opts

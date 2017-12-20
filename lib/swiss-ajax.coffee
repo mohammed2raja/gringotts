@@ -1,4 +1,4 @@
-Backbone = require 'backbone'
+import Backbone from 'backbone'
 backboneAjax = Backbone.ajax
 
 ajaxForArray = ->
@@ -50,4 +50,4 @@ ajax = ->
   * The options.error() will be called as many times as many errors happened
   * during parallel ajax requests execution.
 ###
-module.exports = {backboneAjax, ajaxForArray, ajaxForHash, ajax}
+export default {backboneAjax, ajaxForArray, ajaxForHash, ajax}

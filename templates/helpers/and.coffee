@@ -1,7 +1,7 @@
-utils = require 'lib/utils'
-_ = require 'lodash'
+import utils from 'lib/utils'
+import _ from 'lodash'
 
-module.exports = (opts...) ->
+export default (opts...) ->
   {fn, inverse, args} = utils.getHandlebarsFuncs opts
   if _.every args
     if fn then fn this else true

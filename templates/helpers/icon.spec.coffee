@@ -1,4 +1,4 @@
-helpers = icon: require 'templates/helpers/icon'
+import _icon from 'templates/helpers/icon'
 
 describe 'icon helper', ->
   icon = null
@@ -6,7 +6,7 @@ describe 'icon helper', ->
   second = null
 
   beforeEach ->
-    icon = helpers.icon first or 'triangle', second or undefined
+    icon = _icon first or 'triangle', second or undefined
 
   afterEach ->
     icon = null
@@ -40,5 +40,5 @@ describe 'icon helper', ->
         .and.have.class('dreamy').and.have.class('icon-circle')
 
   it 'should return nothing if name is not set', ->
-    icon = helpers.icon()
+    icon = _icon()
     expect(icon).to.be.undefined

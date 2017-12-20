@@ -1,4 +1,4 @@
-helper = require '../../lib/mixin-helper'
+import helper from '../../lib/mixin-helper'
 
 DEFAULTS =
   errorClass: 'error-input'
@@ -61,7 +61,7 @@ checkInput = (opts) ->
       # Mirror content change to href attribute.
       updateLink opts if opts.href
 
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Editable extends superclass
   helper.setTypeName @prototype, 'Editable'

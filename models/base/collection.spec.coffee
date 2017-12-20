@@ -1,10 +1,10 @@
-helper = require 'lib/mixin-helper'
-ActiveSyncMachine = require 'mixins/models/active-sync-machine'
-SafeSyncCallback = require 'mixins/models/safe-sync-callback'
-ErrorHandled = require 'mixins/models/error-handled'
-Abortable = require 'mixins/models/abortable'
-WithHeaders = require 'mixins/models/with-headers'
-Collection = require 'models/base/collection'
+import helper from 'lib/mixin-helper'
+import ActiveSyncMachine from 'mixins/models/active-sync-machine'
+import SafeSyncCallback from 'mixins/models/safe-sync-callback'
+import ErrorHandled from 'mixins/models/error-handled'
+import Abortable from 'mixins/models/abortable'
+import WithHeaders from 'mixins/models/with-headers'
+import Collection from 'models/base/collection'
 
 describe 'Base Collection', ->
   collection = null

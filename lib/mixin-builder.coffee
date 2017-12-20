@@ -1,10 +1,10 @@
-mixinHelper = require './mixin-helper'
+import mixinHelper from './mixin-helper'
 
 ###*
   * A helper class that gets a list of mixins and creates
   * a chain of inheritance.
 ###
-module.exports = class MixinBuilder
+export default class MixinBuilder
   ###*
     * @param  {Type} superclass A target class to mixin into.
   ###

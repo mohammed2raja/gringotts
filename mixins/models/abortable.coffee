@@ -1,10 +1,10 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
 
 ###*
   * Aborts the existing fetch request if a new one is being requested.
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Abortable extends superclass
   helper.setTypeName @prototype, 'Abortable'

@@ -1,8 +1,8 @@
-handlebars = require 'handlebars'
-utils = require 'lib/utils'
+import handlebars from 'handlebars'
+import utils from 'lib/utils'
 
 # Output a link to an email address with the address as the text
-module.exports = (email) ->
+export default (email) ->
   email = handlebars.Utils.escapeExpression email
   html = utils.tagBuilder 'a', email, href: "mailto:#{email}"
   new handlebars.SafeString html

@@ -1,9 +1,9 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-SafeSyncCallback = require './safe-sync-callback'
-ForcedReset = require './forced-reset'
-Queryable = require './queryable'
-SyncKey = require './sync-key'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import SafeSyncCallback from './safe-sync-callback'
+import ForcedReset from './forced-reset'
+import Queryable from './queryable'
+import SyncKey from './sync-key'
 
 ###*
   * Adds pagination support to a Collection. It relies on Queryable
@@ -11,7 +11,7 @@ SyncKey = require './sync-key'
   * on every sync action.
   * @param  {Collection} base superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Paginated extends Queryable ForcedReset SyncKey \
     SafeSyncCallback superclass

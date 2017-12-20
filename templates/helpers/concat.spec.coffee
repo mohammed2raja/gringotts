@@ -1,4 +1,4 @@
-helpers = concat: require 'templates/helpers/concat'
+import concat from 'templates/helpers/concat'
 
 describe 'concat strings', ->
   result = null
@@ -9,7 +9,7 @@ describe 'concat strings', ->
       fn: ->
       inverse: ->
     }
-    result = helpers.concat 'str1', 'str2', 'str3', hbsOptions
+    result = concat 'str1', 'str2', 'str3', hbsOptions
 
   afterEach ->
     hbsOptions = null

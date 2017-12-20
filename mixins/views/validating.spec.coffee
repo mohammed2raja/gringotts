@@ -1,8 +1,8 @@
-Chaplin = require 'chaplin'
-backboneValidation = require 'backbone-validation'
-Validatable = require 'mixins/models/validatable'
-Validating = require 'mixins/views/validating'
-Templatable = require 'mixins/views/templatable'
+import Chaplin from 'chaplin'
+import backboneValidation from 'backbone-validation'
+import Validatable from 'mixins/models/validatable'
+import Validating from 'mixins/views/validating'
+import Templatable from 'mixins/views/templatable'
 
 patterns = backboneValidation.patterns
 

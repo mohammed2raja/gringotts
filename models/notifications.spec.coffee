@@ -1,4 +1,4 @@
-Notifications = require 'models/notifications'
+import Notifications from 'models/notifications'
 
 describe 'Notifications', ->
   collection = null

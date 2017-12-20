@@ -1,10 +1,10 @@
-utils = require 'lib/utils'
-_ = require 'lodash'
+import utils from 'lib/utils'
+import _ from 'lodash'
 
 # Get Chaplin-declared named routes.
 #
 # **e.g.** `{{#url "like" "105"}}{{/url}}`
-module.exports = (opts...) ->
+export default (opts...) ->
   # Account for the Handlebars context argument that gets append to every call
   options = _.initial opts
   hbsOpts = _.last opts

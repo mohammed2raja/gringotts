@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-FilterSelection = require 'models/filter-selection'
+import Chaplin from 'chaplin'
+import FilterSelection from 'models/filter-selection'
 
 filterGroups = new Chaplin.Collection [
   new Chaplin.Model

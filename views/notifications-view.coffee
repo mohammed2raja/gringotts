@@ -1,7 +1,7 @@
-CollectionView = require './base/collection-view'
-Notification = require './notification-view'
+import CollectionView from './base/collection-view'
+import Notification from './notification-view'
 
-module.exports = class NotificationsView extends CollectionView
+export default class NotificationsView extends CollectionView
   itemView: Notification
   tagName: 'ul'
   container: '#notifications-container'

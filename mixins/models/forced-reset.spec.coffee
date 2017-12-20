@@ -1,5 +1,5 @@
-Chaplin = require 'chaplin'
-ForcedReset = require 'mixins/models/forced-reset'
+import Chaplin from 'chaplin'
+import ForcedReset from 'mixins/models/forced-reset'
 
 class CollectionMock extends ForcedReset Chaplin.Collection
   url: '/test'

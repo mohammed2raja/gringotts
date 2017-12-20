@@ -1,8 +1,8 @@
-utils = require 'lib/utils'
-helper = require '../../lib/mixin-helper'
-SafeSyncCallback = require './safe-sync-callback'
-ForcedReset = require './forced-reset'
-Queryable = require './queryable'
+import utils from 'lib/utils'
+import helper from '../../lib/mixin-helper'
+import SafeSyncCallback from './safe-sync-callback'
+import ForcedReset from './forced-reset'
+import Queryable from './queryable'
 
 ###*
   * Adds sorting support to a Collection. It relies on Queryable
@@ -10,7 +10,7 @@ Queryable = require './queryable'
   * on every sync action.
   * @param  {Collection} base superclass
 ###
-module.exports = (superclass) -> helper.apply superclass, (superclass) -> \
+export default (superclass) -> helper.apply superclass, (superclass) -> \
 
 class Sorted extends Queryable ForcedReset SafeSyncCallback superclass
   helper.setTypeName @prototype, 'Sorted'

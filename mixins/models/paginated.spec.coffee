@@ -1,9 +1,9 @@
-Chaplin = require 'chaplin'
-helper = require 'lib/mixin-helper'
-Paginated = require 'mixins/models/paginated'
-SyncKey = require 'mixins/models/sync-key'
-ForcedReset = require 'mixins/models/forced-reset'
-Queryable = require 'mixins/models/queryable'
+import Chaplin from 'chaplin'
+import helper from 'lib/mixin-helper'
+import Paginated from 'mixins/models/paginated'
+import SyncKey from 'mixins/models/sync-key'
+import ForcedReset from 'mixins/models/forced-reset'
+import Queryable from 'mixins/models/queryable'
 
 class PaginatedCollectionMock extends Paginated Chaplin.Collection
   syncKey: 'someItems'

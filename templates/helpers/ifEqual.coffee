@@ -1,9 +1,9 @@
-utils = require 'lib/utils'
+import utils from 'lib/utils'
 
 ###*
   * Compares two values and renders matching template like #if
 ###
-module.exports = (lvalue, rvalue, options) ->
+export default (lvalue, rvalue, options) ->
   if arguments.length < 2
     throw new Error('Handlebars Helper equal needs 2 parameters')
   {fn, inverse} = utils.getHandlebarsFuncs [options or {}]

@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-Backbone = require 'backbone'
-swissAjax = require 'lib/swiss-ajax'
-Queryable = require 'mixins/models/queryable'
+import Chaplin from 'chaplin'
+import Backbone from 'backbone'
+import swissAjax from 'lib/swiss-ajax'
+import Queryable from 'mixins/models/queryable'
 
 class BaseCollection extends Chaplin.Collection
 

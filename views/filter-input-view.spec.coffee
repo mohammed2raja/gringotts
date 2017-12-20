@@ -1,7 +1,7 @@
-Chaplin = require 'chaplin'
-utils = require 'lib/utils'
-FilterSelection = require 'models/filter-selection'
-FilterInputView = require 'views/filter-input-view'
+import Chaplin from 'chaplin'
+import utils from 'lib/utils'
+import FilterSelection from 'models/filter-selection'
+import FilterInputView from 'views/filter-input-view'
 
 setQuery = (view, query) ->
   view.$('input').val(query).trigger $.Event 'keyup'
