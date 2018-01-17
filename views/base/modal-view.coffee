@@ -62,12 +62,19 @@ module.exports = class ModalView extends Classy View
     # Globally prevent scrolling of page when modal is displayed
     $('body').addClass 'no-scroll'
     @trigger 'shown'
+    @autofocus()
 
   onHidden: ->
     @modalVisible = no
     $('body').removeClass 'no-scroll'
     @trigger 'hidden'
     @remove() unless @disposed
+
+  autofocus: (scope = '') ->
+    if ($autofocus = @$ "#{scope} [autofocus]").length
+      $autofocus.first().focus()
+    else
+      @$("#{scope} .modal-footer button").first().focus()
 
   dispose: ->
     @notifications.dispose() if @notifications

@@ -15,6 +15,7 @@ describe 'ProgressDialogView', ->
   onCancel = null
   syncing = null
   transition = null
+  appendToBody = null
 
   beforeEach ->
     sandbox = sinon.sandbox.create()
@@ -25,10 +26,12 @@ describe 'ProgressDialogView', ->
     model.beginSync() if syncing
     config = _.extend {model, onDone, onCancel}, _.cloneDeep viewConfig
     view = new ProgressDialogView config
+    $('body').append(view.$el) if appendToBody
 
   afterEach ->
     sandbox.restore()
     model.dispose()
+    view.$el.remove() if appendToBody
     view.dispose()
 
   it 'should be initialized', ->
@@ -100,6 +103,17 @@ describe 'ProgressDialogView', ->
         expect(view.state).to.equal 'error'
         expect(view.$ '.error-state-view').to.have.class 'in'
 
+      context 'focus', ->
+        before ->
+          appendToBody = true
+
+        after ->
+          appendToBody = null
+
+        it 'should focus confirm button', ->
+          expect(view.$('.error-state-view .modal-footer button')[0] \
+            is document.activeElement).to.be.true
+
       context 'on closing dialog', ->
         beforeEach ->
           view.$el.modal 'hide'
@@ -117,6 +131,17 @@ describe 'ProgressDialogView', ->
       it 'should switch to success state', ->
         expect(view.state).to.equal 'success'
         expect(view.$ '.success-state-view').to.have.class 'in'
+
+      context 'focus', ->
+        before ->
+          appendToBody = true
+
+        after ->
+          appendToBody = null
+
+        it 'should focus confirm button', ->
+          expect(view.$('.success-state-view .modal-footer button')[0] \
+            is document.activeElement).to.be.true
 
       context 'on closing dialog', ->
         beforeEach ->

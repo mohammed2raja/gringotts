@@ -24,10 +24,17 @@ describe 'ModalView', ->
 
   context 'after modal is attached', ->
     shownSpy = null
+    appendToBody = null
+    noDefaultAutofocus = null
 
     beforeEach ->
       view.on 'shown', shownSpy = sinon.spy()
+      view.$('[autofocus]').remove() if noDefaultAutofocus
+      $('body').append(view.$el) if appendToBody
       view.attach()
+
+    afterEach ->
+      view.$el.remove() if appendToBody
 
     it 'should add scroll classes', ->
       expect($ 'body').to.have.class 'no-scroll'
@@ -37,6 +44,27 @@ describe 'ModalView', ->
 
     it 'should trigger shown event', ->
       expect(shownSpy).to.have.been.calledOnce
+
+    context 'focus', ->
+      before ->
+        appendToBody = true
+
+      after ->
+        appendToBody = null
+
+      it 'should autofocus input element', ->
+        expect(view.$('.test-focus')[0] is document.activeElement).to.be.true
+
+      context 'modal does not have autofocus elements', ->
+        before ->
+          noDefaultAutofocus = true
+
+        after ->
+          noDefaultAutofocus = null
+
+        it 'should autofocus button element', ->
+          expect(view.$('.submit-button')[0] is document.activeElement)
+            .to.be.true
 
     context 'and then hiding modal', ->
       hiddenSpy = null

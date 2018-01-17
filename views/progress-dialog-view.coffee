@@ -109,6 +109,7 @@ module.exports = class ProgressDialogView extends ModalView
       @$stateView().find('.modal-body').html @[state].html()
     _.each STATES, (s) => @$stateView(s).addClass('fade').toggleClass 'in',
         s is state and not @empty state
+    @autofocus '.modal-content.in'
 
   empty: (state) ->
     return yes unless @[state]
