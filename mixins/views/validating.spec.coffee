@@ -108,3 +108,10 @@ describe 'Validating', ->
 
     it 'should remove view from model', ->
       expect(model.associatedViews).to.not.include view
+
+  context 'on model dispose', ->
+    beforeEach ->
+      model.trigger 'dispose'
+
+    it 'should remove view from model', ->
+      expect(model.associatedViews).to.not.include view

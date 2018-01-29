@@ -44,6 +44,9 @@ class Validating extends superclass
   ###
   patterns: backboneValidation.patterns
 
+  listen:
+    'dispose model': -> @unbindModel @model
+
   initialize: ->
     helper.assertView this
     super arguments...
@@ -53,7 +56,7 @@ class Validating extends superclass
     _.extend super(), regex: _.mapValues @patterns, (re) -> re.source
 
   dispose: ->
-    @unbindModel @model if @model
+    @unbindModel @model if @model and not @model.disposed
     super()
 
   bindModel: (model) ->
