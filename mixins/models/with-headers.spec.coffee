@@ -45,8 +45,10 @@ describe 'WithHeaders mixin', ->
       model.dispose()
 
     context 'fetch', ->
+      options = null
+
       beforeEach ->
-        model.fetch()
+        model.fetch options
 
       it 'should apply headers to ajax request', ->
         request = _.last sandbox.server.requests
@@ -54,6 +56,17 @@ describe 'WithHeaders mixin', ->
         expect(headers).to.have.property 'Content-Type', 'application/json'
         expect(headers).to.have.property 'Accept', 'application/json'
         expect(request).to.have.property 'withCredentials', true
+
+      context 'with contentType set to false', ->
+        before ->
+          options = contentType: no
+
+        after ->
+          options = null
+
+        it 'should not apply Content-Type header', ->
+          request = _.last sandbox.server.requests
+          expect(request.requestHeaders).to.not.have.property 'Content-Type'
 
       context 'without credentials', ->
         before ->

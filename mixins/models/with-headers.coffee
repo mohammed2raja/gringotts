@@ -69,6 +69,7 @@ class WithHeaders extends SafeSyncCallback superclass
     * Extends the Backbone ajax options with headers hash object.
   ###
   extendWithHeaders: (options, headers) ->
+    headers = _.omit(headers, 'Content-Type') if options?.contentType is no
     _.extend options,
       xhrFields: {@withCredentials}
       headers: _.extend {}, options?.headers, headers
