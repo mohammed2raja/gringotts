@@ -54,7 +54,7 @@ module.exports = (config) => {
     preprocessors: {
       'spec/index.coffee': ['webpack', 'sourcemap']
     },
-    reporters: ['spec', 'coverage-istanbul'],
+    reporters: ['dots', 'coverage-istanbul'],
     singleRun: true,
     webpack: {
       devtool: 'source-map',
