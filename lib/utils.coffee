@@ -151,4 +151,12 @@ export default _.extend {}, Chaplin.utils, {
   ###
   compress: (obj) ->
     if _.isArray(obj) and obj.length is 1 then obj[0] else obj
+
+  ###*
+   * A workaround utility for acessing parent prototype property
+   * members. Assuming that CoffeeScript v2 uses `super` only as function.
+  ###
+  superValue: (obj, property, filter = _.isObject) ->
+    chain = Chaplin.utils.getPrototypeChain obj
+    _(chain).map(property).filter(filter).first()
 }

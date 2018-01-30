@@ -3,10 +3,6 @@ import Backbone from 'backbone'
 import utils from 'lib/utils'
 import helper from '../../lib/mixin-helper'
 
-getSuperStringUrl = (collection) ->
-  chain = Chaplin.utils.getPrototypeChain collection
-  _(chain).map('url').filter(_.isString).first()
-
 ###*
   * Adds a capability of scoping a Collection or Model url with custom query
   * params for every sync request.
@@ -172,7 +168,7 @@ class Queryable extends superclass
     * @returns {String}
   ###
   url: ->
-    base = @urlRoot or getSuperStringUrl(this) or super()
+    base = @urlRoot or utils.superValue(this, 'url', _.isString) or super()
     throw new Error 'Please define url or urlRoot
       when implementing a queryable model or collection' unless base
     base = if _.isFunction(base) then base.apply(this) else base
