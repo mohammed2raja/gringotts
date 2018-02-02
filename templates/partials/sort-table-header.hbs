@@ -3,5 +3,12 @@
     <a href="{{url routeName routeParams nextQuery}}" class="{{order}}">
       <span class="sorting-header">{{text}}</span><span class="indicator"></span>
     </a>
+    {{#if tooltip}}
+      &nbsp;
+      <span class="circle-mark tooltip-item" data-toggle="tooltip"
+          data-placement="bottom" title="{{tooltip}}">
+        {{icon 'question'}}
+      </span>
+    {{/if}}
   </th>
 {{/with}}

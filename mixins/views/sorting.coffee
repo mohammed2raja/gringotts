@@ -20,6 +20,12 @@ class Sorting extends Routing superclass
   ###
   sortableTableHeaders: null
 
+  ###*
+    * A hash of model attribute names and their tooltip string labels.
+    * @type {Object}
+  ###
+  sortableTableHeaderTooltips: null
+
   initialize: ->
     helper.assertCollectionView this
     unless @sortableTableHeaders
@@ -38,6 +44,7 @@ class Sorting extends Routing superclass
     unless @routeName
       throw new Error "Can't render view when routeName isn't set"
     super
+    @renderTooltips()
 
   renderAllItems: ->
     super
@@ -54,6 +61,7 @@ class Sorting extends Routing superclass
         viewId: @cid
         attr: column
         text: title
+        tooltip: @sortableTableHeaderTooltips?[column]
         order: order
         routeName: @routeName
         routeParams: @routeParams
@@ -89,3 +97,8 @@ class Sorting extends Routing superclass
       attr = $el.attr 'data-sort'
       classes = $el.removeClass("sorting-control #{@cid}").attr 'class'
       $el.replaceWith template {sortInfo, attr, class: classes}
+      @renderTooltips()
+
+  renderTooltips: ->
+    return unless @sortableTableHeaderTooltips
+    @$('.sorting-control .tooltip-item').tooltip()

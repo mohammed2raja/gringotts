@@ -23,6 +23,8 @@ class SortingViewMock extends Templatable Sorting Chaplin.CollectionView
   sortableTableHeaders:
     attr_a: 'Attribute A'
     attr_b: 'Attribute B'
+  sortableTableHeaderTooltips:
+    attr_b: 'Tooltip for B'
 
 describe 'Sorting mixin', ->
   sandbox = null
@@ -51,8 +53,10 @@ describe 'Sorting mixin', ->
       .and.to.have.class("#{view.cid}").and.to.have.class('foo')
 
   it 'should render headers labels', ->
-    expect(view.$ 'th[data-sort=attr_a] span').to.have.text 'Attribute A'
-    expect(view.$ 'th[data-sort=attr_b] span').to.have.text 'Attribute B'
+    expect(view.$ 'th[data-sort=attr_a] .sorting-header')
+      .to.have.text 'Attribute A'
+    expect(view.$ 'th[data-sort=attr_b] .sorting-header')
+      .to.have.text 'Attribute B'
 
   it 'should render links correctly', ->
     $link_a = view.$ 'th[data-sort=attr_a] a'
@@ -66,6 +70,10 @@ describe 'Sorting mixin', ->
     expect(view.$ 'td:nth-child(1)').to.have.class 'highlighted'
     expect(view.$ 'td:nth-child(2)').to.not.have.class 'highlighted'
 
+  it 'should render tooltips', ->
+    expect(view.$ 'th[data-sort=attr_b] .tooltip-item').to.have
+      .attr 'data-original-title', 'Tooltip for B'
+
   context 'changing sorting order', ->
     beforeEach ->
       collection.fetchWithQuery order: 'asc', sort_by: 'attr_b'
@@ -78,6 +86,10 @@ describe 'Sorting mixin', ->
       expect($link_a).to.have.attr 'href', 'test?order=asc'
       expect($link_b).to.have.class('asc').and.to.have
         .attr 'href', 'test?sort_by=attr_b'
+
+    it 'should render tooltips', ->
+      expect(view.$ 'th[data-sort=attr_b] .tooltip-item').to.have
+        .attr 'data-original-title', 'Tooltip for B'
 
     it 'should apply custom classes', ->
       expect(view.$ 'th[data-sort=attr_b]').to.have.class('foo')
