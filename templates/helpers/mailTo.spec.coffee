@@ -1,6 +1,6 @@
 import mailTo from 'templates/helpers/mailTo'
 
-describe 'mail helper', ->
+describe 'mailTo helper', ->
   $el = null
 
   beforeEach ->
