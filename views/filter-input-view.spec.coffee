@@ -62,7 +62,7 @@ describe 'FilterInputView', ->
         description: 'A leaf group for action filters, like search'
         action: yes
     ]
-    sandbox.stub _, 'debounce', (fn) -> fn
+    sandbox.stub(_, 'debounce').callsFake (fn) -> fn
     view = new FilterInputView {
       collection
       groupSource

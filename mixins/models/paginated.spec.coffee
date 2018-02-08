@@ -31,16 +31,18 @@ describe 'Paginated mixin', ->
 
   context 'fetching', ->
     infinite = null
-    promise = null
 
     beforeEach ->
       collection.count = 1000
       collection.infinite = infinite
-      promise = collection.fetch()
-      return
 
-    it 'should reset models', ->
-      expect(collection.models).to.be.a.lengthOf 0
+    context 'started', ->
+      beforeEach ->
+        collection.fetch async: yes
+        return
+
+      it 'should reset models', ->
+        expect(collection.models).to.be.a.lengthOf 0
 
     context 'on done', ->
       beforeEach ->
@@ -48,8 +50,7 @@ describe 'Paginated mixin', ->
           count: 3
           someItems: [{}, {}, {}]
           next_page_id: 555
-        sandbox.server.respond()
-        promise
+        collection.fetch()
 
       it 'should query the server with the default query params', ->
         request = _.last sandbox.server.requests
@@ -76,8 +77,7 @@ describe 'Paginated mixin', ->
 
       beforeEach ->
         sandbox.server.respondWith [500, {}, '{}']
-        sandbox.server.respond()
-        promise.catch catchSpy = sinon.spy()
+        collection.fetch().catch catchSpy = sinon.spy()
 
       it 'should reset count to 0', ->
         expect(collection.count).to.equal 0
@@ -87,7 +87,7 @@ describe 'Paginated mixin', ->
 
     context 'on abort', ->
       beforeEach ->
-        promise.abort().catch ($xhr) ->
+        collection.fetch(async: yes).abort().catch ($xhr) ->
           $xhr unless $xhr.statusText is 'abort'
 
       it 'should not reset count', ->

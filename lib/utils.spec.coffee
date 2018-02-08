@@ -203,15 +203,14 @@ describe 'Utils lib', ->
 
         beforeEach ->
           sandbox = sinon.sandbox.create useFakeServer: yes
-          sandbox.stub deadDeferred, 'create', ->
+          sandbox.server.respondWith response
+          sandbox.stub(deadDeferred, 'create').callsFake ->
             $.Deferred().reject 'disposed'
           model = new Chaplin.Model()
           model.url = '/foo'
           promise = utils.disposable model.fetch(), -> model.disposed
           promise[key] callback = sinon.spy()
           model.dispose() if disposed
-          sandbox.server.respondWith response
-          sandbox.server.respond()
           promise.catch ($xhr) ->
             $xhr unless $xhr is 'disposed' or $xhr.status is 500
 

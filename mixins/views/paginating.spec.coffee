@@ -31,18 +31,19 @@ describe 'Paginating mixin', ->
 
   beforeEach ->
     sandbox = sinon.sandbox.create useFakeServer: true
-    sandbox.stub utils, 'reverse', (path, params, query) ->
+    sandbox.stub(utils, 'reverse').callsFake (path, params, query) ->
       "#{path}?#{utils.querystring.stringify query}"
     collection = new PaginatedCollectionMock()
     collection.infinite = infinite
     view = new PaginatingViewMock {routeName: 'test', collection}
-    collection.fetchWithQuery {bad: 'something'}
     sandbox.server.respondWith [200, {}, JSON.stringify {
       next_page_id: 'abcdef'
       count: 101
       itemsList: ({} for i in [0..101])
     }]
+    p = collection.fetchWithQuery {bad: 'something'}, async: true
     sandbox.server.respond()
+    p
 
   afterEach ->
     sandbox.restore()
@@ -70,7 +71,6 @@ describe 'Paginating mixin', ->
   context 'changing to next page', ->
     beforeEach ->
       collection.fetchWithQuery page: 3
-      sandbox.server.respond()
 
     it 'should render links correctly', ->
       $link_prev = view.$ '.pagination-controls a.prev-page'
@@ -86,7 +86,6 @@ describe 'Paginating mixin', ->
   context 'changing to last page', ->
     beforeEach ->
       collection.fetchWithQuery page: 11
-      sandbox.server.respond()
 
     it 'should render links correctly', ->
       $link_prev = view.$ '.pagination-controls a.prev-page'
@@ -118,9 +117,11 @@ describe 'Paginating mixin', ->
       expect(view.$ '.pagination-range').to.have.text ''
 
   context 'on fetching start', ->
-    beforeEach (done) ->
-      collection.fetchWithQuery page: 2
-      done()
+    promise = null
+
+    beforeEach ->
+      promise = collection.fetchWithQuery {page: 2}, async: yes
+      return
 
     it 'should show loading', ->
       expect(view.$loading).to.not.have.css 'display', 'none'
@@ -135,6 +136,7 @@ describe 'Paginating mixin', ->
           itemsList: ({} for i in [0..10])
         }]
         sandbox.server.respond()
+        promise
 
       it 'should hide loading', ->
         expect(view.$loading).to.have.css 'display', 'none'

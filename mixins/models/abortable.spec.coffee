@@ -17,7 +17,7 @@ describe 'Abortable', ->
     sandbox.server.respondWith '{}'
     sandbox.spy Chaplin.Model::, 'sync'
     model = new ModelMock()
-    promise = model.fetch error: (errorSpy = sinon.spy())
+    promise = model.fetch async: yes, error: (errorSpy = sinon.spy())
     request = _.last sandbox.server.requests
     return
 
@@ -42,7 +42,7 @@ describe 'Abortable', ->
 
     beforeEach ->
       sandbox.spy model.current_fetch, 'abort'
-      promise2 = model.fetch()
+      promise2 = model.fetch async: yes
       request2 = _.last sandbox.server.requests
       promise.catch ($xhr) ->
         $xhr unless $xhr.statusText is 'abort'
@@ -61,7 +61,7 @@ describe 'Abortable', ->
 
       beforeEach ->
         sandbox.spy model.current_fetch, 'abort'
-        promise3 = model.fetch()
+        promise3 = model.fetch async: yes
         promise2.catch ($xhr) ->
           $xhr unless $xhr.statusText is 'abort'
 

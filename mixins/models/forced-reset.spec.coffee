@@ -13,7 +13,6 @@ describe 'ForcedReset', ->
   beforeEach ->
     sandbox = sinon.sandbox.create useFakeServer: true
     sandbox.server.respondWith [500, {}, '{}']
-    sandbox.server.autoRespond = yes
     collection = new CollectionMock [{}, {}, {}]
     promise = collection.fetch().catch catchSpy = sinon.spy()
     return

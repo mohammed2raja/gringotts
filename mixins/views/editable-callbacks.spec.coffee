@@ -3,7 +3,7 @@ import ValidateModelMock from 'spec/mocks/validate-model-mock'
 import EditableViewMock from 'spec/mocks/editable-view-mock'
 
 describe 'Editable callbacks', ->
-  server = null
+  sandbox = null
   model = null
   view = null
   patch = null
@@ -31,8 +31,8 @@ describe 'Editable callbacks', ->
     field = null
 
   beforeEach ->
-    server = sinon.fakeServer.create()
-    sinon.stub document, 'execCommand'
+    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox.stub document, 'execCommand'
     model = new ValidateModelMock
       name: 'Olivia Dunham'
       email: 'odunham@effbeeeye.com'
@@ -57,13 +57,9 @@ describe 'Editable callbacks', ->
     enter = $.Event 'keydown', keyCode: 13
 
   afterEach ->
-    server.restore()
-    document.execCommand.restore()
-    enter = null
+    sandbox.restore()
     view.dispose()
     model.dispose()
-    model = null
-    view = null
 
   describe 'editing a field', ->
     beforeEach ->
@@ -79,9 +75,8 @@ describe 'Editable callbacks', ->
 
       describe 'success callback', ->
         beforeEach ->
+          sandbox.server.respondWith JSON.stringify domain_name: 'Peter Bishop'
           view.publishEvent.lastCall.args[2].success()
-          server.respondWith JSON.stringify domain_name: 'Peter Bishop'
-          server.respond()
 
         it 'saves the model', ->
           expect(model.save).to.have.been.calledWith 'name', value
@@ -114,7 +109,6 @@ describe 'Editable callbacks', ->
           describe 'after success', ->
             beforeEach ->
               view.publishEvent.lastCall.args[2].success()
-              server.respond()
 
             it 'has saved both times', ->
               expect(model.save).to.have.been.calledTwice

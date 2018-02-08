@@ -33,13 +33,14 @@ describe 'Sorting mixin', ->
 
   beforeEach ->
     sandbox = sinon.sandbox.create useFakeServer: true
-    sandbox.stub utils, 'reverse', (path, params, query) ->
+    sandbox.stub(utils, 'reverse').callsFake (path, params, query) ->
       "#{path}?#{utils.querystring.stringify query}"
     collection = new CollectionMock()
     view = new SortingViewMock _.extend {routeName: 'test', collection}
-    collection.fetchWithQuery {bad: 'something'}
     sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
+    p = collection.fetchWithQuery {bad: 'something'}, async: true
     sandbox.server.respond()
+    p
 
   afterEach ->
     sandbox.restore()
@@ -75,8 +76,11 @@ describe 'Sorting mixin', ->
       .attr 'data-original-title', 'Tooltip for B'
 
   context 'changing sorting order', ->
+    promise = null
+
     beforeEach ->
-      collection.fetchWithQuery order: 'asc', sort_by: 'attr_b'
+      promise = collection.fetchWithQuery {order: 'asc', sort_by: 'attr_b'},
+        async: yes
       return
 
     it 'should render links correctly', ->
@@ -104,6 +108,7 @@ describe 'Sorting mixin', ->
       beforeEach ->
         sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]
         sandbox.server.respond()
+        promise
 
       it 'should hide loading', ->
         expect(view.$loading).to.have.css 'display', 'none'

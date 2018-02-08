@@ -45,10 +45,8 @@ describe 'swissAjax', ->
     context "with url of #{urlType} type", ->
       beforeEach ->
         model = new factory["#{urlType}"]()
-        promise = model.fetch()
         server.respondWith JSON.stringify key: 'value'
-        server.respond()
-        promise
+        model.fetch()
 
       it 'should make one call', ->
         expect(server.requests.length).to.equal 1
@@ -64,16 +62,13 @@ describe 'swissAjax', ->
 
       beforeEach ->
         model = new factory["#{urlType}"]()
-        promise = model.fetch()
-        return
 
       context 'on request success', ->
         beforeEach ->
           server.respondWith '/aoo', JSON.stringify keyA: 'valueA'
           server.respondWith '/boo', JSON.stringify keyB: 'valueB'
           server.respondWith '/coo', JSON.stringify keyC: 'valueC'
-          server.respond()
-          promise
+          model.fetch()
 
         it 'should make all calls', ->
           expect(server.requests.length).to.equal 3
@@ -96,8 +91,7 @@ describe 'swissAjax', ->
           server.respondWith '/aoo', '{}'
           server.respondWith '/boo', [500, {}, '{}']
           server.respondWith '/coo', [404, {}, '{}']
-          server.respond()
-          promise.catch catchSpy = sinon.spy()
+          model.fetch().catch catchSpy = sinon.spy()
 
         it 'should trigger all errors', ->
           expect(errorHandler).to.have.been.calledTwice

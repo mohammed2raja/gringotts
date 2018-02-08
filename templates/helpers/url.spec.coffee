@@ -5,7 +5,7 @@ describe 'URL helper', ->
   hbsOptions = null
 
   beforeEach ->
-    sinon.stub utils, 'reverse', -> ''
+    sinon.stub(utils, 'reverse').callsFake -> ''
 
   afterEach ->
     utils.reverse.restore()

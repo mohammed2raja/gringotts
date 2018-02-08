@@ -51,7 +51,7 @@ describe 'SyncDeeply', ->
 
     context 'on fetch', ->
       beforeEach ->
-        collection.trigger.reset()
+        sandbox.resetHistory()
         collection.fetch()
 
       it 'should be synced deep', ->
@@ -82,7 +82,7 @@ describe 'SyncDeeply', ->
 
       context 'on fetch', ->
         beforeEach ->
-          collection.trigger.reset()
+          sandbox.resetHistory()
           collection.fetch()
 
         it 'should be synced deep', ->
@@ -98,7 +98,7 @@ describe 'SyncDeeply', ->
 
     context 'and removing an item', ->
       beforeEach ->
-        collection.trigger.reset()
+        sandbox.resetHistory()
         model = collection.pop()
         model.get('children').fetch()
 

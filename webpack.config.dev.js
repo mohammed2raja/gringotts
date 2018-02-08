@@ -22,8 +22,7 @@ module.exports = {
     compress: true,
     contentBase: [
       publicDir,
-      resolve(__dirname, 'node_modules', 'mocha'),
-      resolve(__dirname, 'node_modules', 'sinon')
+      resolve(__dirname, 'node_modules', 'mocha')
     ],
     host: host,
     overlay: false,
@@ -72,7 +71,6 @@ module.exports = {
     alias: _.extend({}, alias, {
       chai: 'chai/chai',
       'chai-jquery': 'chai-jquery/chai-jquery',
-      sinon: 'sinon/pkg/sinon',
       'sinon-chai': 'sinon-chai/lib/sinon-chai'
     }),
     extensions: ['.js', '.coffee', '.hbs'],

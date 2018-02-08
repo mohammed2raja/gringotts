@@ -28,12 +28,14 @@ describe 'SafeSyncCallback', ->
         disposed = null
 
         beforeEach ->
-          options = context: customContext
-          options[key] = callback = sinon.spy()
-          collection.fetch options
-          collection.dispose() if disposed
           server.respondWith response
-          server.respond()
+          promise = collection.fetch
+            context: customContext
+            async: !!disposed
+            "#{key}": callback = sinon.spy()
+          if disposed
+            collection.dispose()
+            server.respond()
 
         it 'should invoke callback', ->
           expect(callback).to.be.calledOnce
@@ -64,7 +66,7 @@ describe 'SafeSyncCallback', ->
 
   context 'aborting request', ->
     beforeEach ->
-      collection.fetch().abort().catch ($xhr) ->
+      collection.fetch(async: yes).abort().catch ($xhr) ->
         $xhr unless $xhr.statusText is 'abort' # expected
 
     it 'should abort fetch request', ->

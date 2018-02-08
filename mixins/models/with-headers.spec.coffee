@@ -24,12 +24,11 @@ class CustomFuncMockModel extends WithHeaders Chaplin.Model
 describe 'WithHeaders mixin', ->
   sandbox = null
   model = null
-  noautoRespond = null
 
   beforeEach ->
     sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox.spy $, 'ajax'
     sandbox.server.respondWith '{}'
-    sandbox.server.autoRespond = yes unless noautoRespond
 
   afterEach ->
     sandbox.restore()
@@ -53,7 +52,8 @@ describe 'WithHeaders mixin', ->
       it 'should apply headers to ajax request', ->
         request = _.last sandbox.server.requests
         headers = request.requestHeaders
-        expect(headers).to.have.property 'Content-Type', 'application/json'
+        expect(headers).to.have.property 'Content-Type',
+          'application/json;charset=utf-8'
         expect(headers).to.have.property 'Accept', 'application/json'
         expect(request).to.have.property 'withCredentials', true
 
@@ -65,8 +65,8 @@ describe 'WithHeaders mixin', ->
           options = null
 
         it 'should not apply Content-Type header', ->
-          request = _.last sandbox.server.requests
-          expect(request.requestHeaders).to.not.have.property 'Content-Type'
+          expect($.ajax).to.have.been.calledWith sinon.match.
+            has 'contentType', no
 
       context 'without credentials', ->
         before ->
@@ -88,14 +88,8 @@ describe 'WithHeaders mixin', ->
           .property 'method', 'POST'
 
     context 'abort request', ->
-      before ->
-        noautoRespond = yes
-
-      after ->
-        noautoRespond = null
-
       beforeEach (done) ->
-        promise = model.fetch()
+        promise = model.fetch async: yes
         utils.waitUntil
           condition: -> sandbox.server.requests.length > 0
           then: ->
@@ -141,7 +135,7 @@ describe 'WithHeaders mixin', ->
 
     context 'when mock request is complete but model is disposed', ->
       beforeEach  ->
-        sandbox.stub deadDeferred, 'create', ->
+        sandbox.stub(deadDeferred, 'create').callsFake ->
           $.Deferred().reject 'disposed'
         model.dispose()
         model.mockDeferred.resolve()

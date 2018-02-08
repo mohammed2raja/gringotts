@@ -1,6 +1,6 @@
 export default {
   stubModal: (sandbox, ctx) ->
-    sandbox.stub $.fn, 'modal', (cmd) ->
+    sandbox.stub($.fn, 'modal').callsFake (cmd) ->
       context = ctx() if ctx
       if cmd is undefined
         event = if context?.transition \

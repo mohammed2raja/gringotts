@@ -32,7 +32,7 @@ describe 'Filtering', ->
     sandbox.spy FilterSelectionMock::, 'toObject'
     filterGroups = new Chaplin.Collection [{id: 'a'}, {id: 'b'}]
     filterGroups.isSynced = -> isSynced
-    sandbox.stub ViewMock::, 'getBrowserQuery', ->
+    sandbox.stub(ViewMock::, 'getBrowserQuery').callsFake ->
       browserQuery or a: 'b'
     sandbox.stub ViewMock::, 'setBrowserQuery'
     view = new ViewMock {filterGroups}
@@ -92,7 +92,7 @@ describe 'Filtering', ->
     beforeEach ->
       if filterngIsntActive
         delete view.filterGroups
-        view.filterSelection.fromObject.reset()
+        sandbox.resetHistory()
       view.onBrowserQueryChange()
 
     expectResetSelection -> browserQuery

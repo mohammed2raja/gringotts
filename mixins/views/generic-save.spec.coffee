@@ -14,7 +14,6 @@ describe 'GenericSave', ->
   beforeEach ->
     sandbox = sinon.sandbox.create useFakeServer: yes
     sandbox.server.respondWith response or '{}'
-    sandbox.server.autoRespond = yes
     view = new ViewMock()
     sandbox.stub view, 'publishEvent'
     sandbox.stub view, 'handleError'

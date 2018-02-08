@@ -12,12 +12,11 @@ describe 'SyncKey mixin', ->
 
   beforeEach ->
     sandbox = sinon.sandbox.create useFakeServer: yes
-    collection = new MockSyncKeyCollection()
-    collection.fetch()
     sandbox.server.respondWith [200, {}, JSON.stringify {
       someItems: [{}, {}, {}]
     }]
-    sandbox.server.respond()
+    collection = new MockSyncKeyCollection()
+    collection.fetch()
 
 
   afterEach ->
