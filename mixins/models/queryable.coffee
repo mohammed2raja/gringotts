@@ -144,9 +144,9 @@ class Queryable extends superclass
     * Strips the query from all undefined or default values
   ###
   stripEmptyOrDefault: (query, opts={}) ->
-    query = _.omitBy query, (value, key) =>
-      value is undefined or (not opts.inclDefaults and \
-        _.isEqual utils.compress(@DEFAULTS[key]), utils.compress value)
+    query = _.pickBy query, (value, key) =>
+      value isnt undefined and (opts.inclDefaults or \
+        not _.isEqual utils.compress(@DEFAULTS[key]), utils.compress value)
 
   ###*
     * Saves all alien values (without prefixes) into a separete hash
@@ -156,10 +156,10 @@ class Queryable extends superclass
   unprefixKeys: (query) ->
     return query unless @prefix
     @alienQuery = {}
-    query = _(query).omitBy (value, key) =>
-      if alien = key.indexOf(@prefix) < 0
+    query = _(query).pickBy (value, key) =>
+      if isAlien = key.indexOf?(@prefix) < 0
         @alienQuery[key] = value
-      return alien
+      return not isAlien
     .mapKeys (value, key) => key.replace "#{@prefix}_", ''
     .value()
 
