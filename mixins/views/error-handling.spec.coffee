@@ -28,7 +28,7 @@ describe 'ErrorHandling', ->
 
   context 'handling', ->
     beforeEach ->
-      view.handleError obj
+      view.handleError.call {}, obj
 
     context 'XHR errors', ->
       context 'with any http error', ->

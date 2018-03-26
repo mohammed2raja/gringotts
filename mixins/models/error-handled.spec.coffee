@@ -17,7 +17,7 @@ describe 'ErrorHandled', ->
     sandbox.spy model, 'trigger'
     if errorHandled
       model.on 'promise-error', (m, e) -> e.errorHandled = yes
-    model.handleError obj or error = new Error 'Oh jezz'
+    model.handleError.call {}, obj or error = new Error 'Oh jezz'
 
   afterEach ->
     sandbox.restore()

@@ -18,4 +18,6 @@ class ForcedReset extends SafeSyncCallback superclass
     super arguments...
 
   fetch: ->
-    utils.abortable super(arguments...), catch: ($xhr) => @reset(); $xhr
+    utils.abortable super(arguments...), catch: ($xhr) =>
+      @reset() unless @disposed
+      $xhr

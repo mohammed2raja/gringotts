@@ -34,7 +34,8 @@ class Paginated extends Queryable ForcedReset SyncKey \
   fetch: ->
     @reset() # remove existing items
     utils.abortable super(arguments...), catch: ($xhr) =>
-      @count = 0 unless $xhr.statusText is 'abort'; $xhr
+      @count = 0 unless $xhr.statusText is 'abort' or @disposed
+      $xhr
 
   parse: (resp) ->
     result = super arguments...
