@@ -11,12 +11,9 @@ class ServiceErrorReady extends ErrorHandling superclass
 
   errorSelector: '.service-error'
   listen:
-    'unsynced collection': ->
-      @$(@errorSelector).show() unless @disposed
-    'syncing collection': ->
-      @$(@errorSelector).hide() unless @disposed
-    'synced collection': ->
-      @$(@errorSelector).hide() unless @disposed
+    'unsynced collection': -> @toggleServiceError 'show'
+    'syncing collection': -> @toggleServiceError 'hide'
+    'synced collection': -> @toggleServiceError 'hide'
 
   initialize: ->
     helper.assertViewOrCollectionView this
@@ -24,8 +21,17 @@ class ServiceErrorReady extends ErrorHandling superclass
 
   render: ->
     super()
-    @$(@errorSelector).hide()
+    @toggleServiceError 'hide'
 
   handleAny: ($xhr) ->
-    @$(@errorSelector).show() unless @disposed
-    @markAsHandled $xhr
+    if @toggleServiceError 'show'
+      @markAsHandled $xhr
+    else
+      super $xhr
+
+  toggleServiceError: (action) ->
+    # do not show service error row if collection has rows already
+    # this is the case when other syncing activity is going on using
+    # the same collection instance (custom actions or bulk updates).
+    return if @disposed or action is 'show' and @collection?.length
+    @$(@errorSelector)[action]()
