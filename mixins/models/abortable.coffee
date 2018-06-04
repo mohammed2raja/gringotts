@@ -29,4 +29,5 @@ class Abortable extends superclass
     @[current_method]?.abort()
     @[current_method] = utils.abortable promise,
       then: (r, s, $xhr) =>
-        delete @[current_method]; $xhr
+        delete @[current_method] unless @disposed
+        $xhr

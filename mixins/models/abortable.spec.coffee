@@ -82,6 +82,15 @@ describe 'Abortable', ->
         it 'should delete current_fetch property', ->
           expect(model.current_fetch).to.be.undefined
 
+      context 'on finish request when model is disposed', ->
+        beforeEach ->
+          model.dispose()
+          sandbox.server.respond()
+          promise3
+
+        it 'should not fail with error', ->
+          expect(true).to.be.true
+
   context 'on error', ->
     beforeEach ->
       options = Chaplin.Model::sync.lastCall.args[2]
