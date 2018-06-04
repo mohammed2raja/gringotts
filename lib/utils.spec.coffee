@@ -247,8 +247,8 @@ describe 'Utils lib', ->
   context 'waitUntil', ->
     beforeEach (done) ->
       i = 0
-      utils.waitUntil \
-        condition: -> i++ > 5,
+      utils.waitUntil
+        condition: -> i++ > 5
         then: done
 
     it 'should wait and then finish test', ->

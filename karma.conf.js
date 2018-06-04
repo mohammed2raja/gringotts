@@ -94,6 +94,7 @@ module.exports = (config) => {
         ]
       },
       node: nodeMocks,
+      mode: 'development',
       plugins: [
         new webpack.ProvidePlugin(provideModules)
       ],
