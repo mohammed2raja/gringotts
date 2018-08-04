@@ -149,12 +149,11 @@ describe 'NotificationView', ->
 
   context 'on dismiss', ->
     beforeEach ->
-      sandbox.spy $.fn, 'animate'
+      sandbox.stub(_, 'delay').callsFake (fn) -> fn()
 
     it 'should dispose the model', ->
       view.dismiss()
       expect(model.disposed).to.be.true
-      expect($.fn.animate).to.have.been.calledOnce
 
     it 'should not dispose the model if it is already disposed', ->
       sinon.spy model, 'dispose'
@@ -162,11 +161,10 @@ describe 'NotificationView', ->
       view.dismiss()
       expect(model.dispose).to.be.calledOnce
 
-    it 'should not animate without an element', ->
+    it 'should not raise errors without an element', ->
       $el = view.$el
       view.$el = null
       view.dismiss()
-      expect($.fn.animate).not.to.have.been.called
       view.$el = $el
 
   context 'with a deferred (like an AJAX request)', ->

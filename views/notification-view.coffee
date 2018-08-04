@@ -50,7 +50,7 @@ export default class NotificationView extends View
     'undoSelector', 'fadeSpeed', 'reqTimeout'
   ]
   undoSelector: '.undo'
-  fadeSpeed: 500
+  fadeSpeed: 200
   reqTimeout: 4000
   dismissMethod: DISMISS_METHOD.ROUTE
 
@@ -89,9 +89,10 @@ export default class NotificationView extends View
   #
   # Override to specify different behavior when the notification is closed.
   dismiss: ->
-    @$el?.animate {opacity: 0}, @fadeSpeed, =>
-      # The view can be disposed before the animation completes.
-      @model.dispose() unless @disposed
+    return unless @$el
+    @$el.removeClass 'in'
+    # give some time for CSS fade effect to finish
+    _.delay (=> @model.dispose() unless @disposed), @fadeSpeed
 
   # Display undo and start the timeout for the view and optional
   # `success` callback.
