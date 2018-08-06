@@ -1,0 +1,73 @@
+{{#*inline "modal-content"}}
+  <div class="modal-content {{current}}-state-view fade{{#ifEqual state current}} in{{/ifEqual}}">
+    {{> @partial-block }}
+  </div>
+{{/inline}}
+
+{{#*inline "header"}}
+  {{#if title}}
+    <div class="modal-header">
+      <button type="button" class="close close-button"
+          data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title">{{title}}</h4>
+    </div>
+  {{/if}}
+{{/inline}}
+
+{{#*inline "body-content"}}
+  {{#if html}}
+    {{{html}}}
+  {{else}}
+    <p>{{text}}</p>
+  {{/if}}
+{{/inline}}
+
+{{#*inline "footer"}}
+  <div class="modal-footer">
+    {{#each buttons}}
+      <button type="button" class="btn {{className}}"
+          {{#ifEqual click undefined}}data-dismiss="modal"{{/ifEqual}}>
+        {{~text~}}
+      </button>
+    {{/each}}
+  </div>
+{{/inline}}
+
+
+<div class="modal-dialog">
+  {{#> modal-content current='default'}}
+    {{> header default}}
+    <div class="modal-body">
+      {{> body-content default}}
+    </div>
+    {{> footer default}}
+    {{> progress-pulse class="loading fade"}}
+  {{/modal-content}}
+
+  {{#> modal-content current='progress'}}
+    {{> header progress}}
+    <div class="modal-body">
+      {{> body-content progress}}
+      {{> progress-pulse}}
+    </div>
+    {{> footer progress}}
+  {{/modal-content}}
+
+  {{#> modal-content current='error'}}
+    {{> header error}}
+    <div class="modal-body">
+      {{> body-content error}}
+    </div>
+    {{> footer error}}
+  {{/modal-content}}
+
+  {{#> modal-content current='success'}}
+    {{> header success}}
+    <div class="modal-body">
+      {{> body-content success}}
+    </div>
+    {{> footer success}}
+  {{/modal-content}}
+</div>

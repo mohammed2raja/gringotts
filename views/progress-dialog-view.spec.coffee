@@ -48,7 +48,8 @@ describe 'ProgressDialogView', ->
     expect(view.$ '.default-state-view').to.have.class 'fade in'
 
   it 'should have default state button', ->
-    expect(view.$ '.default-state-view .modal-footer .btn').to.exist
+    expect(view.$ '.default-state-view .modal-footer .btn').to
+      .exist.and.to.have.attr 'data-dismiss', 'modal'
 
   context 'with animations', ->
     before ->
@@ -201,7 +202,8 @@ describe 'ProgressDialogView', ->
         .text 'Doing This!'
       expect(view.$ '.default-state-view .modal-body p')
         .to.have.text 'Do you want to do it?'
-      expect(view.$ '.default-state-view .modal-footer .btn-primary').to.exist
+      expect(view.$ '.default-state-view .modal-footer .btn-primary').to
+        .exist.and.to.not.have.attr 'data-dismiss', 'modal'
 
     context 'on action button click', ->
       beforeEach ->
@@ -253,6 +255,8 @@ describe 'ProgressDialogView', ->
             .to.have.text 'Hooray'
           expect(view.$ '.success-state-view .modal-body h1')
             .to.have.text 'It was done!'
+          expect(view.$ '.success-state-view .modal-footer .btn-primary').to
+            .exist.and.to.have.attr 'data-dismiss', 'modal'
 
     context 'with syncing model', ->
       before ->
@@ -269,7 +273,7 @@ describe 'ProgressDialogView', ->
 
   context 'with custom template states', ->
     before ->
-      html = require './progress-dialog/view-state-mock.spec.hbs'
+      html = require './progress-dialog-state-mock.spec.hbs'
       viewConfig =
         default: text: html
         progress: text: html
