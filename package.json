@@ -29,7 +29,7 @@
     "views/"
   ],
   "scripts": {
-    "start": "webpack-dev-server --config ./webpack.config.dev.js",
+    "start": "webpack-serve ./webpack.config.dev.js",
     "lint": "scripts/lint.sh",
     "lint:coffee": "echo lib mixins models spec templates views | xargs -n 1 coffeelint -q",
     "test": "scripts/lint.sh; NODE_ENV=production karma start",
@@ -84,7 +84,7 @@
     "sinon-chai": "3.1.0",
     "webpack": "4.16.5",
     "webpack-cli": "3.1.0",
-    "webpack-dev-server": "3.1.5"
+    "webpack-serve": "2.0.2"
   },
   "keywords": [
     "javascript",

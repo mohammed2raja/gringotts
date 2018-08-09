@@ -14,22 +14,18 @@ const {
 } = require('./webpack.config.common');
 
 const publicDir = resolve(__dirname);
-const host = process.env.HOST || '0.0.0.0';
+const host = process.env.HOST || 'localhost';
 
 module.exports = {
-  devServer: {
-    clientLogLevel: 'none',
-    compress: true,
-    contentBase: [
-      publicDir,
-      resolve(__dirname, 'node_modules', 'mocha')
-    ],
+  serve: {
+    clipboard: false,
+    content: publicDir,
     host: host,
-    overlay: false,
     port: 8080,
-    watchContentBase: true,
-    watchOptions: {
-      ignored: /node_modules/
+    devMiddleware: {
+      watchOptions: {
+        ignored: /node_modules/
+      }
     }
   },
   devtool: 'eval',
