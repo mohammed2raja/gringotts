@@ -103,10 +103,12 @@ class Editable extends superclass
       .on 'paste.gringottsEditable', (evt) ->
         # Cancel paste
         evt.preventDefault()
-        # Get text representation of clipboard from original event.
-        text = evt.originalEvent.clipboardData.getData 'text/plain'
-        # Insert text manually unformatted.
-        document.execCommand 'insertHTML', no, text
+        if clip = evt.originalEvent.clipboardData
+          text = clip.getData 'text/plain'
+          document.execCommand 'insertHTML', no, text
+        else if clip = window.clipboardData # IE11 scenario
+          text = clip.getData 'text'
+          document.execCommand 'paste', no, text
 
     document.execCommand 'selectAll', no, null
 
