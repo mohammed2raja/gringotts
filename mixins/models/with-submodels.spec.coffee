@@ -24,7 +24,7 @@ describe 'WithSubmodels', ->
   sandbox = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     model = new ModelWithSubmodels()
 
   afterEach ->

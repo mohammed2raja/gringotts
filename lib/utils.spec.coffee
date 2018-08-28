@@ -202,7 +202,7 @@ describe 'Utils lib', ->
         disposed = null
 
         beforeEach ->
-          sandbox = sinon.sandbox.create useFakeServer: yes
+          sandbox = sinon.createSandbox useFakeServer: yes
           sandbox.server.respondWith response
           sandbox.stub(deadDeferred, 'create').callsFake ->
             $.Deferred().reject 'disposed'

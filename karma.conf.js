@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const _ = require('lodash');
 const {
   alias,
+  babelLoader,
+  babelNpmLoader,
   coffeeLoader,
   handlebarsLoader,
   modules,
@@ -9,12 +11,24 @@ const {
   provideModules
 } = require('./webpack.config.common');
 
+const isDebugMode = process.env.DEBUG || false
+const reportHtmlCoverage = process.env.HTML_COVERAGE || false
+
 module.exports = (config) => {
   config.set({
-    browsers: ['PhantomJS'],
+    browsers: isDebugMode
+      ? ['Chrome']
+      : ['PhantomJS'],
+    client: isDebugMode
+      ? {
+          mocha: {
+            reporter: 'html'
+          }
+        }
+      : {},
     coverageIstanbulReporter: {
       fixWebpackSourcePaths: true,
-      reports: ['text'],
+      reports: reportHtmlCoverage ? ['text', 'html'] : ['text'],
       thresholds: {
         global: {
           statements: 65,
@@ -36,7 +50,7 @@ module.exports = (config) => {
       'sinon-chai',
       'chai-jquery',
       'chai',
-      'jquery-3.2.1'
+      'jquery-3.3.1'
     ],
     logLevel: config.LOG_ERROR,
     port: 8000,
@@ -55,9 +69,9 @@ module.exports = (config) => {
       'spec/index.coffee': ['webpack', 'sourcemap']
     },
     reporters: ['dots', 'coverage-istanbul'],
-    singleRun: true,
+    singleRun: !isDebugMode,
     webpack: {
-      devtool: 'source-map',
+      devtool: 'cheap-module-source-map',
       module: {
         exprContextCritical: false,
         noParse: /lodash|moment/,
@@ -72,13 +86,9 @@ module.exports = (config) => {
               outputReport: true
             }
           },
-          _.extend({}, coffeeLoader, {
-            options: {
-              transpile: {
-                presets: ['env']
-              }
-            }
-          }),
+          babelLoader,
+          babelNpmLoader,
+          coffeeLoader,
           handlebarsLoader,
           {
             test: /\.coffee$/,
@@ -96,12 +106,17 @@ module.exports = (config) => {
       node: nodeMocks,
       mode: 'development',
       plugins: [
+        // Moment.js bundles large locale files by default due to how Webpack
+        // interprets its code. This is a practical solution that requires the
+        // user to opt into importing specific locales.
+        // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new webpack.ProvidePlugin(provideModules)
       ],
       resolve: {
-        alias: alias,
+        alias,
         extensions: ['.coffee', '.js', '.hbs'],
-        modules: modules
+        modules
       },
       watchOptions: {
         aggregateTimeout: 500

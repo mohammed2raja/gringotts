@@ -26,7 +26,7 @@ describe 'WithHeaders mixin', ->
   model = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox = sinon.createSandbox useFakeServer: yes
     sandbox.spy $, 'ajax'
     sandbox.server.respondWith '{}'
 

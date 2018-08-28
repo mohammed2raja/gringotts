@@ -11,7 +11,7 @@ describe 'SyncKey mixin', ->
   collection = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox = sinon.createSandbox useFakeServer: yes
     sandbox.server.respondWith [200, {}, JSON.stringify {
       someItems: [{}, {}, {}]
     }]

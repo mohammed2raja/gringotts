@@ -1,14 +1,16 @@
+import '@babel/polyfill'
+
 import jQuery from 'jquery'
 jQuery.ajaxSetup async: no # https://github.com/sinonjs/sinon/issues/1637
 window.$ = window.jQuery = jQuery
 
-import chai from 'chai'
 import sinon, {FakeXMLHttpRequest} from 'sinon'
 FakeXMLHttpRequest::async = no
 window.sinon = sinon
 
-chai.use require('sinon-chai')
-chai.use require('chai-jquery')
+import chai from 'chai'
+chai.use require 'sinon-chai'
+chai.use require 'chai-jquery'
 window.expect = chai.expect
 
 require 'bootstrap/js/button'

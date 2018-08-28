@@ -12,7 +12,7 @@ describe 'Notifying', ->
   i18n = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     model = new Chaplin.Model()
     view = new ViewMock {model}
     sandbox.stub view, 'publishEvent'

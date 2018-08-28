@@ -31,7 +31,7 @@ describe 'Editable callbacks', ->
     field = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox = sinon.createSandbox useFakeServer: yes
     sandbox.stub document, 'execCommand'
     model = new ValidateModelMock
       name: 'Olivia Dunham'

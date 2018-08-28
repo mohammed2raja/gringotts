@@ -13,7 +13,7 @@ describe 'FilterInputView', ->
   view = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     collection = new FilterSelection [
       new Chaplin.Model
         groupId: 'group1'

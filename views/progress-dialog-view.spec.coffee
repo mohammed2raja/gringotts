@@ -18,7 +18,7 @@ describe 'ProgressDialogView', ->
   appendToBody = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     specHelper.stubModal sandbox, -> {transition}
     onDone = sinon.spy()
     onCancel = sinon.spy()

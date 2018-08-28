@@ -12,7 +12,7 @@ describe 'Sorted mixin', ->
   collection = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox = sinon.createSandbox useFakeServer: yes
     collection = new MockSortedCollection()
 
   afterEach ->

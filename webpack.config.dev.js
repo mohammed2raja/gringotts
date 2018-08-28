@@ -5,6 +5,8 @@ const _ = require('lodash');
 const {resolve} = require('path');
 const {
   alias,
+  babelLoader,
+  babelNpmLoader,
   coffeeLoader,
   handlebarsLoader,
   jQueryLoader,
@@ -35,6 +37,7 @@ module.exports = {
   module: {
     strictExportPresence: true,
     rules: [
+      babelLoader,
       coffeeLoader,
       handlebarsLoader,
       jQueryLoader
@@ -71,7 +74,7 @@ module.exports = {
       'sinon-chai': 'sinon-chai/lib/sinon-chai'
     }),
     extensions: ['.js', '.coffee', '.hbs'],
-    modules: modules,
+    modules,
     symlinks: false
   }
 };

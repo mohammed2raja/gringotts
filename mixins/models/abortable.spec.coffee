@@ -13,7 +13,7 @@ describe 'Abortable', ->
   request = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox = sinon.createSandbox useFakeServer: yes
     sandbox.server.respondWith '{}'
     sandbox.spy Chaplin.Model::, 'sync'
     model = new ModelMock()

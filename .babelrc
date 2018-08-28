@@ -1,9 +1,37 @@
 {
   "plugins": [
-    "transform-class-properties",
-    "transform-es2015-spread",
-    "transform-object-rest-spread",
-    "transform-imports"
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-runtime"
   ],
-  "presets": ["env"]
+  "env": {
+    "dev": {
+      "presets": [
+        ["@babel/preset-env", {
+          "targets": {
+            "browsers": "last 1 chrome version"
+          },
+          "useBuiltIns": "entry",
+          "loose": true,
+          "shippedProposals": true
+        }]
+      ]
+    },
+    "prod": {
+      "plugins": [
+        "@babel/plugin-transform-async-to-generator",
+        "@babel/plugin-transform-spread",
+        "@babel/plugin-proposal-object-rest-spread"
+      ],
+      "presets": [
+        ["@babel/preset-env", {
+          "targets": {
+            "browsers": "defaults, ie 11"
+          },
+          "useBuiltIns": "entry"
+        }]
+      ]
+    }
+  }
 }

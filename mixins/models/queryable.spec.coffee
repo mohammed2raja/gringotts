@@ -21,7 +21,7 @@ describe 'Queryable mixin', ->
   url = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: true
+    sandbox = sinon.createSandbox useFakeServer: true
     collection = new CollectionMock()
 
   afterEach ->

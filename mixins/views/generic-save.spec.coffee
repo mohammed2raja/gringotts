@@ -12,7 +12,7 @@ describe 'GenericSave', ->
   customOpts = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: yes
+    sandbox = sinon.createSandbox useFakeServer: yes
     sandbox.server.respondWith response or '{}'
     view = new ViewMock()
     sandbox.stub view, 'publishEvent'

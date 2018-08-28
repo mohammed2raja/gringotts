@@ -32,7 +32,7 @@ describe 'Sorting mixin', ->
   collection = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create useFakeServer: true
+    sandbox = sinon.createSandbox useFakeServer: true
     sandbox.stub(utils, 'reverse').callsFake (path, params, query) ->
       "#{path}?#{utils.querystring.stringify query}"
     collection = new CollectionMock()

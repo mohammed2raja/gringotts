@@ -34,7 +34,7 @@ describe 'SyncDeeply', ->
   collection = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     collection = new CollectionMock()
     sandbox.spy collection, 'trigger'
 

@@ -12,7 +12,7 @@ describe 'ErrorHandling', ->
   i18n = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     sandbox.stub utils, 'redirectTo'
     sandbox.stub console, 'warn'
     ((window.I18n = {}).t = (text) -> text) if i18n

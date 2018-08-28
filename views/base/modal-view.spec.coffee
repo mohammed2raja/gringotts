@@ -12,7 +12,7 @@ describe 'ModalView', ->
   transition = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     specHelper.stubModal sandbox, -> {transition}
     MockModal::autoAttach = no
     view = new MockModal()

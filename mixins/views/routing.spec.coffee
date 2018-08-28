@@ -22,7 +22,7 @@ describe 'Routing', ->
   view = null
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     sandbox.stub utils, 'redirectTo'
 
   afterEach ->

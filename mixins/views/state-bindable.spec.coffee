@@ -96,3 +96,12 @@ describe 'StateBindable', ->
 
         it 'should set syncState as synced', ->
           expect(view.state.get 'syncState').to.equal 'synced'
+
+  context 'without model or collection', ->
+    anotherView = null
+
+    beforeEach ->
+      anotherView = new ViewMock()
+
+    it 'should initialize with undefined syncState', ->
+      expect(anotherView.state.get 'syncState').to.be.undefined

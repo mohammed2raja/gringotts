@@ -27,7 +27,7 @@ describe 'Filtering', ->
   isSynced = yes
 
   beforeEach ->
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     sandbox.spy FilterSelectionMock::, 'fromObject'
     sandbox.spy FilterSelectionMock::, 'toObject'
     filterGroups = new Chaplin.Collection [{id: 'a'}, {id: 'b'}]

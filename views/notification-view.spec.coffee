@@ -11,7 +11,7 @@ describe 'NotificationView', ->
   useFakeTimers = yes
 
   beforeEach ->
-    sandbox = sinon.sandbox.create {useFakeTimers}
+    sandbox = sinon.createSandbox {useFakeTimers}
     success = sinon.spy()
     undo = sinon.spy()
     opts = {success, undo, model: new Chaplin.Model()}
