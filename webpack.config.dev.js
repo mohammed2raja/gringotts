@@ -5,6 +5,7 @@ const _ = require('lodash');
 const {resolve} = require('path');
 const {
   alias,
+  extensions,
   babelLoader,
   babelNpmLoader,
   coffeeLoader,
@@ -59,21 +60,11 @@ module.exports = {
     // user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.ProvidePlugin(provideModules),
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        coffeelint: {failOnHint: true},
-        context: '/'
-      }
-    }),
+    new webpack.ProvidePlugin(provideModules)
   ],
   resolve: {
-    alias: _.extend({}, alias, {
-      chai: 'chai/chai',
-      'chai-jquery': 'chai-jquery/chai-jquery',
-      'sinon-chai': 'sinon-chai/lib/sinon-chai'
-    }),
-    extensions: ['.js', '.coffee', '.hbs'],
+    alias,
+    extensions,
     modules,
     symlinks: false
   }

@@ -10,6 +10,8 @@ const alias = {
   stickit: 'backbone.stickit'
 };
 
+const extensions = ['.coffee', '.js', '.hbs'];
+
 const babelDefaultOptions = {
   cacheDirectory: true,
   caller: {
@@ -87,12 +89,12 @@ const nodeMocks = {
 };
 
 const provideModules = {
-  _: 'lodash',
-  Backbone: 'backbone'
+  _: 'lodash'
 };
 
 module.exports = {
   alias,
+  extensions,
   babelLoader,
   babelNpmLoader,
   coffeeLoader,

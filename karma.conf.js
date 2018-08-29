@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const _ = require('lodash');
 const {
   alias,
+  extensions,
   babelLoader,
   babelNpmLoader,
   coffeeLoader,
@@ -61,7 +62,9 @@ module.exports = (config) => {
       require('karma-spec-reporter'),
       require('karma-chai'),
       require('karma-chai-plugins'),
-      require('karma-phantomjs-launcher'),
+      isDebugMode
+        ? require('karma-chrome-launcher')
+        : require('karma-phantomjs-launcher'),
       require('karma-coverage-istanbul-reporter'),
       require('karma-sourcemap-loader')
     ],
@@ -71,7 +74,7 @@ module.exports = (config) => {
     reporters: ['dots', 'coverage-istanbul'],
     singleRun: !isDebugMode,
     webpack: {
-      devtool: 'cheap-module-source-map',
+      devtool: 'eval',
       module: {
         exprContextCritical: false,
         noParse: /lodash|moment/,
@@ -95,11 +98,7 @@ module.exports = (config) => {
             enforce: 'post',
             include: /(lib|mixins|models|templates|views)/,
             exclude: /\.spec\.coffee$/,
-            loader: 'istanbul-instrumenter-loader',
-            query: {
-              esModules: true,
-              produceSourceMap: true
-            }
+            loader: 'istanbul-instrumenter-loader'
           },
         ]
       },
@@ -115,7 +114,7 @@ module.exports = (config) => {
       ],
       resolve: {
         alias,
-        extensions: ['.coffee', '.js', '.hbs'],
+        extensions,
         modules
       },
       watchOptions: {
