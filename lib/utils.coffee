@@ -28,12 +28,10 @@ export default _.extend {}, Chaplin.utils, {
     window.location.reload()
 
   ###*
-    * A wrapper over url join utility.
+    * A wrapper over url-join utility. Removes all falsey arguments before join.
   ###
   urlJoin: ->
-    url = join.apply this, arguments
-    # HACK: fix bug in url_join, where it adds '//' if first arg is empty
-    url.replace /^(\/\/)/, '/'
+    join.apply this, _.map _.compact(arguments), _.toString
 
   # Returns a string representation of an HTML node of type `tagName` wrapping
   # `content` with HTML attributes `attrs`.

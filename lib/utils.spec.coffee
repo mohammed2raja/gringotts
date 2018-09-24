@@ -3,13 +3,28 @@ import deadDeferred from 'lib/dead-deferred'
 import utils from 'lib/utils'
 
 describe 'Utils lib', ->
-  it 'should correctly combine weird urls', ->
-    url = utils.urlJoin '', '/foo'
-    expect(url).to.equal '/foo'
-    url = utils.urlJoin '/', '/foo'
-    expect(url).to.equal '/foo'
-    url = utils.urlJoin '/', 'foo'
-    expect(url).to.equal '/foo'
+  context 'urlJoin', ->
+    it 'should correctly combine urls with protocol', ->
+      url = utils.urlJoin 'https://somedomain.com/', '', null, '/foo'
+      expect(url).to.equal 'https://somedomain.com/foo'
+
+    it 'should correctly combine regular urls', ->
+      url = utils.urlJoin 'moo', '', null, '/foo', 'oops'
+      expect(url).to.equal 'moo/foo/oops'
+      url = utils.urlJoin '/a', 'b/', '/c'
+      expect(url).to.equal '/a/b/c'
+      url = utils.urlJoin 'd', 'e', 'f/'
+      expect(url).to.equal 'd/e/f/'
+      url = utils.urlJoin 'one', 44, false, null, 'two'
+      expect(url).to.equal 'one/44/two'
+
+    it 'should correctly combine weird urls', ->
+      url = utils.urlJoin '', '/foo'
+      expect(url).to.equal '/foo'
+      url = utils.urlJoin '/', undefined, '/foo'
+      expect(url).to.equal '/foo'
+      url = utils.urlJoin '/', 'foo'
+      expect(url).to.equal '/foo'
 
   context 'openURL', ->
     it 'should open URLs', ->
