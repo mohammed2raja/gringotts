@@ -8,7 +8,7 @@ ajaxForArray = ->
   .then ->
     resp =
       if options.url.length > 1
-        _.slice(arguments).map (arg) -> _.head arg
+        [...arguments].map (arg) -> _.head arg
       else
         _.head arguments
     options.success? resp
@@ -22,7 +22,7 @@ ajaxForHash = ->
   $.when.apply $, pairs.map (pair) ->
     backboneAjax _.merge _.omit(options, ['url', 'success']), url: pair.url
   .then ->
-    resp = _.slice(arguments).reduce (memo, arg, i) ->
+    resp = [...arguments].reduce (memo, arg, i) ->
       memo[pairs[i].key] = _.head arg
       memo
     , {}

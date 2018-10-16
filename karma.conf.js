@@ -74,7 +74,7 @@ module.exports = (config) => {
     reporters: ['dots', 'coverage-istanbul'],
     singleRun: !isDebugMode,
     webpack: {
-      devtool: 'eval',
+      devtool: 'cheap-module-source-map', // important for browser debugging
       module: {
         exprContextCritical: false,
         noParse: /lodash|moment/,

@@ -20,15 +20,16 @@ const publicDir = resolve(__dirname);
 const host = process.env.HOST || 'localhost';
 
 module.exports = {
-  serve: {
-    clipboard: false,
-    content: publicDir,
-    host: host,
+  devServer: {
+    inline: true,
+    contentBase: [
+      publicDir,
+      resolve(__dirname, 'node_modules', 'mocha')
+    ],
+    host,
     port: 8080,
-    devMiddleware: {
-      watchOptions: {
-        ignored: /node_modules/
-      }
+    watchOptions: {
+      ignored: /node_modules/
     }
   },
   devtool: 'eval',
