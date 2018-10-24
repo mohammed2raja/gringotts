@@ -11,6 +11,7 @@ window.sinon = sinon
 import chai from 'chai'
 chai.use require 'sinon-chai'
 chai.use require 'chai-jquery'
+chai.config.truncateThreshold = 0 # render full objects on deep equal errors
 window.expect = chai.expect
 
 require 'bootstrap/js/button'

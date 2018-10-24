@@ -3,14 +3,17 @@ import ClientSorted from './client-sorted'
 
 class MockClientSorted extends ClientSorted Chaplin.Collection
   secondSortOrder: -> 'asc'
-  secondSortAttr: -> 'type'
+  secondSortAttr: ->  'type'
+  thirdSortOrder: ->  'asc'
+  thirdSortAttr: ->   'group'
 
 dataset = [
-  {name: 'foo', type: 'exploit'}
-  {name: 'foo', type: 'adware'}
-  {name: 'zardoz', type: 'mitm_attack'}
-  {name: 'baz', type: 'backdoor'}
-  {name: 'baz', type: 'riskware'}
+  {name: 'foo',    type: 'exploit',     group: 1}
+  {name: 'foo',    type: 'adware',      group: 2}
+  {name: 'foo',    type: 'adware',      group: 1}
+  {name: 'zardoz', type: 'mitm_attack', group: 1}
+  {name: 'baz',    type: 'backdoor',    group: 1}
+  {name: 'baz',    type: 'riskware',    group: 1}
 ]
 
 describe 'ClientSorted mixin', ->
@@ -29,30 +32,32 @@ describe 'ClientSorted mixin', ->
     collection.dispose()
 
   it 'should sort based on sort_by and secondarily by', ->
-    collection.add name: 'abbeynormal', type: 'spam'
+    collection.add name: 'abbeynormal', type: 'spam', group: 1
     expect(_.map(collection.models, (model) ->
-      _.pick model.attributes, 'name', 'type'
+      _.pick model.attributes, 'name', 'type', 'group'
     )).to.eql [
-      {name: 'abbeynormal', type: 'spam'}
-      {name: 'baz', type: 'backdoor'}
-      {name: 'baz', type: 'riskware'}
-      {name: 'foo', type: 'adware'}
-      {name: 'foo', type: 'exploit'}
-      {name: 'zardoz', type: 'mitm_attack'}
+      {name: 'abbeynormal', type: 'spam',        group: 1}
+      {name: 'baz',         type: 'backdoor',    group: 1}
+      {name: 'baz',         type: 'riskware',    group: 1}
+      {name: 'foo',         type: 'adware',      group: 1}
+      {name: 'foo',         type: 'adware',      group: 2}
+      {name: 'foo',         type: 'exploit',     group: 1}
+      {name: 'zardoz',      type: 'mitm_attack', group: 1}
     ]
 
   it 'should change sort order if collection.query.order is set', ->
     collection.query.order = 'desc'
-    collection.add name: 'boblablah', type: 'spam'
+    collection.add name: 'boblablah', type: 'spam', group: 1
     expect(_.map(collection.models, (model) ->
-      _.pick model.attributes, 'name', 'type'
+      _.pick model.attributes, 'name', 'type', 'group'
     )).to.eql [
-      {name: 'zardoz', type: 'mitm_attack'}
-      {name: 'foo', type: 'adware'}
-      {name: 'foo', type: 'exploit'}
-      {name: 'boblablah', type: 'spam'}
-      {name: 'baz', type: 'backdoor'}
-      {name: 'baz', type: 'riskware'}
+      {name: 'zardoz',    type: 'mitm_attack', group: 1}
+      {name: 'foo',       type: 'adware',      group: 1}
+      {name: 'foo',       type: 'adware',      group: 2}
+      {name: 'foo',       type: 'exploit',     group: 1}
+      {name: 'boblablah', type: 'spam',        group: 1}
+      {name: 'baz',       type: 'backdoor',    group: 1}
+      {name: 'baz',       type: 'riskware',    group: 1}
     ]
 
   context 'models without type attr', ->
@@ -84,9 +89,10 @@ describe 'ClientSorted mixin', ->
 
     it 'should sort based on sort_by and sort secondarily by', ->
       expect(sorted).to.eql [
-        {name: 'baz', type: 'backdoor'}
-        {name: 'baz', type: 'riskware'}
-        {name: 'foo', type: 'adware'}
-        {name: 'foo', type: 'exploit'}
-        {name: 'zardoz', type: 'mitm_attack'}
+        {name: 'baz',    type: 'backdoor',    group: 1}
+        {name: 'baz',    type: 'riskware',    group: 1}
+        {name: 'foo',    type: 'adware',      group: 1}
+        {name: 'foo',    type: 'adware',      group: 2}
+        {name: 'foo',    type: 'exploit',     group: 1}
+        {name: 'zardoz', type: 'mitm_attack', group: 1}
       ]

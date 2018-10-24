@@ -15,28 +15,33 @@ export default (superclass) -> class ClientSorted extends superclass
     super arguments...
     @query ?= {}
 
-  comparator: (modelA, modelB) ->
-    order = @sortOrder()
-    attr = @sortAttr()
+  testSortAB: (modelA, modelB, sortOrder, sortAttr, sortValue, nextCompare) ->
+    order = sortOrder.call this
+    attr = sortAttr.call this
     orderSwitch = if order is 'desc' then 1 else -1
-    a = @sortValue @getSortAttrValue(modelA, attr), modelA
-    b = @sortValue @getSortAttrValue(modelB, attr), modelB
+    a = sortValue.call this, @getSortAttrValue(modelA, attr), modelA
+    b = sortValue.call this, @getSortAttrValue(modelB, attr), modelB
     if a is b
-      return @secondComparator modelA, modelB
+      return nextCompare?.call(this, modelA, modelB) or 0
     if a > b then -1 * orderSwitch else 1 * orderSwitch
+
+  comparator: (modelA, modelB) ->
+    @testSortAB modelA, modelB, @sortOrder, \
+      @sortAttr, @sortValue, @secondComparator
 
   ###*
     * Comparator for secondary sort by
   ###
   secondComparator: (modelA, modelB) ->
-    order = @secondSortOrder()
-    attr = @secondSortAttr()
-    orderSwitch = if order is 'desc' then 1 else -1
-    return 0 unless attr
-    a = @secondSortValue @getSortAttrValue(modelA, attr), modelA
-    b = @secondSortValue @getSortAttrValue(modelB, attr), modelB
-    0 if a is b
-    if a > b then -1 * orderSwitch else 1 * orderSwitch
+    @testSortAB modelA, modelB, @secondSortOrder, \
+      @secondSortAttr, @secondSortValue, @thirdComparator
+
+  ###*
+    * Comparator for tertiary sort by
+  ###
+  thirdComparator: (modelA, modelB) ->
+    @testSortAB modelA, modelB, @thirdSortOrder, \
+      @thirdSortAttr, @thirdSortValue
 
   ###*
     * Returns sort order. Optional, defaults to descending.
@@ -69,6 +74,21 @@ export default (superclass) -> class ClientSorted extends superclass
     * Returns value to sort secondary attribute by.
   ###
   secondSortValue: (value) -> value
+
+  ###*
+    * Returns tertiary sort order.
+  ###
+  thirdSortOrder: -> 'desc'
+
+  ###*
+    * Returns tertiary attribute that we are sorting by.
+  ###
+  thirdSortAttr: ->
+
+  ###*
+    * Returns value to sort tertiary attribute by.
+  ###
+  thirdSortValue: (value) -> value
 
   getSortAttrValue: (model, attr) ->
     model.get?(attr) or model[attr]

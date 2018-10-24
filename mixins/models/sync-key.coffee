@@ -1,10 +1,9 @@
 import helper from '../../lib/mixin-helper'
 
 ###*
-  * Checks response JSON on every fetch and extracts items stored in "syncKey"
-  * property name. Most of the time it's used for so call responses with
-  * metadata. When you need to pass = require server set of items and extra info
-  * like total elements count or next page id. Example:
+  * Checks a response after every fetch and extracts items in "syncKey"
+  * attribute. It is helpful when a server adds extra info like total
+  * elements count or next page ID into a response.
   * {
   *   count: 55
   *   description: "Some elements from server"
@@ -22,7 +21,7 @@ class SyncKey extends superclass
 
   ###*
     * Name of the property in response JSON that carries an array of items.
-    * @type {String}
+    * @type {String|Function}
   ###
   syncKey: null
 
@@ -32,4 +31,4 @@ class SyncKey extends superclass
 
   parse: ->
     result = super arguments...
-    if @syncKey then result[@syncKey] else result
+    if @syncKey then result[_.result this, 'syncKey'] else result
