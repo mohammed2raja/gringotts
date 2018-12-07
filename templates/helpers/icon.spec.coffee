@@ -1,4 +1,4 @@
-import _icon from 'templates/helpers/icon'
+import _icon from './icon'
 
 describe 'icon helper', ->
   icon = null

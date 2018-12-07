@@ -1,5 +1,4 @@
-import handlebars from 'handlebars'
-import _ from 'lodash'
+import handlebars from 'handlebars/runtime'
 
 # Output element for use with font icon classes.
 # If name has couple of classes then the last one is used as icon name.
@@ -9,7 +8,7 @@ import _ from 'lodash'
 # If it is a string it will add it as a class.
 #
 # **e.g.** `{{icon 'awesome' 'extra-classy'}}`
-export default (name, attrs={}) ->
+export default (name, attrs = {}) ->
   return unless name
   icon = $('<span>')
   if typeof attrs is 'string'

@@ -1,4 +1,4 @@
-import utils from 'lib/utils'
+import {abortable} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 import SafeSyncCallback from './safe-sync-callback'
 
@@ -18,6 +18,6 @@ class ForcedReset extends SafeSyncCallback superclass
     super arguments...
 
   fetch: ->
-    utils.abortable super(arguments...), catch: ($xhr) =>
+    abortable super(arguments...), catch: ($xhr) =>
       @reset() unless @disposed
       $xhr

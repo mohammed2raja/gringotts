@@ -1,4 +1,4 @@
-import Notifications from 'models/notifications'
+import Notifications from './notifications'
 
 describe 'Notifications', ->
   collection = null

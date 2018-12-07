@@ -1,4 +1,4 @@
-import array from 'templates/helpers/array'
+import array from './array'
 
 describe 'array helper', ->
   hbsOptions = null

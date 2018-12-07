@@ -1,9 +1,9 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import ActiveSyncMachine from 'mixins/models/active-sync-machine'
-import Sorted from 'mixins/models/sorted'
-import Sorting from 'mixins/views/sorting'
-import Templatable from 'mixins/views/templatable'
+import ActiveSyncMachine from '../models/active-sync-machine'
+import Sorted from '../models/sorted'
+import Sorting from './sorting'
+import Templatable from './templatable'
+import templateMock from './sorting.spec.hbs'
 
 class ItemViewMock extends Chaplin.View
   tagName: 'tr'
@@ -19,7 +19,7 @@ class SortingViewMock extends Templatable Sorting Chaplin.CollectionView
   loadingSelector: '.loading'
   itemView: ItemViewMock
   listSelector: 'tbody'
-  template: require './sorting.spec.hbs'
+  template: templateMock
   sortableTableHeaders:
     attr_a: 'Attribute A'
     attr_b: 'Attribute B'
@@ -33,8 +33,8 @@ describe 'Sorting mixin', ->
 
   beforeEach ->
     sandbox = sinon.createSandbox useFakeServer: true
-    sandbox.stub(utils, 'reverse').callsFake (path, params, query) ->
-      "#{path}?#{utils.querystring.stringify query}"
+    sandbox.stub(Chaplin.utils, 'reverse').callsFake (path, params, query) ->
+      "#{path}?#{Chaplin.utils.querystring.stringify query}"
     collection = new CollectionMock()
     view = new SortingViewMock _.extend {routeName: 'test', collection}
     sandbox.server.respondWith [200, {}, JSON.stringify [{}, {}, {}]]

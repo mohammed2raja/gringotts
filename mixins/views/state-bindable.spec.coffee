@@ -1,13 +1,14 @@
 import Chaplin from 'chaplin'
-import StateBindable from 'mixins/views/state-bindable'
-import Templatable from 'mixins/views/templatable'
-import ActiveSyncMachine from 'mixins/models/active-sync-machine'
+import StateBindable from './state-bindable'
+import Templatable from './templatable'
+import ActiveSyncMachine from '../models/active-sync-machine'
+import templateMock from './state-bindable.spec.hbs'
 
 class SyncMachineModelMock extends ActiveSyncMachine Chaplin.Model
 
 class ViewMock extends StateBindable Templatable Chaplin.View
   autoRender: yes
-  template: require './state-bindable.spec.hbs'
+  template: templateMock
 
 initialState = isDisabled: yes
 

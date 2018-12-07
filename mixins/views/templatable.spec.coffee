@@ -1,8 +1,9 @@
 import Chaplin from 'chaplin'
-import Templatable from 'mixins/views/templatable'
+import Templatable from './templatable'
+import templateMock from './templatable.spec.hbs'
 
 class ViewMock extends Templatable Chaplin.View
-  template: require './templatable.spec.hbs'
+  template: templateMock
 
 describe 'Templatable', ->
   view = null

@@ -1,5 +1,4 @@
-import utils from 'lib/utils'
-import _ from 'lodash'
+import Chaplin from 'chaplin'
 
 # Get Chaplin-declared named routes.
 #
@@ -15,4 +14,4 @@ export default (opts...) ->
     else if options[1] then [options[1]]
     else null
   query = options[2]
-  utils.reverse criteria, params, query or hbsOpts.hash
+  Chaplin.utils.reverse criteria, params, query or hbsOpts.hash

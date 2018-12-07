@@ -1,7 +1,6 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import Editable from 'mixins/views/editable'
-import GenericSave from 'mixins/views/generic-save'
+import Editable from '../../mixins/views/editable'
+import GenericSave from '../../mixins/views/generic-save'
 
 export default class EditableViewMock extends Editable GenericSave Chaplin.View
   autoRender: yes

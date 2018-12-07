@@ -1,4 +1,4 @@
-import utils from 'lib/utils'
+import {abortable} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 
 ###*
@@ -16,7 +16,7 @@ class Abortable extends superclass
   fetch: ->
     @makeAbortable 'fetch', super arguments...
 
-  sync: (method, model, options={}) ->
+  sync: (method, model, options = {}) ->
     error = options.error
     options.error = ($xhr) ->
       # cancel default error handler for abort errors
@@ -27,7 +27,7 @@ class Abortable extends superclass
   makeAbortable: (methodName, promise) ->
     current_method = "current_#{methodName}"
     @[current_method]?.abort()
-    @[current_method] = utils.abortable promise,
+    @[current_method] = abortable promise,
       then: (r, s, $xhr) =>
         delete @[current_method] unless @disposed
         $xhr

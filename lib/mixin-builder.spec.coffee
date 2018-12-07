@@ -1,5 +1,5 @@
-import utils from 'lib/utils'
-import helper from 'lib/mixin-helper'
+import {mix} from './utils'
+import helper from './mixin-helper'
 
 describe 'MixinBuilder', ->
   context 'mix', ->
@@ -27,7 +27,7 @@ describe 'MixinBuilder', ->
       id: ->
         super() + 'c'
 
-    class T extends utils.mix(S).with MixinA, MixinB, MixinC
+    class T extends mix(S).with MixinA, MixinB, MixinC
       t: true
 
     beforeEach ->
@@ -57,14 +57,14 @@ describe 'MixinBuilder', ->
         super() + 'a'
 
     MixinB =
-      (superclass) -> class B extends utils.mix(superclass).with MixinA
+      (superclass) -> class B extends mix(superclass).with MixinA
         helper.setTypeName @prototype, 'B'
         b: true
         id: ->
           super() + 'b'
 
     MixinC =
-      (superclass) -> class C extends utils.mix(superclass).with MixinA
+      (superclass) -> class C extends mix(superclass).with MixinA
         helper.setTypeName @prototype, 'C'
         c: true
         id: ->

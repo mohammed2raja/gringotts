@@ -1,4 +1,4 @@
-import utils from 'lib/utils'
+import {parseJSON} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 import ErrorHandling from './error-handling'
 
@@ -42,7 +42,7 @@ class GenericSave extends ErrorHandling superclass
     @makeEditable? opts unless $xhr
     if $xhr
       if $xhr.status in [400, 406]
-        if response = utils.parseJSON $xhr.responseText
+        if response = parseJSON $xhr.responseText
           if message = response.error or response.errors?[opts.attribute]
             @notifyError message
             return

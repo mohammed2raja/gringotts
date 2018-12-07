@@ -1,8 +1,9 @@
 import ModalView from './base/modal-view'
+import template from './dialog'
 
 export default class DialogView extends ModalView
   className: 'dialog'
-  template: require './dialog.hbs'
+  template: template
   title: null
   text: null
   buttons: [

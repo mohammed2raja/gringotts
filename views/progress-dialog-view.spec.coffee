@@ -1,8 +1,9 @@
 import Chaplin from 'chaplin'
-import specHelper from 'lib/spec-helper'
-import ErrorHandled from 'mixins/models/error-handled'
-import ActiveSyncMachine from 'mixins/models/active-sync-machine'
-import ProgressDialogView from 'views/progress-dialog-view'
+import specHelper from '../lib/spec-helper'
+import ErrorHandled from '../mixins/models/error-handled'
+import ActiveSyncMachine from '../mixins/models/active-sync-machine'
+import ProgressDialogView from './progress-dialog-view'
+import templateMock from './progress-dialog-state-mock.spec.hbs'
 
 class ModelMock extends ActiveSyncMachine ErrorHandled Chaplin.Model
 
@@ -273,7 +274,7 @@ describe 'ProgressDialogView', ->
 
   context 'with custom template states', ->
     before ->
-      html = require './progress-dialog-state-mock.spec.hbs'
+      html = templateMock
       viewConfig =
         default: text: html
         progress: text: html

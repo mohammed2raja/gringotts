@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import Classy from 'mixins/views/classy'
+import Classy from './classy'
 
 class ViewMock extends Classy Chaplin.View
   classyName: 'sweety'

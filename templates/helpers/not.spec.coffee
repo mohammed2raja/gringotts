@@ -1,4 +1,4 @@
-import _not from 'templates/helpers/not'
+import _not from './not'
 
 describe 'not operator', ->
   hbsOptions = null

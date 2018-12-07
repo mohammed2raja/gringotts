@@ -1,7 +1,7 @@
-import handlebars from 'handlebars'
-import utils from 'lib/utils'
+import handlebars from 'handlebars/runtime'
 import helper from '../../lib/mixin-helper'
 import Routing from './routing'
+import partialTemplate from '../../templates/partials/sort-table-header'
 
 ###*
   * Adds sorting support to a CollectionView. It relies on Routing
@@ -52,7 +52,7 @@ class Sorting extends Routing superclass
 
   getSortInfo: ->
     query = @getBrowserQuery()
-    if !query.sort_by
+    if not query.sort_by
       throw new Error 'Please define a sort_by attribute within DEFAULTS'
     _.transform @sortableTableHeaders, (result, title, column) =>
       order = if column is query.sort_by then query.order else ''
@@ -86,7 +86,7 @@ class Sorting extends Routing superclass
       .addClass 'highlighted'
 
   sortingPartial: ->
-    require 'partials/sort-table-header.hbs'
+    partialTemplate
 
   renderSortingControls: ->
     sortInfo = @getSortInfo()

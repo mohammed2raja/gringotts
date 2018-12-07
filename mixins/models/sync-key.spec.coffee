@@ -1,6 +1,5 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import SyncKey from 'mixins/models/sync-key'
+import SyncKey from './sync-key'
 
 class MockSyncKeyCollection extends SyncKey Chaplin.Collection
   syncKey: 'someItems'

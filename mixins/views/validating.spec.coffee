@@ -1,8 +1,9 @@
 import Chaplin from 'chaplin'
 import backboneValidation from 'backbone-validation'
-import Validatable from 'mixins/models/validatable'
-import Validating from 'mixins/views/validating'
-import Templatable from 'mixins/views/templatable'
+import Validatable from '../models/validatable'
+import Validating from './validating'
+import Templatable from './templatable'
+import templateMock from './validating.spec.hbs'
 
 patterns = backboneValidation.patterns
 
@@ -17,7 +18,7 @@ class ModelMock extends Validatable Chaplin.Model
 
 class ViewMock extends Validating Templatable Chaplin.View
   autoRender: yes
-  template: require './validating.spec.hbs'
+  template: templateMock
   bindings:
     '[name="name"]': 'name'
     '[name="email"]': 'email'

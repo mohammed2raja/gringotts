@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
-import ActiveSyncMachine from 'mixins/models/active-sync-machine'
-import SyncDeeply from 'mixins/models/sync-deeply'
+import ActiveSyncMachine from './active-sync-machine'
+import SyncDeeply from './sync-deeply'
 
 class ChildrenMock extends ActiveSyncMachine Chaplin.Collection
   url: '/test'

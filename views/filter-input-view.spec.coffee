@@ -1,7 +1,7 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import FilterSelection from 'models/filter-selection'
-import FilterInputView from 'views/filter-input-view'
+import {keys} from '../lib/utils'
+import FilterSelection from '../models/filter-selection'
+import FilterInputView from './filter-input-view'
 
 setQuery = (view, query) ->
   view.$('input').val(query).trigger $.Event 'keyup'
@@ -200,7 +200,8 @@ describe 'FilterInputView', ->
         expect($ el).to.be.hidden()
       expect(view.$ '.dropdown-items .filters-dropdown-empty').to.be.visible()
 
-  expectFilteredGroupsDropdown = (query, groupNameInj='', groupDescInj='') ->
+  expectFilteredGroupsDropdown = \
+      (query, groupNameInj = '', groupDescInj = '') ->
     it 'should filter groups dropdown', ->
       groupItems = getVisibleItems 'groups'
       expect(groupItems).to.have.length 2
@@ -264,7 +265,7 @@ describe 'FilterInputView', ->
     context 'on input esc', ->
       beforeEach ->
         view.$('input').focus().trigger $.Event 'keydown',
-          which: utils.keys.ESC
+          which: keys.ESC
 
       expectClosedDropdowns()
       expectFocusedState()
@@ -302,7 +303,7 @@ describe 'FilterInputView', ->
         context 'on input delete', ->
           beforeEach ->
             view.$('input').click().trigger $.Event 'keydown',
-              which: utils.keys.DELETE
+              which: keys.DELETE
 
           it 'should remove last unrequired item from collection', ->
             expect(collection).to.have.length 2
@@ -314,7 +315,7 @@ describe 'FilterInputView', ->
           context 'on input delete again', ->
             beforeEach ->
               view.$('input').click().trigger $.Event 'keydown',
-                which: utils.keys.DELETE
+                which: keys.DELETE
 
             it 'should remote last unrequired item from collection', ->
               expect(collection).to.have.length 1
@@ -346,7 +347,7 @@ describe 'FilterInputView', ->
   context 'on input enter', ->
     beforeEach ->
       view.$('input').focus().trigger $.Event 'keydown',
-        which: utils.keys.ENTER
+        which: keys.ENTER
 
     expectOpenGroupsDropdown()
 
@@ -365,7 +366,7 @@ describe 'FilterInputView', ->
         context 'on enter key press', ->
           beforeEach ->
             view.$('input').trigger $.Event 'keydown',
-              which: utils.keys.ENTER
+              which: keys.ENTER
 
           expectOpenItemsDropdown()
           expectInputFocused()
@@ -387,7 +388,7 @@ describe 'FilterInputView', ->
             context 'on enter key press', ->
               beforeEach ->
                 view.$('input').trigger $.Event 'keydown',
-                  which: utils.keys.ENTER
+                  which: keys.ENTER
 
               expectItemSelected 'Group One', 'Third Item'
               expectInputFocused()
@@ -401,7 +402,7 @@ describe 'FilterInputView', ->
             context 'on esc key press', ->
               beforeEach ->
                 view.$('input').trigger $.Event 'keydown',
-                  which: utils.keys.ESC
+                  which: keys.ESC
 
               it 'should clear selected group', ->
                 expect(view.$ '.selected-group').to.be.empty
@@ -430,7 +431,7 @@ describe 'FilterInputView', ->
         context 'on enter key press', ->
           beforeEach ->
             view.$('input').trigger $.Event 'keydown',
-              which: utils.keys.ENTER
+              which: keys.ENTER
 
           expectItemSelected 'Group One', 'Fifth Item'
           expectInputFocused()
@@ -455,7 +456,7 @@ describe 'FilterInputView', ->
         context 'on input enter', ->
           beforeEach ->
             view.$('input').focus().trigger $.Event 'keydown',
-              which: utils.keys.ENTER
+              which: keys.ENTER
 
           expectDefaultGroupsInDropdown()
           expectInputFocused()
@@ -472,7 +473,7 @@ describe 'FilterInputView', ->
     context 'on down key press', ->
       beforeEach ->
         view.$('input').trigger $.Event 'keydown',
-          which: utils.keys.DOWN
+          which: keys.DOWN
 
       it 'should focus dropdown first group', ->
         $first = view.$('.dropdown-groups a').first()
@@ -488,7 +489,7 @@ describe 'FilterInputView', ->
       context 'on enter key press', ->
         beforeEach ->
           $(document.activeElement)
-            .trigger($.Event 'keydown', which: utils.keys.ENTER)
+            .trigger($.Event 'keydown', which: keys.ENTER)
             .click()
 
         expectDefaultItemsDropdown()
@@ -496,7 +497,7 @@ describe 'FilterInputView', ->
         context 'on down key press', ->
           beforeEach ->
             view.$('input').trigger $.Event 'keydown',
-              which: utils.keys.DOWN
+              which: keys.DOWN
 
           it 'should focus dropdown first item', ->
             $first = view.$('.dropdown-items a').first()
@@ -506,7 +507,7 @@ describe 'FilterInputView', ->
           context 'on enter key press', ->
             beforeEach ->
               $(document.activeElement)
-                .trigger($.Event 'keydown', which: utils.keys.ENTER)
+                .trigger($.Event 'keydown', which: keys.ENTER)
                 .click()
 
             expectItemSelected 'Group One', 'First Item'
@@ -515,7 +516,7 @@ describe 'FilterInputView', ->
     context 'on up key press', ->
       beforeEach ->
         view.$('input').trigger $.Event 'keydown',
-          which: utils.keys.UP
+          which: keys.UP
 
       it 'should focus dropdown last item', ->
         $last = view.$('.dropdown-groups a').last()

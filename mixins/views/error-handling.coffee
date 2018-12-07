@@ -1,10 +1,10 @@
-import utils from 'lib/utils'
+import {parseJSON} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 import Notifying from './notifying'
 
 parseResponse = ($xhr) ->
   try
-    return utils.parseJSON $xhr.responseText
+    return parseJSON $xhr.responseText
   catch
     return null
 

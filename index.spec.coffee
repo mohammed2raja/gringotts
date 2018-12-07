@@ -2,25 +2,26 @@ import '@babel/polyfill'
 
 import jQuery from 'jquery'
 jQuery.ajaxSetup async: no # https://github.com/sinonjs/sinon/issues/1637
-window.$ = window.jQuery = jQuery
+
+import 'bootstrap/js/button'
+import 'bootstrap/js/collapse'
+import 'bootstrap/js/dropdown'
+import 'bootstrap/js/modal'
+import 'bootstrap/js/tab'
+import 'bootstrap/js/tooltip'
+import 'bootstrap/js/transition'
 
 import sinon, {FakeXMLHttpRequest} from 'sinon'
 FakeXMLHttpRequest::async = no
 window.sinon = sinon
 
 import chai from 'chai'
-chai.use require 'sinon-chai'
-chai.use require 'chai-jquery'
+import sinonChai from 'sinon-chai'
+import jqueryChai from 'chai-jquery'
+chai.use sinonChai
+chai.use jqueryChai
 chai.config.truncateThreshold = 0 # render full objects on deep equal errors
 window.expect = chai.expect
 
-require 'bootstrap/js/button'
-require 'bootstrap/js/collapse'
-require 'bootstrap/js/dropdown'
-require 'bootstrap/js/modal'
-require 'bootstrap/js/tab'
-require 'bootstrap/js/tooltip'
-require 'bootstrap/js/transition'
-
-testContext = require.context '../', true, /\.spec\.coffee$/
+testContext = require.context './', true, /\.spec\.coffee$/
 testContext.keys().forEach testContext

@@ -1,4 +1,4 @@
-import object from 'templates/helpers/object'
+import object from './object'
 
 describe 'object helper', ->
   hbsOptions = null

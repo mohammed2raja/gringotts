@@ -36,7 +36,23 @@
   "no_unnecessary_double_quotes": {
     "level": "error"
   },
+  "no_unnecessary_fat_arrows": {
+    "level": "error"
+  },
   "spacing_after_comma": {
     "level": "error"
+  },
+  "space_operators": {
+    "level": "error"
+  },
+  "prefer_english_operator": {
+    "level": "error"
+  },
+  "colon_assignment_spacing": {
+    "level": "error",
+    "spacing": {
+      "left": 0,
+      "right": 1
+    }
   }
 }

@@ -1,4 +1,4 @@
-import DialogView from 'views/dialog-view'
+import DialogView from './dialog-view'
 
 describe 'DialogView', ->
   title = 'Secret Operation'

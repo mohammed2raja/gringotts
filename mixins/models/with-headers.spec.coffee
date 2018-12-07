@@ -1,7 +1,7 @@
 import Chaplin from 'chaplin'
-import deadDeferred from 'lib/dead-deferred'
-import utils from 'lib/utils'
-import WithHeaders from 'mixins/models/with-headers'
+import deadDeferred from '../../lib/dead-deferred'
+import {superValue, waitUntil} from '../../lib/utils'
+import WithHeaders from './with-headers'
 
 class ModelMock extends WithHeaders Chaplin.Model
   url: '/foo/url'
@@ -14,7 +14,7 @@ class CustomFuncMockModel extends WithHeaders Chaplin.Model
   url: '/foo/url'
   HEADERS: ->
     @mockDeferred.then =>
-      @resolveHeaders(utils.superValue(this, 'HEADERS')).then (headers) ->
+      @resolveHeaders(superValue(this, 'HEADERS')).then (headers) ->
         _.extend {}, headers, 'X-BOO-ID': '300'
 
   constructor: ->
@@ -90,7 +90,7 @@ describe 'WithHeaders mixin', ->
     context 'abort request', ->
       beforeEach (done) ->
         promise = model.fetch async: yes
-        utils.waitUntil
+        waitUntil
           condition: -> sandbox.server.requests.length > 0
           then: ->
             promise.abort().catch ($xhr) ->

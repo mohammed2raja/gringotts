@@ -1,5 +1,4 @@
 import moment from 'moment'
-import _ from 'lodash'
 import {convert} from './dateFormat'
 
 # Format UTC time by passing in the format string.

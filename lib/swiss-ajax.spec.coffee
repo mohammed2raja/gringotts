@@ -1,6 +1,6 @@
 import Backbone from 'backbone'
 import Chaplin from 'chaplin'
-import swissAjax from 'lib/swiss-ajax'
+import swissAjax from './swiss-ajax'
 
 class MockModelString extends Chaplin.Model
   url: '/foo'

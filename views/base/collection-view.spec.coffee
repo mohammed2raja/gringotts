@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import CollectionView from 'views/base/collection-view'
+import CollectionView from './collection-view'
 
 class ItemViewMock extends Chaplin.View
   className: 'test-item'

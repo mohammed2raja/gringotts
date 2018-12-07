@@ -1,4 +1,4 @@
-import utils from 'lib/utils'
+import {abortable} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 import SafeSyncCallback from './safe-sync-callback'
 import ForcedReset from './forced-reset'
@@ -33,7 +33,7 @@ class Paginated extends Queryable ForcedReset SyncKey \
 
   fetch: ->
     @reset() # remove existing items
-    utils.abortable super(arguments...), catch: ($xhr) =>
+    abortable super(arguments...), catch: ($xhr) =>
       @count = 0 unless $xhr.statusText is 'abort' or @disposed
       $xhr
 

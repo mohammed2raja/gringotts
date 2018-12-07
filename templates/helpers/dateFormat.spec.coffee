@@ -1,4 +1,4 @@
-import dateFormat from 'templates/helpers/dateFormat'
+import dateFormat from './dateFormat'
 
 describe 'dateFormat helper', ->
   it 'should format date correctly with default input format', ->

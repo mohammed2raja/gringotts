@@ -137,7 +137,7 @@ class Editable extends superclass
   #
   # If the value can be properly coerced into a Number, that will be used
   # as the result to save to the server.
-  setupEditable: (clickTarget, field, opts={}) ->
+  setupEditable: (clickTarget, field, opts = {}) ->
     @delegate 'click', clickTarget, (evt) ->
       evt.preventDefault()
       _.defaults opts, DEFAULTS

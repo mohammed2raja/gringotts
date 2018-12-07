@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import NotificationView from 'views/notification-view'
+import NotificationView from './notification-view'
 
 describe 'NotificationView', ->
   sandbox = null

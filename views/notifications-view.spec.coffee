@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
-import Notifications from 'models/notifications'
-import NotificationsView from 'views/notifications-view'
+import Notifications from '../models/notifications'
+import NotificationsView from './notifications-view'
 
 describe 'NotificationsView', ->
   view = null

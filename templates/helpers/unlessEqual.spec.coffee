@@ -1,4 +1,4 @@
-import unlessEqual from 'templates/helpers/unlessEqual'
+import unlessEqual from './unlessEqual'
 
 describe 'unlessEqual helper', ->
   hbsOptions = null

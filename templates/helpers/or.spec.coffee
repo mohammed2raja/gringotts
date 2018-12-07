@@ -1,4 +1,4 @@
-import _or from 'templates/helpers/or'
+import _or from './or'
 
 describe 'or operator', ->
   hbsOptions = null

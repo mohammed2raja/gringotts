@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import FilterSelection from 'models/filter-selection'
+import FilterSelection from './filter-selection'
 
 filterGroups = new Chaplin.Collection [
   new Chaplin.Model

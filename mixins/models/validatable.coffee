@@ -43,11 +43,11 @@ class Validatable extends superclass
   _.extend @prototype, _.extend {}, backboneValidation.mixin,
     # HACK force model validation if no args passed
     isValid: (option) ->
-      backboneValidation.mixin.isValid.apply this, [option || true]
+      backboneValidation.mixin.isValid.apply this, [option or true]
     # HACK until https://github.com/thedersen/backbone.validation/issues/232
     validate: ->
       error = backboneValidation.mixin.validate.apply this, arguments
-      @validationError = error || null
+      @validationError = error or null
       error
 
   initialize: ->

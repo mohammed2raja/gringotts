@@ -1,4 +1,4 @@
-import dateFormatUTC from 'templates/helpers/dateFormatUTC'
+import dateFormatUTC from './dateFormatUTC'
 
 describe 'dateFormatUTC helper', ->
   it 'should format UTC date correctly with default input format', ->

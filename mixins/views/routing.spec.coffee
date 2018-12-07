@@ -1,8 +1,7 @@
 import Backbone from 'backbone'
-import utils from 'lib/utils'
 import Chaplin from 'chaplin'
-import CollectionView from 'views/base/collection-view'
-import Routing from 'mixins/views/routing'
+import CollectionView from '../../views/base/collection-view'
+import Routing from './routing'
 
 class ViewMock extends Routing Chaplin.View
 
@@ -23,7 +22,7 @@ describe 'Routing', ->
 
   beforeEach ->
     sandbox = sinon.createSandbox()
-    sandbox.stub utils, 'redirectTo'
+    sandbox.stub Chaplin.utils, 'redirectTo'
 
   afterEach ->
     sandbox.restore()
@@ -133,7 +132,7 @@ describe 'Routing', ->
         view.setBrowserQuery {c: 3}, options
 
       it 'should call redirectTo', ->
-        expect(utils.redirectTo).to.have.been.calledWith 'that-route',
+        expect(Chaplin.utils.redirectTo).to.have.been.calledWith 'that-route',
           'those-params', query: a: 1, b: 2, c: 3
 
       context 'with options', ->
@@ -144,7 +143,7 @@ describe 'Routing', ->
           options = null
 
         it 'should call redirectTo with options', ->
-          expect(utils.redirectTo).to.have.been
+          expect(Chaplin.utils.redirectTo).to.have.been
             .calledWith 'that-route', 'those-params',
               query: {a: 1, b: 2, c: 3}, foo: 'some'
 

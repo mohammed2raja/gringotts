@@ -1,5 +1,5 @@
 import backboneValidation from 'backbone-validation'
-import stickit from 'stickit'
+import stickit from 'backbone.stickit'
 import helper from '../../lib/mixin-helper'
 
 stickit.addHandler {

@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
 import backboneValidation from 'backbone-validation'
-import Validatable from 'mixins/models/validatable'
+import Validatable from './validatable'
 
 patterns = backboneValidation
 

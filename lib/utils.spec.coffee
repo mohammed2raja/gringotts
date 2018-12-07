@@ -1,35 +1,38 @@
 import Chaplin from 'chaplin'
-import deadDeferred from 'lib/dead-deferred'
-import utils from 'lib/utils'
+import deadDeferred from './dead-deferred'
+import {keys, openURL, getLocation,
+  setLocation, reloadLocation, urlJoin, tagBuilder, parseJSON, toBrowserDate,
+  toServerDate, getHandlebarsFuncs, mix, waitUntil, abortable, disposable,
+  excludeUrlParam, excludeUrlParams, compress, superValue} from './utils'
 
 describe 'Utils lib', ->
   context 'urlJoin', ->
     it 'should correctly combine urls with protocol', ->
-      url = utils.urlJoin 'https://somedomain.com/', '', null, '/foo'
+      url = urlJoin 'https://somedomain.com/', '', null, '/foo'
       expect(url).to.equal 'https://somedomain.com/foo'
 
     it 'should correctly combine regular urls', ->
-      url = utils.urlJoin 'moo', '', null, '/foo', 'oops'
+      url = urlJoin 'moo', '', null, '/foo', 'oops'
       expect(url).to.equal 'moo/foo/oops'
-      url = utils.urlJoin '/a', 'b/', '/c'
+      url = urlJoin '/a', 'b/', '/c'
       expect(url).to.equal '/a/b/c'
-      url = utils.urlJoin 'd', 'e', 'f/'
+      url = urlJoin 'd', 'e', 'f/'
       expect(url).to.equal 'd/e/f/'
-      url = utils.urlJoin 'one', 44, false, null, 'two'
+      url = urlJoin 'one', 44, false, null, 'two'
       expect(url).to.equal 'one/44/two'
 
     it 'should correctly combine weird urls', ->
-      url = utils.urlJoin '', '/foo'
+      url = urlJoin '', '/foo'
       expect(url).to.equal '/foo'
-      url = utils.urlJoin '/', undefined, '/foo'
+      url = urlJoin '/', undefined, '/foo'
       expect(url).to.equal '/foo'
-      url = utils.urlJoin '/', 'foo'
+      url = urlJoin '/', 'foo'
       expect(url).to.equal '/foo'
 
   context 'openURL', ->
     it 'should open URLs', ->
       sinon.stub window, 'open'
-      utils.openURL 'fum'
+      openURL 'fum'
       expect(window.open).to.be.calledOnce
       expect(window.open).to.be.calledWith 'fum'
       window.open.restore()
@@ -38,7 +41,7 @@ describe 'Utils lib', ->
     $el = null
 
     beforeEach ->
-      $el = $ utils.tagBuilder 'a', 'Everything is awesome!', href: '#'
+      $el = $ tagBuilder 'a', 'Everything is awesome!', href: '#'
 
     it 'should create the correct tag', ->
       expect($el).to.match 'a'
@@ -50,7 +53,7 @@ describe 'Utils lib', ->
       expect($el).to.have.attr 'href', '#'
 
     it 'should insert HTML', ->
-      $myEl = $ utils.tagBuilder 'p', '<strong>Live!</strong>', null, no
+      $myEl = $ tagBuilder 'p', '<strong>Live!</strong>', null, no
       expect($myEl).to.have.html '<strong>Live!</strong>'
 
   context 'parseJSON', ->
@@ -60,7 +63,7 @@ describe 'Utils lib', ->
     beforeEach ->
       window.Raven =
         captureException: sinon.spy()
-      result = utils.parseJSON value
+      result = parseJSON value
 
     afterEach ->
       delete window.Raven
@@ -115,12 +118,12 @@ describe 'Utils lib', ->
 
   context 'toBrowserDate', ->
     it 'should convert data to HTML5 date', ->
-      date = utils.toBrowserDate '2016-07-18'
+      date = toBrowserDate '2016-07-18'
       expect(date).to.equal '2016-07-18'
 
   context 'toServerDate', ->
     it 'should parse a number', ->
-      date = utils.toServerDate '2016-07-18'
+      date = toServerDate '2016-07-18'
       expect(date).to.match /^2016-07-18T([0-9\.\:])+Z$/
 
   context 'abortable', ->
@@ -138,7 +141,7 @@ describe 'Utils lib', ->
         promise = null
 
         beforeEach ->
-          promise = utils.abortable xhr,
+          promise = abortable xhr,
             progress: progressSpy = sinon.spy()
             then: thenSpy = sinon.spy()
             catch: catchSpy = sinon.spy()
@@ -180,7 +183,7 @@ describe 'Utils lib', ->
         allSpy = null
 
         beforeEach ->
-          promise = utils.abortable xhr,
+          promise = abortable xhr,
             all: allSpy = sinon.spy()
           return
 
@@ -223,7 +226,7 @@ describe 'Utils lib', ->
             $.Deferred().reject 'disposed'
           model = new Chaplin.Model()
           model.url = '/foo'
-          promise = utils.disposable model.fetch(), -> model.disposed
+          promise = disposable model.fetch(), -> model.disposed
           promise[key] callback = sinon.spy()
           model.dispose() if disposed
           promise.catch ($xhr) ->
@@ -262,7 +265,7 @@ describe 'Utils lib', ->
   context 'waitUntil', ->
     beforeEach (done) ->
       i = 0
-      utils.waitUntil
+      waitUntil
         condition: -> i++ > 5
         then: done
 
@@ -274,7 +277,7 @@ describe 'Utils lib', ->
     result = null
 
     beforeEach ->
-      result = utils.excludeUrlParams 'some/url?a=b&c=d&e=f&g=h', params
+      result = excludeUrlParams 'some/url?a=b&c=d&e=f&g=h', params
 
     context 'one param', ->
       before ->
@@ -293,12 +296,12 @@ describe 'Utils lib', ->
   context 'compress', ->
     context 'passing undefined', ->
       it 'should return undefined', ->
-        expect(utils.compress undefined).to.be.undefined
+        expect(compress undefined).to.be.undefined
 
     context 'passing single element array', ->
       it 'should return the element', ->
-        expect(utils.compress [5]).to.equal 5
+        expect(compress [5]).to.equal 5
 
     context 'passing multiple elements array', ->
       it 'should return the array', ->
-        expect(utils.compress [6, 7]).to.eql [6, 7]
+        expect(compress [6, 7]).to.eql [6, 7]

@@ -1,4 +1,4 @@
-import concat from 'templates/helpers/concat'
+import concat from './concat'
 
 describe 'concat strings', ->
   result = null

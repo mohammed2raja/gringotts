@@ -1,4 +1,3 @@
-import utils from 'lib/utils'
 import helper from '../../lib/mixin-helper'
 
 ###*

@@ -1,15 +1,18 @@
 import Chaplin from 'chaplin'
-import handlebars from 'handlebars'
-import utils from 'lib/utils'
-import View from 'views/base/view'
-import CollectionView from 'views/base/collection-view'
+import handlebars from 'handlebars/runtime'
+import {keys} from '../lib/utils'
+import View from './base/view'
+import CollectionView from './base/collection-view'
+import template from './filter-input/view'
+import itemTemplate from './filter-input/item'
+import listItemTemplate from './filter-input/list-item'
 
 DESCRIPTION_MAX_LENGTH = 40
 
 isLeaf = (model) ->
   not model.get('children')?
 
-regExp = (query, opts={}) ->
+regExp = (query, opts = {}) ->
   return unless query
   {startsWith} = _.defaults opts, startsWith: yes
   # always match numbers anywhere inside filter names
@@ -27,7 +30,7 @@ highlightMatch = (text, regexp) ->
   new handlebars.SafeString text?.replace regexp, '$1<i>$2</i>'
 
 class DropdownItemView extends View
-  template: require './filter-input/list-item.hbs'
+  template: listItemTemplate
   tagName: 'li'
   query: ''
   className: ->
@@ -95,12 +98,12 @@ class DropdownView extends CollectionView
   getTemplateFunction: ->
 
 class FilterInputItemView extends View
-  template: require './filter-input/item.hbs'
+  template: itemTemplate
   noWrap: true
 
 export default class FilterInputView extends CollectionView
   optionNames: @::optionNames.concat ['groupSource']
-  template: require './filter-input/view.hbs'
+  template: template
   className: 'form-control filter-input'
   listSelector: '.filter-items-container'
   loadingSelector: '.filters-loading'
@@ -126,7 +129,7 @@ export default class FilterInputView extends CollectionView
     'hide.bs.dropdown .dropdown': (e) -> @onDropdownHide e
     'hidden.bs.dropdown .dropdown': (e) -> @onDropdownHidden e
 
-  initialize: (options={}) ->
+  initialize: (options = {}) ->
     super arguments...
     @$el.removeClass(cl = @$el.attr 'class').addClass "#{@className} #{cl}"
     @placeholder = @$el.data('placeholder') or options.placeholder
@@ -183,29 +186,29 @@ export default class FilterInputView extends CollectionView
 
   # coffeelint: disable=cyclomatic_complexity
   onInputKeydown: (e) ->
-    if e.which is utils.keys.UP
+    if e.which is keys.UP
       e.preventDefault()
       @visibleListItems().last().focus()
-    else if e.which is utils.keys.DOWN
+    else if e.which is keys.DOWN
       e.preventDefault()
       @visibleListItems().first().focus()
-    else if e.which is utils.keys.ENTER
+    else if e.which is keys.ENTER
       e.preventDefault()
       @filterDropdownItems() # for quick types then enter
       if @query() isnt '' and item = _.head @visibleListItems()
         item.click()
       else
         @openDropdowns()
-    else if not @selectedGroup and e.which is utils.keys.ESC
+    else if not @selectedGroup and e.which is keys.ESC
       e.preventDefault()
       @closeDropdowns()
     else if not @selectedGroup and @query() is '' and
-        e.which is utils.keys.DELETE
+        e.which is keys.DELETE
       e.preventDefault()
       @collection.remove _.last @unrequiredSelection()
     else if @selectedGroup and
-        (e.which is utils.keys.ESC or
-          (@query() is '' and e.which is utils.keys.DELETE))
+        (e.which is keys.ESC or
+          (@query() is '' and e.which is keys.DELETE))
       e.preventDefault()
       @resetInput()
       @setSelectedGroup undefined
@@ -330,7 +333,7 @@ export default class FilterInputView extends CollectionView
     @$('input').val ''
     @filterDropdownItems()
 
-  filterDropdownItems: (opts={}) ->
+  filterDropdownItems: (opts = {}) ->
     {force} = _.defaults opts, force: no
     applyFilter = (@previousQuery or '') isnt (query = @query()) or force
     return unless not @disposed and applyFilter

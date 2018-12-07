@@ -1,53 +1,95 @@
-require 'lib/view-helper'
+import deadDeferred from './lib/dead-deferred'
+import MixinBuilder from './lib/mixin-builder'
+import mixinHelper from './lib/mixin-helper'
+import swissAjax from './lib/swiss-ajax'
+import Abortable from './mixins/models/abortable'
+import ActiveSyncMachine from './mixins/models/active-sync-machine'
+import Chaning from './mixins/models/changing'
+import ClientSorted from './mixins/models/client-sorted'
+import ErrorHandled from './mixins/models/error-handled'
+import ForcedReset from './mixins/models/forced-reset'
+import Paginated from './mixins/models/paginated'
+import Queryable from './mixins/models/queryable'
+import SafeSyncCallback from './mixins/models/safe-sync-callback'
+import Sorted from './mixins/models/sorted'
+import SyncDeeply from './mixins/models/sync-deeply'
+import SyncKey from './mixins/models/sync-key'
+import Validatable from './mixins/models/validatable'
+import WithHeaders from './mixins/models/with-headers'
+import WithSubmodels from './mixins/models/with-submodels'
+import Classy from './mixins/views/classy'
+import Content from './mixins/views/content'
+import Editable from './mixins/views/editable'
+import ErrorHandling from './mixins/views/error-handling'
+import Filtering from './mixins/views/filtering'
+import GenericSave from './mixins/views/generic-save'
+import Notifying from './mixins/views/notifying'
+import Paginating from './mixins/views/paginating'
+import Routing from './mixins/views/routing'
+import ServiceErrorReady from './mixins/views/service-error-ready'
+import Sorting from './mixins/views/sorting'
+import StateBindable from './mixins/views/state-bindable'
+import Templatable from './mixins/views/templatable'
+import Validating from './mixins/views/validating'
+import Collection from './models/base/collection'
+import Model from './models/base/model'
+import FilterSelection from './models/filter-selection'
+import Notifications from './models/notifications'
+import CollectionView from './views/base/collection-view'
+import ModalView from './views/base/modal-view'
+import View from './views/base/view'
+import DialogView from './views/dialog-view'
+import FilterInputView from './views/filter-input-view'
+import NotificationView from './views/notification-view'
+import NotificationsView from './views/notifications-view'
+import ProgressDialogView from './views/progress-dialog-view'
 
-module.exports =
-  lib:
-    MixinBuilder: require 'lib/mixin-builder'
-    deadDeferred: require 'lib/dead-deferred'
-    mixinHelper: require 'lib/mixin-helper'
-    swissAjax: require 'lib/swiss-ajax'
-    utils: require 'lib/utils'
-  mixins:
-    models:
-      Abortable: require 'mixins/models/abortable'
-      ActiveSyncMachine: require 'mixins/models/active-sync-machine'
-      ErrorHandled: require 'mixins/models/error-handled'
-      ForcedReset: require 'mixins/models/forced-reset'
-      Paginated: require 'mixins/models/paginated'
-      Queryable: require 'mixins/models/queryable'
-      SafeSyncCallback: require 'mixins/models/safe-sync-callback'
-      Sorted: require 'mixins/models/sorted'
-      SyncDeeply: require 'mixins/models/sync-deeply'
-      SyncKey: require 'mixins/models/sync-key'
-      Validatable: require 'mixins/models/validatable'
-      WithHeaders: require 'mixins/models/with-headers'
-    views:
-      Classy: require 'mixins/views/classy'
-      Content: require 'mixins/views/content'
-      Editable: require 'mixins/views/editable'
-      ErrorHandling: require 'mixins/views/error-handling'
-      Filtering: require 'mixins/views/filtering'
-      GenericSave: require 'mixins/views/generic-save'
-      Paginating: require 'mixins/views/paginating'
-      Routing: require 'mixins/views/routing'
-      ServiceErrorReady: require 'mixins/views/service-error-ready'
-      Sorting: require 'mixins/views/sorting'
-      StateBindable: require 'mixins/views/state-bindable'
-      Templatable: require 'mixins/views/templatable'
-      Validating: require 'mixins/views/validating'
-  models:
-    base:
-      Collection: require 'models/base/collection'
-      Model: require 'models/base/model'
-    FilterSelection: require 'models/filter-selection'
-    Notifications: require 'models/notifications'
-  views:
-    base:
-      CollectionView: require 'views/base/collection-view'
-      ModalView: require 'views/base/modal-view'
-      View: require 'views/base/view'
-    DialogView: require 'views/dialog-view'
-    FilterInputView: require 'views/filter-input-view'
-    NotificationView: require 'views/notification-view'
-    NotificationsView: require 'views/notifications-view'
-    ProgressDialogView: require 'views/progress-dialog-view'
+export * from './lib/utils'
+
+export {
+  deadDeferred,
+  MixinBuilder,
+  mixinHelper,
+  swissAjax,
+  Abortable,
+  ActiveSyncMachine,
+  Chaning,
+  ClientSorted,
+  ErrorHandled,
+  ForcedReset,
+  Paginated,
+  Queryable,
+  SafeSyncCallback,
+  Sorted,
+  SyncDeeply,
+  SyncKey,
+  Validatable,
+  WithHeaders,
+  WithSubmodels,
+  Classy,
+  Content,
+  Editable,
+  ErrorHandling,
+  Filtering,
+  GenericSave,
+  Notifying,
+  Paginating,
+  Routing,
+  ServiceErrorReady,
+  Sorting,
+  StateBindable,
+  Templatable,
+  Validating,
+  Collection,
+  Model,
+  FilterSelection,
+  Notifications,
+  CollectionView,
+  ModalView,
+  View,
+  DialogView,
+  FilterInputView,
+  NotificationView,
+  NotificationsView,
+  ProgressDialogView
+}

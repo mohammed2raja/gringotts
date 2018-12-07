@@ -1,9 +1,9 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import ActiveSyncMachine from 'mixins/models/active-sync-machine'
-import Paginated from 'mixins/models/paginated'
-import Paginating from 'mixins/views/paginating'
-import Templatable from 'mixins/views/templatable'
+import ActiveSyncMachine from '../models/active-sync-machine'
+import Paginated from '../models/paginated'
+import Paginating from './paginating'
+import Templatable from './templatable'
+import templateMock from './paginating.spec.hbs'
 
 class ItemViewMock extends Chaplin.View
   tagName: 'tr'
@@ -21,7 +21,8 @@ class PaginatingViewMock extends Templatable Paginating Chaplin.CollectionView
   loadingSelector: '.loading'
   itemView: ItemViewMock
   listSelector: 'tbody'
-  template: require './paginating.spec.hbs'
+  template: templateMock
+
 
 describe 'Paginating mixin', ->
   sandbox = null
@@ -31,8 +32,8 @@ describe 'Paginating mixin', ->
 
   beforeEach ->
     sandbox = sinon.createSandbox useFakeServer: true
-    sandbox.stub(utils, 'reverse').callsFake (path, params, query) ->
-      "#{path}?#{utils.querystring.stringify query}"
+    sandbox.stub(Chaplin.utils, 'reverse').callsFake (path, params, query) ->
+      "#{path}?#{Chaplin.utils.querystring.stringify query}"
     collection = new PaginatedCollectionMock()
     collection.infinite = infinite
     view = new PaginatingViewMock {routeName: 'test', collection}

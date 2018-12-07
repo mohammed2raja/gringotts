@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
-import ActiveSyncMachine from 'mixins/models/active-sync-machine'
-import ServiceErrorReady from 'mixins/views/service-error-ready'
+import ActiveSyncMachine from '../models/active-sync-machine'
+import ServiceErrorReady from './service-error-ready'
 
 class CollectionItemViewMock extends Chaplin.View
   getTemplateFunction: -> -> '<span></span>'

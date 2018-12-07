@@ -1,72 +1,48 @@
-'use strict';
-
-const webpack = require('webpack');
-const _ = require('lodash');
-const {resolve} = require('path');
-const {
-  alias,
-  extensions,
-  babelLoader,
-  babelNpmLoader,
-  coffeeLoader,
-  handlebarsLoader,
-  jQueryLoader,
-  modules,
-  nodeMocks,
-  provideModules
-} = require('./webpack.config.common');
-
-const publicDir = resolve(__dirname);
-const host = process.env.HOST || 'localhost';
+const {join, resolve} = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   devServer: {
     inline: true,
-    contentBase: [
-      publicDir,
-      resolve(__dirname, 'node_modules', 'mocha')
-    ],
-    host,
-    port: 8080,
-    watchOptions: {
-      ignored: /node_modules/
-    }
+    watchOptions: {ignored: /node_modules/}
   },
-  devtool: 'eval',
-  entry: {
-    spec: 'mocha-loader?enableTimeouts=false!./spec/index.coffee'
-  },
+  entry: 'mocha-loader?enableTimeouts=false!./index.spec.coffee',
   module: {
     strictExportPresence: true,
     rules: [
-      babelLoader,
-      coffeeLoader,
-      handlebarsLoader,
-      jQueryLoader
+      {
+        test: /\.coffee|.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules(?!\/sinon)/,
+        options: {cacheDirectory: true}
+      },
+      {
+        test: /\.coffee$/,
+        exclude: /node_modules/,
+        loader: 'coffee-loader'
+      },
+      {
+        test: /\.hbs$/,
+        exclude: /node_modules/,
+        loader: 'handlebars-loader',
+        query: {
+          helperDirs: [join(__dirname, 'templates', 'helpers')],
+          partialDirs: [join(__dirname, 'templates', 'partials')]
+        }
+      },
+      {
+        test: require.resolve('jquery'),
+        use: [
+          {loader: 'expose-loader', options: 'jQuery'},
+          {loader: 'expose-loader', options: '$'}
+        ]
+      }
     ]
   },
-  node: nodeMocks,
-  output: {
-    filename: 'javascripts/[name].js',
-    path: publicDir,
-    publicPath: '/'
-  },
-  performance: {
-    hints: false
-  },
   mode: 'development',
-  plugins: [
-    // Moment.js bundles large locale files by default due to how Webpack
-    // interprets its code. This is a practical solution that requires the
-    // user to opt into importing specific locales.
-    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.ProvidePlugin(provideModules)
-  ],
+  plugins: [new webpack.ProvidePlugin({_: 'lodash'})],
   resolve: {
-    alias,
-    extensions,
-    modules,
-    symlinks: false
+    extensions: ['.coffee', '.js', '.hbs'],
+    modules: [resolve(__dirname, 'node_modules')]
   }
-};
+}

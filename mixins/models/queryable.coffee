@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
 import Backbone from 'backbone'
-import utils from 'lib/utils'
+import {compress, superValue} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 
 ###*
@@ -63,7 +63,7 @@ class Queryable extends superclass
 
   ###*
     * Generates a query hash from the current query and given overrides.
-    * @param  {Object} opts={} inclDefaults - adds default query
+    * @param  {Object} opts = {} inclDefaults - adds default query
     *                            values into result, it is false by default.
     *                          inclIgnored - adds ignored query
     *                            values into result, it's true by default.
@@ -72,7 +72,7 @@ class Queryable extends superclass
     *                          overrides - optional state overrides.
     * @return {Object}         Combined query
   ###
-  getQuery: (opts={}) ->
+  getQuery: (opts = {}) ->
     query = _.extend {}, @DEFAULTS, @query, opts.overrides
     # make sure only local properties are being passed in
     unless _.isEmpty _.intersection _.keys(query)
@@ -103,15 +103,15 @@ class Queryable extends superclass
     * @param {String}  query   Queryparams in string format "a=b&c=d"
     * @return {Array}          Array of changed value keys.
   ###
-  setQueryString: (query='') ->
-    @setQueryHash utils.querystring.parse query
+  setQueryString: (query = '') ->
+    @setQueryHash Chaplin.utils.querystring.parse query
 
   ###*
     * Sets current query in object format.
     * @param {Object}  query   Query params in object format {a: 'b', c: 'd'}
     * @return {Array}          Array of changed value keys.
   ###
-  setQueryHash: (query={}) ->
+  setQueryHash: (query = {}) ->
     unless _.isObject query
       throw new Error 'New query should be String or Object'
     newQuery = @stripEmptyOrDefault @unprefixKeys query
@@ -143,10 +143,10 @@ class Queryable extends superclass
   ###*
     * Strips the query from all undefined or default values
   ###
-  stripEmptyOrDefault: (query, opts={}) ->
+  stripEmptyOrDefault: (query, opts = {}) ->
     query = _.pickBy query, (value, key) =>
       value isnt undefined and (opts.inclDefaults or \
-        not _.isEqual utils.compress(@DEFAULTS[key]), utils.compress value)
+        not _.isEqual compress(@DEFAULTS[key]), compress value)
 
   ###*
     * Saves all alien values (without prefixes) into a separete hash
@@ -168,7 +168,7 @@ class Queryable extends superclass
     * @returns {String}
   ###
   url: ->
-    base = @urlRoot or utils.superValue(this, 'url', _.isString) or super()
+    base = @urlRoot or superValue(this, 'url', _.isString) or super()
     throw new Error 'Please define url or urlRoot
       when implementing a queryable model or collection' unless base
     base = if _.isFunction(base) then base.apply(this) else base
@@ -176,30 +176,30 @@ class Queryable extends superclass
     # convert from local query keys to server query keys
     query = _.mapKeys query, (value, key) =>
       _.invert(@DEFAULTS_SERVER_MAP)[key] or key
-    querystring = utils.querystring.stringify query
-    @urlWithQuery base, querystring
+    queryString = Chaplin.utils.querystring.stringify query
+    @urlWithQuery base, queryString
 
   ###*
     * Combines URL base with query params.
     * @param  {String|Array|Object} base Base part of the URL, it supported
     *                                    in form of Array (of URLs), Object
     *                                    (Hash of URLs) or String (just URL).
-    * @param  {String} querystring       Query params string
+    * @param  {String} queryString       Query params string
     * @return {String|Array|Object}      A new instance of amended base.
   ###
-  urlWithQuery: (base, querystring) ->
+  urlWithQuery: (base, queryString) ->
     url = base
-    if querystring
+    if queryString
       if _.isString base
-        url = "#{base}?#{querystring}"
+        url = "#{base}?#{queryString}"
       else if _.isArray(base) and base.length > 0
         bases = _.clone base
-        bases[0] = "#{_.head(bases)}?#{querystring}"
+        bases[0] = "#{_.head(bases)}?#{queryString}"
         url = bases
       else if _.isObject(base) and keys = _.keys base
         bases = _.clone base
         firstKey = _.head keys
-        bases[firstKey] = "#{bases[firstKey]}?#{querystring}"
+        bases[firstKey] = "#{bases[firstKey]}?#{queryString}"
         url = bases
     url
 

@@ -1,6 +1,5 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import Notifying from 'mixins/views/notifying'
+import Notifying from './notifying'
 
 class ViewMock extends Notifying Chaplin.View
 

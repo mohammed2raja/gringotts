@@ -1,7 +1,6 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
 import helper from '../../lib/mixin-helper'
-import CollectionView from 'views/base/collection-view'
+import CollectionView from '../../views/base/collection-view'
 
 ###*
   * A utility mixin for a View or a CollectionView. It helps to pass routing
@@ -78,14 +77,14 @@ class Routing extends superclass
     * Redirect to current route with new query params.
     * @param {Object} query to build URL query params with.
   ###
-  setBrowserQuery: (query={}, options) ->
+  setBrowserQuery: (query = {}, options) ->
     unless @routeQueryable
       throw new Error "Can't set browser query
         since @routeQueryable isn't set."
     unless @routeName
       throw new Error "Can't set browser query since @routeName isn't set."
     @muteQueryChangeEvent = true # we don't want handle our own query change
-    utils.redirectTo @routeName, @routeParams,
+    Chaplin.utils.redirectTo @routeName, @routeParams,
       _.extend {}, options, query: @routeQueryable.getQuery overrides: query
 
   ###*

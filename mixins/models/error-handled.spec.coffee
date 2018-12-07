@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import ErrorHandled from 'mixins/models/error-handled'
+import ErrorHandled from './error-handled'
 
 class ModelMock extends ErrorHandled Chaplin.Model
 

@@ -21,7 +21,7 @@ describe 'ClientSorted mixin', ->
   models = null
 
   beforeEach ->
-    policies = models || dataset
+    policies = models or dataset
     collection = new MockClientSorted policies
     collection.query = {
       order: 'asc'

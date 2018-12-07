@@ -1,7 +1,6 @@
 import moment from 'moment'
-import _ from 'lodash'
 
-export convert = (time, inputFormat, outputFormat, func=moment) ->
+export convert = (time, inputFormat, outputFormat, func = moment) ->
   func(time, inputFormat or moment.ISO_8601).format outputFormat
 
 # Format time by passing in the format string.

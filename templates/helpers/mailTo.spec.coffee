@@ -1,4 +1,4 @@
-import mailTo from 'templates/helpers/mailTo'
+import mailTo from './mailTo'
 
 describe 'mailTo helper', ->
   $el = null

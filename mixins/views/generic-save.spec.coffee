@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import GenericSave from 'mixins/views/generic-save'
+import GenericSave from './generic-save'
 
 class ViewMock extends GenericSave Chaplin.View
 

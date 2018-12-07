@@ -1,6 +1,6 @@
-import utils from 'lib/utils'
 import helper from '../../lib/mixin-helper'
 import Routing from './routing'
+import partialTemplate from '../../templates/partials/pagination'
 
 ###*
   * Adds pagination support to a CollectionView. It relies on Routing
@@ -91,7 +91,7 @@ class Paginating extends Routing superclass
     info
 
   paginationPartial: ->
-    require 'partials/pagination.hbs'
+    partialTemplate
 
   renderPaginatingControls: ->
     pageInfo = @getPageInfo()

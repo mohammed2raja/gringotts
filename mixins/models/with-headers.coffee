@@ -1,4 +1,4 @@
-import utils from 'lib/utils'
+import {disposable} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 import SafeSyncCallback from '../../mixins/models/safe-sync-callback'
 
@@ -63,7 +63,7 @@ class WithHeaders extends SafeSyncCallback superclass
     sourceHeaders =
       if _.isFunction headers
       then headers.apply(this) else headers
-    utils.disposable $.when(sourceHeaders), => @disposed
+    disposable $.when(sourceHeaders), => @disposed
 
   ###*
     * Extends the Backbone ajax options with headers hash object.

@@ -1,7 +1,7 @@
 import Chaplin from 'chaplin'
 import Backbone from 'backbone'
-import swissAjax from 'lib/swiss-ajax'
-import Queryable from 'mixins/models/queryable'
+import swissAjax from '../../lib/swiss-ajax'
+import Queryable from './queryable'
 
 class BaseCollection extends Chaplin.Collection
 
@@ -9,7 +9,7 @@ class CollectionMock extends Queryable BaseCollection
   DEFAULTS: _.extend {}, @::DEFAULTS, foo: 'moo', boo: 'goo'
   urlRoot: '/test'
 
-testRequest = (request, expecting, notexpecting=[]) ->
+testRequest = (request, expecting, notexpecting = []) ->
   _.each expecting, (exp) ->
     expect(request.url).to.contain exp
   _.each notexpecting, (notexp) ->

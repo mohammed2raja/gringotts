@@ -1,4 +1,4 @@
-import View from 'views/base/view'
+import View from './view'
 
 describe 'View', ->
   view = null

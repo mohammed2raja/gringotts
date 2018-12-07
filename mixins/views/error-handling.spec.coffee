@@ -1,6 +1,5 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import ErrorHandling from 'mixins/views/error-handling'
+import ErrorHandling from './error-handling'
 
 class ViewMock extends ErrorHandling Chaplin.View
 
@@ -13,7 +12,6 @@ describe 'ErrorHandling', ->
 
   beforeEach ->
     sandbox = sinon.createSandbox()
-    sandbox.stub utils, 'redirectTo'
     sandbox.stub console, 'warn'
     ((window.I18n = {}).t = (text) -> text) if i18n
     model = new Chaplin.Model()

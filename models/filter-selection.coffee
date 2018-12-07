@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import Collection from 'models/base/collection'
+import {compress as cmprss} from '../lib/utils'
+import Collection from './base/collection'
 
 ###*
   * A generic collection that can be used as a selected filters collection
@@ -15,7 +15,7 @@ export default class FilterSelection extends Collection
     * @param  {Object}     obj
     * @param  {Collection} filterGroups - to reconstuct group information
   ###
-  fromObject: (obj, opts={}) ->
+  fromObject: (obj, opts = {}) ->
     {filterGroups} = opts
     return unless filterGroups
     result = []
@@ -43,10 +43,10 @@ export default class FilterSelection extends Collection
     * potential usage during serialization logic.
     * @return {Object}
   ###
-  toObject: (opts={}) ->
+  toObject: (opts = {}) ->
     {compress} = _.defaults opts, compress: yes
     result = _(@toJSON()).groupBy 'groupId'
       .mapValues (filters) ->
         ids = _.map filters, 'id'
-        if compress then utils.compress ids else ids
+        if compress then cmprss ids else ids
       .value()

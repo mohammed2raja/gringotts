@@ -1,5 +1,5 @@
 import Chaplin from 'chaplin'
-import ForcedReset from 'mixins/models/forced-reset'
+import ForcedReset from './forced-reset'
 
 class CollectionMock extends ForcedReset Chaplin.Collection
   url: '/test'

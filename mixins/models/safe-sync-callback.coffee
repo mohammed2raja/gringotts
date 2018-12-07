@@ -1,4 +1,4 @@
-import utils from 'lib/utils'
+import {disposable} from '../../lib/utils'
 import helper from '../../lib/mixin-helper'
 
 ###*
@@ -16,7 +16,7 @@ class SafeSyncCallback extends superclass
 
   sync: ->
     @safeSyncHashCallbacks.apply this, arguments
-    utils.disposable super(arguments...), => @disposed
+    disposable super(arguments...), => @disposed
 
   ###*
     * Piggies back off the AJAX option hash which the Backbone

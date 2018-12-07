@@ -13,7 +13,12 @@ class Templatable extends superclass
 
   getTemplateFunction: ->
     if @template
-      if _.isFunction(@template)
+      if _.isFunction @template
         @template
       else
         throw new Error 'The template property must be a function.'
+
+
+  dispose: ->
+    delete @template
+    super arguments...

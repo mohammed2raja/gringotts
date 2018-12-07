@@ -1,4 +1,4 @@
-import _and from 'templates/helpers/and'
+import _and from './and'
 
 describe 'and operator', ->
   hbsOptions = null

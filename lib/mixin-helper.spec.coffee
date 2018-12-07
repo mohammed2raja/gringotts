@@ -1,4 +1,4 @@
-import helper from 'lib/mixin-helper'
+import helper from './mixin-helper'
 
 describe 'mixinHelper lib', ->
   context 'assertModel', ->

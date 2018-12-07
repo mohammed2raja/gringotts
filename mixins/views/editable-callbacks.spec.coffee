@@ -1,6 +1,6 @@
 import Chaplin from 'chaplin'
-import ValidateModelMock from 'spec/mocks/validate-model-mock'
-import EditableViewMock from 'spec/mocks/editable-view-mock'
+import ValidateModelMock from '../../lib/mocks/validate-model-mock'
+import EditableViewMock from '../../lib/mocks/editable-view-mock'
 
 describe 'Editable callbacks', ->
   sandbox = null

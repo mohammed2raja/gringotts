@@ -1,41 +1,20 @@
-const webpack = require('webpack');
-const _ = require('lodash');
-const {
-  alias,
-  extensions,
-  babelLoader,
-  babelNpmLoader,
-  coffeeLoader,
-  handlebarsLoader,
-  modules,
-  nodeMocks,
-  provideModules
-} = require('./webpack.config.common');
+const webpackConfig = require('./webpack.config.dev')
 
 const isDebugMode = process.env.DEBUG || false
-const reportHtmlCoverage = process.env.HTML_COVERAGE || false
 
-module.exports = (config) => {
+module.exports = config => {
   config.set({
-    browsers: isDebugMode
-      ? ['Chrome']
-      : ['PhantomJS'],
-    client: isDebugMode
-      ? {
-          mocha: {
-            reporter: 'html'
-          }
-        }
-      : {},
+    browsers: isDebugMode ? ['Chrome'] : ['PhantomJS'],
+    client: isDebugMode ? {mocha: {reporter: 'html'}} : {},
     coverageIstanbulReporter: {
       fixWebpackSourcePaths: true,
-      reports: reportHtmlCoverage ? ['text', 'html'] : ['text'],
+      reports: isDebugMode ? ['text', 'html'] : ['text'],
       thresholds: {
         global: {
-          statements: 65,
-          lines: 65,
-          branches: 65,
-          functions: 65
+          statements: 90,
+          lines: 90,
+          branches: 80,
+          functions: 90
         },
         each: {
           statements: 65,
@@ -45,16 +24,8 @@ module.exports = (config) => {
         }
       }
     },
-    files: [{pattern: 'spec/index.coffee', watched: false}],
-    frameworks: [
-      'mocha',
-      'sinon-chai',
-      'chai-jquery',
-      'chai',
-      'jquery-3.3.1'
-    ],
-    logLevel: config.LOG_ERROR,
-    port: 8000,
+    files: ['index.spec.coffee'],
+    frameworks: ['mocha', 'sinon-chai', 'chai-jquery', 'chai', 'jquery-3.3.1'],
     plugins: [
       require('karma-webpack'),
       require('karma-jquery'),
@@ -69,15 +40,16 @@ module.exports = (config) => {
       require('karma-sourcemap-loader')
     ],
     preprocessors: {
-      'spec/index.coffee': ['webpack', 'sourcemap']
+      'index.spec.coffee': ['webpack', 'sourcemap']
     },
     reporters: ['dots', 'coverage-istanbul'],
     singleRun: !isDebugMode,
     webpack: {
-      devtool: 'cheap-module-source-map', // important for browser debugging
+      ...webpackConfig,
+      // for istanbul code coverage, 'cheap-module-source-map' is required
+      devtool: isDebugMode ? 'eval' : 'cheap-module-source-map',
       module: {
-        exprContextCritical: false,
-        noParse: /lodash|moment/,
+        ...webpackConfig.module,
         rules: [
           {
             enforce: 'pre',
@@ -89,37 +61,18 @@ module.exports = (config) => {
               outputReport: true
             }
           },
-          babelLoader,
-          babelNpmLoader,
-          coffeeLoader,
-          handlebarsLoader,
+          ...webpackConfig.module.rules,
           {
             test: /\.coffee$/,
             enforce: 'post',
-            include: /(lib|mixins|models|templates|views)/,
-            exclude: /\.spec\.coffee$/,
-            loader: 'istanbul-instrumenter-loader'
-          },
+            exclude: /node_modules|\.spec\.coffee$/,
+            use: {
+              loader: 'istanbul-instrumenter-loader',
+              options: {esModules: true}
+            }
+          }
         ]
-      },
-      node: nodeMocks,
-      mode: 'development',
-      plugins: [
-        // Moment.js bundles large locale files by default due to how Webpack
-        // interprets its code. This is a practical solution that requires the
-        // user to opt into importing specific locales.
-        // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-        new webpack.ProvidePlugin(provideModules)
-      ],
-      resolve: {
-        alias,
-        extensions,
-        modules
-      },
-      watchOptions: {
-        aggregateTimeout: 500
       }
     }
-  });
-};
+  })
+}

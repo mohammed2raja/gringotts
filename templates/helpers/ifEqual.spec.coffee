@@ -1,4 +1,4 @@
-import ifEqual from 'templates/helpers/ifEqual'
+import ifEqual from './ifEqual'
 
 describe 'ifEqual helper', ->
   hbsOptions = null

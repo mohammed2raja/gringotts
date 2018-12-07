@@ -1,10 +1,11 @@
 import Chaplin from 'chaplin'
-import specHelper from 'lib/spec-helper'
-import ModalView from 'views/base/modal-view'
-import NotificationsView from 'views/notifications-view'
+import specHelper from '../../lib/spec-helper'
+import ModalView from './modal-view'
+import NotificationsView from '../notifications-view'
+import templateMock from './modal.spec'
 
 class MockModal extends ModalView
-  template: require './modal.spec.hbs'
+  template: templateMock
 
 describe 'ModalView', ->
   sandbox = null

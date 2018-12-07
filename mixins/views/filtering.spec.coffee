@@ -1,6 +1,7 @@
 import Chaplin from 'chaplin'
-import Templatable from 'mixins/views/templatable'
-import Filtering from 'mixins/views/filtering'
+import Templatable from './templatable'
+import Filtering from './filtering'
+import templateMock from './filtering.spec.hbs'
 
 class FilterSelectionMock extends Chaplin.Collection
   fromObject: ->
@@ -14,7 +15,7 @@ class FilterSelectionMock extends Chaplin.Collection
 
 class ViewMock extends Filtering Templatable Chaplin.View
   autoRender: yes
-  template: require './filtering.spec.hbs'
+  template: templateMock
   filterSelection: FilterSelectionMock
   getBrowserQuery: ->
   setBrowserQuery: ->

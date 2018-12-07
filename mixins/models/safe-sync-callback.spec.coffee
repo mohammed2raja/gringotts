@@ -1,6 +1,5 @@
 import Chaplin from 'chaplin'
-import utils from 'lib/utils'
-import SafeSyncCallback from 'mixins/models/safe-sync-callback'
+import SafeSyncCallback from './safe-sync-callback'
 
 class CollectionMock extends SafeSyncCallback Chaplin.Collection
   url: 'abc'

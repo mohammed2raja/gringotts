@@ -1,6 +1,5 @@
-import utils from 'lib/utils'
 import helper from '../../lib/mixin-helper'
-import Collection from 'models/base/collection'
+import Collection from '../../models/base/collection'
 
 ###*
   * Manages sub-model updates

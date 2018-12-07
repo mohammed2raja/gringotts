@@ -30,6 +30,8 @@
 # dismisses, link, click handler, and classes can be configured via
 # overrriding of public properties.
 import View from './base/view'
+import undoTemplate from './notification-undo'
+import template from './notification'
 
 # Local reference for the timeout.
 notificationTimeout = null
@@ -43,7 +45,7 @@ DISMISS_METHOD =
   ROUTE: 'route'
 
 export default class NotificationView extends View
-  template: require './notification.hbs'
+  template: template
   tagName: 'li'
   className: 'alert alert-success alert-dismissable'
   optionNames: @::optionNames.concat [
@@ -60,9 +62,7 @@ export default class NotificationView extends View
 
   # Override to customize the undo element.
   getUndoElement: ->
-    require('./notification-undo.hbs') {
-      label: I18n?.t('notifications.undo') or 'Undo'
-    }
+    undoTemplate label: I18n?.t('notifications.undo') or 'Undo'
 
   # if `opts` has `navigateDismiss` then upon navigation the notification is
   # dismissed
