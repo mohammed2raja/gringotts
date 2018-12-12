@@ -3,7 +3,6 @@ const webpack = require('webpack')
 
 module.exports = {
   devServer: {
-    inline: true,
     watchOptions: {ignored: /node_modules/}
   },
   entry: 'mocha-loader?enableTimeouts=false!./index.spec.coffee',
@@ -13,7 +12,7 @@ module.exports = {
       {
         test: /\.coffee|.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules(?!\/sinon)/,
+        exclude: /node_modules(?!\/sinon\/)/,
         options: {cacheDirectory: true}
       },
       {
