@@ -64,20 +64,6 @@ export toServerDate = (date) ->
   moment(date).toISOString() if date
 
 ###*
-  * Processes hbs helper arguments and extracts funcs and vars.
-  * @param  {Object} opts Handlebars helper arguments.
-  * @return {Object}      A hash with fn, inverse and args.
-###
-export getHandlebarsFuncs = (opts) ->
-  lastArg = _(opts).last()
-  args = if lastArg.fn then _.initial(opts) else opts
-  {
-    fn: lastArg.fn
-    inverse: lastArg.inverse
-    args
-  }
-
-###*
   * An alias method to MixinBuilder.
   * @param  {Type} superclass A target type to mixin into.
   * @return {Type}            A result type with all mixins applied.

@@ -4,15 +4,9 @@ describe 'or operator', ->
   hbsOptions = null
 
   beforeEach ->
-    hbsOptions = {
-      fn: ->
-      inverse: ->
-    }
-    sinon.stub hbsOptions, 'fn'
-    sinon.stub hbsOptions, 'inverse'
-
-  afterEach ->
-    hbsOptions = null
+    hbsOptions =
+      fn: sinon.spy()
+      inverse: sinon.spy()
 
   context 'with fn and inverse blocks', ->
     it 'should call fn when containing a falsy value', ->
@@ -25,7 +19,7 @@ describe 'or operator', ->
 
   context 'without fn and inverse blocks', ->
     it 'should return true when containing a falsy value', ->
-      expect(_or true, true, false).to.eql true
+      expect(_or true, true, false, {}).to.eql true
 
     it 'should return false when containing all falsy values', ->
-      expect(_or false, '', 0).to.eql false
+      expect(_or false, '', 0, {}).to.eql false

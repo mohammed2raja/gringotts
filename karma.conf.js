@@ -19,8 +19,8 @@ module.exports = config => {
           functions: 90
         },
         each: {
-          statements: 65,
-          lines: 65,
+          statements: 75,
+          lines: 75,
           branches: 0,
           functions: 0
         }

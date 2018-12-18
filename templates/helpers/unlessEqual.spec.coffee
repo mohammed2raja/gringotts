@@ -4,15 +4,9 @@ describe 'unlessEqual helper', ->
   hbsOptions = null
 
   beforeEach ->
-    hbsOptions = {
-      fn: ->
-      inverse: ->
-    }
-    sinon.stub hbsOptions, 'fn'
-    sinon.stub hbsOptions, 'inverse'
-
-  afterEach ->
-    hbsOptions = null
+    hbsOptions =
+      fn: sinon.spy()
+      inverse: sinon.spy()
 
   context 'with fn and inverse blocks', ->
     it 'should be true for non-equal values', ->
@@ -25,7 +19,11 @@ describe 'unlessEqual helper', ->
 
   context 'without fn and inverse blocks', ->
     it 'should be true for non-equal values', ->
-      expect(unlessEqual 100, 200).to.be.true
+      expect(unlessEqual 100, 200, {}).to.be.true
 
     it 'should be false for equal values', ->
-      expect(unlessEqual 100, 100).to.be.false
+      expect(unlessEqual 100, 100, {}).to.be.false
+
+  context 'without arguments', ->
+    it 'should fail with error', ->
+      expect(-> unlessEqual {}).to.throw

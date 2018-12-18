@@ -2,7 +2,7 @@ import Chaplin from 'chaplin'
 import deadDeferred from './dead-deferred'
 import {keys, openURL, getLocation,
   setLocation, reloadLocation, urlJoin, tagBuilder, parseJSON, toBrowserDate,
-  toServerDate, getHandlebarsFuncs, mix, waitUntil, abortable, disposable,
+  toServerDate, mix, waitUntil, abortable, disposable,
   excludeUrlParam, excludeUrlParams, compress, superValue} from './utils'
 
 describe 'Utils lib', ->
