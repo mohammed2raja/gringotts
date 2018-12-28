@@ -16,8 +16,20 @@ class StateBindable extends superclass
     'syncStateChange model': ->
       @state.set syncState: @model.syncState()
 
+    'synced model': ->
+      @updateModelHasChanges()
+
+    'change model': ->
+      @updateModelHasChanges()
+
     'syncStateChange collection': ->
       @state.set syncState: @collection.syncState()
+
+    'synced collection': ->
+      @updateCollectionHasChanges()
+
+    'change collection': ->
+      @updateCollectionHasChanges()
 
   ###*
     * Initial state of UI, that passed to state model.
@@ -45,6 +57,14 @@ class StateBindable extends superclass
     attrs = _.result(this, 'initialState') or {}
     syncState = @model?.syncState?() or @collection?.syncState?()
     @state = new Chaplin.Model _.defaults attrs, {syncState}
+
+  updateModelHasChanges: ->
+    if @model.hasChanges
+      @state.set hasChanges: @model.hasChanges()
+
+  updateCollectionHasChanges: ->
+    if @collection.hasChanges
+      @state.set hasChanges: @collection.hasChanges()
 
   render: ->
     super()

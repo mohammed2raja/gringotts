@@ -3,7 +3,7 @@ import helper from '../../lib/mixin-helper'
 ###*
  * Tracks runtime changes of a Model or Collection.
 ###
-export default (superclass) -> class Changing extends superclass
+export default (superclass) -> class Changable extends superclass
   initialize: (data, {parse = false} = {}) ->
     helper.assertModelOrCollection this
     super arguments...

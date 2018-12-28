@@ -4,7 +4,7 @@ import mixinHelper from './lib/mixin-helper'
 import swissAjax from './lib/swiss-ajax'
 import Abortable from './mixins/models/abortable'
 import ActiveSyncMachine from './mixins/models/active-sync-machine'
-import Chaning from './mixins/models/changing'
+import Changable from './mixins/models/changable'
 import ClientSorted from './mixins/models/client-sorted'
 import ErrorHandled from './mixins/models/error-handled'
 import ForcedReset from './mixins/models/forced-reset'
@@ -44,6 +44,7 @@ import NotificationView from './views/notification-view'
 import NotificationsView from './views/notifications-view'
 import ProgressDialogView from './views/progress-dialog-view'
 
+export * from './lib/spec-helper'
 export * from './lib/utils'
 
 export {
@@ -53,7 +54,7 @@ export {
   swissAjax,
   Abortable,
   ActiveSyncMachine,
-  Chaning,
+  Changable,
   ClientSorted,
   ErrorHandled,
   ForcedReset,

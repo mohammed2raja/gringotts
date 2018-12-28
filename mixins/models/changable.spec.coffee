@@ -1,17 +1,17 @@
 import Chaplin from 'chaplin'
-import Changing from './changing'
+import Changable from './changable'
 
-class ChangingModel extends Changing Chaplin.Model
+class ChangableModel extends Changable Chaplin.Model
 
-class ChangingCollection extends Changing Chaplin.Collection
+class ChangableCollection extends Changable Chaplin.Collection
   comparator: (a, b) -> 1
 
-describe 'Changing mixin', ->
+describe 'Changable mixin', ->
   context 'for Model', ->
     model = null
 
     beforeEach ->
-      model = new ChangingModel a: '1'
+      model = new ChangableModel a: '1'
 
     afterEach ->
       model.dispose()
@@ -37,7 +37,7 @@ describe 'Changing mixin', ->
     collection = null
 
     beforeEach ->
-      collection = new ChangingCollection [{a: '1'}, {b: '1'}], sort: no
+      collection = new ChangableCollection [{a: '1'}, {b: '1'}], sort: no
 
     afterEach ->
       collection.dispose()

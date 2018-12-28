@@ -2,9 +2,10 @@ import Chaplin from 'chaplin'
 import StateBindable from './state-bindable'
 import Templatable from './templatable'
 import ActiveSyncMachine from '../models/active-sync-machine'
+import Changable from '../models/changable'
 import templateMock from './state-bindable.spec.hbs'
 
-class SyncMachineModelMock extends ActiveSyncMachine Chaplin.Model
+class ModelMock extends ActiveSyncMachine Changable Chaplin.Model
 
 class ViewMock extends StateBindable Templatable Chaplin.View
   autoRender: yes
@@ -27,7 +28,7 @@ describe 'StateBindable', ->
   bindings = null
 
   beforeEach ->
-    model = new SyncMachineModelMock()
+    model = new ModelMock()
     model.beginSync() if syncing
     ViewMock::initialState = state if state
     ViewMock::stateBindings = bindings if bindings
@@ -97,6 +98,25 @@ describe 'StateBindable', ->
 
         it 'should set syncState as synced', ->
           expect(view.state.get 'syncState').to.equal 'synced'
+
+  context 'hasChanges', ->
+    it 'should initialize undefined hasChanges', ->
+      expect(view.state.get 'hasChanges').to.be.undefined
+
+    context 'on model change', ->
+      beforeEach ->
+        model.set a: 'b'
+
+      it 'should should not have changes', ->
+        expect(view.state.get 'hasChanges').to.be.true
+
+      context 'on model synced', ->
+        beforeEach ->
+          model.trigger 'sync', model
+          model.trigger 'synced', model
+
+        it 'should should not have changes', ->
+          expect(view.state.get 'hasChanges').to.be.false
 
   context 'without model or collection', ->
     anotherView = null
