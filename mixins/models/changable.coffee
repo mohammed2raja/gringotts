@@ -1,3 +1,4 @@
+import Chaplin from 'chaplin'
 import helper from '../../lib/mixin-helper'
 
 ###*
@@ -7,7 +8,12 @@ export default (superclass) -> class Changable extends superclass
   initialize: (data, {parse = false} = {}) ->
     helper.assertModelOrCollection this
     super arguments...
-    @resetServerState if parse and not _.isEmpty data then @parse data else data
+    if this instanceof Chaplin.Collection
+      json = if parse and not _.isEmpty data then @parse data else data
+      @resetServerState json
+    else
+      # Backbone.Model does parsing and initial attrs setting by default
+      @resetServerState()
     @on 'sync', -> @resetServerState()
     if @comparator
       @on 'sort', -> @serverState?.sort _.bind @comparator, this
