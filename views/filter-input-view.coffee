@@ -129,11 +129,11 @@ export default class FilterInputView extends CollectionView
     'hide.bs.dropdown .dropdown': (e) -> @onDropdownHide e
     'hidden.bs.dropdown .dropdown': (e) -> @onDropdownHidden e
 
-  initialize: (options = {}) ->
+  initialize: ({disabled, placeholder} = {}) ->
     super arguments...
     @$el.removeClass(cl = @$el.attr 'class').addClass "#{@className} #{cl}"
-    @placeholder = @$el.data('placeholder') or options.placeholder
-    @disabled = @$el.data('disabled')? or options.disabled
+    @placeholder = @$el.data('placeholder') or placeholder
+    @disabled @$el.data('disabled')? or disabled
     @groupSource ?= new Chaplin.Collection()
     @listenTo @groupSource, 'synced', -> @updateViewState()
     @listenTo @groupSource, 'unsynced', -> @updateViewState()
@@ -143,7 +143,7 @@ export default class FilterInputView extends CollectionView
   getTemplateData: ->
     {
       @placeholder
-      @disabled
+      disabled: @disabled()
       loadingText: I18n?.t('loading.text') or 'Loading...'
       emptyText: I18n?.t('filter_input.empty') or
         'There are no filters available'
@@ -163,11 +163,19 @@ export default class FilterInputView extends CollectionView
     }
     @updateViewState()
 
+  disabled: (value) ->
+    if value is undefined
+      @$el.hasClass 'disabled'
+    else
+      @$('input').prop 'disabled', value
+      @$el.toggleClass 'disabled', value
+
   updateViewState: ->
     @filterDropdownItems force: yes
     @$('.remove-all-button').toggle @unrequiredSelection().length > 0
 
   onWhitespaceClick: (e) ->
+    return if @disabled()
     $target = $ e.target
     if $target.hasClass('filter-items-container') or
         $target.hasClass('dropdown-control')
@@ -175,17 +183,21 @@ export default class FilterInputView extends CollectionView
       @openDropdowns()
 
   onItemRemoveClick: (e) ->
+    return if @disabled()
     @collection.remove @modelsFrom $(e.currentTarget).parent '.selected-item'
 
   onRemoveAllClick: (e) ->
+    return if @disabled()
     @collection.remove @unrequiredSelection()
 
   onInputClick: (e) ->
+    return if @disabled()
     # keep opened dropdown visibile on second click
     e.stopPropagation() if @$('.dropdown').hasClass 'open'
 
   # coffeelint: disable=cyclomatic_complexity
   onInputKeydown: (e) ->
+    return if @disabled()
     if e.which is keys.UP
       e.preventDefault()
       @visibleListItems().last().focus()
@@ -218,9 +230,11 @@ export default class FilterInputView extends CollectionView
   # coffeelint: enable=cyclomatic_complexity
 
   onInputKeyup: (e) ->
+    return if @disabled()
     @filterDebounced()
 
   onInputFocus: (e) ->
+    return if @disabled()
     @$el.addClass 'focus'
 
   onInputBlur: (e) ->
@@ -321,7 +335,8 @@ export default class FilterInputView extends CollectionView
     if required = group.get 'required'
       selectedItem.set {required}
     if group.get 'singular'
-      @collection.remove @collection.filter groupId: group.id
+      @collection.remove @collection.filter(groupId: group.id),
+        singularReplacement: yes
     @collection.add selectedItem
 
   maybeContinue: ->

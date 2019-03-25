@@ -60,7 +60,8 @@ export default (superclass) -> class Filtering extends Routing superclass
     @stopListening @filterSelection, 'update', @onFilterSelectionUpdate
     @stopListening @filterSelection, 'reset', @onFilterSelectionUpdate
 
-  onFilterSelectionUpdate: ->
+  onFilterSelectionUpdate: (c, {singularReplacement} = {}) ->
+    return if singularReplacement
     query = _.defaults @filterSelection.toObject({@filterGroups}),
       _.zipObject @filterGroups.pluck 'id'
     @setBrowserQuery _.extend query, page: 1

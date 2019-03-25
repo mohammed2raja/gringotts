@@ -107,6 +107,14 @@ describe 'FilterInputView', ->
   it 'should have remove all button visible', ->
     expect(view.$ '.remove-all-button').to.be.visible()
 
+  context 'when disabled', ->
+    beforeEach ->
+      view.disabled yes
+
+    it 'should have prop class and attributes', ->
+      expect(view.$el).to.have.class 'disabled'
+      expect(view.$ 'input').to.have.prop 'disabled', yes
+
   context 'on selected item remove click', ->
     beforeEach ->
       view.$('.selected-item .remove-button').first().click()
