@@ -37,6 +37,14 @@ project's dependencies:
 npm install
 ```
 
+Since all the browser dependencies are marked as peer dependencies the additional
+utility may be used for a quick installation:
+
+```
+npm install -g npm-install-peers
+npm-install-peers
+```
+
 ### Testing the project
 
 If you start Karma with `npm start`, then the specs will run automatically when
