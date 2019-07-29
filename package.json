@@ -1,7 +1,7 @@
 {
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
-  "version": "4.1.5",
+  "version": "4.1.6",
   "main": "index.coffee",
   "homepage": "https://github.com/lookout/gringotts",
   "repository": "https://github.com/lookout/gringotts.git",
@@ -36,13 +36,13 @@
     "postshrinkwrap": "sed -i '' -e 's/http:\\/\\//https:\\/\\//g' package-lock.json"
   },
   "peerDependencies": {
-    "backbone": "1.3.3",
+    "backbone": "1.4.0",
     "backbone-validation": "https://github.com/bzalasky/backbone.validation.git#lodash@4-compatibility",
     "backbone.stickit": "https://github.com/NYTimes/backbone.stickit.git",
     "bootstrap": "3.3.7",
     "chaplin": "1.2.0",
-    "handlebars": "4.1.1",
-    "jquery": "3.3.1",
+    "handlebars": "4.1.2",
+    "jquery": "3.4.1",
     "lodash": "4.17.15",
     "moment": "2.24.0",
     "url-join": "4.0.1"
