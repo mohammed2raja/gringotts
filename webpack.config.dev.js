@@ -42,6 +42,6 @@ module.exports = {
   plugins: [new webpack.ProvidePlugin({_: 'lodash'})],
   resolve: {
     extensions: ['.coffee', '.js', '.hbs'],
-    modules: [resolve(__dirname, 'node_modules')]
+    modules: [resolve(__dirname, 'node_modules/backbone'), 'node_modules']
   }
 }
