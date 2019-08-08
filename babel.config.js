@@ -1,6 +1,6 @@
 const requiredPlugins = [
-  '@babel/plugin-proposal-class-properties',
-  '@babel/plugin-proposal-optional-chaining'
+  ['@babel/plugin-proposal-class-properties', {loose: true}],
+  ['@babel/plugin-proposal-optional-chaining', {loose: true}],
 ]
 
 const plugins = {
@@ -21,6 +21,7 @@ const development = [
         browsers: 'last 1 chrome version'
       },
       useBuiltIns: 'entry',
+      corejs: 3,
       loose: true,
       shippedProposals: true
     }
@@ -37,7 +38,8 @@ const presets = {
         targets: {
           browsers: 'defaults, ie 11'
         },
-        useBuiltIns: 'entry'
+        useBuiltIns: 'entry',
+        corejs: 3,
       }
     ]
   ]

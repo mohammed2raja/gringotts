@@ -23,3 +23,6 @@ class Notifying extends superclass
       classes: 'alert-danger'
       navigateDismiss: yes
     }, opts
+
+  denotify: (message, opts) ->
+    @publishEvent 'denotify', message, opts

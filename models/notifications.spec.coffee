@@ -5,7 +5,7 @@ describe 'Notifications', ->
   listenGlobal = true
 
   beforeEach ->
-    collection = new Notifications(null, listenGlobal: listenGlobal)
+    collection = new Notifications null, listenGlobal: listenGlobal
 
   afterEach ->
     collection.dispose()
@@ -16,18 +16,20 @@ describe 'Notifications', ->
     beforeEach ->
       message1 = 'A message for you, Rudy!'
       collection.publishEvent 'notify', message1
+
     afterEach -> message1 = null
 
     it 'should add a message', ->
       expect(collection).to.have.lengthOf 1
       expect(collection.first().get('message')).to.equal message1
 
-    context 'on notifying another message', ->
+    context 'on notifying second message', ->
       message2 = null
 
       beforeEach ->
-        message2 = 'Something good just happened.'
-        collection.publishEvent 'notify', message2
+        message2 = 'Something bad just happened.'
+        collection.publishEvent 'notify', message2, classes: 'alert-danger'
+
       afterEach -> message2 = null
 
       it 'should add a message', ->
@@ -42,6 +44,22 @@ describe 'Notifications', ->
           expect(collection).to.have.lengthOf 2
           expect(collection.first().get('message')).to.equal message2
           expect(collection.at(1).get('message')).to.equal message1
+
+      context 'on denotifying message', ->
+        beforeEach ->
+          collection.publishEvent 'denotify', message1
+
+        it 'should remove second message', ->
+          expect(collection).to.have.lengthOf 1
+          expect(collection.first().get('message')).to.equal message2
+
+      context 'on denotifying message by class', ->
+        beforeEach ->
+          collection.publishEvent 'denotify', undefined, classes: 'alert-danger'
+
+        it 'should remove second message', ->
+          expect(collection).to.have.lengthOf 1
+          expect(collection.first().get('message')).to.equal message1
 
     context 'on listenGlobal false', ->
       before ->

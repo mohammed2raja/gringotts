@@ -43,10 +43,18 @@ describe 'Notifying', ->
 
   context 'notifying with options', ->
     beforeEach ->
-      view.notifySuccess 'Success!', {navigateDismiss: no}
+      view.notifySuccess 'Success!', navigateDismiss: no
 
     it 'should publish notify event with dismiss options', ->
       expect(view.publishEvent).to.have.been.
         calledWith 'notify', 'Success!',
           classes: 'alert-success'
           navigateDismiss: no
+
+  context 'denotifying with options', ->
+    beforeEach ->
+      view.denotify 'Success!', classes: 'alert-danger'
+
+    it 'should publish denotify event with options', ->
+      expect(view.publishEvent).to.have.been.
+        calledWith 'denotify', 'Success!', classes: 'alert-danger'
