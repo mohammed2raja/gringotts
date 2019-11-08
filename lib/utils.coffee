@@ -14,18 +14,6 @@ export keys =
   UP: 38
   DOWN: 40
 
-export openURL = (path) ->
-  window.open path
-
-export getLocation = ->
-  window.location
-
-export setLocation = (path) ->
-  window.location = path
-
-export reloadLocation = ->
-  window.location.reload()
-
 ###*
   * A wrapper over url-join utility. Removes all falsey arguments before join.
 ###

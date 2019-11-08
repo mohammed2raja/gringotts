@@ -1,7 +1,6 @@
 import Chaplin from 'chaplin'
 import deadDeferred from './dead-deferred'
-import {keys, openURL, getLocation,
-  setLocation, reloadLocation, urlJoin, tagBuilder, parseJSON, toBrowserDate,
+import {keys, urlJoin, tagBuilder, parseJSON, toBrowserDate,
   toServerDate, mix, waitUntil, abortable, disposable,
   excludeUrlParam, excludeUrlParams, compress, superValue} from './utils'
 
@@ -28,14 +27,6 @@ describe 'Utils lib', ->
       expect(url).to.equal '/foo'
       url = urlJoin '/', 'foo'
       expect(url).to.equal '/foo'
-
-  context 'openURL', ->
-    it 'should open URLs', ->
-      sinon.stub window, 'open'
-      openURL 'fum'
-      expect(window.open).to.be.calledOnce
-      expect(window.open).to.be.calledWith 'fum'
-      window.open.restore()
 
   context 'tagBuilder', ->
     $el = null
