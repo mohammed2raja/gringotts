@@ -1,6 +1,5 @@
 import Chaplin from 'chaplin'
 import moment from 'moment'
-import join from 'url-join'
 import deadDeferred from './dead-deferred'
 import MixinBuilder from './mixin-builder'
 
@@ -13,12 +12,6 @@ export keys =
   ESC: 27
   UP: 38
   DOWN: 40
-
-###*
-  * A wrapper over url-join utility. Removes all falsey arguments before join.
-###
-export urlJoin = ->
-  join.apply this, _.map _.compact(arguments), _.toString
 
 # Returns a string representation of an HTML node of type `tagName` wrapping
 # `content` with HTML attributes `attrs`.

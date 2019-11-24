@@ -1,33 +1,10 @@
 import Chaplin from 'chaplin'
 import deadDeferred from './dead-deferred'
-import {keys, urlJoin, tagBuilder, parseJSON, toBrowserDate,
+import {keys, tagBuilder, parseJSON, toBrowserDate,
   toServerDate, mix, waitUntil, abortable, disposable,
   excludeUrlParam, excludeUrlParams, compress, superValue} from './utils'
 
 describe 'Utils lib', ->
-  context 'urlJoin', ->
-    it 'should correctly combine urls with protocol', ->
-      url = urlJoin 'https://somedomain.com/', '', null, '/foo'
-      expect(url).to.equal 'https://somedomain.com/foo'
-
-    it 'should correctly combine regular urls', ->
-      url = urlJoin 'moo', '', null, '/foo', 'oops'
-      expect(url).to.equal 'moo/foo/oops'
-      url = urlJoin '/a', 'b/', '/c'
-      expect(url).to.equal '/a/b/c'
-      url = urlJoin 'd', 'e', 'f/'
-      expect(url).to.equal 'd/e/f/'
-      url = urlJoin 'one', 44, false, null, 'two'
-      expect(url).to.equal 'one/44/two'
-
-    it 'should correctly combine weird urls', ->
-      url = urlJoin '', '/foo'
-      expect(url).to.equal '/foo'
-      url = urlJoin '/', undefined, '/foo'
-      expect(url).to.equal '/foo'
-      url = urlJoin '/', 'foo'
-      expect(url).to.equal '/foo'
-
   context 'tagBuilder', ->
     $el = null
 

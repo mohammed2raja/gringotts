@@ -1,7 +1,7 @@
 {
   "name": "gringotts",
   "description": "A vault of reusable components for Chaplin.",
-  "version": "4.1.11",
+  "version": "4.1.12",
   "main": "index.coffee",
   "homepage": "https://github.com/lookout/gringotts",
   "repository": "https://github.com/lookout/gringotts.git",
@@ -44,8 +44,7 @@
     "handlebars": "4.1.2",
     "jquery": "3.4.1",
     "lodash": "4.17.15",
-    "moment": "2.24.0",
-    "url-join": "4.0.1"
+    "moment": "2.24.0"
   },
   "devDependencies": {
     "@babel/core": "7.6.4",
