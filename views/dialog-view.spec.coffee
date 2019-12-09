@@ -13,7 +13,6 @@ describe 'DialogView', ->
       title, text,
       buttons: [
         {text: 'Yes', className: 'btn-primary', click: clickSpy}
-        {text: 'No', className: 'btn-link'}
       ]
     }
     view.render()
@@ -30,7 +29,7 @@ describe 'DialogView', ->
 
   it 'should have buttons renderred', ->
     expect(view.$ '.btn.btn-primary').to.exist.and.to.have.text 'Yes'
-    expect(view.$ '.btn.btn-link').to.exist.and.to.have.text 'No'
+    expect(view.$ '.btn.btn-link').to.exist.and.to.have.text 'Cancel'
 
   context 'on action click', ->
     beforeEach ->

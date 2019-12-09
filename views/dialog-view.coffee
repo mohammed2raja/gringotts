@@ -20,4 +20,9 @@ export default class DialogView extends ModalView
         b.click.call this, e if b.click and $el.hasClass b.className
 
   getTemplateData: ->
-    _.extend super(), {@title, @text, buttons: @buttons.concat([{ className: "btn-link", dataDismiss: "modal",ariaLabel: "Close", text: 'Cancel'}])}
+    _.extend super(), {@title, @text, buttons: @buttons.concat([{
+      className: 'btn-link'
+      dataDismiss: 'modal'
+      ariaLabel: 'Close'
+      text: I18n?.t('buttons.cancel') or 'Cancel',
+    }])}
