@@ -58,10 +58,6 @@ export default class ModalView extends Classy View
     @$el.modal 'hide' if @$el and @$el.hasClass 'in'
 
   onShown: ->
-    cancelBtn = $ '<a  class="btn"
-    style="font-weight: normal" data-dismiss="modal"
-    aria-label="Close">Cancel</a>'
-    @$('.modal-footer').append cancelBtn
     @modalVisible = yes
     # Globally prevent scrolling of page when modal is displayed
     $('body').addClass 'no-scroll'
