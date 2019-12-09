@@ -26,13 +26,13 @@
 
 {{#*inline "footer"}}
   <div class="modal-footer">
+    <button type="button" class="btn btn-link" data-dismiss="modal">{{cancelBtnLabel}}</button>
     {{#each buttons}}
       <button type="button" class="btn {{className}}"
           {{#ifEqual click undefined}}data-dismiss="modal"{{/ifEqual}}>
         {{~text~}}
       </button>
     {{/each}}
-    <button type="button" class="btn btn-link" data-dismiss="modal">{{cancelBtnLabel}}</button>
   </div>
 {{/inline}}
 

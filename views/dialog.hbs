@@ -10,12 +10,12 @@
     {{/if}}
     <div class="modal-body"><p>{{text}}</p></div>
     <div class="modal-footer">
+      <button type="button" class="btn btn-link" data-dismiss="modal">{{cancelBtnLabel}}</button>
       {{#each buttons}}
         <button type="button" class="btn {{className}}" data-dismiss="modal">
           {{~text~}}
         </button>
       {{/each}}
-      <button type="button" class="btn btn-link" data-dismiss="modal">{{cancelBtnLabel}}</button>
     </div>
   </div>
 </div>
