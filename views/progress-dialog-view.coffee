@@ -24,6 +24,7 @@ export default class ProgressDialogView extends ModalView
   onDone: null
   onCancel: null
   state: null
+  cancelBtnLabel: I18n?.t('buttons.cancel') or 'Cancel'
   listen:
     'syncing model': -> @onSyncing()
     'synced model': -> @onSynced()
@@ -78,10 +79,11 @@ export default class ProgressDialogView extends ModalView
     @state = @progressState() unless @state
 
   getTemplateData: ->
-    _.extend super(), {@state}, _.reduce STATES, (data, state) =>
-      data[state] = @[state]
-      data
-    , {}
+    _.extend super(), {@state, @cancelBtnLabel},
+      _.reduce STATES, (data, state) =>
+        data[state] = @[state]
+        data
+      , {}
 
   render: ->
     super()

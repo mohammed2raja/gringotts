@@ -32,6 +32,7 @@
         {{~text~}}
       </button>
     {{/each}}
+    <button type="button" class="btn btn-link" data-dismiss="modal">{{cancelBtnLabel}}</button>
   </div>
 {{/inline}}
 
@@ -42,7 +43,7 @@
     <div class="modal-body">
       {{> body-content default}}
     </div>
-    {{> footer default}}
+    {{> footer default cancelBtnLabel=cancelBtnLabel}}
     {{> progress-pulse class="loading fade"}}
   {{/modal-content}}
 
@@ -52,7 +53,7 @@
       {{> body-content progress}}
       {{> progress-pulse}}
     </div>
-    {{> footer progress}}
+    {{> footer progress cancelBtnLabel=cancelBtnLabel}}
   {{/modal-content}}
 
   {{#> modal-content current='error'}}
@@ -60,7 +61,7 @@
     <div class="modal-body">
       {{> body-content error}}
     </div>
-    {{> footer error}}
+    {{> footer error cancelBtnLabel=cancelBtnLabel}}
   {{/modal-content}}
 
   {{#> modal-content current='success'}}
@@ -68,6 +69,6 @@
     <div class="modal-body">
       {{> body-content success}}
     </div>
-    {{> footer success}}
+    {{> footer success cancelBtnLabel=cancelBtnLabel}}
   {{/modal-content}}
 </div>
